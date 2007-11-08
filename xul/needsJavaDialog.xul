@@ -1,0 +1,23 @@
+<?xml-stylesheet href="chrome://browser/skin/" type="text/css" ?>
+
+<dialog id="chickenfootNeedsJavaDialog"
+        title="Java Plugin Required"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        buttons="accept"
+        onload="doLoad();"
+        >
+<vbox>
+
+<label>The action you are trying to perform requires the Java 5.0 plugin for Firefox.</label>
+<label>For help installing the plugin, visit:</label>
+
+<label class="text-link"
+       href="http://groups.csail.mit.edu/uid/chickenfoot/install-java.html"
+       value="http://groups.csail.mit.edu/uid/chickenfoot/install-java.html"
+       />
+
+<label> </label>
+<label>You must also have Java enabled in Firefox (see Tools --> Options --> Content)</label>
+
+</vbox>
+</dialog>

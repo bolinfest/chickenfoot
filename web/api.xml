@@ -1,0 +1,587 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!-- xml-stylesheet type="text/xsl" href="api-full.xsl" -->
+
+<api>
+
+<command name="go" type="navigation">
+  <description>Navigates to the specified URL in the current window.
+  If the location of the window is the same as the specified URL,
+  then no navigation will occur <i>unless</i> reload is specified
+  and evaluates to true.
+  </description>
+  <param type="string" name="url">
+    <description>the URL to go to</description>
+  </param>
+  <param type="boolean" name="reload" optional="true">
+    <default value="false" />
+    <description>force a refresh of the page if document.location == url</description>
+  </param>
+</command>
+
+<command name="fetch" type="navigation">
+  <description>
+  Fetches a URL in the background.
+  </description>
+  <param type="string" name="url">
+    <description>the URL to fetch</description>
+  </param>
+  <return type="WrappedWindow" name="window"/>
+</command>
+
+<command name="reload" type="navigation">
+  <description>
+  Forces a refresh of the current page.
+  </description>
+</command>
+
+<command name="find" type="chickenscratch">
+  <description>
+  
+  </description>
+  <param type="Pattern" name="pattern"/>
+  <return type="Match" name="match"/>
+</command>
+
+<command name="click" type="chickenscratch">
+  <description>
+Takes a Pattern and automates a left-click on it.
+Recall that an instance of a Pattern can be one of many types,
+such as a keyword pattern:
+
+<pre>click('Google Search button');</pre>
+
+a Match:
+
+<pre>click(find('Google Search'));</pre>
+
+or even a Node:
+
+<pre>click(document.getElementById('st'));</pre>
+  </description>
+  <bug>Does not work with <code>&lt;BUTTON&gt;</code> even though
+    it works with <code>&lt;INPUT type="BUTTON"&gt;</code>
+  </bug>
+  <param type="Pattern" name="pattern"/>
+</command>
+
+<command name="enter" type="chickenscratch">
+  <description>
+Sets the value of a text input. If there is only one textbox on a page,
+such as on the Google homepage, then <code>pattern</code> may be omitted:
+
+<pre>enter('my google query'); // sets the value of the textbox to "my google query"</pre>
+
+However, if there are multiple input boxes, such as on the Yahoo! homepage,
+then <code>pattern</code> should be provided. Recall that an instance of a <code>Pattern</code>
+can be one of many types, so there are a number of possibilities for <code>pattern</code>:
+<pre>enter('search the web', 'my yahoo! query');
+enter(find('search the web textbox'), 'my yahoo! query');
+enter(document.getElementById('fp'), 'my yahoo! query');
+</pre>
+  </description>
+  <param type="Pattern" name="pattern" optional="true"/>
+  <param type="string" name="value"/>
+</command>
+
+<command name="pick" type="chickenscratch">
+  <description>
+Picks a choice from a listbox. Suppose there are two listboxes on a web page
+where the first has two options, <b>North</b> and <b>South</b>, while the second has four
+options: <b>North</b>, <b>South</b>, <b>East</b>, and <b>West</b>. When using <code>pick()</code>,
+if <code>choice</code> uniquely identifies the item to be selected, then <code>pattern</code>
+may be omitted:
+
+<pre>pick("East"); // picks East from the second listbox</pre>
+
+However, an error will be thrown if <code>choice</code> matches multiple options:
+
+<pre>pick("North"); // throws an Error because North matches an option in both listboxes</pre>
+
+If a <code>choice</code> matches more than one option, then <code>pattern</code>
+should be specified:
+
+<pre>pick("1st listbox", "North");
+pick(find("1st listbox"), "North");
+</pre>
+Because this restricts the choices to those in the first listbox,
+the command is no longer unambiguous, so the first <b>North</b> is selected
+and no error is thrown.
+  </description>
+  <see command="unpick"/>
+  <param type="Pattern" name="pattern" optional="true"/>
+  <param type="Pattern" name="choice"/>
+</command>
+
+<command name="unpick" type="chickenscratch">
+  <param type="Pattern" name="pattern" optional="true"/>
+  <param type="Pattern" name="choice"/>
+</command>
+
+<command name="check" type="chickenscratch">
+  <description>
+Sets the state of the checkbox identified by <code>pattern</code>
+to <code>checked</code>.
+  </description>
+  <param type="Pattern" name="pattern"/>
+  <param type="boolean" name="checked" optional="true"/>
+</command>
+
+<command name="uncheck" type="chickenscratch">
+  <param type="Pattern" name="pattern"/>
+</command>
+
+<command name="insert" type="chickenscratch">
+  <param type="Position" name="position"/>
+  <param type="Chunk" name="chunk"/>
+  <return type="Match" name="match"/>
+</command>
+
+<command name="remove" type="chickenscratch">
+  <param type="Pattern" name="pattern"/>
+  <return type="Position" name="position"/>
+</command>
+
+<command name="replace" type="chickenscratch">
+  <param type="Pattern" name="pattern"/>
+  <param type="Chunk" name="chunk"/>
+  <return type="Match" name="match"/>
+</command>
+
+<command name="before" type="chickenscratch">
+  <description>
+Takes a Pattern and returns a Position that corresponds
+to the point before it. This is most often used to create
+an argument for <code>insert()</code>.
+  </description>
+  <param name="pattern" type="Pattern"/>
+  <return type="Position" name="position"/>
+  <see command="before"/>
+</command>
+
+<command name="after" type="chickenscratch">
+  <description>
+Takes a Pattern and returns a Position that corresponds
+to the point after it. This is most often used to create
+an argument for <code>insert()</code>.
+  </description>
+  <param name="pattern" type="Pattern"/>
+  <return type="Position" name="position"/>
+</command>
+
+<command name="onClick" type="chickenscratch">
+  <description>
+Executes the given <b>handler</b> whenever the user
+clicks on the html object specified by the given <b>pattern</b>.
+  </description>
+  <param type="Pattern" name="pattern">
+    <description>pattern that identifies an html object to attach a handler to.</description>
+  </param>
+  <param type="function" name="handler">
+    <description>function to execute when the user clicks on the html object.</description>
+  </param>
+</command>
+
+<!-- these should probably get their own category called "synchronization" or something -->
+<command name="wait" type="chickenscratch">
+  <description>
+Returns a window when one of the windows is finished loading.
+  </description>
+  <param name="windows" type="window[]">
+    <description>an array of windows that are loading</description>
+  </param>
+  <return type="WrappedWindow" name="loadedWindow"/>
+</command>
+
+<command name="ready" type="chickenscratch">
+  <description>
+If there is a window in windows that is finished loading, it is returned;
+otherwise, <code>ready()</code> returns null.
+  </description>
+  <param name="windows" type="window[]">
+    <description>an array of windows that are loading</description>
+  </param>
+  <return type="WrappedWindow" name="loadedWindow"/>
+</command>
+
+<command name="sleep" type="chickenscratch">
+  <description>
+Suspends Chickenfoot activity for the specified number of seconds.
+Note that seconds can be a fraction, so to sleep for 100 milliseconds,
+do <code>sleep(0.100)</code>.
+  </description>
+  <param name="seconds" type="number" />
+</command>
+
+<command name="whenLoaded" type="chickenscratch">
+  <description>Executes the given <b>handler</b> when
+    the given <b>window</b> finishes loading.
+  </description>
+  <param type="function" name="handler">
+    <description>function to run when the window finishes loading.</description>
+  </param>
+  <param type="Window" name="window">
+    <description>window to wait for.</description>
+  </param>
+</command>
+
+<command name="read" type="chickenscratch">
+  <description>Read data from the given file. For example, you can read 
+data from local file for your processing.
+  <pre>read(&quot;c:\\test.txt&quot;);</pre>
+  </description>
+  <param type="string" name="file"/>
+</command>
+
+<command name="write" type="chickenscratch">
+  <description>Writes data to the given file. For example, 
+you can write data to a local file as following.
+  <pre>write(&quot;c:\\test.txt&quot;,&quot;Hello World!&quot;);</pre>
+  </description>
+  <param type="string" name="file"/>
+  <param type="string" name="data"/>
+</command>
+
+<command name="append" type="chickenscratch">
+  <description>Appends data to the end of the given file. For example, 
+you can append your data to the existing file.
+  <pre>append(&quot;c:\\test.txt&quot;,&quot;Hello World&quot;);</pre>  
+  </description>
+  <param type="string" name="file"/>
+  <param type="string" name="data"/>
+</command>
+
+<command name="exists" type="utility">
+  <description>Check whether the file exists. For example, you can 
+write data to a certain file after confirming its existence.
+  <pre>
+var file = &quot;c:\\test.txt&quot;;
+if(exists(file)){
+  append(file,&quot;Hello World&quot;);
+}
+  </pre>
+  </description>
+  <param type="string" name="file"/>
+</command>
+
+<command name="list" type="utility">
+  <description>
+Lists every property/value pair in <code>obj</code> in the 
+Chickenfoot Output window in alphabetical order. For example,
+executing the following:
+<pre>var a = {x : 42, y : "meaning of life", z : alert};
+list(a);
+</pre>
+
+Will display this in the Output window:
+
+<pre>x = 42
+y = meaning of life
+z = function () {    return win.alert.apply(win, arguments);}</pre>
+
+Some objects have many properties, so a regular expression (regexp)
+may be used to filter the list of properties that are displayed.
+For example, an HTML element has many styles, so to list all of the
+CSS styles that have to deal with color, a regexp could be used
+to restrict the list of properties that are displayed to <code>/color/i</code>
+as follows:
+
+<pre>list(document.body.style, /color/i)</pre>
+
+Which would print the following to the Output window:
+
+<pre>MozBorderBottomColors = 
+MozBorderLeftColors = 
+MozBorderRightColors = 
+MozBorderTopColors = 
+MozOutlineColor = 
+backgroundColor = 
+borderBottomColor = 
+borderColor = 
+borderLeftColor = 
+borderRightColor = 
+borderTopColor = 
+color = 
+outlineColor = </pre>
+
+  </description>
+  <param type="object" name="obj">
+    <description>the URL to go to</description>
+  </param>
+  <param type="regexp" name="filter" optional="true">
+    <default value="/.*/" />
+    <description>force a refresh of the page if document.location == url</description>
+  </param>
+</command>
+
+<command name="output" type="utility">
+  <description>
+Print values in the Output window.
+<code>output</code> Takes a variable number of arguments 
+and displays the string representation of each object
+on its own line in the Output window.
+  </description>
+  <param type="object" name="args" vararg="true" />
+</command>
+
+<command name="localUrl" type="utility">
+  <description>
+Lets user reference a file on the local disk. 
+Referring to the file directly is a security violation,
+so <code>localUrl</code> provides a workaround.
+<pre>// let user insert an image from his hard disk in the live web page
+insert(after('second search button'),
+  '&lt;img src="' + localUrl(&quot;file:///c:/myimage.png&quot;) + '"&gt;');</pre>
+  </description>
+  <param type="string" name="url" />
+</command>
+
+<command name="clear" type="utility">
+  <description>Clears the Output window.</description>
+</command>
+
+<command name="include" type="utility">
+  <description>
+The <code>file</code> argument passed to <code>include()</code> may be any of the following:
+<ul>
+  <li>A full chrome URL, such as <code>chrome://browser/content/browser.js</code></li>
+  <li>A full file path, such as <code>/home/bolinfest/maps.js</code></li>
+  <li>A name of a file in the user's <i>Chickenfoot profile directory</i>
+      (the <code>chickenfoot</code> directory under the user's Firefox profile,
+      where triggers are stored)</li>
+  <li>A name of a built-in library, such as <code>json.js</code></li>
+</ul>
+<p/>
+This means that both <code>include('json.js')</code> and
+<code>include('chrome://chickenfoot/content/libraries/json.js')</code> will have the
+same effect, unless the user has a script called <code>json.js</code> in his Chickenfoot
+profile directory, which would take precedence over the built-in library.
+<p/>
+If the <code>namespace</code> argument is specified, it may be either an object or a string:
+<ul>
+  <li>If it is an object, then all of the functions and fields in the library will be
+    added as properties of that object. For example:
+<pre>var obj = {};
+include('json.js', obj);
+include('google-search.js', obj);
+list(obj); // will list everything in the JSON and Google search libraries</pre></li>
+  <li>But if it is a string, then a new object with that name will be added to the
+    global namespace (replacing the previous object with that name, if it exists):
+<pre>include('json.js', 'LIBRARY'); // creates a new object called LIBRARY
+list(LIBRARY); // lists everything in the JSON library
+include('google-search.js', 'LIBRARY'); // replaces the previous LIBRARY object
+list(LIBRARY); // lists everything in the Google search library, but not the JSON library</pre></li>
+</ul>
+As you can see, using a namespace in conjunction with the <code>list()</code> command makes it
+convenient to find out what is available in a library.
+Note that it is perfectly fine to use <code>include</code> without a namespace, which is often the case
+with the Greasemonkey library, as the functions in that library have their namespace built into the names
+of the functions.
+  </description>
+  <param type="string" name="file"/>
+  <param type="object" name="namespace" optional="true"/>
+</command>
+
+<command name="back" type="navigation">
+  <description>
+  Automates the clicking of the back button in the current context.
+Recall that the default context is the current tab in the browser, so:
+
+<pre>go('http://www.google.com/');
+enter('chickenfoot');
+click('google search');
+back();
+</pre>
+
+Will navigate to Google, perform a search for <b>chickenfoot</b>, and then return
+to the Google home page. However, using a command such as <code>fetch()</code>, it is
+possible to change the context:
+
+<pre>with (fetch('http://www.google.com/')) {
+  enter('chickenfoot');
+  click('google search');
+  back();
+}
+</pre>
+
+In this case, the same actions will be performed as above, except they will occur
+in an offscreen window.
+  
+  </description>
+  <see command="forward"/>
+</command>
+
+<command name="forward" type="navigation">
+  <description>
+  Activates the <b>forward</b> button for the current context.
+  </description>
+  <see command="back"/>
+</command>
+
+<command name="home" type="navigation">
+  <description>
+  Activates the <b>home</b> button for the current context.
+  </description>
+  <bug>Has issues when user has multiple home pages.</bug>
+  <see command="back"/>
+</command>
+
+<command name="openTab" type="navigation">
+  <description>Opens the specified URL in a new browser tab.
+  </description>
+  <param type="string" name="url">
+    <description>the URL to load in a new tab.</description>
+  </param>
+  <param type="boolean" name="show">
+    <description>focusses the browser on the new tab.</description>
+  </param>
+  <return type="WrappedWindow" name="window">
+    <description>window object of the new tab.</description>
+  </return>
+</command>
+
+<typedef name="Pattern">
+  <type name="string" />
+  <type name="TC" />
+  <type name="Match" />
+  <type name="Node" />
+  <type name="Range" />
+  <type name="XPath" />
+</typedef>
+
+<typedef name="Chunk">
+  <type name="string" />
+  <type name="Match" />
+  <type name="Node" />
+  <type name="Range" />
+  <type name="DocumentFragment" />
+</typedef>
+
+<typedef name="Position">
+  <type name="Range" />
+</typedef>
+
+<class name="Match">
+  <field name="hasMatch" type="boolean"/>
+  <field name="count" type="int"/>
+  <field name="next" type="Match"/>
+  <field name="range" type="Range"/>
+  <field name="content" type="Node"/>
+  <field name="element" type="Element"/>
+  <field name="document" type="Document"/>
+  <field name="text" type="string"/>
+  <field name="html" type="string"/>
+  <field name="index" type="int"/>
+
+  <method name="isDomRange"><return type="boolean"/></method>
+  <method name="toString"><return type="string"/></method>
+</class>
+
+<class name="TC" />
+<class name="Link" />
+<class name="Button" />
+<class name="XPath" />
+
+<property name="navigator" type="Navigator" access="read-only">
+<description>
+<code>navigator</code> is the Navigator object for the browser -- this is the same Navigator
+object that you would have access to from unprivileged JavaScript in a web page.
+Querying the Navigator object can often give you information about properties of
+the browser:
+<pre>// test if the user has cookies turned on
+navigator.cookieEnabled
+
+// get the user's locale, as a string
+navigator.language // a locale, such as "en-US"
+
+// test if Java is enabled in the browser
+navigator.javaEnabled();
+</pre>
+To see what other properties and functions navigator has to offer, try:
+<code>list(navigator)</code> in Chickenfoot.
+<see command="list"/>
+</description>
+</property>
+
+<property name="chromeWindow" type="ChromeWindow" access="read-only">
+<description>
+chromeWindow is a property that refers to the top-level Firefox XUL window.
+From the chromeWindow, you can access a number of important pieces of the
+Firefox browser:
+<p/>
+<dl>
+<dt class="code">chromeWindow.document</dt>
+  <dd>returns the top-level XULDocument</dd>
+  <p/>
+<dt class="code">chromeWindow.getElementById()</dt>
+  <dd>can return other parts of XUL by their id, such as:
+    <pre>chromeWindow.getElementById('sidebar'); // returns the sidebar
+chromeWindow.getElementById('searchbar'); // returns the searchbar</pre>
+  
+  You can often discover the id of a XUL component by using the DOM Inspector.
+  </dd>
+  <p/>
+<dt class="code">chromeWindow._content</dt>
+  <dd>returns the Window for the tab that is currently displayed</dd>
+  <p/>
+</dl>
+
+chromeWindow has a number of methods that you may also find useful:
+<p/>
+<dl>
+<dt class="code">chromeWindow.resizeTo()</dt>
+  <dd>Useful for testing how a webpage looks at different sizes:
+    chromeWindow.resizeTo(800, 600);
+    chromeWindow.resizeTo(1024, 768);
+  </dd>
+  <p/>
+</dl>
+
+<p/>
+To see what other properties and functions chromeWindow has to offer, try:
+<code>list(chromeWindow)</code> in Chickenfoot.
+
+</description>
+<see command="list" />
+</property>
+
+<property name="document" type="HTMLDocument" access="read-only">
+  <description>
+  <code>document</code> is a reference to the HTMLDocument in the
+  current context, which should be familiar to any JavaScript
+  Web programmer.
+  </description>
+</property>
+
+<property name="window" type="Window" access="read-only">
+  <description>
+  <code>window</code> is a reference to the Window containing
+  the <code>document</code> in the current context, 
+  which should be familiar to any JavaScript Web programmer.
+  </description>
+  <see property="document" />
+</property>
+
+<property name="tab" type="WrappedWindow" access="read-only">
+  <description>
+  <code>tab</code> is a reference to the current tab.  Most useful
+  for storing a reference to the current tab before switching to
+  a new tab with openTab().
+  </description>
+  <see command="openTab" />
+</property>
+
+<property name="Chickenfoot" type="Chickenfoot" access="read-only"/>
+
+<property name="global" type="Object" access="read-only">
+  <description>
+  <code>global</code> refers to an object that is shared by all Chickenfoot scripts.
+  If you want to store data in memory between runs of your script, or you want two
+  or more scripts to share data, you can store it as a property of the <code>global</code>
+  object.  Since <code>global</code> is shared by all scripts, be careful to use a long name
+  to avoid name collisions with other scripts.  For example, <code>global.vocabularyWords = ["a","b","c"]</code>.
+  </description>
+</property>
+
+
+</api>

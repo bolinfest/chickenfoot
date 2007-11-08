@@ -1,0 +1,92 @@
+body, p, td {
+  font-family: verdana, helvetica, arial, sans-serif;
+  font-size: 10pt;
+}
+
+a:link, a:visited {
+	color: #554FA0;
+	font-weight: bold;
+}
+
+#sidebar a:link, #sidebar a:visited {
+  text-decoration: none;
+}
+
+pre, tt, code, .code {
+  font-family: "Monospace font handling in Firefox is braindead", monospace;
+  font-size: 1em;
+  color: #5B52CB;
+}
+
+.example {
+  border-style: dotted; 
+  border-width: 2px; 
+  padding: 8px; 
+  background-color: #eee;
+}
+
+.inline_ex {
+  border-style: dotted;
+  border-width:2px; 
+  padding-left: 4px;
+  padding-right:4px;
+  background-color:#eee; 
+}
+
+a:link:hover, a:visited:hover {
+	color: #5B52CB;
+	text-decoration: underline;
+}
+
+.firered {
+  color: #CF3208;
+}
+
+#sidebar {
+  /* float: left; */
+  font-size: 12pt;
+  width: 150px;
+  border: 1px solid #d9b87f;
+  margin: 0px 0px 5px 0px;
+}
+
+#sidebar h3 {
+  margin: 0px;
+  font-size: smaller;
+  background-color: #F1D79E;
+  color: black;
+  padding: 3px;
+  margin-bottom: 3px;
+}
+
+#sidebar ul {
+  margin: 0px;
+  padding: 0px;
+}
+
+#sidebar li {
+  font-size: small;
+  list-style-type: none;
+  line-height: 1.7em;
+  margin-left: 5px;
+}
+
+#sidebar tr:hover {
+  background-color: rgb(210, 210, 210);
+  cursor: pointer;
+}
+
+#subsidebar li {
+  font-size: small;
+  list-style-type: none;
+  line-height: 1.7em;
+  margin-left: 10px;
+}
+
+#greasemonkey-api tr, #chickenfoot-analogues tr {
+  vertical-align: top;
+}
+
+.description {
+  align: top;
+}

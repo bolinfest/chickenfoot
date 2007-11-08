@@ -1,0 +1,210 @@
+<!--#include file="header.html" -->
+
+
+
+<h3>Chickenfoot Example Scripts</h3>
+<p>The following examples present a small subset of the functionality that 
+Chickenfoot offers. Once Chickenfoot is installed, press <b>F8</b> to open
+the Chickenfoot Sidebar and then copy the <code class="inline_ex">chickenfoot code</code>
+into the sidebar's text area. Press <b>Alt-R</b> (Windows) or <b>Ctrl-R</b> (MacOS) to run the script.</p>
+
+<ul>
+  <li><a href="#google">Image Replacement</a></li>
+  <li><a href="#amazon">Finding a Library Book</a></li>
+  <li><a href="#targetalert">TargetAlert</a></li>
+  <li><a href="#sattutor">An Sat Tutor</a></li>
+  <li><a href="#tablesort">Table Sorting</a></li>
+</ul>
+
+<script>
+  function toggle(it){
+    var e = document.getElementById(it);
+    var s = e.style.visibility;
+    var vis = (s == "hidden") ? "visible" : "hidden";
+    document.getElementById(it).style.visibility = vis;
+  }
+</script>
+
+<dl>
+
+<!-- google-img.js  -->
+<dt id="google"><h4>Image Replacement</h4></dt>
+<p>Running this chickenfoot script on google.com will replace the google 
+logo with the <code>ninja.png</code> image.</p>
+<dd><pre class="example">replace('Google image',
+  '&lt;img src="http://www.bolinfest.com/ninja.png"&gt;')</pre></dd>
+</dt>
+
+<!-- amazon.js -->
+<dt id="amazon"><h4>Finding a book in the library</h4></dt>
+<p>This script can be run on this page. It will insert the availability of the following
+book in MIT's library system as a link after the author's name.</p>
+<dd><pre class="example">
+originalTab = tab;
+isbn = find(/ISBN: (\d+)/).groups[1];
+with(openTab('http://libraries.mit.edu/', true)) {
+  pick('Keyword');
+  enter(isbn)
+  click('Search button')
+  link = find('stacks link')
+}
+originalTab.show();
+insert(after(/^Name:.*/), '&lt;li&gt;' + link.html)</pre></dd>
+
+<table>
+<tr>
+  <td>
+    <img src="http://images.amazon.com/images/P/0316769487.01._PE10_SCMZZZZZZZ_.gif" />
+  </td>
+  <td>
+    <ul>
+      <li>Name: <b>The Catcher in the Rye</b> by J.D. Salinger</li>
+      <li>List Price:  	<strike>$6.99</strike>
+      <li>Price: 	$6.29 </li>
+      <li>Paperback: 224 pages</li>
+      <li>Publisher: Little, Brown (May 1, 1991)</li>
+      <li>Language: English</li>
+      <li>ISBN: 0316769487</li>
+      <li>Product Dimensions: 6.7 x 4.2 x 0.6 inches</li>
+      <li>Shipping Weight: 3.8 ounces</li>
+    </ul>
+  </td>
+</tr>
+</table>
+
+<!-- targetAlert.js -->
+<dt id="targetalert"><h4>TargetAlert</h4></dt>
+<p>This script will add an icon to all hyperlinks giving visual information
+about their final destinations. Hyperlinks that do not point to webpages 
+are appended with icons, eliminating, for example, the "surprise" of arriving 
+at a pdf document.</p>
+<dd><pre class="example">excludedExtensions = {
+  'html' : 1,  'shtml' : 1,  'php' : 1,  'jsp' : 1,  'asp' : 1,
+}
+
+mailto = /^mailto:/i
+javascript = /^javascript:/i
+type = /^[^\\?]*\.(\w+)$/i
+
+for (link = find('link'); link.hasMatch; link = link.next) {
+  if (!link.element) {
+    output(link.html)
+    continue;
+  }
+  href = link.element.getAttribute('href')
+  if (href.match(mailto)) {
+    continue
+  } else if (href.match(javascript)) {
+    html = ' &lt;img src="moz-icon://.js?size=16"&gt; '
+  } else if (match = href.match(type)) {
+    extension = match[1]
+    if (extension in excludedExtensions) continue
+    html = ' &lt;img src="moz-icon://.' + extension + '?size=16"&gt; '      
+  } else {
+    continue
+  }
+  insert(after(link), html) 
+}</pre></dd>
+
+<!-- sattutor.js -->
+<dt id="sattutor"><h4>An SAT Tutor</h4></dt>
+<p>This chickenfoot script reads a file containing SAT Words from a 
+remote website and then matches terms in the active webpage with those
+SAT words. If there is a match, then the word is highlighted and when the 
+user mouses over it, the definition appears as a tool tip.</p>
+<dd><pre class="example">
+var doc = document.implementation.createDocument("", "", null);
+doc.async = false;
+doc.load("http://groups.csail.mit.edu/uid/chickenfoot/sat-words.xml");
+
+words = {}
+elements = doc.getElementsByTagName("word")
+for (var i = 0; i < elements.length; i++) {
+  node = elements.item(i)
+  words[node.getAttribute('word')] = node.getAttribute('def')
+}
+
+style = 'background-color: #FFFFCC; border-top: solid 1px; border-bottom: solid 1px'
+for (word = find(/\w+/) ; word.hasMatch; word = word.next) {
+  if (word in words) {
+    html = '&lt;span style="' + style + '" ' + 'title="' + words[word] + '"&gt;' + word + '&lt;/span&gt;'
+    replace(word, html)
+  } 
+}
+</pre></dd>
+
+<!--
+<dt id="contrast"><h4>Adjusting Contrast</h4></dt>
+<p>In order to relieve the strain of poor color choices in webpages, 
+Chickenfoot allows the user to force a page's text to a high contrast version.
+This script can be run on this page.</p>
+<dd><pre class="example">for (e=find('element contains text'); e.hasMatch; e=e.next) { 
+  e.element.style.color = 'black'; 
+  e.element.style.background = 'white'; 
+  e.element.style.backgroundImage='none'; 
+} 
+</pre></dd>
+-->
+
+<dt id="tablesort"><h4>Sorting HTML Tables</h4></dt>
+<p>This chickenfoot script takes you to a page with two tables. When the script
+is run, the heading tags on both tables become clickable and clicking on any of
+them sorts the table accordingly.</p>
+<dd><pre class="example">
+go('http://groups.csail.mit.edu/uid/chickenfoot/table.html', true)
+
+for (table = find(new TC('table')); table.hasMatch; table = table.next) {
+  labelTable(table)
+}
+
+function labelTable(tableMatch) {  
+  var heading = tableMatch.find(new TC('first row'))
+  var index = 1
+  for (var m = heading.find(new TC('text in cell')); m.hasMatch; m = m.next) {
+    var func = new Function("sortRows(" + (m.index + 1) + "," + (tableMatch.index + 1) + ")")
+    replace(m, new Link(m.text, func))
+  }
+} 
+
+sortRows = function(columnIndex, tableIndex) {
+  var index = 0;
+  var t = find(new TC(tableIndex + 'th table'))
+  var m = t.find(new TC(columnIndex + 'th cell in row'))
+  // skip first row since it is &lt;TH&gt;
+  var cells = []
+  for (m = m.next; m.hasMatch; m = m.next) {
+    var pair = {}
+    pair.text = m.text
+    pair.index = index++
+    cells.push(pair)
+  }
+  var original = [].concat(cells)
+  cells.sort(function(a, b) {
+    var c = parseInt(a.text)
+    var d = parseInt(b.text)
+    if (!isNaN(c) && !isNaN(d)) {
+      return c - d
+    } else {
+      return a.text.localeCompare(b.text)
+    }
+  })
+  for (var i = 0; i < cells.length; i++) {
+    cells[i].index = i
+  }
+  var rows = t.find(new TC('row anywhere after first row'))
+  var sorted = new Array(cells.length)
+  i = 0  
+  for (r = rows; r.hasMatch; r = r.next) {
+    sorted[original[i++].index] = r
+  }
+  i = 0
+  for (r = rows; r.hasMatch; r = r.next) {
+    replace(r, sorted[i++])
+  }
+}
+</pre></dd>
+
+
+</dl>
+
+<!--#include file="footer.html" -->

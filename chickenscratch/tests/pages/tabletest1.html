@@ -1,0 +1,184 @@
+<html>
+
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=iso-8859-1">
+		<meta name="generator" content="Adobe GoLive 4">
+		<title>How to choose a statistical test</title>
+		<link href="../../GP.css" rel="styleSheet" type="text/css">
+		<csactions>
+			<csaction name="B871EAA52" class="Go Last Page" type="onevent">
+		</csactions>
+		<csscriptdict import>
+			<script src="../../GeneratedItems/CSScriptLib.js"></script>
+		</csscriptdict>
+		<csactiondict>
+			<script><!--
+CSAct[/*CMP*/ 'B871EAA52'] = new Array(CSGoBack1);
+
+// --></script>
+		</csactiondict>
+	</head>
+
+	<body bgcolor="white" link="#00008b" alink="#c71585" vlink="#4b0082">
+		<a href="../../welcome.htm">
+			<table border="0" cellpadding="4" cellspacing="0" width="600">
+				<tr>
+					<td><img height="52" width="160" src="../../media/gpsolo160.gif" border="0" alt="GraphPad.com"></td>
+					<td></td>
+					<td>
+						<div align="right">
+							<a href="#" onclick="CSAction(new Array(/*CMP*/'B871EAA52'));return CSClickReturn();" csclick="B871EAA52">&lt; BACK</a></div>
+					</td>
+				</tr>
+			</table>
+		</a>
+		<table border="0" cellpadding="6" cellspacing="0" width="600">
+			<tr>
+				<td align="left" valign="top">
+					<p class="subctr"><font size="+1">Intuitive Biostatistics: Choosing a statistical test</font></p>
+					<p>This is chapter 37 of <a href="book.htm">Intuitive Biostatistics</a> (ISBN 0-19-508607-4) by Harvey Motulsky. Copyright &copy; 1995 by Oxford University Press Inc. All rights reserved. You may order the book from GraphPad Software with a software purchase, from any academic bookstore, or from <a href="http://www.amazon.com/exec/obidos/ISBN%3D0195086074/GraphpadSoftwareA/102-7198890-9734560">amazon.com</a>.</p>
+					<p>Learn how to <a href="http://www.graphpad.com/articles/interpret/tableaofacontents.htm">interpret the results of statistical tests</a> and about our programs <a href="http://www.graphpad.com/instat3/instat.htm">GraphPad InStat</a> and <a href="http://www.graphpad.com/prism/Prism.htm">GraphPad Prism</a>.</p>
+				</td>
+			</tr>
+			<tr>
+				<td align="left" valign="top"><span class="sublft">REVIEW OF AVAILABLE STATISTICAL TESTS</span>
+					<p>This book has discussed many different statistical tests. To select the right test, ask yourself two questions: What kind of data have you collected? What is your goal? Then refer to Table 37.1.</p>
+					<p>All tests are described in this book and are performed by InStat, except for tests marked with asterisks. Tests labeled with a single asterisk are briefly mentioned in this book, and tests labeled with two asterisks are not mentioned at all.</p>
+					<p>Table 37.1. Selecting a statistical test</p>
+					<p></p>
+					<table border="2" cellpadding="3" cellspacing="0" width="580">
+						<tr>
+							<td align="left" valign="top"></td>
+							<td colspan="4" align="left" valign="top"><a name="UQHTML3"></a><span class="sublft">Type of Data</span></td>
+						</tr>
+						<tr>
+							<td align="left" valign="top"><span class="sublft">Goal</span></td>
+							<td align="left" valign="top"><b>Measurement (from Gaussian Population)</b></td>
+							<td align="left" valign="top"><b>Rank, Score, or Measurement (from Non- Gaussian Population)</b></td>
+							<td align="left" valign="top"><b>Binomial<br>
+									(Two Possible Outcomes)</b></td>
+							<td align="left" valign="top"><b>Survival Time</b></td>
+						</tr>
+						<tr>
+							<td align="left" valign="top"><b>Describe one group</b></td>
+							<td align="left" valign="top">Mean, SD</td>
+							<td align="left" valign="top">Median, interquartile range</td>
+							<td align="left" valign="top">Proportion</td>
+							<td align="left" valign="top">Kaplan Meier survival curve</td>
+						</tr>
+						<tr>
+							<td align="left" valign="top"><b>Compare one group to a hypothetical value</b></td>
+							<td align="left" valign="top">One-sample <i>t</i> test</td>
+							<td align="left" valign="top">Wilcoxon test</td>
+							<td align="left" valign="top">Chi-square<br>
+								or<br>
+								Binomial test **</td>
+							<td align="left" valign="top"></td>
+						</tr>
+						<tr>
+							<td align="left" valign="top"><b>Compare two unpaired<i> </i>groups</b></td>
+							<td align="left" valign="top">Unpaired <i>t</i> test</td>
+							<td align="left" valign="top">Mann-Whitney test</td>
+							<td align="left" valign="top">Fisher's test<br>
+								(chi-square for large samples)</td>
+							<td align="left" valign="top">Log-rank test or Mantel-Haenszel*</td>
+						</tr>
+						<tr>
+							<td align="left" valign="top"><b>Compare two paired groups</b></td>
+							<td align="left" valign="top">Paired <i>t</i> test</td>
+							<td align="left" valign="top">Wilcoxon test</td>
+							<td align="left" valign="top">McNemar's test</td>
+							<td align="left" valign="top">Conditional proportional hazards regression*</td>
+						</tr>
+						<tr>
+							<td align="left" valign="top"><b>Compare three or more unmatched groups</b></td>
+							<td align="left" valign="top">One-way ANOVA</td>
+							<td align="left" valign="top">Kruskal-Wallis test</td>
+							<td align="left" valign="top">Chi-square test</td>
+							<td align="left" valign="top">Cox proportional hazard regression**</td>
+						</tr>
+						<tr>
+							<td align="left" valign="top"><b>Compare three or more matched groups</b></td>
+							<td align="left" valign="top">Repeated-measures ANOVA</td>
+							<td align="left" valign="top">Friedman test</td>
+							<td align="left" valign="top">Cochrane Q**</td>
+							<td align="left" valign="top">Conditional proportional hazards regression**</td>
+						</tr>
+						<tr>
+							<td align="left" valign="top"><b>Quantify association between two variables</b></td>
+							<td align="left" valign="top">Pearson correlation</td>
+							<td align="left" valign="top">Spearman correlation</td>
+							<td align="left" valign="top">Contingency coefficients**</td>
+							<td align="left" valign="top"></td>
+						</tr>
+						<tr>
+							<td align="left" valign="top"><b>Predict value from another measured variable</b></td>
+							<td align="left" valign="top">Simple linear regression<br>
+								or<br>
+								Nonlinear regression</td>
+							<td align="left" valign="top">Nonparametric regression**</td>
+							<td align="left" valign="top">Simple logistic regression*</td>
+							<td align="left" valign="top">Cox proportional hazard regression*</td>
+						</tr>
+						<tr>
+							<td align="left" valign="top"><b>Predict value from several measured or binomial variables</b></td>
+							<td align="left" valign="top">Multiple linear regression*<br>
+								or<br>
+								Multiple nonlinear regression**</td>
+							<td align="left" valign="top"></td>
+							<td align="left" valign="top">Multiple logistic regression*</td>
+							<td align="left" valign="top">Cox proportional hazard regression*</td>
+						</tr>
+					</table>
+					</p>
+					<p><span class="sublft">REVIEW OF NONPARAMETRIC TESTS </span></p>
+					<p>Choosing the right test to compare measurements is a bit tricky, as you must choose between two families of tests: parametric and nonparametric. Many -statistical test are based upon the assumption that the data are sampled from a Gaussian distribution. These tests are referred to as parametric tests. Commonly used parametric tests are listed in the first column of the table and include the t test and analysis of variance.</p>
+					<p>Tests that do not make assumptions about the population distribution are referred to as nonparametric- tests. You've already learned a bit about nonparametric tests in previous chapters. All commonly used nonparametric tests rank the outcome variable from low to high and then analyze the ranks. These tests are listed in the second column of the table and include the Wilcoxon, Mann-Whitney test, and Kruskal-Wallis tests. These tests are also called distribution-free tests.</p>
+					<p><span class="sublft">CHOOSING BETWEEN PARAMETRIC AND NONPARAMETRIC TESTS: THE EASY CASES </span></p>
+					<p>Choosing between parametric and nonparametric tests is sometimes easy. You should definitely choose a parametric test if you are sure that your data are sampled from a population that follows a Gaussian distribution (at least approximately). You should definitely select a nonparametric test in three situations:</p>
+					<ul>
+						<p>&#149; The outcome is a rank or a score and the population is clearly not Gaussian. Examples include class ranking of students, the Apgar score for the health of newborn babies (measured on a scale of 0 to IO and where all scores are integers), the visual analogue score for pain (measured on a continuous scale where 0 is no pain and 10 is unbearable pain), and the star scale commonly used by movie and restaurant critics (* is OK, ***** is fantastic).<br>
+							&#149; Some values are &quot;off the scale,&quot; that is, too high or too low to measure. Even if the population is Gaussian, it is impossible to analyze such data with a parametric test since you don't know all of the values. Using a nonparametric test with these data is simple. Assign values too low to measure an arbitrary very low value and assign values too high to measure an arbitrary very high value. Then perform a nonparametric test. Since the nonparametric test only knows about the relative ranks of the values, it won't matter that you didn't know all the values exactly.<br>
+							&#149; The data ire measurements, and you are sure that the population is not distributed in a Gaussian manner. If the data are not sampled from a Gaussian distribution, consider whether you can transformed the values to make the distribution become Gaussian. For example, you might take the logarithm or reciprocal of all values. There are often biological or chemical reasons (as well as statistical ones) for performing a particular transform.</p>
+					</ul>
+					<p><span class="sublft">CHOOSING BETWEEN PARAMETRIC AND NONPARAMETRIC TESTS: THE HARD CASES </span></p>
+					<p>It is not always easy to decide whether a sample comes from a Gaussian population. Consider these points:</p>
+					<ul>
+						<p>&#149; If you collect many data points (over a hundred or so), you can look at the distribution of data and it will be fairly obvious whether the distribution is approximately bell shaped. A formal statistical test (Kolmogorov-Smirnoff test, not explained in this book) can be used to test whether the distribution of the data differs significantly from a Gaussian distribution. With few data points, it is difficult to tell whether the data are Gaussian by inspection, and the formal test has little power to discriminate between Gaussian and non-Gaussian distributions.<br>
+							&#149; You should look at previous data as well. Remember, what matters is the distribution of the overall population, not the distribution of your sample. In deciding whether a population is Gaussian, look at all available data, not just data in the current experiment.<br>
+							&#149; Consider the source of scatter. When the scatter comes from the sum of numerous sources (with no one source contributing most of the scatter), you expect to find a roughly Gaussian distribution.<br>
+							When in doubt, some people choose a parametric test (because they aren't sure the Gaussian assumption is violated), and others choose a nonparametric test (because they aren't sure the Gaussian assumption is met).</p>
+					</ul>
+					<p><span class="sublft">CHOOSING BETWEEN PARAMETRIC AND NONPARAMETRIC TESTS: DOES IT MATTER? </span></p>
+					<p>Does it matter whether you choose a parametric or nonparametric test? The answer depends on sample size. There are four cases to think about:</p>
+					<ul>
+						<p>&#149; Large sample. What happens when you use a parametric test with data from a nongaussian population? The central limit theorem (discussed in Chapter 5) ensures that parametric tests work well with large samples even if the population is non-Gaussian. In other words, parametric tests are robust to deviations from Gaussian distributions, so long as the samples are large. The snag is that it is impossible to say how large is large enough, as it depends on the nature of the particular non-Gaussian distribution. Unless the population distribution is really weird, you are probably safe choosing a parametric test when there are at least two dozen data points in each group.<br>
+							&#149; Large sample. What happens when you use a nonparametric test with data from a Gaussian population? Nonparametric tests work well with large samples from Gaussian populations. The P values tend to be a bit too large, but the discrepancy is small. In other words, nonparametric tests are only slightly less powerful than parametric tests with large samples.<br>
+							&#149; Small samples. What happens when you use a parametric test with data from nongaussian populations? You can't rely on the central limit theorem, so the P value may be inaccurate.<br>
+							&#149; Small samples. When you use a nonparametric test with data from a Gaussian population, the P values tend to be too high. The nonparametric tests lack statistical power with small samples.</p>
+					</ul>
+					<p>Thus, large data sets present no problems. It is usually easy to tell if the data come from a Gaussian population, but it doesn't really matter because the nonparametric tests are so powerful and the parametric tests are so robust. Small data sets present a dilemma. It is difficult to tell if the data come from a Gaussian population, but it matters a lot. The nonparametric tests are not powerful and the parametric tests are not robust.</p>
+					<p><span class="sublft">ONE- OR TWO-SIDED P VALUE? </span></p>
+					<p>With many tests, you must choose whether you wish to calculate a one- or two-sided P value (same as one- or two-tailed P value). The difference between one- and two-sided P values was discussed in Chapter 10. Let's review the difference in the context of a t test. The P value is calculated for the null hypothesis that the two population means are equal, and any discrepancy between the two sample means is due to chance. If this null hypothesis is true, the one-sided P value is the probability that two sample means would differ as much as was observed (or further) in the direction specified by the hypothesis just by chance, even though the means of the overall populations are actually equal. The two-sided P value also includes the probability that the sample means would differ that much in the opposite direction (i.e., the other group has the larger mean). The two-sided P value is twice the one-sided P value.</p>
+					<p>A one-sided P value is appropriate when you can state with certainty (and before collecting any data) that there either will be no difference between the means or that the difference will go in a direction you can specify in advance (i.e., you have specified which group will have the larger mean). If you cannot specify the direction of any difference before collecting data, then a two-sided P value is more appropriate. If in doubt, select a two-sided P value.</p>
+					<p>If you select a one-sided test, you should do so before collecting any data and you need to state the direction of your experimental hypothesis. If the data go the other way, you must be willing to attribute that difference (or association or correlation) to chance, no matter how striking the data. If you would be intrigued, even a little, by data that goes in the &quot;wrong&quot; direction, then you should use a two-sided P value. For reasons discussed in Chapter 10, I recommend that you always calculate a two-sided P value.</p>
+					<p><span class="sublft">PAIRED OR UNPAIRED TEST? </span></p>
+					<p>When comparing two groups, you need to decide whether to use a paired test. When comparing three or more groups, the term paired is not apt and the term repeated measures is used instead.</p>
+					<p>Use an unpaired test to compare groups when the individual values are not paired or matched with one another. Select a paired or repeated-measures test when values represent repeated measurements on one subject (before and after an intervention) or measurements on matched subjects. The paired or repeated-measures tests are also appropriate for repeated laboratory experiments run at different times, each with its own control.</p>
+					<p>You should select a paired test when values in one group are more closely correlated with a specific value in the other group than with random values in the other group. It is only appropriate to select a paired test when the subjects were matched or paired before the data were collected. You cannot base the pairing on the data you are analyzing.</p>
+					<p><span class="sublft">FISHER'S TEST OR THE CHI-SQUARE TEST? </span></p>
+					<p>When analyzing contingency tables with two rows and two columns, you can use either Fisher's exact test or the chi-square test. The Fisher's test is the best choice as it always gives the exact P value. The chi-square test is simpler to calculate but yields only an approximate P value. If a computer is doing the calculations, you should choose Fisher's test unless you prefer the familiarity of the chi-square test. You should definitely avoid the chi-square test when the numbers in the contingency table are very small (any number less than about six). When the numbers are larger, the P values reported by the chi-square and Fisher's test will he very similar.</p>
+					<p>The chi-square test calculates approximate P values, and the Yates' continuity correction is designed to make the approximation better. Without the Yates' correction, the P values are too low. However, the correction goes too far, and the resulting P value is too high. Statisticians give different recommendations regarding Yates' correction. With large sample sizes, the Yates' correction makes little difference. If you select Fisher's test, the P value is exact and Yates' correction is not needed and is not available.</p>
+					<p><span class="sublft">REGRESSION OR CORRELATION? </span></p>
+					<p>Linear regression and correlation are similar and easily confused. In some situations it makes sense to perform both calculations. Calculate linear correlation if you measured both X and Y in each subject and wish to quantity how well they are associated. Select the Pearson (parametric) correlation coefficient if you can assume that both X and Y are sampled from Gaussian populations. Otherwise choose the Spearman nonparametric correlation coefficient. Don't calculate the correlation coefficient (or its confidence interval) if you manipulated the X variable.</p>
+					<p>Calculate linear regressions only if one of the variables (X) is likely to precede or cause the other variable (Y). Definitely choose linear regression if you manipulated the X variable. It makes a big difference which variable is called X and which is called Y, as linear regression calculations are not symmetrical with respect to X and Y. If you swap the two variables, you will obtain a different regression line. In contrast, linear correlation calculations are symmetrical with respect to X and Y. If you swap the labels X and Y, you will still get the same correlation coefficient.</p>
+					<p></p>
+					<hr>
+					<p>Learn how to <a href="http://www.graphpad.com/articles/interpret/tableaofacontents.htm">interpret the results of statistical tests</a> and about our programs <a href="http://www.graphpad.com/instat3/instat.htm">GraphPad InStat</a> and <a href="http://www.graphpad.com/prism/Prism.htm">GraphPad Prism</a>. Visit the <a href="../../welcome.htm">GraphPad home</a> page<br>
+					</p>
+				</td>
+			</tr>
+		</table>
+	</body>
+
+</html>

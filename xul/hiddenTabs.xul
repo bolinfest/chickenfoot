@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<window xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+<!-- add some buttons that are needed by the <tabbrowser> element.
+     (normally these are File menu items in the actual Mozilla chrome,
+      but looks like any XUL elements would work.) -->
+<button id="menu_closeWindow"/>
+<button id="menu_close"/>
+
+<tabbrowser id="hiddenBrowser" 
+            type="content-primary"
+            flex="1"/>
+</window>
+

@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--#include file="header.html" -->
+
+<style type="text/css">
+body {
+  font-family: verdana, helvetica, arial, sans-serif;
+  font-size: 1em;
+}
+
+.section {
+  padding: 5px;
+  background: #F1D79E;
+  font-weight: bold;
+  font-size: 1.2em;
+  border: 1px solid black;
+}
+
+#api a:link, #api a:visited {
+	color: #554FA0;
+	font-weight: normal;
+	text-decoration: underline;
+}
+
+#api_table tr {
+  vertical-align: top;
+}
+
+#api_table th {
+  padding: 0.5em 4em 0.5em 0em;
+}
+</style>
+
+<script type="text/javascript" src="xsl.js"></script>
+<script type="text/javascript">
+<!--
+function init() {
+  getXhtml("api.xml", "api-full.xsl", "api");
+}
+-->
+</script>
+
+</head>
+<body onload="init()">
+
+<span id="api"></span>
+
+<!--#include file="footer.html" -->

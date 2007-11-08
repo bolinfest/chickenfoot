@@ -1,0 +1,121 @@
+<!--#include file="header.html" -->
+
+<h3>Install</h3>
+
+<div id="javascript-test">
+<font size="+2" color="red"><b>You need to enable JavaScript on this page to proceed
+with the Chickenfoot installation.</b></font></p></div>
+
+<script>
+<!--
+document.getElementById('javascript-test').style.display = 'none';
+// -->
+</script>
+
+<div id="install">
+Click the link below to install Chickenfoot.
+You will have to restart Firefox after installation
+for the changes to take effect. (This means that you
+will have to close <b>ALL</b> of your Firefox windows
+in order to restart.)
+
+<span id="needs-java" style="display: none">
+<p/>
+  <span id="no-java" style="display:none" class="firered">
+Your browser does not appear to have the Java 5.0 plugin for Firefox.
+Some features of Chickenfoot,
+such as packaging a script as a Firefox extension,
+require the Java 5.0 plugin.
+Try these <a href="install-java.html">instructions</a> for installing the plugin.
+Most features of Chickenfoot, such as creating and editing scripts,
+will still be available to you.
+  </span>
+  
+  <span id="no-java-5" style="display: none" class="firered">
+Your browser does not appear to have the latest Java plugin for Firefox.
+Some features of Chickenfoot,
+such as packaging a script as a Firefox extension,
+require the Java 5.0 plugin.
+Try these <a href="install-java.html">instructions</a> for installing the plugin.
+Most features of Chickenfoot, such as creating and editing scripts,
+will still be available to you.
+  </span>
+
+</span>
+  
+<p/><a href="chickenfoot.xpi"
+       onclick="InstallTrigger.install({'Chickenfoot' : 'chickenfoot.xpi'}); return false;">Install Chickenfoot</a>
+
+<p/>
+<b>Optional:</b> To use <a href="http://groups.csail.mit.edu/uid/lapis/">LAPIS</a> patterns 
+in Chickenfoot, install the LAPIS extension below, which defines the TC class.  
+Some of the examples on the Chickenfoot web site currently depend on the TC class, but we are 
+working to eliminate this requirement, because LAPIS is too slow for convenient use.
+
+<p/><a href="lapis-chickenfoot.xpi"
+       onclick="InstallTrigger.install({'LAPIS' : 'lapis-chickenfoot.xpi'}); return false;">Install LAPIS</a>
+
+
+<p/>
+Chickenfoot is copyright  &COPY; Copyright (c) 2004-2007 Massachusetts Institute of Technology.  All rights reserved.
+<p/>
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+<p/>
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+<p/>
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+<p/>
+
+<script>
+
+function testForJava() {
+  if (!window.navigator.javaEnabled()) {
+    informNeedsJava();
+  } else {
+    var version = java.lang.System.getProperty('java.vm.version').match(/^(\d+)\.(\d+)/);
+    var max = parseInt(version[1], 10);
+    var min = parseInt(version[2], 10);
+    var hasJava5 = (max > 1 || (max === 1 && min >= 5));
+    if (hasJava5) {
+      showInstallButton();    
+    } else {
+      informNeedsNewerJava();
+    }
+  }
+}
+
+/**
+ * Tell the user that he needs a Java-enabled browser to install Chickenfoot.
+ */
+function informNeedsJava() {
+  document.getElementById('needs-java').style.display = 'block';
+  document.getElementById('no-java').style.display = 'block';
+}
+
+/**
+ * Tell the user that he needs a newer version of Java to install Chickenfoot.
+ */
+function informNeedsNewerJava() {
+  document.getElementById('needs-java').style.display = 'block';
+  document.getElementById('no-java-5').style.display = 'block';
+}
+
+// test user's browser to see what version of Java is installed
+testForJava();
+
+</script>
+
+<!--#include file="footer.html" -->

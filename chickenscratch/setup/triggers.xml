@@ -1,0 +1,66 @@
+<triggers version="0.5">
+
+  <trigger name="Google Icon Search"
+           description="Adds an &quot;Icon Search&quot; button to Google Image Search"
+           path="google-icon-search.js"
+           enabled="false"
+           when="Pages Match"
+           >
+    <include urlPattern="http://images.google.com/*"/>
+  </trigger>
+  
+  <trigger name="Highlight SAT Words"
+           description="Highlights SAT words in a page and adds tooltips for their definitions"
+           path="sat-words.js"
+           enabled="false"
+           when="Pages Match"
+           >
+    <include urlPattern="*"/>
+  </trigger>
+
+  <trigger name="Barnes and Noble integration with MIT Libraries"
+           description=""
+           path="barnes-and-noble.js"
+           enabled="false"
+           when="Pages Match"
+           >
+    <include urlPattern="http://search.barnesandnoble.com/booksearch/*"/>
+  </trigger>
+
+  <trigger name="TargetAlert"
+           description="A simple implementation of the TargetAlert extension for Firefox"
+           path="targetAlert.js"
+           enabled="false"
+           when="Pages Match"
+           >
+    <include urlPattern="*"/>
+  </trigger>
+  
+  <trigger name="Join and Split"
+           description="Adds join and split commands similar to most text editors"
+           path="join-and-split.js"
+           enabled="false"
+           when="Pages Match"
+           >
+    <include urlPattern="*"/>
+  </trigger>
+  
+    <trigger name="Resizable Text Boxes"
+           description="Adds the ability to resize most text/input boxes"
+           path="resizable-text-boxes.js"
+           enabled="false"
+           when="Pages Match"
+           >
+    <include urlPattern="*"/>
+  </trigger>
+  
+    <trigger name="Install Trigger Script Button"
+           description="Inserts a button to install chickenfoot scripts from the wiki"
+           path="trigger-install-button.js"
+           enabled="false"
+           when="Pages Match"
+           >
+    <include urlPattern="http://groups.csail.mit.edu/uid/chickenfoot/scripts/index.php/*"/>
+  </trigger>
+  
+</triggers>

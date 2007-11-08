@@ -1,0 +1,298 @@
+<!--#include file="header.html" -->
+
+<h3>FAQ</h3>
+
+<b>General</b>
+
+<ul>
+  <li><a href="#name">Why is it called Chickenfoot?</a></li>
+  <li><a href="#chickenfoot-history">What is the history of Chickenfoot?</a></li>
+</ul>
+
+<b>Limitations</b>
+
+<ul>
+  <li><a href="#fetch">Why doesn't the fetch command work with AdBlock installed?</a></li>
+  <li><a href="#whenLoaded">Why is the whenLoaded command needed on Mac and Linux?</a></li>
+</ul>
+
+<b>How Chickenfoot differs from Greasemonkey</b>
+
+<ul>
+  <li><a href="#rendered-model">Chickenfoot operates on the rendered model of a web page.</a></li>
+  <li><a href="#target-users">Chickenfoot is geared towards end-user programmers as well as hackers.</a></li>
+  <li><a href="#encourage-experimentation">Chickenfoot encourages users to experiment with web pages to develop their scripts.</a></li>
+  <li><a href="#synchronization">Chickenfoot synchronizes commands with page loads.</a></li>
+</ul>
+
+<b>Security</b>
+
+<ul>
+  <li><a href="#xss">Is Chickenfoot vulnerable to cross-site scripting (XSS) attacks?</a></li>
+</ul>
+
+<b>Troubleshooting</b>
+
+<ul>
+  <li><a href="#disabling-triggers">How do I turn off a misbehaving Chickenfoot trigger?</a></li>
+</ul>
+
+<p/>
+
+<h3>General</h3>
+
+<b><a name="name">Why is it called Chickenfoot?</a></b><br/>
+Chickenfoot is a game that you can play with dominoes.
+Since Chickenfoot does much of its work by manipulating the Document Object Model,
+or <b>DOM</b>, of a web page, Chickenfoot the Firefox extension is like a toy
+that lets you play with the DOMinoes of the web.
+
+<p/>
+
+<b><a name="chickenfoot-history">What is the history of Chickenfoot?</a></b><br/>
+
+Rob Miller (MIT) described the idea of a tool for web scripting embedded
+in the web browser at the CHI 2003 conference. Work began in earnest in fall 2003 
+when Michael Bolin took on the project for a Master's thesis at MIT. The 
+original work used Mozilla as the environment for the tool and JNI to communicate with the Java
+libraries that Chickenfoot would leverage. Using JNI incurred a large overhead for
+the runtime of the application, as well as the pace of development.
+Progress improved dramatically with the discovery that LiveConnect could be
+used to call Java from a Mozilla extension (LiveConnect was originally designed
+only to allow web page authors to script Java applets).
+
+<p/>
+
+The increasing maturity of Firefox also fueled Chickenfoot development.
+Though documentation about how to create extensions to Firefox was sparse,
+the onslaught of new extensions effectively yielded an array of small,
+open-source programs that revealed how to access various parts of the browser.
+As it appeared that Firefox was the wave of the future, and was more popular to extend,
+work on Chickenfoot was ported from Mozilla to Firefox in the summer of 2004.
+
+<p/>
+
+In the winter of 2005, a web survey was done to explore how users would name
+textboxes in web pages. The results of this survey provided the motivation for
+<b>keyword patterns</b>, that is, patterns that identify controls in a web page
+with keywords that appear in the proximity of the control in the page.
+The results of this survey were published in a paper for an ICSE workshop on
+end-user programming (WEUSE): <a href="http://uid.csail.mit.edu/projects/chickenfoot/weuse.pdf"><i>Naming page elements in end-user web automation</i></a>.
+A nascent Chickenfoot 0.1 was released at this time.
+
+<p/>
+
+Bolin's Master's thesis, <a href="http://uid.csail.mit.edu/projects/chickenfoot/mbolin-thesis.pdf"><i>End-User Programming for the Web</i></a>,
+was published in the spring of 2005, and was accompanied by a release of Chickenfoot 0.2.
+Like the 0.1 release, 0.2 was not widely publicized as it was, in many ways,
+still a proof of concept that was not fit for public consumption.
+Bolin's thesis won the William A. Martin Memorial Thesis Prize
+for an outstanding Master's thesis in computer science.
+
+<p/>
+
+Chickenfoot made the jump from "research project" to "practical toolkit"
+in the fall of 2005 with its 0.5 release.
+Version 0.5 appeared just in time for the ACM Symposium on User-Interface Software and Technology (UIST).
+There, Chickenfoot was presented as the main subject of the paper
+<a href="http://uid.csail.mit.edu/projects/chickenfoot/uist05.pdf"><i>Automation and Customization of Rendered Web Pages</i></a>,
+which received the best paper award for the conference.
+
+<h3>Limitations</h3>
+
+<b><a name="fetch">Why doesn't the fetch command work with AdBlock installed?</a></b><br/>
+AdBlock uses Firefox's hidden window to store data.  Chickenfoot's fetch command also 
+uses the hidden window to load pages in the background.  For now, Chickenfoot disables
+the fetch command if AdBlock is installed.
+
+<p/>
+
+<b><a name="whenLoaded">Why is the whenLoaded command needed on Mac and Linux?</a></b><br/>
+Chickenfoot is mostly written in JavaScript, which is single-threaded on Mac and Linux.
+This is a problem because a Chickenfoot script often needs to wait while a page
+is loading.  For example, this simple script must wait between go and enter for the
+Google page to load:
+<pre>
+  go("google")
+  enter("chickenfoot mit")
+  click("feeling lucky")
+</pre>
+On Microsoft Windows, other threads in the browser continue to run 
+while the script is waiting, so the page actually finishes loading.  On Mac and 
+Linux, however, the entire browser waits when a Chickenfoot script waits, so the
+page would <i>never</i> finish loading if the script waited.  So Chickenfoot
+doesn't wait on Mac/Linux, and instead throws the error "use whenLoaded on 
+Mac/Linux".
+<p/>
+If you see this error, it means that a command in your script tried to access a 
+page that was still loading.  You have to fix it by judicious application of the 
+whenLoaded command.  For example:
+<pre>
+  go("google")
+  whenLoaded(function() {
+    enter("chickenfoot mit")
+    click("feeling lucky")
+  })
+</pre>
+
+
+<h3>How Chickenfoot differs from Greasemonkey</h3>
+
+<!-- basically a list from the contrubitions in Chapter 1 of mbolin's thesis -->
+
+<b><a name="rendered-model">Chickenfoot operates on the rendered model of a web page.</a></b><br/>
+The goal of Chickenfoot is to enable users to automate and customize web pages
+without viewing their HTML source. A key step toward this goal is enabling users
+to identify page elements with words they see in the page rather than
+the page author's name for the element. For example, the name of the HTML element
+for the search box on yahoo.com is <b>p</b>, so in Greasemonkey, the code to
+set the value of the search box would be:
+<pre>
+  document.getElementById('p').value = 'my search query';
+</pre>
+However, in Chickenfoot, the equivalent line of code would be:
+<pre>
+  enter('search the web', 'my search query');
+</pre>
+The differences between these two lines of code is significant.
+The former requires the user to inspect the HTML of the page to discover
+the name of the element, by either reading the HTML directly or through a
+more structured representation, such as Firefox's DOM Inspector.
+The latter simply requires the user to load the page and choose
+some keywords that appear to identify the box. This makes the code
+easier to for the author to compose and for others to understand.
+
+<p/>
+
+<b><a name="target-users">Chickenfoot is geared towards end-user programmers as well as hackers.</a></b><br/>
+By offering commands such as <tt>click()</tt>, <tt>enter()</tt> and <tt>pick()</tt>,
+Chickenfoot provides users with a higher level of abstraction over their actions on a web page,
+which is more appropriate for an end-user programmer. However, Chickenfoot users are not
+restricted to this level of abstraction because Chickenfoot can run all valid JavaScript,
+so all the functions and commands that Greasemonkey users are accustomed to using will
+still be available in Chickenfoot.
+
+<p/>
+
+<b><a name="encourage-experimentation">Chickenfoot encourages users to experiment
+with web pages to develop their scripts.</a></b><br/>
+One of the major contributions of Chickenfoot is the addition of a
+development environment inside Firefox for web scripting.
+Since Chickenfoot users are encouraged to work with the rendered
+model of a web page, being able to look at the page while writing the script is essential.
+Also, the Output pane makes it convenient to view intermediary results, and the Pattern pane
+helps users users see what their keyword patterns will match before adding them to their script. 
+Greasemonkey does not provide users with such an environment, so users must
+switch back and forth between their editor and their browser to create and then test scripts.
+
+<p/>
+
+Also, not every script that the user creates should be a trigger.
+For example, suppose you came across a directory listing of files
+on the web, such as
+<a href="http://groups.csail.mit.edu/uid/chickenfoot/images/">
+the images directory for the Chickenfoot site</a>.
+If you wanted to write a quick script to show all of the images in
+the directory, then you could pop open the Chickenfoot sidebar,
+and after some experimentation, you might come up with something like this:
+<pre>
+for (link = find('link'); link.hasMatch; link = link.next) {
+  if (link.match(/\.(png|gif)$/)) {
+    replace(link, '&lt;img src="' + link + '"&gt;')
+  }
+}
+</pre>
+There is no reason for this script to be installed as a trigger.
+If it were, on what URLs would it be triggered to run?
+That question does not have an easy answer, but Chickenfoot does
+not force the user to answer it!
+
+<p/>
+
+<b><a name="synchronization">Chickenfoot synchronizes commands with page loads</a></b><br/>
+Consider the following snippet of Chickenfoot code to do a search on Google:
+<pre>
+  go('google.com') <b>// document.location = 'http://www.google.com/'</b>
+  enter('my search terms')
+  click('google search')
+</pre>
+If the user is not on the Google homepage when he runs this script, then
+it will not work as intended if <tt>enter</tt> runs before the Google homepage finishes loading.
+Chickenfoot is designed so that <tt>go</tt> will return right away; however,
+<tt>enter</tt> will not begin execution if the browser window is in a loading state.
+This allows the user to execute code after a <tt>go</tt> that does not depend on page
+loading without having to wait for the load to finish, so execution is as quick as possible.
+More importantly, this abstracts the synchronization problem from the user,
+making it much easier to develop scripts that work with a sequence of pages.
+
+<h3>Security</h3>
+
+<b><a name="xss">Is Chickenfoot vulnerable to cross-site scripting (XSS) attacks?</a></b><br/>
+
+Probably. To be honest, we have not yet done an audit of Chickenfoot's security,
+but given that we allow users to run JavaScript in web pages at a privileged level,
+it is likely that exploits are possible. Greasemonkey's recent patches for XSS
+exploits suggest that Chickenfoot has similar vulnerabilities; however, we are hopeful that
+we can use similar techniques to eliminate these vulnerabilities.
+
+<p/>
+
+If you have security concerns, then you may want to create a separate Firefox profile
+for using Chickenfoot and restrict your web surfing on that profile to sites that you trust.
+
+<!--
+
+Also, if you are interested in docking the sidebar on the right side of
+Firefox instead of the left, add this to <tt>userChrome.css</tt>:
+<pre>
+window > hbox {
+  direction: rtl;
+}
+
+window > hbox > * {
+  direction: ltr;
+}
+</pre>
+If you do do not know what your <tt>userChrome.css</tt> file is,
+then you are probably better off using the
+<a href="http://addons.mozilla.org/extensions/moreinfo.php?id=17">ChromEdit</a>
+extension for Firefox that helps manage user profile files,
+such as <tt>userChrome.css</tt>.
+-->
+
+
+<h3>Troubleshooting</h3>
+
+<b><a name="xss">How do I turn off a misbehaved Chickenfoot trigger?</a></b><br/>
+
+Triggers are Chickenfoot scripts that run automatically when a certain web page is visited.  Most of the time,
+you can easily activate and deactivate triggers just by opening the Chickenfoot sidebar and visiting the Triggers pane,
+where you'll see a list of the triggers with an activation checkbox for each one.  The pane also has an 
+<b>Ignore All Triggers</b> checkbox that lets you disable all of them.
+
+<p />
+
+It's possible, however, for a trigger to be so misbehaved that it actually prevents Firefox from working properly,
+so you can't reach the Chickenfoot sidebar to disable it.  If this happens, you can disable all triggers manually
+by following the directions below.
+
+<ol>
+<li>Start Firefox in safe mode to prevent all extensions (including Chickenfoot) from running.
+
+<pre>
+   firefox -safe-mode
+</pre>
+
+Firefox will display a dialog offering to reset your toolbars, bookmarks, and preferences.  
+You don't need to reset anything here.  Just click <b>Continue in Safe Mode</b>.<br>
+
+<li>Type <b>about:config</b> in the address bar to display Firefox preferences.<br>
+
+<li>Find the <b>chickenfoot.ignoreAllTriggers</b> preference in the list and set it to <b>true</b>.<br>
+
+<li>Close Firefox and restart it normally (not in safe mode).  All your triggers will now be deactivated, and you 
+can visit the Triggers pane to disable the offending trigger(s) individually before reactivating all triggers.<br>
+</ol>
+
+
+<!--#include file="footer.html" -->

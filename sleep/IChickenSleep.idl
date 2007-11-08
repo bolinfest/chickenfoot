@@ -1,0 +1,28 @@
+#include "nsISupports.idl"
+
+[scriptable, uuid(bcfd7d77-5db9-44b9-aeae-8d45c3da45e2)]
+interface IChickenSleep : nsISupports
+{
+  /**
+     Sleep for the given number of milliseconds, while keeping UI, network,
+     and Javascript active.  May return sooner than the timeout if wakeup() 
+	 is called on this object.  Different simultaneous sleep() calls may be 
+	 in progress at once, but each call must use a different ChickenSleep object.
+   */
+  void sleep(in PRInt32 milliseconds);
+
+  /**
+    Wake up a sleep() call currently in progress on this ChickenSleep object.
+	The corresponding sleep() may not return immediately; in particular, if other
+	ChickenSleep.sleep() calls have been made since this object's sleep was 
+	originally called, then those other sleeps have to finish before this object's
+	sleep can return, since all the calls are nested on a single stack.
+  */
+  void wakeup();
+
+  /**
+    When verbose is true, debugging messages are printed to stdout.
+   */
+  attribute boolean verbose;
+};
+

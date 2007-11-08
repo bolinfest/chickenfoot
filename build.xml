@@ -1,0 +1,599 @@
+<project name="chickenfoot" default="build" basedir=".">
+
+    <!-- user must define firefox.properties -->
+
+    <!-- set the classpath for the project        -->
+    <!-- this includes your generated class files -->
+    <!-- and every jar in your /jars directory     -->    
+    <path id="classpath.path">
+        <pathelement location="build/java" />
+        <fileset dir="jars">
+            <include name="*.jar" />
+        </fileset>
+        <fileset dir="jars/development-only">
+            <include name="*.jar" />
+        </fileset>
+    </path>    
+
+    <property file="build.properties" />
+    <property file="firefox.properties" />
+    
+    <property name="src.dir"        value="${basedir}/java" />
+    <property name="bin.dir"        value="${basedir}/build/java" />
+    <property name="lib.dir"        value="${basedir}/jars" />
+
+    <property name="rdf.dir"      value="${basedir}/rdf" />
+  
+    <property name="setup.dir"      value="${basedir}/chickenscratch/setup" />
+    <property name="libraries.dir"  value="${basedir}/chickenscratch/libraries" />
+    <property name="tests.dir"      value="${basedir}${file.separator}chickenscratch${file.separator}tests" />
+    <property name="components.dir" value="${basedir}/xpcom" />
+    <property name="content.dir"    value="${basedir}/xul" />
+    <property name="locale.dir"     value="${basedir}/locale" />
+    <property name="skin.dir"       value="${basedir}/skin" />
+    <property name="sleep.dir" value="${basedir}/sleep" />
+
+  
+    <property name="html.dir"       value="${basedir}/web" />      
+    <property name="api.dir"        value="${build.dir}/api" />
+    <property name="java.api"
+              value="http://java.sun.com/j2se/1.5.0/docs/api/" />
+    <property name="junit.api"
+              value="http://www.junit.org/junit/javadoc/3.8.1/" />
+
+    <property name="build.dir"      value="${basedir}${file.separator}build" />
+    <property name="jar.dir"        value="${build.dir}/jar" />
+    <property name="xpi.dir"        value="${build.dir}${file.separator}xpi" />
+    <property name="export.dir"     value="${xpi.dir}/export" />
+
+    <property name="xpidl.dir" value="${basedir}/xpidl" />
+
+    <property name="webbuild.dir" value="${build.dir}/web" />
+
+    <property name="chickenfoot.guid" value="896b34a4-c83f-4ea7-8ef0-51ed7220ac94" />
+    <property name="extension.dir" value="${firefox.profile.dir}/extensions/{${chickenfoot.guid}}" />
+
+    <target name="build"
+            depends="xpi"
+            description="Builds the extension." />
+    
+    <target name="install"
+            depends="xpi"
+            description="Installs XPI file in Firefox.">
+        <fail>
+            <condition>
+                <not>
+                    <available file="${basedir}/firefox.properties" />
+                </not>
+            </condition>
+            .
+            The install target requies you to create 
+            firefox.properties.  Use firefox-default.properties 
+            as a template, and customize it for your Firefox installation.
+        </fail>
+        <exec executable="${firefox.dir}${firefox.executable}">
+            <env key="MOZ_NO_REMOTE" value="1"/>
+            <arg value="-P" />
+            <arg value="${firefox.profile}" />
+            <arg value="file://${build.dir}/${ant.project.name}.xpi" />
+        </exec>
+    </target>
+
+    <target name="run"
+            depends="install,run-chickenfoot-profile"
+            description="Runs Firefox after installing the XPI file.">
+    </target>
+
+    <target name="run-no-install"
+            depends="xpi-dir,point-firefox-to-xpi-dir,run-chickenfoot-profile"
+            description="Runs Firefox by pointing it directly at build/xpi.">
+    </target>
+
+    <target name="run-tests-no-install"
+            depends="xpi-dir,point-firefox-to-xpi-dir,run-tests-chickenfoot-profile,check-test-results"
+            description="Runs test suite in the style of run-no-install.">
+    </target>
+    
+    <target name="run-tests-release"
+            depends="create-new-firefox-profile"
+            description="Runs test suite on the release XPI file.">
+        <antcall inheritall="false">
+            <param name="new.firefox.profile" value="${new.firefox.profile}" />
+            <param name="new.firefox.profile.dir" value="${new.firefox.profile.dir}" />
+            <param name="firefox.profile" value="${new.firefox.profile}" />
+            <param name="firefox.profile.dir" value="${new.firefox.profile.dir}" />
+            <target name="download-and-install-release" />
+            <target name="run-tests-chickenfoot-profile" />
+            <target name="delete-new-firefox-profile" />
+            <target name="check-test-results" />
+        </antcall>
+    </target>
+    
+    <target name="download-and-install-release">
+        <fail unless="firefox.profile">
+            .
+            The download-and-install-release target requires a Firefox profile.
+        </fail>
+        <tempfile property="release.xpi" prefix="chickenfoot" suffix=".xpi" />
+        <get src="http://groups.csail.mit.edu/uid/chickenfoot/chickenfoot.xpi"
+             dest="${release.xpi}" />
+        <echo>
+            Firefox is running and will prompt you to install the extension.
+            Please: 1. Click Install
+                    2. Quit Firefox when installation is complete
+        </echo>
+        <exec executable="${firefox.dir}${firefox.executable}">
+            <env key="MOZ_NO_REMOTE" value="1"/>
+            <arg value="-P" />
+            <arg value="${firefox.profile}" />
+            <arg value="file://${release.xpi}" />
+        </exec>
+        <delete file="${release.xpi}" />
+    </target>
+    
+    <target name="create-new-firefox-profile">
+        <fail unless="firefox-properties-has-profile-dir">
+            .
+            Creating a new Firefox profile requires you to fill in
+            firefox.properties, even though the profile referenced
+            there will not be used.
+        </fail>
+        <pathconvert property="firefox.profiles-ini">
+            <path>
+                <fileset dir="${firefox.profile.dir}${file.separator}..${file.separator}..">
+                    <include name="**/profiles.ini" />
+                </fileset>
+            </path>
+        </pathconvert>
+        <copy file="${firefox.profiles-ini}" tofile="${firefox.profiles-ini}.bak" />
+        <tstamp>
+            <format property="new.firefox.profile.time" pattern="yyyyMMdd-HHmmss" />
+        </tstamp>
+        <property name="new.firefox.profile"
+                  value="chickenfoot-temp-${new.firefox.profile.time}" />
+        <tempfile property="new.firefox.profile.dir" destdir="${firefox.profile.dir}${file.separator}.." />
+        <exec executable="${firefox.dir}${firefox.executable}">
+            <env key="MOZ_NO_REMOTE" value="1" />
+            <arg value="-CreateProfile" />
+            <arg value="${new.firefox.profile} ${new.firefox.profile.dir}" />
+        </exec>
+    </target>
+    
+    <target name="delete-new-firefox-profile">
+        <fail unless="new.firefox.profile.dir">
+            .
+            No new Firefox profile to delete.
+        </fail>
+        <pathconvert property="firefox.profiles-ini">
+            <path>
+                <fileset dir="${firefox.profile.dir}${file.separator}..${file.separator}..">
+                    <include name="**/profiles.ini" />
+                </fileset>
+            </path>
+        </pathconvert>
+        <move file="${firefox.profiles-ini}.bak" tofile="${firefox.profiles-ini}" />
+        <delete dir="${new.firefox.profile.dir}" />
+    </target>
+
+    <condition property="firefox-already-points-to-xpi-dir">
+       <available file="${extension.dir}" type="file"/>
+    </condition>
+    
+    <target name="point-firefox-to-xpi-dir"
+            unless="firefox-already-points-to-xpi-dir">
+        <echo message="Deleting old Chickenfoot and redirecting it to ${xpi.dir}"/>
+        <delete dir="${extension.dir}"/>
+        <echo message="${xpi.dir}" file="${extension.dir}"/>
+    </target>
+
+    <condition property="firefox-properties-has-profile-dir">
+        <and>
+          <available file="${basedir}/firefox.properties" />
+          <isset property="firefox.profile.dir" />
+        </and>
+    </condition>
+                
+    <target name="run-chickenfoot-profile">
+        <fail unless="firefox-properties-has-profile-dir">
+            .
+            The run-no-install target requies you to create 
+            firefox.properties.  Use firefox-default.properties 
+            as a template, and customize it for your Firefox installation.
+        </fail>
+      <exec executable="${firefox.dir}${firefox.executable}">
+        <env key="MOZ_NO_REMOTE" value="1"/>
+        <arg value="-P" />
+        <arg value="${firefox.profile}" />
+      </exec>
+    </target>
+
+    <target name="run-tests-chickenfoot-profile">
+        <fail unless="firefox-properties-has-profile-dir">
+            .
+            This testing target requies firefox.properties.
+        </fail>
+        <tempfile property="tests.output" prefix="tests.output" suffix=".txt" />
+        <exec executable="${firefox.dir}${firefox.executable}">
+          <env key="MOZ_NO_REMOTE" value="1"/>
+          <arg value="-P" />
+          <arg value="${firefox.profile}" />
+          <arg value="-cf-run" />
+          <arg value="${tests.dir}${file.separator}allTestsCfRunner.js" />
+          <arg value="${tests.dir}${file.separator}allTests.js" />
+          <arg value="${tests.output}" />
+        </exec>
+    </target>
+    
+    <target name="check-test-results">
+        <fail>
+            <condition><not><available file="${tests.output}" /></not></condition>
+            .
+            Tests did not run.
+        </fail>
+        <loadfile property="tests.result" srcfile="${tests.output}" />
+        <condition property="tests.failure">
+            <!-- contains string="${tests.result}" substring="FAIL" / -->
+            <!-- use isfileselected instead in case we want fancier conditions -->
+            <isfileselected file="${tests.output}">
+                <or>
+                    <contains text="FAIL" />
+                    <not><contains text="succeeded" /></not>
+                </or>
+            </isfileselected>
+        </condition>
+        <delete file="${tests.output}" />
+        <echo level="info">
+            .
+            ${tests.result}
+        </echo>
+        <fail if="tests.failure">
+            .
+            One or more tests FAILED, or the tests did not run.
+            Please review the test output above.
+        </fail>
+    </target>
+  
+    <target name="clean"
+            description="Removes all generated files.">
+        <delete dir="${build.dir}" />
+    </target>
+
+    <target name="clean-lite"
+            description="Removes all generated files except Java classes and jars.">
+       <delete dir="${jar.dir}" />
+       <delete includeemptydirs="true">
+           <fileset dir="${xpi.dir}" excludes="java/${ant.project.name}-java.jar" />
+       </delete>
+       <delete file="${build.dir}/${ant.project.name}.xpi" />
+    </target>
+  
+    <target name="java"
+            description="Compiles the Chickenfoot Java code.">
+        <mkdir dir="${bin.dir}" />
+        <javac srcdir="${src.dir}"
+               destdir="${bin.dir}"
+               excludes="CVS"
+               target="1.5"
+               source="1.5">
+            <classpath refid="classpath.path" />
+        </javac>
+        <mkdir dir="${xpi.dir}" />
+        <mkdir dir="${xpi.dir}/java" />
+        <jar destfile="${xpi.dir}/java/${ant.project.name}-java.jar" update="true">
+            <fileset dir="${bin.dir}" />
+        </jar>        
+    </target>
+    
+    <target name="jar"
+            description="Creates a JAR of the resources for the extension.">
+        <!-- setup -->
+        <mkdir dir="${build.dir}" />
+        <mkdir dir="${jar.dir}" />
+        <!-- content folder -->
+        <mkdir dir="${jar.dir}/content" />   
+        <concat destfile="${jar.dir}/content/sidebar.js" fixlastline="yes">
+            <fileset dir="${content.dir}">
+                <include name="*.js" />
+            </fileset>
+            <fileset dir="${components.dir}">
+                <include name="instanceof.js" />
+                <include name="treeWalker.js" />
+            </fileset>
+        </concat>
+        <copy todir="${jar.dir}/content" overwrite="true">
+            <fileset dir="${content.dir}"
+                     includes="*.xul,*.html" />
+            <fileset dir="${rdf.dir}"
+                     includes="contents.rdf" />
+        </copy>
+      
+        <!-- libraries folder -->
+        <mkdir dir="${jar.dir}/content/libraries" />
+        <copy todir="${jar.dir}/content/libraries" overwrite="true">
+          <fileset dir="${libraries.dir}" />
+        </copy>
+      
+        <!-- skin folder -->
+        <mkdir dir="${jar.dir}/skin" />
+        <copy todir="${jar.dir}/skin" overwrite="true">
+            <fileset dir="${skin.dir}" />
+        </copy>
+        <!-- locale folder -->
+        <mkdir dir="${jar.dir}/locale" />
+        <copy todir="${jar.dir}/locale" overwrite="true">
+            <fileset dir="${locale.dir}" />
+        </copy>
+        <!-- create the JAR -->
+        <mkdir dir="${xpi.dir}" />
+        <mkdir dir="${xpi.dir}/chrome" />
+        <jar basedir="${jar.dir}"
+             destfile="${xpi.dir}/chrome/${ant.project.name}.jar"
+             update="true" />
+    </target>
+
+    <target name="xpi-dir"
+            depends="java, jar"
+            description="Generates the build/xpi directory.">     
+
+        <!-- components folder (XPCOM) -->
+        <mkdir dir="${xpi.dir}" />
+        <mkdir dir="${xpi.dir}/components" />
+
+        <!-- XPCOM: Chickenfoot -->
+        <concat destfile="${export.dir}/Chickenfoot.js" fixlastline="yes">
+            <fileset dir="${components.dir}">
+              <include name="Chickenfoot.js" />
+            </fileset>   
+            <fileset dir="${components.dir}">
+              <include name="*.js" />
+              <exclude name="Chickenfoot.js" />
+              <exclude name="Chicken-bypass.js" />
+              <exclude name="ChickenfootCommandLineHandler.js" />
+            </fileset>   
+        </concat>
+        <copy tofile="${xpi.dir}/components/Chickenfoot.js" overwrite="true">
+          <fileset dir="${export.dir}">
+            <include name="Chickenfoot.js" />
+          </fileset>
+          <filterset>
+            <filter token="CHICKENFOOT_CONTRACT_ID" value="@uid.csail.mit.edu/Chickenfoot/;1" />
+            <filter token="CHICKENFOOT_GUID" value="7a2ad1d0-29a8-4e2a-97bd-ad6324c0a753" />
+            <filter token="CHICKEN_BYPASS_GUID" value="f8940eee-2e3b-4682-a5d1-71ca80aeeeee" />
+            <filter token="CHICKENFOOT_COMMAND_LINE_HANDLER_GUID" value="e2f9f917-a54e-4e9c-83c3-174fa65ecd25" />
+            <filter token="EXTENSION_NAME" value="chickenfoot" />
+            <filter token="IS_EXPORTED_XPI" value="false" />
+            <filter token="GUID" value="${chickenfoot.guid}" />
+          </filterset>
+        </copy>
+      
+        <!-- XPCOM: Chicken-bypass -->
+        <copy todir="${export.dir}" overwrite="true">
+          <fileset dir="${components.dir}/">
+            <include name="Chicken-bypass.js"/>
+          </fileset>
+        </copy>
+        <copy todir="${xpi.dir}/components/" overwrite="true">
+          <fileset dir="${export.dir}">
+            <include name="Chicken-bypass.js"/>
+          </fileset>
+          <filterset>
+            <filter token="CHICKENFOOT_CONTRACT_ID" value="@uid.csail.mit.edu/Chickenfoot/;1" />
+            <filter token="CHICKENFOOT_GUID" value="7a2ad1d0-29a8-4e2a-97bd-ad6324c0a753" />
+            <filter token="CHICKEN_BYPASS_GUID" value="f8940eee-2e3b-4682-a5d1-71ca80aeeeee" />
+            <filter token="CHICKENFOOT_COMMAND_LINE_HANDLER_GUID" value="e2f9f917-a54e-4e9c-83c3-174fa65ecd25" />
+            <filter token="EXTENSION_NAME" value="chickenfoot" />
+            <filter token="IS_EXPORTED_XPI" value="false" />
+            <filter token="GUID" value="${chickenfoot.guid}" />
+          </filterset>
+        </copy>
+        
+        <!-- XPCOM: ChickenfootCommandLineHandler -->
+        <copy todir="${export.dir}" overwrite="true">
+          <fileset dir="${components.dir}/">
+            <include name="ChickenfootCommandLineHandler.js"/>
+          </fileset>
+        </copy>
+        <copy todir="${xpi.dir}/components/" overwrite="true">
+          <fileset dir="${export.dir}">
+            <include name="ChickenfootCommandLineHandler.js"/>
+          </fileset>
+            <filterset>
+              <filter token="CHICKENFOOT_CONTRACT_ID" value="@uid.csail.mit.edu/Chickenfoot/;1" />
+              <filter token="CHICKENFOOT_GUID" value="7a2ad1d0-29a8-4e2a-97bd-ad6324c0a753" />
+              <filter token="CHICKEN_BYPASS_GUID" value="f8940eee-2e3b-4682-a5d1-71ca80aeeeee" />
+              <filter token="CHICKENFOOT_COMMAND_LINE_HANDLER_GUID" value="e2f9f917-a54e-4e9c-83c3-174fa65ecd25" />
+              <filter token="EXTENSION_NAME" value="chickenfoot" />
+              <filter token="IS_EXPORTED_XPI" value="false" />
+              <filter token="GUID" value="${chickenfoot.guid}" />
+            </filterset>
+        </copy>
+      
+        <!-- XPCOM: ChickenSleep -->
+        <copy todir="${xpi.dir}/components/" overwrite="true">
+          <fileset dir="${sleep.dir}/">
+            <include name="*.xpt"/>
+            <include name="*.dll"/>
+            <include name="*.so"/>
+            <include name="*.dylib"/>
+          </fileset>
+        </copy>
+        
+        <!-- export folder -->
+        <mkdir dir="${export.dir}" />
+        <copy todir="${export.dir}" overwrite="true">
+          <fileset dir="${basedir}/xpi-tie" />
+          <fileset dir="${content.dir}">
+            <include name="chickenscratch.xul" />
+          </fileset>
+        </copy>
+      
+        <!-- libraries folder -->
+        <copy todir="${xpi.dir}/libraries" overwrite="true">
+          <fileset dir="${basedir}/chickenscratch/libraries" />
+        </copy>
+
+        <!-- setup folder -->
+        <mkdir dir="${xpi.dir}/setup" />
+        <copy todir="${xpi.dir}/setup" overwrite="true">
+            <fileset dir="${setup.dir}" />
+        </copy>
+
+
+        <!-- copy third-party JAR files -->
+        <mkdir dir="${xpi.dir}/java" />
+        <copy todir="${xpi.dir}/java" overwrite="true">
+            <fileset dir="${lib.dir}" includes="*.jar"/>
+        </copy>
+
+        <!-- fill in templates -->      
+        <copy file="${rdf.dir}/install.template.rdf"               
+            tofile="${xpi.dir}/install.rdf"
+            overwrite="true" />
+        <replaceregexp match="${version.pattern}"
+                       replace="${version.value}"
+                       file="${xpi.dir}/install.rdf" />
+    </target>
+    
+    <target name="xpi"
+            depends="xpi-dir"
+            description="Generates the XPI file.">     
+        <!-- create XPI -->
+        <zip basedir="${xpi.dir}"
+             destfile="${build.dir}/${ant.project.name}.xpi"             
+             update="true" />
+    </target>
+
+    <target name="zip"
+            description="Packages the project as a zip file.">
+        <mkdir dir="${build.dir}" />
+        <zip destfile="${build.dir}/${ant.project.name}.zip">
+            <zipfileset prefix="${ant.project.name}"
+                        dir="${basedir}"
+                        >
+                <!-- must use build literally because ${build.dir} fails for some reason -->   
+                <exclude name="build/**" />
+            </zipfileset>   
+        </zip>
+    </target>
+
+    <target name="javadoc"
+            description="Generate Javadoc for the Chickenfoot Java source code.">
+        <mkdir dir="${api.dir}" />
+        <javadoc sourcepath="${src.dir}"
+                 packagenames="${ant.project.name}.*"
+                 destdir="${api.dir}"
+                 windowtitle="Chickenfoot" >
+            <classpath refid="classpath.path" />
+            <link href="${java.api}" />
+            <link href="${junit.api}" />   
+        </javadoc>
+    </target>
+  
+    <target name="web"
+            description="Builds the HTML component of the website.">
+        <mkdir dir="${webbuild.dir}" />
+        <!-- copy HTML and images into web dir -->
+        <copy todir="${webbuild.dir}" overwrite="true">
+          <fileset dir="${html.dir}" />
+        </copy>
+        <!-- include images from XUL, some of which are handy -->
+        <copy todir="${webbuild.dir}/images" overwrite="true">
+          <fileset dir="${skin.dir}/classic"/>
+        </copy>
+        <!-- create a libraries directory -->
+        <copy todir="${webbuild.dir}/libraries" overwrite="true">
+          <fileset dir="${basedir}/chickenscratch/libraries" />
+        </copy>
+    </target>
+
+    <target name="site-deploy"
+            depends="web"
+            description="Builds and uploads the web site only (not the extension)."
+            >
+        <!-- upload web site to server -->
+        <echo message="Uploading web site..."/>
+        <exec executable="sh"
+              dir="${webbuild.dir}">
+            <arg value="-c" />
+            <arg value="scp -r * login.csail.mit.edu:/afs/csail/group/uid/www/data/chickenfoot/" />
+        </exec>
+
+        <!-- make HTML files executable, so that server-side includes fire -->
+        <echo message="Making HTML files executable..."/>
+        <exec executable="ssh">
+            <arg value="login.csail.mit.edu" />
+            <arg value="chmod" />
+            <arg value="-R" />
+            <arg value="a+x" />
+            <arg value="/afs/csail/group/uid/www/data/chickenfoot/*.{html,php}" />
+        </exec>
+
+        <!-- update new-release RSS feed from blog -->
+        <echo message="Fetching new-release RSS feed from blog..."/>
+        <exec executable="ssh">
+            <arg value="login.csail.mit.edu" />
+            <arg value="wget" />
+            <arg value="http://groups.csail.mit.edu/uid/chickenfoot/blog/feed?category=New+Release" />
+            <arg value="-O" />
+            <arg value="/afs/csail/group/uid/www/data/chickenfoot/release-notes.xml" />
+        </exec>
+    </target>
+
+
+    <target name="full-deploy"
+            description="Builds and uploads both the extension and the web site."
+            >
+        <!-- get today's date in YYYYMMDD form -->
+        <exec executable="date"
+              outputproperty="version.date">
+            <arg value="+%Y%m%d" />
+        </exec>
+
+        <property name="deployed.version.value" value="${version.value}.${version.date}"/>
+        <echo message="version is ${deployed.version.value}"/>
+
+        <!-- copy update.rdf into build dir -->
+        <copy todir="${build.dir}" overwrite="true">
+          <fileset dir="${rdf.dir}"
+                   includes="update.rdf" />
+        </copy>
+
+        <!-- replace version number in update.rdf -->        
+        <replaceregexp match="${version.pattern}"
+                       flags="g"
+                       replace="${deployed.version.value}" >
+          <fileset dir="${build.dir}">
+              <include name="update.rdf" />
+          </fileset>
+        </replaceregexp>
+
+        <!-- Invoke other ant targets.  (Can't just list these in the depends attribute,
+             because we have to override the version.value property before they run.) -->
+        <antcall>
+          <param name="version.value" value="${deployed.version.value}"/>
+          <target name="xpi"/>
+          <target name="zip"/>
+          <target name="site-deploy"/>
+        </antcall>
+
+        <!-- Upload compiled extension to server -->
+        <echo message="Uploading compiled extension..."/>
+        <exec executable="sh"
+              dir="${build.dir}">
+            <arg value="-c" />
+            <arg value="scp *.{rdf,xpi,zip} login.csail.mit.edu:/afs/csail/group/uid/www/data/chickenfoot/" />
+        </exec>
+
+    </target>
+
+
+    <target name="download-stats"
+            description="Displays download statistics for Chickenfoot."
+            >
+      <exec executable="ssh">
+          <arg value="pink-panther.csail.mit.edu" />
+          <arg value="cd /var/log/apache ; echo -n 'last week: '; grep -c chickenfoot.xpi groups-access.log.1 ; echo -n 'so far this week: ' ; grep -c chickenfoot.xpi groups-access.log"/>
+      </exec>
+    </target>
+  
+</project>

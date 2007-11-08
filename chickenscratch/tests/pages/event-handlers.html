@@ -1,0 +1,52 @@
+<html>
+<body>
+
+This test page has form components with Javascript event handlers.
+It tests whether Chickenfoot correctly invokes those event handlers.
+
+<form>
+<script>
+function malicious() {
+  var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"]
+  	.createInstance(Components.interfaces.nsIFileInputStream);
+  alert("malicious code accessed XPCOM: " + fstream);
+}
+
+function changeDOM(select) {
+  select.options[0] = document.createElement("option");
+}
+</script>
+
+Counter: <input type="text" name="counter" value="0"
+                onchange="document.forms[0].duplicate.value = document.forms[0].counter.value; malicious()">
+         <input type="button" value="Up" 
+               onclick="document.forms[0].counter.value++; malicious()">
+               
+               
+<p>
+               
+Duplicate: <input type="text" name="duplicate" value="0">
+
+<p>
+<input type="button" value="Change Choice" 
+               onclick="changeDOM(form.from)">
+<p>
+From: 
+<select name="from" onchange="document.forms[0].to.selectedIndex = document.forms[0].from.selectedIndex; malicious()">
+  <option>A</option>
+  <option>B</option>
+</select>
+
+<p>
+
+To: 
+<select name="to" onchange="document.forms[0].from.selectedIndex = document.forms[0].to.selectedIndex; malicious()">
+  <option>C</option>
+  <option>D</option>
+</select>
+
+
+</form>
+
+</body>
+</html>

@@ -1,0 +1,204 @@
+<?xml-stylesheet href="chrome://browser/skin/" type="text/css" ?>
+
+<dialog id="addTriggerDialog" title="Add/Edit Trigger"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        buttons="accept,cancel"
+        onload="init();"
+        ondialogaccept="return doOK();"
+        ondialogcancel="return doCancel();">
+
+<script><![CDATA[
+    
+    // obtain reference to XPCOM object
+    var Chickenfoot = Components.classes["@uid.csail.mit.edu/Chickenfoot/;1"]
+                      .getService(Components.interfaces.nsISupports)
+                      .wrappedJSObject
+
+	function init() {
+	    var dialog = document.getElementById("addTriggerDialog");
+		dialog.setAttribute("title", window.arguments[0]);
+		dialog.setAttribute("width", 500);
+		dialog.setAttribute("height", 700);
+		
+		document.getElementById("name").value =
+			window.arguments[1];
+		document.getElementById("checkEnabled").checked =
+			window.arguments[3];
+		document.getElementById("source").value =
+			window.arguments[4];
+	    document.getElementById("description").value =
+	        window.arguments[7];
+		
+		var rulesTxt = document.getElementById("rulesTxt");
+		var trgPM = document.getElementById("TriggerPM");
+		var trgFS = document.getElementById("TriggerFS");
+		var trgNW = document.getElementById("TriggerNW");
+		
+		//Set selection for the script and retrieve rules if it's trigged when pages match
+		if (window.arguments[5] == Chickenfoot.PAGES_MATCH){  
+		  rulesTxt.value = window.arguments[2];
+		  trgPM.setAttribute("selected", true);
+		}else if(window.arguments[5] == Chickenfoot.FIREFOX_STARTS){
+		  rulesTxt.value = "http://*";
+		  trgFS.setAttribute("selected", true);
+		  rulesTxt.setAttribute("readonly", true);
+		}else if(window.arguments[5] == Chickenfoot.NEW_WINDOW){
+		  rulesTxt.value = "http://*";
+		  trgNW.setAttribute("selected", true);
+		  rulesTxt.setAttribute("readonly", true);
+		}else {
+		  throw new Error("invalid trigger point: " + window.arguments[5]);
+		}
+		
+		trgPM.addEventListener("RadioStateChange", updateRulesTxt, false);
+		trgFS.addEventListener("RadioStateChange", updateRulesTxt, false);
+		trgNW.addEventListener("RadioStateChange", updateRulesTxt, false);
+		
+		updateOkButton();
+	}
+	
+	function updateOkButton() {
+		var name = document.getElementById("name").value;
+		var rulesTxt = document.getElementById("rulesTxt").value;
+		var triggeredPoint = checkSelected();
+		
+		var okButton = document.documentElement.getButton("accept");
+		
+	    if (name.length == 0){
+		  okButton.setAttribute("disabled", "true");
+		}else if((triggeredPoint == Chickenfoot.PAGES_MATCH) && (rulesTxt.length == 0)){
+		  okButton.setAttribute("disabled", "true");			
+		}else{
+		  okButton.setAttribute("disabled", "false");			
+		}
+	}
+
+    /* Based on radio selection to set textbox's readonly attribute*/
+    function updateRulesTxt(){
+    	var triggeredPoint = checkSelected();
+    	var rulesTxt = document.getElementById("rulesTxt");
+    	
+        if (triggeredPoint == Chickenfoot.PAGES_MATCH){
+		  rulesTxt.removeAttribute("readonly");
+		}else{
+		  rulesTxt.setAttribute("readonly", true);
+		}
+    }
+
+	function doOK()
+	{
+		var name = document.getElementById("name").value;
+		var enabled = document.getElementById("checkEnabled").checked;
+		var source = document.getElementById("source").value;
+		var rulesTxt = document.getElementById("rulesTxt").value;
+		var description = document.getElementById("description").value;
+
+		var triggeredPoint = checkSelected();
+
+		if (name.length == 0) {
+			alert("Must specify a name, or press Cancel");
+			return false;
+		}
+		
+		if (triggeredPoint == Chickenfoot.PAGES_MATCH){ //Triggered when pages match
+		  if (rulesTxt.length == 0) {
+			alert("Must specify web pages to include, or press Cancel");
+			return false;
+		  }else{
+		    window.arguments[6].when = Chickenfoot.PAGES_MATCH;
+		    window.arguments[6].name = name;
+		    window.arguments[6].rulesTxt = rulesTxt;
+		    window.arguments[6].enabled = enabled;
+		    window.arguments[6].source = source;
+		    window.arguments[6].description = description;
+		    return true;
+		  }
+		}else if(triggeredPoint == Chickenfoot.FIREFOX_STARTS){ //Triggered when Firefox starts
+		  window.arguments[6].when = Chickenfoot.FIREFOX_STARTS;
+		  window.arguments[6].name = name;
+		  window.arguments[6].rulesTxt = '';
+		  window.arguments[6].enabled = enabled;
+		  window.arguments[6].source = source;
+		  window.arguments[6].description = description;
+		  return true;
+		}else if(triggeredPoint == Chickenfoot.NEW_WINDOW){ //Triggered by new window opens
+		  window.arguments[6].when = Chickenfoot.NEW_WINDOW;
+          window.arguments[6].name = name;
+          window.arguments[6].rulesTxt = '';
+		  window.arguments[6].enabled = enabled;
+		  window.arguments[6].source = source;
+		  window.arguments[6].description = description;
+		  return true;
+	    }
+	}
+	
+	function doCancel()
+	{
+		return true;
+	}
+	
+	/* Checking which option is selected to enable the trigger */
+	function checkSelected(){
+	  var selection = null;
+		
+	  if (document.getElementById("TriggerPM").selected) {
+		selection = Chickenfoot.PAGES_MATCH;
+	  }else if(document.getElementById("TriggerFS").selected) {
+		selection = Chickenfoot.FIREFOX_STARTS;
+	  }else if(document.getElementById("TriggerNW").selected) {
+		selection = Chickenfoot.NEW_WINDOW;
+	  }
+	  
+	  return selection;
+	}
+    
+]]></script>
+
+<grid flex="1">
+  <columns>
+    <column/>
+    <column flex="1"/>
+  </columns>
+
+  <rows>
+
+    <row align="center">
+      <label value="Name:"/>
+      <textbox id="name" flex="1" oninput="updateOkButton();"/>  
+    </row>
+    
+    <spacer height="10"/>
+    
+    <row align="center">
+      <label value="Description:"/>
+      <textbox id="description" multiline="true" flex="1"/>  
+    </row>
+    
+    <row>
+      <label value=""/>
+      <checkbox id="checkEnabled" label="Enabled" checked="false"/>
+    </row>
+   
+    <spacer height="10"/>
+   
+    <row align="baseline">
+      <label value="Run:"/>
+      <radiogroup>
+        <radio id="TriggerPM" label="When pages match" onselect="updateOkButton();"/>
+        <hbox flex="1">
+          <label value=" "/>
+          <textbox id="rulesTxt" flex="1" multiline="true" rows="3" value="Script"/>
+        </hbox>
+        <radio id="TriggerNW" label="When new window opens" onselect="updateOkButton();"/>
+        <radio id="TriggerFS" label="When Firefox starts" onselect="updateOkButton();"/>
+      </radiogroup>
+    </row>
+    
+    <spacer height="10"/>
+    
+	<textbox flex="1" id="source" multiline="true" style="font-size: 8pt; font-family: monospace;"
+	  readonly="true" rows="10" value="Script"/>
+  </rows>
+</grid>
+
+</dialog>

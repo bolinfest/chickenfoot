@@ -1,0 +1,58 @@
+<?xml version="1.0" ?>
+<!--
+/*
+ * Chickenfoot end-user web automation system
+ *
+ * Copyright (c) 2004-2007 Massachusetts Institute of Technology
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * 
+ * Chickenfoot homepage: http://uid.csail.mit.edu/chickenfoot/
+ */
+-->
+
+<overlay xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+// TODO: fix include()s in code so that they point to files bundled in the extension
+// This is necessary for the exporter to produce XPIs that do not depend on Chickenfoot
+
+  <script>
+  <![CDATA[
+  (function() {
+    var extensionName = "@EXTENSION_NAME@";
+    
+    var chickenfoot = Components.classes["@CHICKENFOOT_CONTRACT_ID@"].
+                        getService(Components.interfaces.nsISupports).wrappedJSObject;
+
+    // Tell the Chickenfoot XPCOM about this new window
+    chickenfoot.setupWindow(window);
+  
+    //var includesPref = "extensions." + extensionName + ".includes";
+    //var excludesPref = "extensions." + extensionName + ".excludes";
+
+    //var prefs = Components.classes["@mozilla.org/preferences-service;1"].
+    //    getService(Components.interfaces.nsIPrefBranch2);
+    //prefs.addObserver("extensions." + extensionName, prefsObserver, false);
+
+  })();
+  ]]>           
+  </script>
+
+</overlay>

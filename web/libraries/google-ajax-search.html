@@ -1,0 +1,57 @@
+<!--#include file="header.html" -->
+
+<h3>Library: google-ajax-search.js</h3>
+
+The <a href="http://code.google.com/apis/ajaxsearch/">Google Search API</a> is
+<a href="http://code.google.com/apis/ajaxsearch/documentation/">well-documented</a>,
+but there are two important caveats when using the Chickenfoot wrapper for the API:
+
+<ol>
+  <li>The wrapper uses <code>fetch()</code>, so currently, it only works on MS Windows.<span class="firered">*</span>
+  <li>This library requires that you have a Google AJAX Search API license key,
+     which you can get for free from
+     <a href="http://code.google.com/apis/ajaxsearch/">http://code.google.com/apis/ajaxsearch/</a>.
+     Once you have a key, the simplest way to use it with the wrapper is to go to <b>about:config</b>
+     in Firefox, create a string preference named <b>google.GoogleAjaxSearchLicenseKey</b>,
+     and use your API key as its value. Alternatively, you can redefine
+     <code>getGoogleAjaxSearchLicenseKey()</code> in the library. See the
+     <a href="libraries/google-ajax-search.js">source code</a> for more details.
+</ol>
+
+Assuming you have your license key in place, here is a simple sample that uses the API in Chickenfoot:
+
+<pre>
+// import the library
+include("google-ajax-search.js");
+
+with (window) {
+  // create the search control
+  var searchControl = new GSearchControl();
+  searchControl.addSearcher(new GwebSearch());
+  
+  // create a place to insert the search control in the page
+  var div = document.createElement("DIV");
+  document.body.appendChild(div);
+  
+  // render the search control
+  searchControl.draw(div);
+}
+</pre>
+
+<p/>
+
+Again, the official documentation contains
+<a href="http://localhost/chickenfoot/libraries/google-ajax-search.html">a number of examples</a>
+to demonstrate how to take full advantage of the API.
+
+<p/>
+
+<span class="firered">*</span>For the determined Mac and Linxu hackers,
+this wrapper could likely be made to work on those OSes using <code>whenLoaded()</code>,
+though that would make the library slightly less convenient to use since it would
+have to use callback functions.
+We are working to improve Chickenfoot so that <code>whenLoaded()</code>
+is not necessary on those platforms.
+
+<!--#include file="footer.html" -->
+

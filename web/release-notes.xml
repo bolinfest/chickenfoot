@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- generator="wordpress/2.0" -->
+<rss version="2.0" 
+	xmlns:content="http://purl.org/rss/1.0/modules/content/"
+	xmlns:wfw="http://wellformedweb.org/CommentAPI/"
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	>
+
+<channel>
+	<title>Chickenfeed</title>
+	<link>http://groups.csail.mit.edu/uid/chickenfoot/blog</link>
+	<description>The Official Chickenfoot Blog</description>
+	<pubDate>Sat, 22 Jul 2006 04:03:17 +0000</pubDate>
+
+	<generator>http://wordpress.org/?v=2.0</generator>
+	<language>en</language>
+			<item>
+		<title>Chickenfoot 0.9.20060721 released</title>
+		<link>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/07/21/chickenfoot-0920060721-released/</link>
+		<comments>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/07/21/chickenfoot-0920060721-released/#comments</comments>
+
+		<pubDate>Sat, 22 Jul 2006 04:03:17 +0000</pubDate>
+		<dc:creator>Michael</dc:creator>
+		
+	<category>New Release</category>
+		<guid isPermaLink="false">http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/07/21/chickenfoot-0920060721-released/</guid>
+		<description><![CDATA[Chickenfoot scripts can be packaged as standalone Firefox extensions. With the click of a button, you can turn your script into an extension that others can install and use. This feature makes it simple to create a web prototype and share it with friends and colleagues.
+New libraries bundled with Chickenfoot: Scriptaculous and Prototype. Prototype is [...]]]></description>
+			<content:encoded><![CDATA[<p><b>Chickenfoot scripts can be packaged as standalone Firefox extensions.</b> With the click of a button, you can turn your script into an extension that others can install and use. This feature makes it simple to create a web prototype and share it with friends and colleagues.</p>
+<p><b>New libraries bundled with Chickenfoot: Scriptaculous and Prototype.</b> <a href="http://prototype.conio.net/">Prototype</a> is &#8220;a JavaScript framework that aims to ease development of dynamic web applications,&#8221; and <a href="http://script.aculo.us/">script.aculo.us</a> is a powerful AJAX library that builds on top of it.</p>
+<p><b>Users can define their own script templates.</b> Suppose you want to use Prototype whenever you open a Chickenfoot edit buffer. Now you can create a template with the code <code>include("prototype.js")</code> and set it as your default template so every new buffer contains that code.</p>
+<p><b>Basic table/row/cell patterns are supported.</b> It is possible to locate tables, rows, and cells with the <code>find()</code> command: <code>find("3rd table").find("2nd row").find("5th cell")</code>. So far, we only support ordinals for identifying these elements &#8212; we plan to support table/row/cell as keyword patterns in the near future.</p>
+<p><b>New &#8220;run selected text&#8221; feature lets you run part of a script.</b> You can select any part of your script, right-click, and choose &#8220;Run selected&#8221; in order to execute it. This is handy if you only want to test a portion of your script.</p>
+<p><b>Recognize &#8220;id&#8221; keyword pattern.</b> As an alternative to <code>document.getElementById("tableOfContents")</code>, you can use <code>find("tableOfContents id").element</code> instead. Like other Chickenfoot commands, <code>find()</code> traverses subframes when looking for a match, so it can be more convenient than <code>getElementById</code> on sites with many frames, such as Gmail.</p>
+<p><b>Stack traces are printed in the Output pane.</b> When an error is thrown, its stack trace is printed along with the error message to help with debugging.</p>
+<p><b>The core of Chickenfoot no longer requires Java.</b> Previously, users needed the Java plugin for Firefox in order to run Chickenfoot. Now users only need Java if they want to use the extension creation tool or to take advantage of the ability to synchronize scripts with page loads on Microsoft Windows. </p>
+]]></content:encoded>
+			<wfw:commentRSS>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/07/21/chickenfoot-0920060721-released/feed/</wfw:commentRSS>
+
+		</item>
+		<item>
+		<title>Chickenfoot 0.9.20060607 released</title>
+		<link>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/06/07/chickenfoot-0920060607-released/</link>
+		<comments>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/06/07/chickenfoot-0920060607-released/#comments</comments>
+		<pubDate>Wed, 07 Jun 2006 14:46:56 +0000</pubDate>
+		<dc:creator>Rob</dc:creator>
+
+		
+	<category>New Release</category>
+		<guid isPermaLink="false">http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/06/07/chickenfoot-0920060607-released/</guid>
+		<description><![CDATA[A new version of Chickenfoot is out, with several major improvements and bug fixes.
+Every Chickenfoot script and trigger now runs in a fresh, private namespace.  Formerly, all Chickenfoot scripts shared the same namespace, so it was easy to share global variables between scripts, but scripts could step on each other inadvertently.  Most scripts [...]]]></description>
+			<content:encoded><![CDATA[<p>A new version of Chickenfoot is out, with several major improvements and bug fixes.</p>
+<p><strong>Every Chickenfoot script and trigger now runs in a fresh, private namespace.  </strong>Formerly, all Chickenfoot scripts shared the same namespace, so it was easy to share global variables between scripts, but scripts could step on each other inadvertently.  Most scripts won&#8217;t notice this change at all.  But if you use global variables to pass information between two scripts, or to store information between subsequent runs of the same script, you&#8217;ll have to change your script&#8217;s behavior.  A new Chickenfoot object, <em>global</em>, provides a place for keeping these global variables.  Just prefix the global variables you want to share with <em>global</em>, e.g. <em>global.myVariable</em>, and every script will be able to see them.</p>
+<p><strong>The script editor now has multiple tabs</strong>, so you can edit multiple scripts at the same time, and use scratch editors for testing and experimentation.  The script editor also now has keyboard shortcuts for its toolbar buttons: Ctrl-N for new file, Ctrl-O to open a file, Ctrl-S for save, Ctrl-W for close file.  These shortcuts override Firefox&#8217;s meaning for these keys only if the focus is in the script editor.</p>
+<p><strong>Regular expression support.</strong> find() can take a regular expression, which it searches for in the text of the page, e.g. find(/ISBN: \d+/).  Parenthesized groups in the regular expression are placed on the Match object as an array called <em>groups.</em></p>
+<p><strong>Image searching.</strong>  find() can now search for images, e.g. find(&#8221;Google image&#8221;).  Keywords are taken from the image&#8217;s ALT text and from text around it in the page.</p>
+<p>Other changes:</p>
+<ul>
+<li>Chickenfoot triggers can now be disabled using a Firefox preference, so that you can deal with a misbehaving trigger that cripples Firefox.  The Chickenfoot FAQ explains how.</li>
+<li>Pattern matching now uses context properly, so you can say find(&#8221;search form&#8221;).click(&#8221;button&#8221;).</li>
+<li>Patterns now look for keywords in ALT attributes of image buttons.</li>
+</ul>
+]]></content:encoded>
+			<wfw:commentRSS>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/06/07/chickenfoot-0920060607-released/feed/</wfw:commentRSS>
+		</item>
+		<item>
+		<title>Chickenfoot 0.8.20060501 released</title>
+
+		<link>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/05/01/chickenfoot-0820060501-released/</link>
+		<comments>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/05/01/chickenfoot-0820060501-released/#comments</comments>
+		<pubDate>Mon, 01 May 2006 14:46:15 +0000</pubDate>
+		<dc:creator>Rob</dc:creator>
+		
+	<category>New Release</category>
+		<guid isPermaLink="false">http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/05/01/chickenfoot-0820060501-released/</guid>
+
+		<description><![CDATA[This release contains no new functionality, but the install package now requires Firefox 1.5 or later, since it doesn&#8217;t run on Firefox 1.0.x anymore.
+
+]]></description>
+			<content:encoded><![CDATA[<p>This release contains no new functionality, but the install package now requires Firefox 1.5 or later, since it doesn&#8217;t run on Firefox 1.0.x anymore.
+</p>
+]]></content:encoded>
+			<wfw:commentRSS>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/05/01/chickenfoot-0820060501-released/feed/</wfw:commentRSS>
+		</item>
+		<item>
+		<title>Chickenfoot 0.8.20060425 released</title>
+		<link>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/04/27/chickenfoot-0820060425-released/</link>
+
+		<comments>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/04/27/chickenfoot-0820060425-released/#comments</comments>
+		<pubDate>Thu, 27 Apr 2006 07:05:28 +0000</pubDate>
+		<dc:creator>Michael</dc:creator>
+		
+	<category>New Release</category>
+		<guid isPermaLink="false">http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/04/27/chickenfoot-0820060425-released/</guid>
+		<description><![CDATA[Chickenfoot 0.8.20060425 contains the following important new features:
+
+Provides an include() command that lets you include the code from another script. Hopefully, this will facilitate the creation of reusable libraries of Chickenscratch. include() also supports namespaces so you can bring in lots of code from various sources without cluttering the global namespace. See the Commands page [...]]]></description>
+			<content:encoded><![CDATA[<p>Chickenfoot 0.8.20060425 contains the following important new features:</p>
+<ul>
+<li>Provides an <code>include()</code> command that lets you include the code from another script. Hopefully, this will facilitate the creation of reusable <a href="http://groups.csail.mit.edu/uid/chickenfoot/libraries.html">libraries</a> of Chickenscratch. <code>include()</code> also supports namespaces so you can bring in lots of code from various sources without cluttering the global namespace. See the <a href="http://groups.csail.mit.edu/uid/chickenfoot/api.html">Commands</a> page for more information about <code>include()</code>.</li>
+<p/>
+<li>Chickenfoot comes with some built-in libraries that you can include in your scripts. Currently, we provide libraries for: the Greasemonkey API, the Google Web Search API, JSON serialization/deserialization, and US geocoding. Please post your libraries on the <a href="http://groups.csail.mit.edu/uid/chickenfoot/scripts/">Scripts Wiki</a> &#8212; we would like to include more built-in libraries with Chickenfoot, ideally drawing on contributions to the Wiki. (We could really use a Google Maps library, for example.)</li>
+<p/>
+<li><code>find()</code> now recognizes a new type of <code>Pattern</code> called <code>XPath</code>. Instead of using the built-in XPath API:
+<pre>
+var xpathResult = document.evaluate(xpathExpression, contextNode, namespaceResolver, resultType, result);
+</pre>
+<p>You can simply use the Chickenfoot XPath object:</p>
+<pre>
+var matches = find(new XPath(xpathExpression));
+</pre>
+<p>which returns a <code>Match</code>, making it consistent with the other patterns passed to <code>find()</code>. The other arguments that <code>document.evaluate</code> accepts are optional arguments to the <code>XPath</code> constructor.</li>
+<p/>
+<li>Ordinals are now supported in keyword patterns, so you can use <code>click("second search button")</code> to click the second search button on the page. This is useful when the keywords to match an element are ambiguous. You can test this feature from the <b>Patterns</b> tab in the Chickenfoot editor, as well.</li>
+<p/>
+<li><code>window</code> and <code>document</code> now refer to the same objects that you would have access to from within a web page. Previously, we provided wrappers around these objects, which caused some confusion as well as bugginess. No more.</li>
+<p/>
+<li>You can now insert <code>IMG</code> nodes and other types that link to files on the local disk using the new <code>localUrl()</code> command by composing HTML such as:
+<pre>insert(after('second search button'), '&lt;img src="' + localUrl("file:///c:/myimage.png") + '"&gt;')</pre>
+<p>See the <a href="http://groups.csail.mit.edu/uid/chickenfoot/api.html">Commands</a> page for more details.
+</li>
+<p/>
+<li>The &#8220;New Script&#8221; button now has a dropdown arrow that lets you create a new script prepopulated with some code from a template. Currently we provide two templates: one that is useful to Greasemonkey developers, and another that is useful for debugging JavaScript in the current web page. In the future, we will also allow users to create their own templates.
+</ul>
+<p>
+We also fixed some important bugs in this release:</p>
+<ul>
+<li><code>find()</code> ignores hidden elements in web pages. Previously, if a page had textboxes that were hidden using CSS, <code>find("textbox")</code> would match those as well, which was very confusing since only one box would be visible to the user.</li>
+<p/>
+<li><code>find("textbox")</code> can now find <code>&lt;INPUT type="FILE"&gt;</code> elements.</li>
+<p/>
+<li>The recording in the <b>Actions</b> pane has been improved.</li>
+<p/>
+<li><code>click()</code> now automates a click by firing onmousedown, onmouseup, and onclick events, providing more accurate automation of clicks. Previously, it only invoked a node&#8217;s <code>click()</code> method, which did not fire listeners such as <code>&lt;span onmousedown="respond()"&gt;</code> and <code>node.addEventListener("click", response, false)</code>.</li>
+<p/>
+<li>Text inside <code>SCRIPT</code> and <code>STYLE</code> tags is no longer matched by <code>find()</code>.</li>
+<p/>
+<li>Editor has focus when the Chickenfoot sidebar or a new script is opened.</li>
+<p/>
+</ul>
+<p>We hope that you take advantage of the new features in Chickenfoot (and start contributing scripts and libraries to the Wiki!). Though we&#8217;re excited about the new release, we still have a ton of features that we would like to implement in the near future. Some of the more pressing ones are:</p>
+<ul>
+<li>Multiple edit buffers in the Chickenfoot sidebar.</li>
+<li>An official file I/O API (for now, you can use <code>Chickenfoot.SimpleIO</code>, though it is not guaranteed to be supported in future versions of Chickenfoot).</li>
+<li>Ability to script third-party Java (yes, <b>Java</b>) libraries.</li>
+<li>Support for multiple includes/excludes for a trigger. (If you add includes/excludes to <code>triggers.xml</code> yourself, they will be honored, but they are not available for editing through the UI right now.)</li>
+<li>Ability to define your own templates.</li>
+<li>Fixing Bug #129: <b>clearing DocumentInfo cache upon DOM mutation</b>. This is a significant issue when scripting pages that use a lot of DHTML.</li>
+<li>Support for more keyword patterns, specifically: <code>table</code>, <code>row</code>, <code>column</code>, and <code>image</code>.
+</ul>
+]]></content:encoded>
+
+			<wfw:commentRSS>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/04/27/chickenfoot-0820060425-released/feed/</wfw:commentRSS>
+		</item>
+		<item>
+		<title>Chickenfoot 0.8.20060227 released</title>
+		<link>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/02/27/chickenfoot-0820060227-released/</link>
+		<comments>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/02/27/chickenfoot-0820060227-released/#comments</comments>
+		<pubDate>Mon, 27 Feb 2006 14:58:21 +0000</pubDate>
+
+		<dc:creator>Rob</dc:creator>
+		
+	<category>New Release</category>
+		<guid isPermaLink="false">http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/02/27/chickenfoot-0820060227-released/</guid>
+		<description><![CDATA[Chickenfoot 0.8.20060227 contains the following important changes:
+
+ Actions pane now checks whether its suggested patterns actually work correctly on the web page, and comments them out if they don&#8217;t.  It also records checkbox picks/unpicks.
+ Fixed a bug where dirty scripts could be thrown away without confirmation if you pressed Edit Trigger Script.
+ whenLoaded() now [...]]]></description>
+			<content:encoded><![CDATA[<p>Chickenfoot 0.8.20060227 contains the following important changes:</p>
+<ul>
+<li> Actions pane now checks whether its suggested patterns actually work correctly on the web page, and comments them out if they don&#8217;t.  It also records checkbox picks/unpicks.</li>
+<li> Fixed a bug where dirty scripts could be thrown away without confirmation if you pressed Edit Trigger Script.</li>
+<li> whenLoaded() now defers calling the handler function using<br />
+setTimeout().  Without this, the handler wouldn&#8217;t be able<br />
+to sleep.</li>
+<li> fixed bug #105 - wait() now works again.</li>
+<li> go() now calls toString() on its argument, since it may be<br />
+common to pass Location objects to go() &#8212; e.g., document.location.</li>
+<li> Added reload() command.</li>
+<li> Fixed bug in insert(): insert() can now insert strings of HTML again.</li>
+<li> window now returns a wrapper around the real Javascript window that<br />
+includes additional Chickenfoot methods (find(), click/enter/pick(), show(), etc.)</li>
+<li> Actions pane now records go() and openTab() events, except when they&#8217;re caused by button or link clicks.</li>
+<li> Actions pane now checks whether pick(listitem) is ambiguous, and if so tries to generate a pick(listbox,listitem) command instead.
+</li>
+</ul>
+]]></content:encoded>
+			<wfw:commentRSS>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/02/27/chickenfoot-0820060227-released/feed/</wfw:commentRSS>
+		</item>
+		<item>
+
+		<title>Chickenfoot 0.6 released</title>
+		<link>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/02/09/chickenfoot-06-released/</link>
+		<comments>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/02/09/chickenfoot-06-released/#comments</comments>
+		<pubDate>Thu, 09 Feb 2006 22:22:38 +0000</pubDate>
+		<dc:creator>Rob</dc:creator>
+		
+	<category>New Release</category>
+
+		<guid isPermaLink="false">http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/02/09/chickenfoot-06-released/</guid>
+		<description><![CDATA[A new version of Chickenfoot is available, with the following major changes:
+
+Support for Firefox 1.5.
+ (Partial) support for Linux and Mac.  To work correctly on Linux/Mac, Chickenfoot scripts have to use the new whenLoaded() function.  See the FAQ.
+
+]]></description>
+			<content:encoded><![CDATA[<p>A new version of Chickenfoot is available, with the following major changes:</p>
+<ul>
+<li>Support for Firefox 1.5.
+<li> (Partial) support for Linux and Mac.  To work correctly on Linux/Mac, Chickenfoot scripts have to use the new whenLoaded() function.  See the <a href="http://uid.csail.mit.edu/chickenfoot/faq.html#whenLoaded">FAQ</a>.
+</ul>
+]]></content:encoded>
+			<wfw:commentRSS>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/02/09/chickenfoot-06-released/feed/</wfw:commentRSS>
+		</item>
+	</channel>
+</rss>

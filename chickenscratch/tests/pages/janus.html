@@ -1,0 +1,820 @@
+
+<script type="text/javascript">
+	//This will prevent the JavaScript Error message "Access is Denied" from appearing when accessed from within Hotmail.
+	window.onerror = function() {return true;}
+	//if the top iFrame is different than the current iFrame then replace the top frame with the current one to open in the main window.
+	if (top != self){
+	   if (document.images) top.location.replace(document.location.href);
+	   else top.location.href = document.location.href;
+	}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script language="javascript" type="text/javascript">
+var isProdSys = "true";
+var overviewPage = "false";
+</script>
+
+<script language="javascript" type="text/javascript">
+ isProdSys = "true";
+</script>
+
+<script language="javascript" type="text/javascript">
+
+function redirectToURL(url) {
+    // Netscape Navigator 4.5 has issues
+    if ((navigator.appVersion.substring(17,23) == 'MSIE 4') && (navigator.platform.indexOf("Win") > -1)) {
+        document.forms['loadNextPage'].action = url;
+        document.forms['loadNextPage'].submit();
+    }
+    else {
+        document.location.href = url;
+    }
+    return true;
+}
+
+// Use this function to load a page where you need to specify the protocol
+// ('http' or 'https').
+function loadPage(protocol, path) {
+    var hostWithProtocol = getHostWithProtocol(protocol);
+    redirectToURL(hostWithProtocol + path);
+    return true;
+}
+
+// This function loads the url in a new popup window with the specified protocol
+function openWindow(protocol,URL, winName, features) {
+	var hostWithProtocol = getHostWithProtocol(protocol);
+	//alert("Updated PATH- " + hostWithProtocol + URL);
+    newWin = window.open(hostWithProtocol + URL,winName,features);
+    newWin.focus();
+}
+
+// Construct the first part of an absolute URL (with protocol, hostname, etc)
+function getHostWithProtocol(protocol) {
+    var hostWithProtocolNoPath = getHostWithProtocolNoPath(protocol);
+    var projectPath = "/Janus/Retail/";
+    return hostWithProtocolNoPath + projectPath;
+}
+
+function getHostWithProtocolNoPath(protocol) {
+    return protocol + "://" + document.location.hostname;
+}
+
+function getURLWithoutParameters(url){
+	var urlWithoutParameters = "";
+	var isParameterInURL = url.indexOf('?');
+	if(isParameterInURL !=-1){
+		urlWithoutParameters = url.substring(0,isParameterInURL);
+	}else{
+		urlWithoutParameters = url;				
+	}
+	return urlWithoutParameters;
+}
+
+var SECURE_DOMAIN = "https://null/Janus/Retail/";
+var NON_SECURE_DOMAIN = "http://null/Janus/Retail/";
+var WELCOME_PAGE_DISPATCHER = "WelcomePage";
+var STATIC_PAGE_DISPATCHER = "StaticPage";
+var SECURITY_PAGE_PDF = "http://www.janus.wallst.com/retailApi/newsDetail.asp?user_id=janusServer&articleId=ff7d5c57b4eb4308826f131148e5c02d";
+var GENERIC_NOTIFIER_DISPATCHER = "GenericNotifier";
+var DAILY_NAVS_DISPATCHER = "DailyNavsEquityFund";
+var FUNDS_HOME_PAGE = "FundsHomeEquityFund";
+var DIVIDENDS_AND_GAINS_DISPATCHER = "DividendAndGains";
+var FUND_DETAIL_DISPATCHER = "FundDetail";
+
+var FUND_UPDATE_XML_DISPATCHER = "FundUpdate";
+
+var ACCOUNT_MAINTENANCE_DISPATCHER = getHostWithProtocol('https') + "AccountOptions";
+var MY_ACCOUNT_ACTIVITY_DISPATCHER = getHostWithProtocol('https') + "MyAccountActivity";
+var MY_TAXFORM_INDEX_DISPATCHER = getHostWithProtocol('https') + "MyTaxFormIndex";
+var MY_JANUS_HOME_DISPATCHER = getHostWithProtocol('https') + "MyJanusHome";
+var TRACK_AND_TRANSACT_DISPATCHER= getHostWithProtocol('https') + "TrackAndTransact";
+var STATEMENTS_DISPATCHER = getHostWithProtocol('https') + "Statements";
+var FINAL_CONFIRM_INDEX_DISPATCHER= getHostWithProtocol('https') + "FinalConfirmIndex";
+var NASU_INVESTOR_TYPE_DISPATCHER = getHostWithProtocol('https') + "NASUInvestorType";
+var ELECTRONIC_DELIVERY_OPTIONS_DISPATCHER = getHostWithProtocol('https') + "ElectronicDeliveryOptions";
+var CHANGE_PIN_DISPATCHER = getHostWithProtocol('https') + "ChangePIN";
+
+var ELECTRONIC_DELIVERY_OPTIONS_DETAIL_DISPATCHER = getHostWithProtocol('https') + "ElectronicDeliveryOptionsDetail";
+var CONTACT_INFORMATION_DISPATCHER = getHostWithProtocol('https') + "ContactInformation";
+
+var LOGON_DISPATCHER = "Logon";
+var SELECT_FUND_DISPATCHER = "SelectFund";
+var AMI_DISPATCHER = "AMI";
+
+var RANKING_EQUITY_DISPATCHER = "RankingEquity";
+var RANKING_BONDS_DISPATCHER = "RankingBonds";
+
+var NEW_ARTICLE_DETAIL_DISPATCHER = "NewsArticleDetail";
+
+var INVESTING_BASICS_PAGE = "jsp/Account/TypesOfAccounts/InvestingBasics.jsp";
+var APPS_AND_FORMS_PAGE = "jsp/Forms/JanusApplicationsAndForms.jsp";
+var TYPES_OF_ACCOUNTS_PAGE = "jsp/Account/TypesOfAccounts/TypesOfAccountsIndex.jsp";
+var DIRECT_ROLLOVER_PAGE = "jsp/Account/TypesOfAccounts/DirectRollover.jsp";
+var ANNUAL_REPORTS_PAGE = "jsp/Materials/AnnualReports/AnnualReports.jsp";
+var PROSPECTUS_ANNUAL_PAGE = "jsp/Funds/Prospectus/ProspAnnRpts.jsp";
+var TAX_INFO_PAGE_1 = "jsp/Materials/Tax/TaxInfo1.jsp";
+var RETIREMENT_INFO_PAGE = "jsp/Materials/Retirement/Retirement.jsp";
+var INVESTMENT_TEAM_PAGE = "jsp/Funds/Team/InvestmentTeam.jsp";
+var JANUS_INVESTMENT_TEAM_LANDING_PAGE = "jsp/Funds/Team/JanusInvestmentTeamLanding.jsp";
+var PROSPECTUS_PAGE = "jsp/Funds/Prospectus/Prospectus.jsp";
+var CONTACT_JANUS_PAGE = "jsp/Contact/ContactJanus.jsp";
+var APPLICATIONS_PAGE = "jsp/Materials/Applications/Applications.jsp";
+var GLOSSARY_PAGE = "jsp/Materials/Glossary/Glossary.jsp";
+var MATERIALS_OVERVIEW_PAGE = "jsp/Materials/Overview/Overview.jsp";
+var INVESTOR_HELP_PAGE = "jsp/Materials/InvestorHelp/InvestorHelp.jsp";
+var DOINGBIZ_WITH_JANUS_PAGE = "jsp/Materials/InvestorHelp/DoingBizWithJanus.jsp";
+var SECURITY_PAGE = "jsp/Materials/InvestorHelp/Security.jsp";
+var CONTACT_JANUS_PAGE = "jsp/Contact/ContactJanus.jsp";
+var JANUS_HOME_PAGE = "jsp/Home/JanusRetailHome.jsp";
+var RETAIL_HOME_PAGE = "RetailHomepage";
+var OPEN_ACCOUNT_PAGE= "Account/OpenAccount.jsp";
+var WILL_BALES_BIO_PAGE = "jsp/Funds/Team/WillBalesBio.jsp";
+var LAURENCE_CHANG_BIO_PAGE = "jsp/Funds/Team/LaurenceChangBio.jsp";
+var JONATHAN_COLEMAN_BIO_PAGE = "jsp/Funds/Team/JonathanColemanBio.jsp";
+var DAVID_CORKINS_BIO_PAGE = "jsp/Funds/Team/DavidCorkinsBio.jsp";
+var DAVID_DECKER_BIO_PAGE = "jsp/Funds/Team/DavidDeckerBio.jsp";
+var JIM_GOFF_BIO_PAGE = "jsp/Funds/Team/JimGoffBio.jsp";
+var ED_KEELY_BIO_PAGE = "jsp/Funds/Team/EdKeelyBio.jsp";
+var MIKE_LU_BIO_PAGE = "jsp/Funds/Team/MikeLuBio.jsp";
+var BRENT_LYNN_BIO_PAGE = "jsp/Funds/Team/BrentLynnBio.jsp";
+var TOM_MALLEY_BIO_PAGE = "jsp/Funds/Team/TomMalleyBio.jsp";
+var KENT_MOORE_BIO_PAGE = "jsp/Funds/Team/KentMooreBio.jsp";
+var SHARON_PICHLER_BIO_PAGE = "jsp/Funds/Team/SharonPichlerBio.jsp";
+var MARC_PINTO_BIO_PAGE = "jsp/Funds/Team/MarcPintoBio.jsp";
+var KAREN_L_REIDY_BIO_PAGE = "jsp/Funds/Team/KarenLReidyBio.jsp";
+var BLAINE_ROLLINS_BIO_PAGE = "jsp/Funds/Team/BlaineRollinsBio.jsp";
+var SANDY_RUFENACHT_BIO_PAGE = "jsp/Funds/Team/SandyRufenachtBio.jsp";
+var SCOTT_SCHOELZEL_BIO_PAGE = "jsp/Funds/Team/ScottSchoelzelBio.jsp";
+var RON_SPEAKER_BIO_PAGE = "jsp/Funds/Team/RonSpeakerBio.jsp";
+var ERIC_THORDERSON_BIO_PAGE = "jsp/Funds/Team/EricThordersonBio.jsp";
+var DARELL_WATTERS_BIO_PAGE = "jsp/Funds/Team/DarrellWattersBio.jsp";
+var CLAIRE_YOUNG_BIO_PAGE = "jsp/Funds/Team/ClaireYoungBio.jsp";
+var JIM_CRAIG_BIO_PAGE = "jsp/Funds/Team/JimCraigBio.jsp";
+var RON_SACHS_BIO_PAGE = "jsp/Funds/Team/RonSachsBio.jsp";
+var JOHN_SCHREIBER_BIO_PAGE = "jsp/Funds/Team/JohnSchreiberBio.jsp";
+var JASON_YEE_BIO_PAGE = "jsp/Funds/Team/JasonYeeBio.jsp";
+var GIBSON_SMITH_BIO_PAGE = "jsp/Funds/Team/GibsonSmithBio.jsp";
+var MICHAEL_BUCHANAN_BIO_PAGE = "jsp/Funds/Team/MichaelBuchananBio.jsp";
+var MICHAEL_WEAVER_BIO_PAGE = "jsp/Funds/Team/MichaelWeaverBio.jsp";
+var DEREK_JONES_BIO_PAGE = "jsp/Funds/Team/DerekJonesBio.jsp";
+var PAUL_BERG_BIO_PAGE = "jsp/Funds/Team/PaulBergBio.jsp";
+
+
+
+var JEANINE_MORRONI_BIO_PAGE = "jsp/Funds/Team/JeanineMorroniBio.jsp";
+
+
+// AN - Vontobel Funds Bio Page
+var EDWIN_WALCZAK_BIO_PAGE = "jsp/Funds/Team/EdwinWalczakBio.jsp";
+var RAJIV_JAIN_BIO_PAGE = "jsp/Funds/Team/RajivJainBio.jsp";
+var MICHAEL_WEAVER_BIO_PAGE = "jsp/Funds/Team/MichaelWeaverBio.jsp";
+
+// SS - Perkin's manager bio pages 4/21/03
+
+var ROBERT_PERKINS_BIO_PAGE = "jsp/Funds/Team/BobPerkinsBio.jsp";
+var THOMAS_PERKINS_BIO_PAGE = "jsp/Funds/Team/TomPerkinsBio.jsp";
+var TODD_PERKINS_BIO_PAGE = "jsp/Funds/Team/ToddPerkinsBio.jsp";
+var JEFFREY_KAUTZ_BIO_PAGE = "jsp/Funds/Team/JefferyKautzBio.jsp";
+var JACOB_HOLM_BIO_PAGE = "jsp/Funds/Team/JakobHolmBio.jsp";
+var WILLIAM_SCHAFF_BIO_PAGE = "jsp/Funds/Team/WilliamSchaffBio.jsp";
+var MINYOUNG_SOHN_BIO_PAGE = "jsp/Funds/Team/MinyoungSohnBio.jsp";
+
+// SS - END
+var J2_DETAIL_PAGE = "jsp/Funds/Details/J2Detail.jsp";
+var USING_JANUS_PAGE = "jsp/Materials/InvestorHelp/UsingJanus.jsp";
+
+var INTRO_GLOBAL_OPPORTUNITIES = "jsp/Funds/details/intro_global_value.jsp";
+
+var FUND_UPDATES_PAGE = "jsp/Funds/Updates/FundUpdates.jsp";
+
+var JSP_FILEPATH_KEY = "jsp";
+var FUND_ID_KEY = "fundID";
+
+
+var JANUS_FUND = "1";
+var JANUS_FUND_2 = "138";
+var JANUS_ENTERPRISE_FUND = "6";
+var JANUS_MERCURY_FUND = "7";
+var JANUS_BALANCED_FUND = "11";
+var JANUS_GROWTH_AND_INCOME_FUND = "10";
+var JANUS_STRATEGIC_VALUE_FUND = "89";
+var JANUS_SPECIAL_EQUITY_FUND = "998";
+var JANUS_SPECIAL_SITUATIONS_FUND = "9";
+var JANUS_EQUITY_INCOME_FUND = "12";
+var JANUS_TWENTY_FUND = "2";
+var JANUS_GLOBAL_LIFE_SCIENCES_FUND = "48";
+var JANUS_OLYMPUS_FUND = "8";
+var JANUS_GLOBAL_TECHNOLOGY_FUND = "49";
+var JANUS_VENTURE_FUND = "3";
+var JANUS_ORION_FUND = "105";
+var JANUS_WORLD_WIDE_FUND = "4";
+var JANUS_OVERSEAS_FUND = "5";
+var JANUS_FLEXIBLE_INCOME_FUND = "13";
+var JANUS_HIGH_YIELD_FUND = "14";
+var JANUS_SHORT_TERM_BOND_FUND = "15";
+var JANUS_FEDERAL_TAX_EXEMPT_FUND = "16";
+var JANUS_MONEY_MARKET_FUND = "17";
+var JANUS_GOVERNMENT_MONEY_MARKET_FUND = "18";
+var JANUS_TAX_EXEMPT_MONEY_MARKET_FUND = "19";
+var JANUS_GLOBAL_OPPORTUNITIES_FUND = "164";
+
+var JANUS_INTERNATIONAL_EQUITY_FUND = "266";
+var JANUS_FOCUSED_VALUE_FUND = "262";
+
+// start : pb : added new fund
+var JANUS_RISK_MANAGED_STOCK_FUND = "254";
+// stop : pb : added new fund
+
+// SS - New funds added to the retail site for 04/21/2003 changes
+var JANUS_MID_CAP_VALUE_FUND = "247";
+var JANUS_SMALL_CAP_VALUE_FUND = "246";
+var JANUS_SMALL_CAP_VALUE_INST_FUND = "249";
+// SS - end new fund addition
+
+//PAS - New Funds added to the retail site(CR#: 23060)
+var JANUS_TRITON_FUND = "313";
+var JANUS_RESEARCH_FUND = "312";
+
+var JANUS_TRITON_FUND_INT = 313;
+var JANUS_RESEARCH_FUND_INT = 312;
+
+//SJ - Added for new Smart Portfolio Funds - 11/17/2005
+var JANUS_SMART_GROWTH_FUND = "358";
+var JANUS_SMART_MODERATE_FUND = "357";
+var JANUS_SMART_CONSERVATIVE_FUND = "356";
+
+// SG(2/19/02)
+// Added following 2 lines to test FDP
+var JANUS_BOORTZ_EQUITY_FUND = "200";
+var JANUS_GLOBAL_VALUE_TEST_FUND = "207";
+
+
+var FACETS_PAGE = "Facets/Facets.jsp";
+
+// Added by Varun Gupta on 8/12/2002 for IPSS project
+// Used for new Janus home page
+var JANUS_UMBRELLA_HOME_PAGE = "jsp/Janushome/Janus.jsp";
+
+// SS - 2/27 Changes Begin
+// Add variables for Static Fund Detail Pages for J2 and SS funds
+var JANUS_FUND_2_DETAIL_PAGE = "jsp/Funds/Details/JanusFund2Detail.jsp";
+var JANUS_SPECIAL_SITUATIONS_FUND_DETAIL_PAGE = "jsp/Funds/details/SpecialSituationDetail.jsp";
+var ABOUT_CORPORATE_JANUS_PAGE = "jsp/About/AboutCorporateJanus.jsp";
+// SS - 2/27 Changes End
+
+var ABOUT_RISK_MANAGED_FUND_PAGE = "jsp/About/AboutRiskManagedFund.jsp";
+
+var SELECT_FUND_DISPATCHER = "SelectFund";
+
+</script>
+
+
+<script language="javascript" type="text/javascript">
+var loggedOn=0;
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/JavaScript" src="/js/retail/UnifiedAccountStructure/chat_deployment_local-janus/configuration_retail.js">
+</script>
+
+<script type="text/JavaScript" src="/js/retail/UnifiedAccountStructure/chat_deployment_global/lp/configuration_baseline.js"> 
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html>
+<head>
+<meta http-equiv="pragma" name="pragma" content="no-cache">
+<meta http-equiv="Expires" name="Expires" content="Mon, 06 Jan 1990 00:00:01 GMT">
+<title>Log On  - Account Balance</title>
+
+
+<script language="javascript" type="text/javascript">
+var secNo=1;
+var hideNo=2;
+</script>
+
+
+
+
+<script language="javascript" type="text/javascript" src="/js/Retail/menuScript.js"></script>
+
+
+<script language="javascript" type="text/javascript">
+	document.cookie = "CookieEnabled" + "=" + escape ("Yes");
+	
+
+</script>
+
+
+
+
+
+
+
+
+<script language="javascript" type="text/javascript">
+// Used to redirect to an error message if Logon page appears in Large Chart window
+// This happens when a user tries to load the large chart in DPP and their session
+// has expired
+if(window.opener && !window.opener.closed) {
+    var parent_url = window.opener.document.URL.indexOf('PersonalizedPerformance');
+    if (parent_url != -1) {
+        location.href="StaticPage"+"?jsp=" + "jsp/Common/SessionTimeout.jsp";
+    }
+}
+
+// create form element object to enable hiding when drop down menus cover it
+function localinit() {
+    logonFormDivobj = new dynObj('logonFormDiv');
+    return true;
+}
+
+function setFocus() {
+    if (ns) {
+        document.logonFormDiv.document.logonForm.elements[0].focus();
+    }
+    else if (ie) {
+        document.logonForm.elements[0].focus();
+    }
+    return true;
+}
+
+//This function is to submit the form when user presses enter key from password field in Netscape
+
+if (document.layers) document.captureEvents(Event.KEYPRESS);
+    document.onkeypress = doKey;
+
+function doKey(e) {
+
+    whichASC = (document.layers) ? e.which : event.keyCode;
+    switch (whichASC) {
+        case 13: //enter key == 13
+            if(document.layers) { //NS
+
+                    document.logonFormDiv.document.logonForm.submit();
+
+            } else { //IE
+
+                    document.logonForm.submit();
+
+            }
+
+            return false;
+            break;
+        default:break;
+    }// end of switch
+}
+
+</script>
+
+<script language="javascript" type="text/javascript">
+	// local function to make popup windows
+	function openWin(URL, winName, features) {
+		newWin = window.open(URL,winName,features);
+		newWin.focus();
+	}
+
+	function displayCookieDisableMesg(){
+	document.cookie = "CookieDisabledMesg" + "=" + escape ("No");
+	var cookieDisabled = getCookie('CookieDisabledMesg');
+	var showCookieDisableMesg = false;
+	if(cookieDisabled==null){
+		document.write('<span class="redError10"><span class="redError10bold">Please Note:</span> Your browser settings indicate that you are not accepting "cookies." Please enable your browser to accept cookies prior to logging in. If you\'d like more information about changing this browser setting or how Janus uses cookies, please <a href="#" onClick="javascript:openWin(\'StaticPage?jsp=/jsp/Common/CookieInfo.jsp\',\'cookieHelp\',\'width=550,height=350,scrollbars=1,resizable=1\');" class="blue9">click here</a>.<br /><br /></span>');
+	}
+
+	deleteCookie('CookieDisabledMesg');
+	
+	}
+	
+	function setDivTop(){
+		document.cookie = "CookieDisabledMesg" + "=" + escape ("No");
+		var cookieDisabled = getCookie('CookieDisabledMesg');
+		var showCookieDisableMesg = false;
+		var ie = /MSIE/.test(navigator.userAgent);
+		var moz = !ie && navigator.product == "Gecko";
+		if(cookieDisabled==null){
+		if(!moz){
+			document.getElementById("logonFormDiv").style.top=345;
+			document.getElementById("resetPinLink").style.top=422;
+		} else {
+			document.getElementById("logonFormDiv").style.top=348;
+			document.getElementById("resetPinLink").style.top=425;
+		}
+		}
+	}
+</script>
+
+
+
+<script language="javascript" type="text/javascript" src="/js/Retail/globalStyles.js"></script>
+
+
+
+
+<style>
+#logonFormDiv {
+position: absolute;
+left: 239px;
+top: 316px;
+z-index: 2;
+}
+</style>
+<style>
+#resetPinLink {
+position: absolute;
+left: 155px;
+top: 390px;
+z-index: 3;
+}
+</style>
+
+
+
+</head>
+
+<body bgcolor="#FFFFFF" leftmargin="0" topmargin="0" rightmargin="0" marginwidth="0" marginheight="0" style="margin: 0px" text="#000000" link="#0000FF" vlink="#FF00FF" alink="#900000" onLoad="init();localinit();setFocus();">
+
+<!-- START OF SmartSource Data Collector TAG -->
+<!-- © 1999-2004 NetIQ Corporation. All rights reserved. -->
+<!-- V7.0 -->
+<!-- $DateTime: 2003/10/28 16:26:23 $ -->
+
+
+<SCRIPT LANGUAGE="Javascript" NAME="script_1.0" ID="script_1.0"><!--
+var gVersion="1.0";
+//-->
+</SCRIPT>
+<SCRIPT LANGUAGE="Javascript1.1" NAME="script_1.1" ID="script_1.1"><!--
+gVersion="1.1";
+//-->
+</SCRIPT>
+<SCRIPT LANGUAGE="Javascript1.2" NAME="script_1.2" ID="script_1.2"><!--
+gVersion="1.2";
+var RE={"%09":/\t/g,"%20":/ /g,"%23":/\#/g,"%26":/\&/g,"%2B":/\+/g,"%3F":/\?/g,"%5C":/\\/g};
+//-->
+</SCRIPT>
+<SCRIPT LANGUAGE="Javascript1.3" NAME="script_1.3" ID="script_1.3"><!--
+gVersion="1.3";
+//-->
+</SCRIPT>
+<SCRIPT LANGUAGE="Javascript1.4" NAME="script_1.4" ID="script_1.4"><!--
+gVersion="1.4";
+//-->
+</SCRIPT>
+<SCRIPT LANGUAGE="Javascript1.5" NAME="script_1.5" ID="script_1.5"><!--
+gVersion="1.5";
+//-->
+</SCRIPT>
+
+<SCRIPT LANGUAGE="JavaScript" TYPE="text/javascript" SRC="/js/webtrends/wt_out_of_box.js" NAME="outOfTheBoxJavaScript" ID="outOfTheBoxJavaScript"></SCRIPT>
+
+
+
+<!-- END OF SmartSource Data Collector  TAG -->	
+
+
+
+
+
+
+
+<script language="javascript" type="text/javascript" src="/js/Retail/banner.js"></script>
+
+
+
+<script language="javascript" type="text/javascript" >
+if(!ns4)document.write('<span id="menuContent">');
+</script>
+<script language="javascript" type="text/javascript" src="/js/Retail/menuDivs.js"></script>
+<script language="javascript" type="text/javascript" >
+if(!ns4)document.write('</span>');
+</script>
+
+
+
+
+
+
+
+
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
+
+    
+    <tr>
+        <td width="138"><img src="/img/Retail/global/pxl_trans.gif" width="138" height="12" border="0" /></td>
+        <td width="138"><img src="/img/Retail/global/pxl_trans.gif" width="138" height="1" border="0" /></td>
+        <td width="100%"><img src="/img/Retail/global/pxl_trans.gif" width="140" height="1" border="0" /></td>
+        <td width="170"><img src="/img/Retail/global/pxl_trans.gif" width="170" height="1" border="0" /></td>
+        <td width="169"><img src="/img/Retail/global/pxl_trans.gif" width="169" height="1" border="0" /></td>
+    </tr>
+    
+
+    
+    <tr>
+        <td valign="top" align="left" colspan="4" width="100%">
+
+            
+            <table border="0" cellspacing="0" cellpadding="0" width="498">
+            <tr>
+                <td width="138"><img src="/img/Retail/global/pxl_trans.gif" width="138" height="1" border="0" /></td>
+                <td width="360"><img src="/img/Retail/global/pxl_trans.gif" width="360" height="1" border="0" /></td>
+            </tr>
+
+            
+            <tr>
+                <td colspan="2" align="left" valign="top"><img src="/img/Retail/global/arw_page_title_bars.gif" width="138" height="17" border="0" align="top" /><img src="/img/Retail/portfolio/txt_log_on.gif" width="62" height="21" alt="Log On" border="0" align="top" /></td>
+            </tr>
+            
+
+            
+            <tr>
+				<td height="165"></td>
+                <td valign="top">
+				<br />
+				
+
+                <span class="black10bold">
+                If you haven't created a PIN for janus.com or Janus XpressLine&#153;, you can do so now. </span><a href="CreatePIN" class="blue10bold">Create PIN.</a><br /><br />
+
+                <span class="black10">To log on, enter your Social Security Number (SSN) and Personal Identification Number (PIN) below. Remember: Your PIN for janus.com and Janus XpressLine&#153; are the same 4-8 numbers.<br /><br /></span>
+                
+				<script language="javascript" type="text/javascript">
+				displayCookieDisableMesg();
+				</script>
+			<!--	<span class="redError10bold">Please Note:</span> <span class="redError10">Your browser settings indicate that you are not accepting "cookies." Please enable your browser to accept cookies prior to logging in. If you''d like more information about changing this browser setting or how Janus uses cookies, please <a href="javascript:openWin('StaticPage?jsp=/jsp/Common/CookieInfo.jsp','cookieHelp','width=550,height=350,scrollbars');" class="blue9">click here</a>.<br /><br /></span> -->
+
+
+				
+				
+				</td>
+            </tr>
+            
+
+            
+            <tr>
+                <td></td>
+                <td valign="top">
+                    
+                    <table border="0" cellspacing="0" cellpadding="0" width="327">
+                    <tr>
+                        <td width="100"><img src="/img/Retail/global/pxl_trans.gif" width="100" height="1" border="0" /></td>
+                        <td width="177"><img src="/img/Retail/global/pxl_trans.gif" width="177" height="1" border="0" /></td>
+                        <td width="50"><img src="/img/Retail/global/pxl_trans.gif" width="50" height="1" border="0" /></td>
+                    </tr>
+
+                    
+                    <tr>
+                        <td height="25" class="black10"><span class="black10bold"><SPAN CLASS="black10bold">SSN</SPAN></span> (no dashes)</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    
+
+                    
+                    <tr>
+                        <td colspan="3"><img src="/img/Retail/global/pxl_trans.gif" width="1" height="8" border="0" /></td>
+
+                    </tr>
+
+                    
+
+                    
+                    <tr>
+                        <td height="25" class="black10"><span class="black10bold"><SPAN CLASS="black10bold">PIN</SPAN></span> (4-8 Numbers)</td>
+                        <td></td>
+                        <td></td>
+
+                    </tr>
+                    
+
+                    
+                    <tr><td colspan="3"><img src="/img/Retail/global/pxl_trans.gif" width="1" height="20" border="0" /></td></tr>
+
+                    <tr>
+                        <td height="16"></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    </table>
+                </td>
+            </tr>
+            
+
+            
+            <tr><td height="40"></td><td></td></tr>
+
+            
+
+            <tr><td>&nbsp;</td></tr>
+            <tr>
+                <td></td>
+                <td valign="top" class="black10">
+
+                    You may change your PIN once you've logged on.  To safeguard your PIN, we recommend changing it at least once every 90 days.<br /><br />
+
+                    Logging on indicates consent to the Online Account Access Agreement you previously accepted. To revoke consent or to review the agreement, visit Edit Account Information after you've logged on.<br />
+                </td>
+            </tr>
+            
+
+            </table>
+            
+
+        </td>
+
+    </tr>
+    
+
+
+    
+    <script language="javascript" type="text/javascript" src="/js/Retail/footers/footerDashedLine.js"></script>
+
+    <script language="javascript" type="text/javascript" src="/js/Retail/footers/logon.js"></script>
+
+    <script language="javascript" type="text/javascript" src="/js/Retail/footers/privacyFooterCRL.js"></script>
+
+    <script language="javascript" type="text/javascript" src="/js/Retail/footers/copyright.js"></script>
+    
+
+
+</table>
+
+
+
+
+<div id="logonFormDiv">
+<form name="logonForm" method="post" action="Logon">
+    
+    <table border="0" cellspacing="0" cellpadding="0">
+
+    <tr><td height="25" class="black10nolineheight"><input type="password" autocomplete="off" name=SsnTextbox size="10" maxlength="9" class="inputtext10" tabindex="2"/></td></tr>
+
+    <tr><td><img src="/img/Retail/global/pxl_trans.gif" width="1" height="8" border="0" /></td></tr>
+
+    
+    
+    <tr><td height="25" class="black10nolineheight"><input type="password" autocomplete="off" name=PinPasswordField size="10" maxlength="8" class="inputtext10"  tabindex="3"/></td></tr>
+
+        <input type="hidden" name=DestinationServlet value=MyJanusHome />
+
+
+<input type="hidden" name=LogonRequestSubmitted value="yes" />
+<input type="hidden" name="CookieEnabled" value="">
+    <tr><td>&nbsp;</td></tr>
+    <tr><td>&nbsp;</td></tr>
+
+
+<script language="javascript" type="text/javascript">
+	var CookieEnabled = getCookie('CookieEnabled');
+	document.logonForm.CookieEnabled.value=CookieEnabled;
+	deleteCookie('CookieEnabled');
+</script>  
+
+    <tr><td align="right"><br /><input type="image" src="/img/Retail/portfolio/btn_log_on.gif" value="Log On" tabindex="4" border="0"></td></tr>
+
+    </table>
+    
+</form>
+</div>
+
+
+<div id="resetPinLink">
+<table>
+<tr><td><span class="black10">
+    Forgot your PIN? You can </span>
+	
+	
+    <a href="ResetPIN?DestinationServlet=MyJanusHome" class="blue10bold">change it now.</a><br /><br/></td></tr>
+	
+	
+</table>
+</div>
+<br />
+<BR>
+
+
+
+
+
+<script language="javascript" type="text/javascript">
+	setDivTop();
+</script>
+
+
+
+
+
+
+
+
+
+
+<script language="javascript" type="text/javascript">
+
+// Variables to be populated at onload event of the jsp
+
+// These variables are populated at each and every page of the application
+
+// This variable shows the title of the document
+var lpUASconversionStage = document.title; 
+
+// This variable has the fixed value "Investor Application".
+var lpUASsection = "Investor Application";
+
+// This variable shows the error count of the errors made by the user at that page
+var lpUASerrorCounter = '0';
+
+// The variable Conversion Action is populated at the click event of a button
+function setOnClickLiveChatVariables (lpUASconversionAction)
+{
+	lpUASimgAction = new Image();
+	lpUASimgAction.src = "https://sales.liveperson.net/hc/67077285/cmd/url/?site=67077285&page=https://sales.liveperson.net/hcp/width/img30.gif&SESSIONVAR!ConversionAction=" + lpUASconversionAction;
+}
+
+</script>
+
+
+
+
+
+<script type='text/JavaScript' src='/js/retail/UnifiedAccountStructure/chat_deployment_global/lp/conversion_script.js'></script> 
+
+<script type="text/JavaScript" src="https://sales.liveperson.net/hc/67077285/x.js?cmd=file&amp;file=chatScript3&amp;site=67077285">
+</script>
+
+<noscript>
+	<p>Script section containing code for Liveperson Chat Solution</p>
+</noscript>
+
+
+
+
+
+</body>
+</html>

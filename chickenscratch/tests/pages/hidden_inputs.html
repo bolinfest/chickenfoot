@@ -1,0 +1,29 @@
+<html>
+<body>
+
+This input is not in a form: <INPUT id="a" style="visibility:inherit">
+
+<p>
+
+Is it in <code>document.forms</code>?
+
+<p>
+
+No, no it is not.
+
+There is also a hidden input below:
+
+<div style="display: none"><INPUT id="b"></div>
+
+<p>
+
+An invisible, but "displayed," INPUT: <DIV style="visibility:hidden">
+Everything here appears to be hidden. <INPUT id="c"> Make sure this is also hidden:<SPAN id="span"></SPAN></DIV>
+
+<p>
+
+<BUTTON id="button" onclick="document.getElementById('a').value='clicked!'">Get
+the button text which includes a link to <a href="http://www.bolinfest.com/">bolinfest.com</a></BUTTON>
+
+</body>
+</html>

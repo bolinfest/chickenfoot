@@ -1,0 +1,15 @@
+
+.disablableToolbarButton {
+  -moz-image-region: rect(0 24px 24px 0) !important;
+}
+.disablableToolbarButton[disabled="true"] {
+  -moz-image-region: rect(0 48px 24px 24px) !important;
+}
+
+#CF_TRIGGERS_PANE[ignoreAllTriggers="true"] {
+   color: rgb(150,150,150);
+}
+
+#CF_TRIGGERS_PANE[ignoreAllTriggers="false"] {
+   color: rgb(0,0,0);
+}

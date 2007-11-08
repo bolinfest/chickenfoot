@@ -1,0 +1,213 @@
+<?xml-stylesheet href="chrome://browser/skin/" type="text/css" ?>
+
+<dialog id="chickenfootTemplateDialog"
+        title="Chickenfoot Templates"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        buttons="accept,cancel"
+        onload="doLoad();"
+        ondialogaccept="return doOK();"
+        ondialogcancel="return doCancel();">
+
+<script>
+<![CDATA[
+  // shortcut for "getElementById()"
+  function gel(id) {
+    return document.getElementById(id);
+  }
+
+  /** Escape sequences for some special characters */
+  // taken from: http://www.json.org/json.js
+  var _escapeCharMap = {
+    '\b': '\\b',
+    '\t': '\\t',
+    '\n': '\\n',
+    '\f': '\\f',
+    '\r': '\\r',
+    '"' : '\\"',
+    '\\': '\\\\'
+  };
+
+  /**
+   * Takes a string and returns its string representation that can
+   * be eval'd in JavaScript to reproduce the original string.
+   * @param str {string}
+   * @return string
+   * @private
+   */
+  function _asString(str) {
+    // taken from: http://www.json.org/json.js
+    if (/["\\\x00-\x1f]/.test(str)) {
+      str = str.replace(/([\x00-\x1f\\"])/g, function(a, b) {
+          var ch = _escapeCharMap[b];
+          if (ch) return ch;
+          ch = b.charCodeAt();
+          return '\\u00' + Math.floor(ch / 16).toString(16) + (ch % 16).toString(16);
+      });
+    }
+    return '"' + str + '"';
+  }
+
+  var templateData;
+
+  function updateDefault() {
+    var selectedIndex = gel('defaultListContainer').selectedIndex;
+    --selectedIndex;
+    for (var i = 0; i < templateData.length; ++i) {
+      if (selectedIndex === i) {
+        templateData[i].isDefault = true;
+      } else {
+        delete templateData[i].isDefault;
+      }
+    }
+  }
+  
+  function doLoad() {
+    populateList();
+    gel('defaultListContainer').addEventListener("ValueChange", updateDefault, false);
+  }
+
+	function populateList() {
+	  var templateList = gel('templateList');
+	  var defaultList = gel('defaultList');
+	  if (templateData === undefined) {
+	    templateData = window.arguments[0].templateData;
+	  } else {
+	    // remove all children
+	    while (templateList.firstChild) {
+	      templateList.removeChild(templateList.firstChild);
+	    }
+	    while (defaultList.firstChild) {
+	      defaultList.removeChild(defaultList.firstChild);
+	    }
+	  }
+	  var menuitem;
+	  var emptyLabel = 'None (blank template)';
+	  menuitem = document.createElement('menuitem');
+	  menuitem.setAttribute('label', 'None (blank template)');
+	  defaultList.appendChild(menuitem);
+	  
+	  for (var i = 0; i < templateData.length; ++i) {
+	    var template = templateData[i];
+	    var label = template.label;
+	    var listitem = document.createElement('listitem');
+	    listitem.setAttribute('label', label);
+	    templateList.appendChild(listitem);
+	    menuitem = document.createElement('menuitem');
+	    menuitem.setAttribute('label', label);
+	    defaultList.appendChild(menuitem);
+	    if (template.isDefault) {
+	      gel('defaultListContainer').selectedIndex = i + 1; // blank template has 0 index
+	    }
+	  }
+	  
+	  if (templateData.length) {
+	    templateList.selectItem(templateList.firstChild);
+	  }
+  }
+
+	function trim(/*string*/ str) {
+    if (str == null) return "";
+    str = str.replace(/^\s+/, '');
+    str = str.replace(/\s+$/, '');
+    return str;
+  }
+		
+	function add() {
+	  var label = gel('template-name').value;
+	  var code = gel('template-code').value;
+	  if (!trim(label)) {
+	    alert('You must enter a name for the template');
+	  } else if (!trim(code)) {
+	    alert('You must enter some text for the template');
+	  } else {
+  	  var list = gel('templateList');
+  	  var index = list.selectedIndex;
+  	  if (index < 0) index = 0;
+	    var datum = {
+	      label : label,
+	      code : code
+	    };
+	    templateData.splice(index, 0, datum);
+	    populateList();
+	  }
+	}
+	
+	function edit() {
+	  var list = gel('templateList');
+	  var index = list.selectedIndex;
+	  if (index < 0) return;
+	  var datum = templateData[index];
+	  gel('template-name').value = datum.label;
+	  gel('template-code').value = datum.code;
+	}
+	
+	function _delete() {
+	  var list = gel('templateList');
+	  var index = list.selectedIndex;
+	  if (index < 0) return;
+	  var datum = templateData[index];
+	  templateData.splice(index, 1);
+	  populateList();
+	  gel('template-name').value = datum.label;
+	  gel('template-code').value = datum.code;	  
+	}
+
+  function serializeData() {
+    var values = [];
+    for (var i = 0; i < templateData.length; ++i) {
+      var datum = templateData[i];
+      values.push('{"code":' + _asString(datum.code) +
+          ',"label":' + _asString(datum.label) +
+          ((datum.isDefault) ? ',"isDefault":true' : '') +
+          '}');
+    }
+    var data = '([' + values.join() + '])';
+    window.arguments[0].newTemplateData = data;
+  }
+  
+	function doOK() {
+	  window.arguments[0].updateTemplates = true;
+	  serializeData();
+		return true;
+	}
+	
+	function doCancel() {
+		return true;
+	}
+]]>
+</script>
+
+<vbox>
+
+  <listbox id="templateList" onselect="edit()" />
+  
+  <hbox>
+    <button label="Add"
+            oncommand="add()" />
+    <button label="Edit"
+            oncommand="edit()" />
+    <button label="Delete"
+            oncommand="_delete()" /> <!-- delete is a JS keyword -->
+  </hbox>
+
+  <hbox align="center">
+    <label control="template-name" value="Name" />
+    <textbox id="template-name" flex="1" />
+  </hbox>
+
+  <textbox id="template-code" multiline="true" rows="8" />
+
+  <label value="Note: __CF_CURSOR_POS__ indicates where the cursor will appear when the template is loaded" />
+
+  <hbox align="center">
+    <label value="Default template:" />
+    <menulist id="defaultListContainer" 
+              flex="1"
+              label="None (blank template)">
+      <menupopup id="defaultList" />
+    </menulist>
+  </hbox>
+
+</vbox>
+
+</dialog>

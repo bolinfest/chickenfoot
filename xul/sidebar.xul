@@ -1,0 +1,542 @@
+<?xml-stylesheet href="chrome://browser/skin/" type="text/css" ?>
+
+<!--
+/*
+ * Chickenfoot end-user web automation system
+ *
+ * Copyright (c) 2004-2007 Massachusetts Institute of Technology
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining
+ * a copy of this software and associated documentation files (the
+ * "Software"), to deal in the Software without restriction, including
+ * without limitation the rights to use, copy, modify, merge, publish,
+ * distribute, sublicense, and/or sell copies of the Software, and to
+ * permit persons to whom the Software is furnished to do so, subject to
+ * the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+ * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+ * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+ * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+ * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * 
+ * Chickenfoot homepage: http://uid.csail.mit.edu/chickenfoot/
+ */
+-->
+
+<page
+    title="Chickenfoot Script Editor"
+    id="cf_sidebar"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+    onload="loadHandler()"
+    onunload="unloadHandler()">
+
+  <?xml-stylesheet href="chrome://chickenfoot/skin/sidebar.css" type="text/css"?>
+  <command id="cmd_ignoreAllTriggersCheckbox" />
+
+  <script><![CDATA[
+    // make aliases for document and window so that UI code is more comprehensible:
+    // use sidebarWindow for the sidebar, chromeWindow for the entire Firefox window
+    var sidebarWindow = window;
+    var sidebarDocument = document;
+    var chromeWindow = window.parent;
+    var chromeDocument = chromeWindow.chromeDocument;
+
+    // obtain reference to XPCOM object
+    var Chickenfoot = 
+            Components.classes["@uid.csail.mit.edu/Chickenfoot/;1"]
+              .getService(Components.interfaces.nsISupports)
+              .wrappedJSObject
+    
+    // make convenient alias to debug()
+    debug = Chickenfoot.debug;
+    
+    // make sure the editor buffers are saved before chrome window closes.
+    if (!chromeWindow.chickenfootSidebarHasBeenOpened) {
+      chromeWindow.chickenfootSidebarHasBeenOpened = true;
+      Chickenfoot.saveSidebarOnClose(chromeWindow);
+    }
+  ]]></script>
+
+  <!-- Load all the rest of the UI code here -->
+  <script type="text/javascript" src="sidebar.js" />
+
+
+  <!-- BEGIN OVERLAY -->
+  <vbox flex="1">
+
+    <!-- present to deal with bug 250715 -->
+    <!-- if there is no element with the id "search-box", a memory leak occurs -->
+    <textbox id="search-box" hidden="true" />
+
+    <!-- BEGIN EDITOR AREA -->
+    <vbox flex="10">
+    
+      <toolbar align="center">
+
+      <!-- This broadcaster distributes the disabled attribute to buttons
+           that require a currently selected buffer -->
+      <broadcaster id="requiresSelectedEditor" 
+                   disabled="true" />
+                   
+      <!-- NEW -->
+      <!-- http://www.async.com.br/~kiko/pix/icons/stock_new.png -->
+      <toolbarbutton class="disablableToolbarButton"
+                     id="cfNewButton"
+                     style="list-style-image: url(chrome://chickenfoot/skin/new-file.png)"
+                     tooltiptext="New (Ctrl-N)"
+                     oncommand="newFile(event.originalTarget.id)"
+                     type="menu-button"
+                     >
+        <menupopup id="chickenfoot-template-popup" />
+      </toolbarbutton>
+
+      <!-- OPEN -->
+      <!-- http://www.missionbuilders.net/_layouts/images/open.gif -->
+      <!-- http://www.async.com.br/~kiko/pix/icons/stock_open.png --> 
+      <toolbarbutton class="disablableToolbarButton"
+                     id="cfOpenButton"
+                     style="list-style-image: url(chrome://chickenfoot/skin/open-file.png)"
+                     tooltiptext="Open (Ctrl-O)"
+                     oncommand="openFile()" />
+
+      <!-- SAVE -->
+      <!-- http://www.missionbuilders.net/_layouts/images/save.gif -->
+      <!-- http://www.async.com.br/~kiko/pix/icons/stock_save.png -->       
+      <toolbarbutton class="disablableToolbarButton"
+                     id="cfSaveButton"
+                     style="list-style-image: url(chrome://chickenfoot/skin/save-file.png)"
+                     tooltiptext="Save (Ctrl-S)"
+                     oncommand="saveSelectedBuffer()"
+                     observes="requiresSelectedEditor" />
+
+      <!-- SAVE AS -->
+      <!-- http://www.async.com.br/~kiko/pix/icons/stock_save.png -->
+      <toolbarbutton class="disablableToolbarButton"
+                     style="list-style-image: url(chrome://chickenfoot/skin/save-as-file.png)"
+                     tooltiptext="Save As"
+                     oncommand="saveAsSelectedBuffer()"
+                     observes="requiresSelectedEditor" />
+
+      <!-- RUN -->
+      <!-- http://www.async.com.br/~kiko/pix/icons/stock_exec.png -->
+      <toolbarbutton class="disablableToolbarButton"
+                     id="cfRunButton"
+                     style="list-style-image: url(chrome://chickenfoot/skin/exec.png)"
+                     tooltiptext="Run this script (Alt+R)"
+                     accesskey="R"
+                     oncommand="runSelectedBuffer()"
+                     observes="requiresSelectedEditor"
+                     type="menu-button"
+            		>
+        <menupopup id="chickenfoot-run-popup"/>
+      </toolbarbutton>
+      
+      <script><![CDATA[
+        window.setTimeout(function() {
+          try {
+            if (Chickenfoot.getPrefBranch().getBoolPref("useKeywordCommands")) {
+              document.getElementById("cfRunButton").setAttribute("type", "menu-button");
+            }
+          } catch (e) {
+            // fail silently if chickenfoot.useKeywordCommands preference is missing
+          }        
+        }, 1);
+      ]]></script>
+
+      <!-- STOP -->
+      <toolbarbutton class="disablableToolbarButton"
+                     id="cfStopButton"
+                     style="list-style-image: url(chrome://chickenfoot/skin/stop.png)"
+                     tooltiptext="Stop all running scripts (Esc)"
+                     accesskey="S"
+                     oncommand="Chickenfoot.stopAllScripts(window);"
+                     disabled="true"
+            		/>
+
+      <!-- LABEL -->
+      <label id="cf_current_file" />
+    </toolbar>
+  
+
+    <tabbox id="editorTabBox"
+            flex="10">
+            
+      <hbox>
+        <tabs id="editorTabs"
+              flex="1" 
+              context="editorTabMenu"
+              >
+                  
+        </tabs>
+                
+        <toolbarbutton class="tabs-closebutton close-button"
+                       tooltiptext="Close tab (Ctrl-W)"
+                       id="cfCloseTabButton"
+                       oncommand="closeSelectedBuffer()" />
+      </hbox>
+      <tabpanels id="editorTabPanels"
+                 flex="50" 
+                 style="padding:0px"
+                 
+                 >
+      </tabpanels>
+    </tabbox>
+    
+    <popup id="editorTabMenu"
+                       XXXonpopupshowing="getSelectedBuffer().updateContextMenu(this)"
+                       >
+                    
+                    <menuitem label="Close Other Tabs"
+        	          cmdid="cmd_closeOtherTabs"
+                      oncommand="closeAllBuffersButSelected()" 
+                      />
+                    <menuitem label="Close All Tabs" 
+        	          cmdid="cmd_closeAllTabs"
+                      oncommand="closeAllBuffers()" 
+                      />
+                    <menuseparator />
+                    <menuitem label="Close Tab"
+        	          cmdid="cmd_closeTab"
+        	          oncommand="closeSelectedBuffer()"
+        	          />
+                  </popup>
+    
+    <!-- include globalOverlay.js for goDoCommand() -->
+    <script src="chrome://global/content/globalOverlay.js"/>
+
+    <!-- Context menu that appears when you right-click in the
+         script editor.  It's a normal editor context menu.
+         Each menuitem is labeled with the nonstandard 
+         attribute "cmdid" which stores the name of the associated
+         command.  This attribute is used by updateContextMenu()
+         (called just before the context menu appears) to check whether
+         a menu item's associated command is able to run and enable or
+         disable the menu item appropriately. -->
+         
+    <popup id="editorContextMenu"
+           onpopupshowing="getSelectedBuffer().updateContextMenu(this)">
+        <menuitem label="Undo"
+        	  cmdid="cmd_undo"
+                  oncommand="goDoCommand('cmd_undo')"
+                  />
+        <menuseparator />
+        <menuitem label="Cut"
+        	  cmdid="cmd_cut"
+                  oncommand="goDoCommand('cmd_cut')"
+                  />
+        <menuitem label="Copy" 
+        	  cmdid="cmd_copy"
+                  oncommand="fixed_copy()"
+                  />
+        <menuitem label="Paste" 
+        	  cmdid="cmd_paste"
+                  oncommand="goDoCommand('cmd_paste')"
+                  />
+        <menuitem label="Delete" 
+        	  cmdid="cmd_delete"
+                  oncommand="goDoCommand('cmd_delete')"
+                  />
+        <menuseparator />
+        <menuitem label="Select All"
+        	  cmdid="cmd_selectAll"
+                  oncommand="goDoCommand('cmd_selectAll')"
+                  />
+        <menuitem label="Run Selected"
+        	  cmdid="cmd_copy"
+        	      oncommand="getSelectedBuffer().runSelectedText()"
+        	      />
+  </popup>
+
+    </vbox>
+    <!-- END EDITOR AREA -->
+  
+  <splitter/>
+  
+    
+    <vbox flex="3"> 
+      <tabbox flex="1">
+        <tabs flex="1">
+          <tab label="Output" id="CF_DEBUG_TAB" />
+<!--          <tab label="Shell" /> -->
+          <tab label="Patterns"/>
+          <tab label="Actions" id="CF_ACTION_HISTORY_TAB"/>               
+          <tab label="Triggers" />
+        </tabs>
+        <tabpanels flex="50"
+                   style="padding:0px">
+        
+          <!-- DEBUG -->
+            <vbox flex="1">
+              <toolbar align="center">
+                  <label value="Output:" />
+                  <spacer flex="10" />
+                  <!-- http://www.async.com.br/~kiko/pix/icons/stock_clear.png -->  
+                  <toolbarbutton class="disablableToolbarButton"
+                                 style="list-style-image: url(chrome://chickenfoot/skin/clear.png)"
+                                 tooltiptext="Clear debug output"
+                                 oncommand="Chickenfoot.clearDebugPane(chromeWindow);" />                
+              </toolbar>
+                
+              <browser id="CF_DEBUG"
+                       type="content"
+                       src="chrome://chickenfoot/content/debugContent.html"
+                       flex="1"
+                       /> 
+            </vbox>
+          
+          <!-- SHELL -->
+          <!--
+            <vbox flex="1">
+              <toolbar align="center">
+                <label value="Shell:" />
+                <spacer flex="10" />
+              </toolbar>
+              <browser id="CF_SHELL"
+                       type="content"
+                       src="chrome://chickenfoot/content/shell.html"
+                       flex="1"
+                       /> 
+            </vbox>
+            -->
+          
+          <!-- PATTERN PANEL -->
+          
+              <vbox flex="1">
+                  <hbox align="center">
+                    <label value="Pattern:"
+                           class="small-margin"
+                           flex="1"
+                           control="CF_PATTERN"
+                           />
+                    <textbox id="CF_PATTERN"
+                             flex="30"
+                             onkeypress="if (event.keyCode == 13) { selectFromPatternPane(this.value); }" />
+                  </hbox>
+                  <hbox align="center">
+                    <label id="CF_PATTERN_STATUS1"
+                           value=""
+                           class="small-margin"
+                           />
+                    <label id="CF_PATTERN_STATUS2"
+                           crop="end"
+                           value=""
+                           class="small-margin"
+                           style="font-weight: bold; margin-left: 0px;"
+                           />
+                  </hbox>
+                  <tree id="CF_LIBRARY_TREE" 
+                        flex="10" 
+                        hidecolumnpicker="true"
+                        seltype="single" 
+                        onselect="clickedLibraryTree();">
+                    <treecols>
+                      <treecol label="Pattern Names" 
+                               id="CF_PATTERN_NAME" 
+                               primary="true" 
+                               flex="1"
+                               />
+                    </treecols>
+                    <treechildren id="CF_LIBRARY_TREE_CONTENTS">
+                      <treeitem pattern="button">
+                        <treerow>
+                          <treecell label="button"/>
+                        </treerow>
+                      </treeitem>
+
+                      <treeitem pattern="checkbox">
+                        <treerow>
+                          <treecell label="checkbox"/>
+                        </treerow>
+                      </treeitem>
+
+                      <treeitem pattern="form">
+                        <treerow>
+                          <treecell label="form"/>
+                        </treerow>
+                      </treeitem>
+
+                      <treeitem pattern="image">
+                        <treerow>
+                          <treecell label="image"/>
+                        </treerow>
+                      </treeitem>
+
+                      <treeitem pattern="link">
+                        <treerow>
+                          <treecell label="link"/>
+                        </treerow>
+                      </treeitem>
+
+                      <treeitem pattern="listbox">
+                        <treerow>
+                          <treecell label="listbox"/>
+                        </treerow>
+                      </treeitem>
+
+                      <treeitem pattern="listitem">
+                        <treerow>
+                          <treecell label="listitem"/>
+                        </treerow>
+                      </treeitem>
+
+                      <treeitem pattern="radiobutton">
+                        <treerow>
+                          <treecell label="radiobutton"/>
+                        </treerow>
+                      </treeitem>
+
+                      <treeitem pattern="textbox">
+                        <treerow>
+                          <treecell label="textbox"/>
+                        </treerow>
+                      </treeitem>
+                    </treechildren>
+                  </tree> 
+              </vbox>
+
+          <!-- ACTION HISTORY -->
+
+             <vbox flex="1">
+              <toolbar align="center">
+                  <label value="Action History:" />
+                  <spacer />
+                  <checkbox id="recordingCheckbox"
+                            label=" Record actions"
+                            tooltiptext="When checked, the Action History displays what you do in the browser"
+                            oncommand="setRecording(this.checked)"
+                            />
+                  <spacer flex="10" />
+                  <toolbarbutton class="disablableToolbarButton"
+                                 style="list-style-image: url(chrome://chickenfoot/skin/clear.png)"
+                                 tooltiptext="Clear action history"
+                                 oncommand="Chickenfoot.clearDebugPane(chromeWindow, 'CF_ACTION_HISTORY');" />                
+              </toolbar>
+ 
+                <browser id="CF_ACTION_HISTORY"
+                         type="content"
+                         src="chrome://chickenfoot/content/actionContent.html"
+                         flex="1"                     
+                         />
+              </vbox>
+ 
+          
+          <!-- TRIGGERS -->
+          
+          <vbox flex="1">
+
+              <toolbar flex="1">
+              
+                <checkbox id="ignoreAllTriggersCheckbox"
+                          label=" Ignore all triggers"
+                          tooltiptext="When checked, all triggers are disabled"
+                          oncommand="clickedIgnoreAllTriggersCheckbox()"
+                          />
+
+                <!-- This broadcaster distributes the disabled attribute to the checkboxes
+                     in the triggers list -->
+                <broadcaster id="requiresTriggersEnabled" 
+                             disabled="false" />
+                
+                <spacer flex="10" />
+
+                <!-- This broadcaster distributes the disabled attribute to buttons
+                     that require a selected trigger -->
+                <broadcaster id="requiresSelectedTrigger" 
+                             disabled="true" />                         
+                                
+                <toolbarbutton class="disablableToolbarButton"
+                               style="list-style-image: url(chrome://chickenfoot/skin/edit-trigger-script.png)"
+                               tooltiptext="Edit Trigger Script"
+                               oncommand="editTriggerScript();"
+                               observes="requiresSelectedTrigger" 
+                               />                
+
+                <toolbarbutton class="disablableToolbarButton"
+                               style="list-style-image: url(chrome://chickenfoot/skin/trigger-properties.png)"
+                               tooltiptext="Edit Trigger Properties"
+                               oncommand="editTriggerProperties();"
+                               observes="requiresSelectedTrigger" 
+                               />                
+
+                <!-- http://search.cpan.org/src/LDACHARY/Catalog-1.02/images/plus.gif -->
+                <toolbarbutton class="disablableToolbarButton"
+                               style="list-style-image: url(chrome://chickenfoot/skin/new-trigger.png)"
+                               tooltiptext="Add Trigger"
+                               oncommand="addTrigger();"
+                               observes="requiresSelectedEditor" 
+                               />                
+                
+                <!-- http://search.cpan.org/src/LDACHARY/Catalog-1.02/images/minus.gif -->
+                <toolbarbutton class="disablableToolbarButton"
+                               style="list-style-image: url(chrome://chickenfoot/skin/remove-trigger.png)"
+                               tooltiptext="Remove Trigger"
+                               oncommand="removeTriggers()"
+                               observes="requiresSelectedTrigger" 
+                               />  
+
+                <!-- http://www.async.com.br/~kiko/pix/icons/stock_down_arrow.png -->
+                <toolbarbutton class="disablableToolbarButton"
+                               style="list-style-image: url(chrome://chickenfoot/skin/down-arrow.png)"
+                               tooltiptext="Move trigger down"
+                               oncommand="moveTrigger('down');"
+                               observes="requiresSelectedTrigger" 
+                               />
+                
+                <!-- http://www.async.com.br/~kiko/pix/icons/stock_up_arrow.png -->
+                <toolbarbutton class="disablableToolbarButton"
+                               style="list-style-image: url(chrome://chickenfoot/skin/up-arrow.png)"
+                               tooltiptext="Move trigger up"
+                               oncommand="moveTrigger('up');"
+                               observes="requiresSelectedTrigger" 
+                               />                
+                               
+                <!-- EXPORT -->
+                <!-- http://www.async.com.br/~kiko/pix/icons/stock_add.png -->
+                <toolbarbutton class="disablableToolbarButton"
+                               style="list-style-image: url(chrome://chickenfoot/skin/package-xpi.png)"
+                               tooltiptext="Package script as a Firefox extension"
+                               oncommand="packageSelectedTriggers()"
+                               />
+                
+
+              </toolbar>
+
+              <listbox id="CF_TRIGGERS_PANE"
+                       seltype="multiple"
+                       enableColumnDrag="true"
+                       flex="20"
+                       onselect="document.getElementById('requiresSelectedTrigger').setAttribute('disabled', (this.selectedIndex == -1))"
+                       ignoreAllTriggers="false"
+                       >
+                       
+                <listcols>
+                  <listcol id="Triggers_" /> 
+                  <splitter class="tree-splitter" />
+                  <listcol id="Triggers_Name" flex="5"/>
+                  <splitter class="tree-splitter" />
+                  <listcol id="Triggers_Included_Pages" flex="5" />
+                </listcols>                  
+                
+                <listhead>
+                  <listheader label="On?" />
+                  <listheader label="Name" />
+                  <listheader label="Triggered when" />
+                </listhead>
+           
+              </listbox>
+      
+            </vbox>
+        </tabpanels>
+      </tabbox>
+    </vbox>        
+  </vbox>
+  <!-- END OVERLAY -->
+  
+</page>

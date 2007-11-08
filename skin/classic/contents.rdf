@@ -1,0 +1,17 @@
+<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:chrome="http://www.mozilla.org/rdf/chrome#">
+
+  <Seq about="urn:mozilla:skin:root">
+    <li resource="urn:mozilla:skin:classic" />
+  </Seq>
+
+  <Description about="urn:mozilla:skin:classic"
+               chrome:name="classic">
+    <chrome:packages>
+      <Seq about="urn:mozilla:skin:classic:packages">
+        <li resource="urn:mozilla:skin:classic:chickenfoot" />
+      </Seq>
+    </chrome:packages>
+
+  </Description>
+</RDF>

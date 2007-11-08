@@ -1,0 +1,295 @@
+<!--#include file="header.html" -->
+
+<h3 id="home">Commands</h3>
+<p>Chickenfoot commands are broken up by their intended effect. They are as follows</p>
+<ul>
+  <li><a href="#pattern">Pattern Matching</a></li>
+  <li><a href="#forms">Clicking and Form Manipulation</a></li>
+  <li><a href="#navigation">Navigation and Page Loading</a></li>
+  <li><a href="#modification">Page Modification</a></li>
+  <li><a href="#widgets">Widgets</a></li>
+</ul>
+<dl>
+
+<p>Chickenfoot programs are written in Javascript, using the Javascript 1.5 interpreter
+  built into Mozilla Firefox. As a result, Chickenfoot users have access to the
+  full expressiveness of a high-level scripting language, with a prototype-instance
+  object system, lexically scoped procedures, dynamic typing, and a rich class
+  library. </p>
+  
+<p>Because Chickenfoot uses Javascript, web developers can easily transfer their
+  knowledge of Javascript from web page development over to Chickenfoot. Chickenfoot
+  predefines the same variables available to Javascript in web pages - e.g.,
+  <tt>window</tt>, <tt>document</tt>, <tt>location</tt>, <tt>frames</tt>, <tt>history</tt> -
+  so that Javascript code written for inclusion <em>inside </em> a web page can
+  also be used as a Chickenfoot script <em>outside </em> the web page. Javascript
+  has its own ways of visiting new pages (<tt>location</tt>), manipulating form controls
+  (<tt>document.forms</tt>), and modifying page content (using the Document Object Model,
+  or DOM ?). These
+  mechanisms can be used by Chickenfoot scripts in addition to the Chickenfoot
+  commands described in the next few sections. We have found that using the native
+  Javascript mechanisms generally require reading and understanding a web page's
+  HTML source. But by providing access to them, Chickenfoot provides a smooth
+  escape mechanism for script developers that need to do something more low-level. </p>
+
+<p>All current web browsers, including Firefox, implement a security model for
+  Javascript to protect web users from malicious downloaded scripts. A major
+  part of this security model is the <em>same-origin policy </em>, which prevents
+  Javascript code downloaded from one web server from manipulating a web page
+  downloaded from a different server. This restriction is clearly too severe
+  for Chickenfoot, since its primary purpose is integrating and customizing multiple
+  web sites. As a result, Chickenfoot scripts run at a privileged level, where
+  they have access to the entire web browser, all pages it visits, and the user's
+  filesystem and network. Users must trust Chickenfoot code as much as they trust
+  any other desktop application. As a result, Chickenfoot scripts cannot be embedded
+  in downloadable web pages like other Javascript. But Chickenfoot code <em>can </em> inject
+  new behavior into downloaded pages, which is explained in more detail later. </p>
+
+<h4 id="pattern">Pattern Matching <a href="#home" title="back to top">^</a></h4>
+<p>Pattern matching is a fundamental operation in Chickenfoot. To operate on
+  a web page component, most commands take a pattern describing that page component.<br />
+  Chickenfoot supports two kinds of patterns: <em>keyword patterns </em> and <em>text
+  constraint patterns </em>. A keyword pattern consists of a string of keywords
+  that are searched in the page to locate a page component, followed by the type
+  of the component to be found. For example, <tt>"Search form"</tt> matches a
+  form containing the keyword Search, and <tt>"Go button"</tt> matches a button
+  with the word Go in
+  its label. The component type is one of a small set of primitive names, including
+  <tt>link</tt>, <tt>button</tt>, <tt>textbox</tt>, <tt>checkbox</tt>, <tt>radiobutton</tt>, <tt>listbox</tt>, and <tt>table</tt>. When
+  a keyword pattern is used by a form manipulation command, the type of page
+  component is implicit and can be omitted. For example, <tt>click("Go")</tt> searches
+  for a hyperlink or button with the keyword "Go" in its label. Case is not significant,
+  so <tt>click("go")</tt> has the same effect. </p>
+
+<p>A text constraint pattern combines a library of primitive patterns (such as
+  <tt>link</tt>, <tt>textbox</tt>, or <tt>paragraph</tt>), literal strings (such
+  as <tt>"Go"</tt>), and relational
+  operators (e.g., <tt>in</tt>, <tt>contains</tt>, <tt>just before</tt>, <tt>just
+  after</tt>, <tt>starts</tt>, <tt>ends</tt>).
+  Text constraint patterns have been described in more detail previously. Text
+  constraint patterns are generally used to identify parts of a page for modification
+  and extraction, although they can also be used for form manipulation. </p>
+
+<p>The <tt>find</tt> command takes a pattern of either kind and searches for it in the
+  current page, e.g.: </p>
+
+<pre>  find("Search form") 
+  find("link in bold") </pre>
+
+<p><tt>find</tt> returns a <tt>Match</tt> object which represents the first match to the pattern
+  and provides access to the rest of the matches. Here are some common idioms
+  using <tt>find</tt> : </p>
+
+<pre>  // test whether a pattern matches
+  if (find(<em>pattern </em>).hasMatch) { ... }
+  // count number of matches
+  find(<em>pattern </em>).count
+  // iterate through all matches
+  for (m=find(<em>pattern </em>); m.hasMatch;m = m.next) { ... } </pre>
+
+<p>A <tt>Match</tt> object represents a contiguous region of a web page, so it also provides
+  properties for extracting that region. If <tt>m</tt> is a <tt>Match</tt> object, then <tt>m.text</tt>  returns the plain text it represents - i.e., the text that would be obtained
+  by copying that region of the rendered web page and pasting it to a text editor
+  that ignored formatting. Similarly, <tt>m.html</tt> returns the source HTML of the region,
+  which is useful for extracting the region with formatting intact. Finally,
+  <tt>m.element</tt> returns the DOM <tt>Element</tt> object represented by the region, if the
+  region contains a single outermost element. This <tt>element</tt> can be used to get
+  and set element attributes, e.g.: </p>
+
+<pre>  find("link").element.href </pre>
+
+<p>The <tt>find</tt> command is not only a global procedure, but also a method of <tt>Match</tt>  and <tt>Document</tt>. Invoking <tt>find</tt> on one of these objects constrains it to return
+  only matches within the page or part of a page represented by the object. Here
+  are some common idioms: </p>
+
+<pre>// nested finds
+  for (t=find("table"); t.hasMatch; t = t.next) {
+    r = t.find("row");
+    ...
+  }
+
+  // find in a page not currently showing
+  otherDocument.find(<em>pattern</em>) </pre>
+
+<h4 id="forms">Clicking and Form Manipulation <a href="#home" title="back to top">^</a></h4>
+
+<p>The next few commands allow Chickenfoot scripts to click on hyperlinks and
+  fill in and submit forms. </p>
+
+<p>The <tt>click</tt> command takes a pattern describing a hyperlink or button on the
+  current page and causes the same effect as if the user had clicked on it. For
+  example, these commands click on various parts of the Google home page: </p>
+
+<pre>  click("Advanced Search") // a hyperlink
+  click("I'm Feeling Lucky") // a button </pre>
+
+<p>Keyword patterns do not need to exactly match the label of the button or hyperlink,
+  but they do need to be unambiguous. Thus, <tt>click("Lucky")</tt> would suffice to match
+  the I'm Feeling Lucky button, but in this case, <tt>click("Search")</tt> would be ambiguous
+  between the Google Search button and the Advanced Search link, and hence would
+  throw an exception. (Exact matches take precedence over partial matches, however,
+  so if there were a single button labeled "Search", then the <tt>click</tt> command would
+  succeed.) Buttons and links labeled by an image can be matched by keywords
+  mentioned in their ALT text, if any. The keyword matching algorithm is described
+  in more detail later in this paper. </p>
+
+<p>The <tt>click</tt> command can take a <tt>Match</tt> object instead of a pattern, if the button
+  or hyperlink to be clicked has already been found. For example, to identify
+  a button using a text constraint pattern, the user might write this: </p>
+
+<pre>  click(find("button just after textbox")) </pre>
+
+<p>The <tt>enter</tt> command enters a value into a textbox. Like <tt>click</tt>, it
+  takes a keyword pattern to identify the textbox, but in this case, the keywords
+  are taken from the textbox's caption or other visible labels near the textbox.
+  For example, to interact with the Amazon login page, a script might say: </p>
+
+<pre>  enter("e-mail address", "rm@mit.edu")
+  enter("password", password) </pre>
+
+<p>When the page contains only one textbox in the page, which is often true for
+  search forms, the keyword pattern can be omitted. For example, this sequence
+  does a search on Google: </p>
+
+<pre>  enter("uist 2005") 
+  click("Google Search") </pre>
+
+<p>Checkboxes and radio buttons are controlled by the <tt>check</tt> and <tt>uncheck</tt> commands,
+  which take a keyword pattern that describes the checkbox: </p>
+
+<pre>  check("Yes, I have a password") 
+  uncheck("Remember Me") </pre>
+
+<p>Finally, the <tt>pick</tt> command makes a selection from a listbox or drop-down box
+  (which are both instantiations of the HTML <tt>&lt;select&gt;</tt> element). The simplest
+  form of <tt>pick</tt> merely identifies the choice by a keyword pattern: </p>
+
+<pre>  pick("California") </pre>
+
+<p>If only one choice in any listbox or drop-down on the page matches the keywords
+  (the common case), then that choice is made. If the choice is not unique, <tt>pick</tt>  can take two keyword patterns, the first identifying a listbox or dropdown
+  by keywords from its caption, and the second identifying the choice within
+  the listbox: </p>
+
+<pre>  pick("State", "California") </pre>
+
+<p>Like <tt>find</tt>, all the clicking and form manipulation commands are also
+  methods of <tt>Match</tt> and <tt>Document</tt>. so that the keyword search can be constrained
+  to a particular part of a page: </p>
+
+<pre>  f = find("Directions form")
+  f.enter("address", "32 Vassar St")
+  f.enter("zip", "02139") 
+  f.click("Get Directions") </pre>
+
+<p>The form manipulation commands described so far permit setting the value of
+  a form widget, which is the most common case for web automation. To read the
+  current value of a widget, a script can use <tt>find</tt> to locate it, and then access
+  the value of its <tt>Element</tt> object in conventional Javascript fashion, e.g.: </p>
+
+<pre>  find("address textbox").element.value </pre>
+
+<p>Chickenfoot also provides a <tt>reset</tt> command which resets a form to its default
+  values, though reset is rarely needed. </p>
+
+<h4 id="navigation">Navigation and Page Loading <a href="#home" title="back to top">^</a></h4>
+
+<p>In addition to loading pages by clicking on links and submitting forms, Chickenfoot
+  scripts can jump directly to a URL using the <tt>go</tt> command: </p>
+
+<pre>  go("http://www.google.com") </pre>
+
+<p>If the string is not a valid URL, <tt>go</tt> automatically prefixes it with "http://". </p>
+
+<p>Conventional browser navigation operations are also available as Chickenfoot
+  commands: <tt>back</tt>, <tt>forward</tt>, and <tt>reload</tt>. </p>
+
+<p>To retrieve a page without displaying it, the <tt>fetch</tt> command can be used. It
+  returns a <tt>Document</tt> object representing the invisible page: </p>
+
+<pre>  google = fetch("www.google.com") </pre>
+
+<p>The Javascript <tt>with</tt> statement is convenient for performing a sequence of operations
+  on an invisible page, by implicitly setting the context for Chickenfoot pattern
+  matching and form manipulation: </p>
+
+<pre>  with (fetch("www.google.com")) {
+    enter("syzygy");
+    click("Google Search");
+    n = find("number just after about").text
+  } </pre>
+
+<p>Pages retrieved by <tt>fetch</tt>, <tt>go</tt>, or <tt>click</tt> are loaded
+  asynchronously by the browser, while the Chickenfoot script continues to run.
+  Thus, a script can fire off several <tt>fetch</tt> requests in parallel, without
+  forcing each request to complete before the next one starts. When a subsequent
+  Chickenfoot command needs to access the content of a page, such as <tt>find</tt>, the
+  command automatically blocks until the page is fully loaded. The <tt>wait</tt> and <tt>ready</tt>  commands make this blocking available to programmatic control. Both commands
+  take a <tt>Document</tt> object or an array of <tt>Documents</tt> as an argument. With no arguments,
+  the default is the current page. <tt>Wait</tt> blocks until at least one of the specified
+  pages is fully loaded, and returns that page. <tt>Ready</tt> returns a loaded page only
+  if it has already completed, otherwise it immediately returns <tt>null</tt>. </p>
+
+<h4 id="modification">Page Modification <a href="#home" title="back to top">^</a></h4>
+
+<p>Chickenfoot offers three primitive commands for changing the content of web
+  pages: <tt>insert</tt>, <tt>remove</tt>, and <tt>replace</tt>. </p>
+
+<p>The <tt>insert</tt> command takes two arguments: a location on a page and a fragment
+  of web page content that should be inserted at that location. In its simplest
+  form, the location is a text constraint pattern, and the web page content is
+  simply a string of HTML: </p>
+
+<pre>  insert("just before textbox", "&lt;b&gt;Search: &lt;/b&gt;") </pre>
+
+<p>The location can also be derived from a <tt>Match</tt> object, but it must represent
+  a single point in the page, not a range of content. The <tt>before</tt> and <tt>after</tt> commands
+  can be used to reduce one of these objects to a point: </p>
+
+<pre>  t = find("textbox")
+  insert(after(t), "&lt;b&gt;Search: &lt;/b&gt;") </pre>
+
+<p>The page content to be inserted can also be a <tt>Match</tt> object, allowing content
+  to be extracted from another page and inserted in this one: </p>
+
+<pre>  map = mapquest.find("image")
+  insert("just after Directions", map) </pre>
+
+<p>The <tt>remove</tt> command removes page content identified by its argument, which
+  can be a text constraint pattern or <tt>Match</tt> object. For example: </p>
+
+<pre>  remove("Sponsored Links cell") </pre>
+
+<p>The replace command replaces one chunk of page content with another. It is
+  often used to wrap page content around an existing element: </p>
+
+<pre>  keyword = find("syzygy")
+  replace(keyword, "&lt;b&gt;"+keyword+"&lt;/b&gt;") </pre>
+
+<h4 id="widgets">Widgets <a href="#home" title="back to top">^</a></h4>
+
+<p>When a Chickenfoot script needs to present a user interface, it can create
+  links and buttons and insert them directly into a web page. Hyperlinks are
+  created by the <tt>Link</tt> constructor, which takes a chunk of HTML to display inside
+  the hyperlink and an event handler to run when the link is clicked: </p>
+
+<pre>  new Link("&lt;b&gt;Show All&lt;/b&gt;", showAll) </pre>
+
+<p>The event handler can be either a string of Chickenfoot code (like the <tt>onclick</tt>  attribute
+  in HTML) or a Javascript function object. Buttons are created similarly by
+  the <tt>Button</tt> constructor. </p>
+
+<p>Other widgets can be created by inserting HTML, e.g.: </p>
+
+<pre>  insert(..., "&lt;input type=checkbox&gt;") </pre>
+
+<p>If an <tt>onclick</tt> attribute is included in this HTML element, however, the code
+  it contains will execute like conventional, untrusted Javascript code downloaded
+  with the page. Commands defined by Chickenfoot would be unavailable to it.
+  To add a Chickenfoot handler to a button created from HTML, one can use the
+  <tt>onClick</tt> command: </p>
+
+<pre>  onClick(button, showAll) </pre>
+</dl>
+
+<!--#include file="footer.html" -->

@@ -1,0 +1,149 @@
+<!--#include file="header.html" -->
+
+<h3>Libraries</h3>
+
+<a href="#overview">What is a library?</a><br/>
+<a href="#using">Using a library in a script</a><br/>
+<a href="#provided">Libraries that are provided with Chickenfoot</a><br/>
+<a href="#creating">How to create your own library</a><br/>
+
+<p/>
+
+<h4><a name="overview">What is a library?</a></h4>
+Though we have tried to provide a comprehensive set of <a href="api.html">commands</a>
+with Chickenfoot, we know that we may not have everything you need.
+However, we also provide an <code>include()</code> command that lets you include
+Chickenfoot code from other files so that you can take advantage of code that others have written.
+Such a reusable file is called a <b>library</b>, and we have packaged several libraries
+(discussed below) with Chickenfoot. We have also allocated space on the
+<a href="scripts">Scripts Wiki</a> for users to upload their own libraries,
+so you should also look there to see if someone has written code that solves the problem
+that you're facing.
+
+<p/>
+
+The files listed below are libraries that are packaged with Chickenfoot.
+Once Chickenfoot is installed, you can look at the code for each file
+from your browser. For example, to view the code for google-search.js,
+enter the following URL into your browser:
+<code>chrome://chickenfoot/content/libraries/google-search.js</code>.
+
+<h4><a name="using">Using a library in a script</a></h4>
+
+To include one of the libraries that is bundled with Chickenfoot, you need only
+pass the name of the library file to <code>include()</code> and then you can
+use the commands defined in the library in your script:
+
+<pre>include('google-search.js');
+getGoogleSpellingSuggestion('aple'); // returns <b>apple</b></pre>
+
+To include a file on your computer, supply the full path of the file to Chickenfoot:
+
+<pre>include("c:\\myscripts\\some-library.js");</pre>
+
+<style>
+dd {
+  margin-bottom: 1em;
+}
+</style>
+
+<dl>
+
+<h4><a name="provided">Libraries that are provided with Chickenfoot</a></h4>
+
+Currently, we only provide a handful of libraries with Chickenfoot, but we are eager
+to include more! We imagine that many users would like to have accesss to an
+AJAX toolkit from inside Chickenfoot, no? Or how about a standard set of
+functions to manipulate Gmail so that you can create your own Gmail hack
+without having to start from scratch? If you have library code that you would
+like to contribute, please post it on the
+<a href="http://groups.csail.mit.edu/uid/chickenfoot/scripts/index.php/ChickenfootLibraries">Libraries
+section of the Scripts Wiki</a>.
+
+<p/>
+
+<dt><i>greasemonkey.js</i> <a href="libraries/greasemonkey.html">[Learn more]</a>
+                           <a href="libraries/greasemonkey.js">[Source code]</a></dt>
+<dd>
+<a href="http://greasemonkey.mozdev.org/">Greasemonkey</a> is a popular Firefox extension
+that is similar to Chickenfoot -- both Greasemonkey and Chickenfoot let you create scripts
+that you can run on web pages to automate them or change their behavior.
+<a href="http://greasemonkey.mozdev.org/authoring.html">Greasemonkey has its own API</a>,
+so we provide a partial<span class="firered">*</span> implementation of the Greasemonkey API
+so that you can run a Greasemonkey script in Chickenfoot simply by adding the line
+<code>include("greasemonkey.js")</code> to the top of the script.
+Although our current implementation of the API is not perfect, many of the Greasemonkey scripts
+hosted on <a href="http://userscripts.org/">userscripts.org</a> do not rely on the API at all,
+so they will likely work "as-is" when run in Chickenfoot.
+
+<p/>
+<span class="firered">*</span><i>The implementation of the Greasemonkey API
+that is bundled with Chickenfoot is admittedly imperfect -- we would welcome
+support from the Greasemonkey community to improve it so we can bundle a
+more complete version with Chickenfoot.</i>
+</dd>
+
+<dt><i>google-ajax-search.js</i> <a href="libraries/google-ajax-search.html">[Learn more]</a>
+                                 <a href="libraries/google-ajax-search.js">[Source code]</a></dt>
+<dd>
+The <a href="http://code.google.com/apis/ajaxsearch/">Google AJAX Search API</a> is
+"an experimental API that lets you integrate a dynamic Google search module into your
+web pages so your users can mash up Google search results with other content on your
+site or add search results clippings to their own content."
+After you register for a license key,
+you can use the Chickenfoot wrapper for the API to add search results to any web page.
+</dd>
+
+<dt><i>google-search.js</i> <a href="libraries/google-search.html">[Learn more]</a>
+                            <a href="libraries/google-search.js">[Source code]</a></dt>
+<dd>
+Google provides a <a href="http://www.google.com/apis/">Web Service</a> that lets you
+perform 1000 Google searches per day once you register for a Google license key.
+This library makes the Web Service easily accessible from Chickenfoot.
+With it, you can perform a typical Google web search, get a spelling suggestion
+(a la <span style="color:#c00">Did you mean</span>), or get a copy of a web page from Google's cache.
+</dd>
+
+<dt><i>json.js</i> <a href="libraries/json.html">[Learn more]</a>
+                   <a href="libraries/json.js">[Source code]</a></dt>
+<dd>
+A JavaScript serialization/deserialization library that optionally outputs to JSON
+(<a href="http://www.json.org/">http://www.json.org/</a>). The library also has a non-strict
+mode that allows some additional JavaScript types to be serialized that are not permitted in JSON,
+such as Functions, RegExps, undefined, Infinity, and NaN.
+</dd>
+
+<dt><i>prototype.js</i> <a href="libraries/prototype.html">[Learn more]</a>
+                        <a href="libraries/prototype.js">[Source code]</a></dt>
+
+<dd>
+<a href="http://prototype.conio.net/">Prototype</a> is "a JavaScript framework
+that aims to ease development of dynamic web applications."
+It adds helpful methods to built-in types (String, Array, Number, Element, and Event),
+as well as contributing new components, such as Ajax and Enumerable.
+The <a href="libraries/scriptaculous.html">script.aculo.us AJAX library </a> is built on top of
+Prototype.
+</dd>
+
+<dt><i>scriptaculous.js</i> <a href="libraries/scriptaculous.html">[Learn more]</a>
+                            <a href="libraries/scriptaculous.js">[Source code]</a></dt>
+
+<dd>
+<a href="http://script.aculo.us/">script.aculo.us</a> is an AJAX library that provides support for adding
+visual effects, drag-and-drop, and other controls to your web pages.
+We have tweaked the library slightly to provide better integration with Chickenfoot.
+</dd>
+
+<dt><i>us-geocoder.js</i> <a href="libraries/us-geocoder.html">[Learn more]</a>
+                          <a href="libraries/us-geocoder.js">[Source code]</a></dt>
+<dd>
+Provides access to US geocoding data from <a href="http://geocoder.us/">http://geocoder.us/</a>.
+</dd>
+
+</dl>
+
+<h4><a name="creating">How to create your own library</a></h4>
+
+<i>TODO: Explain how to avoid clogging the global namespace and how to make loading a library idempotent.</i>
+
+<!--#include file="footer.html" -->

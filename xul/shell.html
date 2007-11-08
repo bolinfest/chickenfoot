@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+<head>
+
+<style>
+body, input {
+  font-family: Monospace;
+}
+</style>
+
+<script>
+function $(id) { return document.getElementById(id); }
+
+function init() {
+  var shell = $('shell').contentWindow.document;
+  shell.designMode = "on";  
+  shell.execCommand("fontname", false, "Monospace");
+}
+
+</script>
+</head>
+<body onload="init()">
+
+<table style="width: 100%">
+
+<tr>
+  <td>With: </td>
+  <td><input id="with" style="width:100%"></td>
+</tr>
+
+<tr>
+  <td colspan="2"><input id="input" style="width:100%"></td>
+</tr>
+
+</table>
+
+<p>
+
+<iframe id="shell" width="100%" height="200px"></iframe>
+
+
+
+</body>
+</html>

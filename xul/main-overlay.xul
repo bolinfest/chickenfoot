@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+
+<!--
+/*
+ * Chickenfoot end-user web automation system
+ *
+ * Copyright (C) 2004-2006 Massachusetts Institute of Technology.
+ * All rights reserved.
+ *
+ * This library is free software; you can redistribute it
+ * and/or modify it under the terms of the GNU General
+ * Public License as published by the Free Software
+ * Foundation, version 2.
+ *
+ * Chickenfoot homepage: http://uid.csail.mit.edu/chickenfoot/
+ */
+-->
+
+<overlay id="chickenfoot-sidebar"
+         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <!-- Sidebar Overlay -->
+  <menupopup id="viewSidebarMenu">
+        <menuitem observes="viewChickenfootSidebar"/>
+  </menupopup>
+
+  <!-- figure out correct way to add F8 as the keyboard shortcut -->
+    <broadcasterset id="mainBroadcasterSet">
+        <broadcaster id="viewChickenfootSidebar"
+            autoCheck="false"
+            label="Chickenfoot"
+            acceltext="F8"
+            type="checkbox"
+            group="sidebar"
+            sidebarurl="chrome://chickenfoot/content/sidebar.xul"
+            sidebartitle="Chickenfoot Script Editor"
+            oncommand="toggleSidebar('viewChickenfootSidebar');"/>
+    </broadcasterset>
+  
+    <toolbarpalette id="BrowserToolbarPalette">
+        <toolbarbutton id="chickenfoot-button"
+                       tooltiptext="Chickenfoot"
+                       observes="viewChickenfootSidebar" />
+    </toolbarpalette>
+
+  <keyset id="mainKeyset">
+    <key id="key_gd_toggle_chickenfoot_visibility"
+         keycode="VK_F8"
+         command="cmd_gd_toggle_chickenfoot_visibility" />
+  </keyset>
+
+  <commandset id="mainCommandSet">
+    <command id ="cmd_gd_toggle_chickenfoot_visibility"
+             oncommand="toggleSidebar('viewChickenfootSidebar');" />
+  </commandset>
+  
+  <popup id="contentAreaContextMenu">
+    <menu id="chickenfoot-trigger-context-menu"
+          label="Run Trigger on this page"
+          accesskey="u"
+          insertafter="context-stop"
+          >
+      <menupopup id="chickenfoot-trigger-context-menu-popup"
+                 onpopupshowing="Chickenfoot.populateTriggerContextMenuPopup(this)"
+                 />
+    </menu>
+  </popup>
+
+  <script><![CDATA[
+    window.document.getElementById('sidebar').style.maxWidth = '1000px';
+
+    Chickenfoot = Components.classes["@uid.csail.mit.edu/Chickenfoot/;1"]
+            .getService(Components.interfaces.nsISupports)
+            .wrappedJSObject;
+
+    Chickenfoot.setupWindow(window);
+
+    /*
+     The code below tries to open the sidebar at startup, but this
+     causes a race condition that exhibits itself in many unpredictable ways:
+       * crash on startup
+       * hang on startup
+       * starting but leaving the URL box empty and Back/Forward disabled
+       * other weirdness on Mac
+     
+     Need to figure out a safer way to tell new users that Chickenfoot has been
+     installed.
+
+    var prefs = Chickenfoot.getPrefBranch();
+    var firstInstall = true;
+    try {
+      if (prefs.getBoolPref("installed")) firstInstall = false;
+    } catch (e) {}
+    if (firstInstall) {
+      window.setTimeout(function() {window.toggleSidebar('viewChickenfootSidebar');}, 100);
+    }
+    */
+
+  ]]></script>
+
+</overlay>

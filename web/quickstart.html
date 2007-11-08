@@ -1,0 +1,207 @@
+<!--#include file="header.html" -->
+
+<h3>Quick Start Guide</h3>
+
+Chickenfoot's user interface is a Firefox sidebar.  Use <b>View &gt;&gt; 
+Sidebar &gt;&gt; Chickenfoot</b> (or <b>press F8</b>) to make it appear.
+
+<img src="images/simple_screenshot.png" style="margin: 20px" align="right" />
+<ul>
+<li><b>Script Editor</b>: Type Javascript or Chickenfoot code here 
+and press Run <img src="images/stock_exec.png" width="12" height="12" /> to run it.
+<li><b>Output</b>: View the result of the last script you ran.  Use the
+output() command to display messages here from anywhere in your script.
+<li><b>Patterns</b>: Enter keyword patterns here to see what they match on 
+the web page. 
+<li><b>Triggers</b>: Install Chickenfoot scripts so that they run any time you
+visit a certain web page.
+</ul>
+
+<p/>
+Try this simple script to see Chickenfoot in action:
+<pre class="example">
+go("google.com")
+enter("uist 2005")
+click("google search")
+</pre>
+
+Here is a quick guide to the major Chickenfoot commands:
+
+<p>
+<table>
+
+<tr>
+<td>
+<h4>Page Navigation</h4>
+
+<tr>
+<td class="desc">
+Visit a url
+<td>
+<pre class="example">
+go("google")    
+</pre>
+
+<tr>
+<td class="desc">
+Load url in a hidden window
+<td>
+<pre class="example">
+w = fetch("yahoo")
+</pre>
+
+<tr>
+<td class="desc">
+Opens url in a new tab
+<td>
+<pre class="example">
+openTab("www.mit.edu")
+</pre>
+
+
+<tr>
+<td>
+<h4>Forms &amp; Links</h4>
+
+<tr>
+<td class="desc">
+Click on a button or link
+<td>
+<pre class="example">
+click("feeling lucky")
+click("FAQ")
+</pre>
+
+<tr>
+<td class="desc">
+Enter a value into a textbox
+<td>
+<pre class="example">
+enter("chickenfoot")
+enter("from address", "77 mass ave")
+</pre>
+    
+<tr>
+<td class="desc">
+Check or uncheck a checkbox
+<td>
+<pre class="example">
+check("arabic")
+uncheck("arabic")
+</pre>
+
+<tr>
+<td class="desc">
+Pick from a listbox or drop-down
+<td>
+<pre class="example">
+pick("GIF")
+pick("file format", "any")
+</pre>
+
+<tr>
+<td>
+<h4>Pattern Matching</h4>
+
+<tr>
+<td class="desc">
+Find a pattern
+<td>
+<pre class="example">
+m = find("google search button")
+m = find(new TC("number just after ISBN"))
+</pre>
+
+<tr>
+<td class="desc">
+Count matches
+<td>
+<pre class="example">
+m.count
+</pre>
+
+<tr>
+<td class="desc">
+Get visible text
+<td>
+<pre class="example">
+m.text
+</pre>
+
+
+<tr>
+<td class="desc">
+Get HTML source
+<td>
+<pre class="example">
+m.html
+</pre>
+
+<tr>
+<td class="desc">
+Get Node object
+<td>
+<pre class="example">
+m.element
+</pre>
+
+<tr>
+<td class="desc">
+Iterate over matches
+<td>
+<pre class="example">
+for (m = find(pattern);
+     m.hasMatch;
+     m = m.next) { 
+  ... 
+} 
+</pre>
+
+<tr>
+<td>
+<h4>Page Modification</h4>
+
+<tr>
+<td class="desc">
+Insert html into page
+<td>
+<pre class="example">
+insert(before("textbox"), "Search: ")
+insert(after("textbox"), "...")
+</pre>
+
+<tr>
+<td class="desc">
+Remove html from page
+<td>
+<pre class="example">
+remove("advanced search link")
+</pre>
+
+<tr>
+<td class="desc">
+Replace html
+<td>
+<pre class="example">
+replace(new TC("first image"), 
+        "&lt;img src='mylogo.jpg'&gt;")
+</pre>
+
+<tr>
+<td>
+<h4>Widgets and Interaction</h4>
+
+<tr>
+<td class="desc">
+Make a link or button that fires action when clicked
+<td>
+<pre class="example">
+new Link("Go to Google", 
+         "go('google')")
+new Button("Green", function() { 
+  document.body.style.background = "green"
+} )
+</pre>
+
+  
+<!--#include file="footer.html" -->

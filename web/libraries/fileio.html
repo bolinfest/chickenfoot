@@ -1,0 +1,62 @@
+<!--#include file="header.html" -->
+
+<h3>Library: fileio.js</h3>
+
+<p>The fileio.js library provides functions for doing simple input/output with files.</p>
+
+<p>
+Example: displaying the contents of a file in the output pane.
+<pre>
+    include("fileio.js")
+    a = read("C:\\Windows\\win.ini")
+    output(a)
+</pre>
+</p>
+
+<p>
+Example: creating a new file with the word "boo!" in it.
+<pre>
+    include("fileio.js")
+    write("C:\\new_file.txt", "boo!")
+</pre>
+</p>
+
+<p>
+Here is the JavaDoc style comments about each function
+(I'm not sure how to convert these into HTML, anyone?).
+<pre>
+/**
+ * Returns the contents of the given file as a string.
+ *
+ * @param {string} filename of the file to read.
+ * @return {string} the contents of the file as a string.
+ */
+function read(filename)
+
+/**
+ * Creates a file with the given contents.
+ *
+ * @param {string} filename of the file to create (or overwrite)
+ * @param {string} data to write to the file
+ */
+function write(filename, data)
+
+/**
+ * Appends the given data to the given file.
+ *
+ * @param {string} filename of the file to append to
+ * @param {string} data to append to the file
+ */
+function append(filename, data)
+
+/**
+ * Tests whether the given file exists.
+ *
+ * @param {string} filename of the file to test
+ * @return {boolean} true if the given file exists, and false otherwize
+ */
+function exists(filename)
+</pre>
+</p>
+
+<!--#include file="footer.html" -->

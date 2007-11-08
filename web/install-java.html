@@ -1,0 +1,81 @@
+<!--#include file="header.html" -->
+
+<h3>Installing the Java 5.0 plugin for Firefox</h3>
+
+<p/>
+
+Some features of Chickenfoot, such as packaging a script as a Firefox extension,
+require the Java 5.0 plugin for Firefox.
+
+<p/>
+
+<span id="statusMsg" style="font-weight:bold"></span>
+
+<p/>
+
+<b>MS Windows:</b>
+
+<p/>
+Installing <a href="http://www.java.com/">the latest version of Java from Sun</a>
+should install the plugin for Firefox automatically.<br>
+If that fails, try
+<a href="http://plugindoc.mozdev.org/faqs/java.html#Win32">these instructions provided by Mozilla</a>.
+
+<p/>
+
+<b>Mac:</b>
+
+<ol>
+<li>Go to <a href="http://www.apple.com/support/downloads/java2se50release1.html">http://www.apple.com/support/downloads/java2se50release1.html</a>
+to get Java 5.0 for Mac.</li>
+
+<li>Install the Java browser plugin available at <a href="http://javaplugin.sourceforge.net/">
+http://javaplugin.sourceforge.net/</a>.</li>
+
+<li>Once you have installed the items listed above, open the <b>Applications</b> folder
+on your Mac and go to <b>Utilities->Java->J2SE 5.0->Java Preferences</b>.
+Under the <b>General</b> tab, select <b>J2SE 5.0</b> from the <b>Use Version:</b>
+dropdown and click <b>Save.</b></li>
+</ol>
+
+<b>Linux:</b>
+
+<p/>
+
+First <a href="http://www.java.com/">install the latest version of Java from Sun's web site</a>.<br>
+Then <a href="http://plugindoc.mozdev.org/faqs/java.html#Linux">
+follow Mozilla's directions for installing the Java plugin on Linux</a>.<br>
+This involves creating a symlink, often in your <code>~/.mozilla/plugins</code> directory.
+
+<script>
+/** @return true if Firefox has Java 1.5 or later installed */
+function hasJava5() {
+  try {
+    if (!window.navigator.javaEnabled()) {
+      return false;
+    } else {
+      var version = window.java.lang.System.getProperty('java.vm.version').match(/^(\d+)\.(\d+)/);
+      var max = parseInt(version[1], 10);
+      var min = parseInt(version[2], 10);
+      if (max > 1 || (max === 1 && min >= 5)) {
+        return true;    
+      } else {
+        return false;
+      }
+    }
+  } catch (e) {
+    debug(e.stack);
+    return false;
+  }
+}
+
+var statusMsg = document.getElementById('statusMsg');
+var hasJava = hasJava5();
+statusMsg.style.color = hasJava ? 'green' : 'red';
+statusMsg.innerHTML = hasJava ? 'You have the Java 5.0 plugin installed.'
+                              : 'You do not appear to have the Java 5.0 plugin installed.';
+
+</script>
+
+
+<!--#include file="footer.html" -->

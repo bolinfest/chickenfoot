@@ -1,0 +1,130 @@
+const CF_ACTION_HISTORY_ID = "CF_ACTION_HISTORY";
+const CF_ACTION_HISTORY_TAB = "CF_ACTION_HISTORY_TAB";
+
+function startRecording() {
+  // set recordingCheckbox
+  var cbox = document.getElementById('recordingCheckbox');
+  cbox.checked = isRecording();
+
+  recordFromWindow(Chickenfoot.getTabBrowser(chromeWindow));
+}
+
+function stopRecording() {
+  stopRecordingFromWindow(Chickenfoot.getTabBrowser(chromeWindow));
+}
+
+function isRecording() {
+  var prefs = Chickenfoot.getPrefBranch();
+  try {
+    return prefs.getBoolPref("recordActions");
+  } catch (e) {
+    var defaultValue = false;
+    prefs.setBoolPref("recordActions", defaultValue);
+    return defaultValue;
+  }
+}
+
+function setRecording(/*boolean*/ on) {
+  Chickenfoot.getPrefBranch().setBoolPref("recordActions", on);
+  
+  if (on) startRecording();
+  else stopRecording();
+}
+
+function recordFromWindow(/*HtmlWindow*/ win) {
+  win.addEventListener('click', recordAction, true);
+  win.addEventListener('change', recordAction, true);
+}
+
+function stopRecordingFromWindow(/*HtmlWindow*/ win) {
+  win.removeEventListener('click', recordAction, true);
+  win.removeEventListener('change', recordAction, true);
+  win.removeEventListener('load', recordAction, true);
+}
+
+function recordAction (event) {
+    doRecordAction(event.explicitOriginalTarget, event.type);
+}
+
+function doRecordAction(node, type) {
+    if (!isRecording()) return;
+    
+    if (type == "click" && node.nodeName == "tabbrowser") return;
+    
+    //if (type == "click" && !Chickenfoot.shouldGenerateClickCommand(node)) return;
+
+    try {
+        var result = Chickenfoot.generateChickenfootCommand(node, type);
+        recordMatch(result);
+    }
+    catch (e) {
+    	try {
+        	var result = Chickenfoot.generateChickenfootCommand(node, type);
+        	recordMatch(result);
+        }
+        catch (e2) {
+        	debug(e2.message);
+        	recordError(e2.message);
+        }
+    }
+    
+    return;
+}
+
+function recordMatch(/*String*/ record) {
+    if (record == "") return;
+    
+    printAction(record);
+}
+
+function recordError(/*String*/ error) {
+    printAction("<font color\"red\">//" + error + "</font>", true);
+}
+
+function removeTypes(/*String*/ record) {
+    var types = new Array(" radiobutton", " checkbox", " textbox", " listitem", " listbox");
+
+    for (var i=0; i<types.length; i++) {
+        record = record.replace(types[i], "");
+    }
+    
+    return record;
+}
+
+function printAction(/*String*/ text, /*boolean*/ html){
+  if (html == null) {
+      Chickenfoot.printDebug(chromeWindow, text, true, false, CF_ACTION_HISTORY_ID);
+  }
+  else {
+      Chickenfoot.printDebug(chromeWindow, text, true, html, CF_ACTION_HISTORY_ID);
+  }
+}
+
+var lastLocation = "";
+
+var progressListener = {
+  QueryInterface : function(aIID) {
+    if (aIID.equals(Components.interfaces.nsIWebProgressListener) ||
+        aIID.equals(Components.interfaces.nsISupportsWeakReference) ||
+        aIID.equals(Components.interfaces.nsISupports)) {
+      return this;
+    } else {
+      throw Components.results.NS_NOINTERFACE;
+    }
+  },
+  
+  onLocationChange:function(aProgress,aRequest,aURI) {
+      var url = aProgress.DOMWindow.location;
+      if (url != lastLocation) {
+          printAction("go(\"" + url + "\")");
+      }
+      lastLocation = url;
+  },
+  
+  onStateChange : function(aProgress,aRequest,aFlag,aStatus) {return 0;},
+  onProgressChange : function(aProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress){return 0;},
+  onStatusChange : function(a,b,c,d){return 0; },
+  onSecurityChange : function(a,b,c){return 0; },
+  onLinkIconAvailable : function() {return 0; }
+};
+
