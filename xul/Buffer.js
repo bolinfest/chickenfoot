@@ -33,29 +33,6 @@ var useHtmlEditor = true;
 
 // Progress listener
 var causesLoad = false;
-var progressListener = {
-  onStateChange : function(aProgress,aRequest,aFlag,aStatus) {
-    try {
-      const DOCUMENT = Components.interfaces.nsIWebProgressListener.STATE_IS_DOCUMENT;
-      const WINDOW = Components.interfaces.nsIWebProgressListener.STATE_IS_WINDOW;
-      const START = Components.interfaces.nsIWebProgressListener.STATE_START;
-      const STOP = Components.interfaces.nsIWebProgressListener.STATE_STOP;
-      const RESTORING = Components.interfaces.nsIWebProgressListener.STATE_RESTORING;
-      
-      if ((aFlag & START) && (aFlag & (DOCUMENT | WINDOW))) { 	
-        causesLoad = true;
-      }
-    } catch (e) {
-    }
-    return 0;
-  },
-
-  onLocationChange:function(aProgress,aRequest,aURI) { return 0; },
-  onProgressChange : function(aProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress){return 0;},
-  onStatusChange : function(a,b,c,d){return 0; },
-  onSecurityChange : function(a,b,c){return 0; },
-  onLinkIconAvailable : function() {return 0; }
-};
 
 /**
  * Buffer represents an open script editor.
@@ -136,9 +113,6 @@ function Buffer(/*optional File*/ file,
 
   // This should only happen when I release enter and control is pressed.
 
-  var browser = Chickenfoot.getTabBrowser(chromeWindow)
-  browser.addProgressListener(progressListener,
-        Components.interfaces.nsIWebProgress.NOTIFY_ALL);
   this.focus();
   //this.scrub();
   this._updateDisplay();

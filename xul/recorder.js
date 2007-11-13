@@ -34,6 +34,7 @@ function setRecording(/*boolean*/ on) {
 function recordFromWindow(/*HtmlWindow*/ win) {
   win.addEventListener('click', recordAction, true);
   win.addEventListener('change', recordAction, true);
+  win.addEventListener('load', recordAction, true);
 }
 
 function stopRecordingFromWindow(/*HtmlWindow*/ win) {
@@ -99,32 +100,4 @@ function printAction(/*String*/ text, /*boolean*/ html){
       Chickenfoot.printDebug(chromeWindow, text, true, html, CF_ACTION_HISTORY_ID);
   }
 }
-
-var lastLocation = "";
-
-var progressListener = {
-  QueryInterface : function(aIID) {
-    if (aIID.equals(Components.interfaces.nsIWebProgressListener) ||
-        aIID.equals(Components.interfaces.nsISupportsWeakReference) ||
-        aIID.equals(Components.interfaces.nsISupports)) {
-      return this;
-    } else {
-      throw Components.results.NS_NOINTERFACE;
-    }
-  },
-  
-  onLocationChange:function(aProgress,aRequest,aURI) {
-      var url = aProgress.DOMWindow.location;
-      if (url != lastLocation) {
-          printAction("go(\"" + url + "\")");
-      }
-      lastLocation = url;
-  },
-  
-  onStateChange : function(aProgress,aRequest,aFlag,aStatus) {return 0;},
-  onProgressChange : function(aProgress, aRequest, aCurSelfProgress, aMaxSelfProgress, aCurTotalProgress, aMaxTotalProgress){return 0;},
-  onStatusChange : function(a,b,c,d){return 0; },
-  onSecurityChange : function(a,b,c){return 0; },
-  onLinkIconAvailable : function() {return 0; }
-};
 
