@@ -20,18 +20,6 @@ t.test(function() {
 });
 
 t.test(function() {
-  var Include1 = {};
-  include('pages/include1.js', Include1);
-
-  Test.assertEquals(42, Include1.definedWithVar);
-  Test.assertEquals(102, Include1.definedFunction());
-  Test.assertEquals(56, globalVariable);
-  if ("globalVariable" in Include1) Test.fail("globalVariable shouldn't be in Include1");
-
-  delete globalVariable; 
-});
-
-t.test(function() {
   var Include2 = {};
   include('pages/include1.js', Include2);
 
@@ -40,48 +28,60 @@ t.test(function() {
   Test.assertEquals(56, globalVariable);
   if ("globalVariable" in Include2) Test.fail("globalVariable shouldn't be in Include2");
 
-  delete globalVariable;
+  delete globalVariable; 
 });
 
 t.test(function() {
   var Include3 = {};
-  include('include2.js', Include3);  //as file is present in the directory of this file
-  Test.assertEquals(5, Include3.add(2,3));
+  include('pages/include1.js', Include3);
+
+  Test.assertEquals(42, Include3.definedWithVar);
+  Test.assertEquals(102, Include3.definedFunction());
+  Test.assertEquals(56, globalVariable);
+  if ("globalVariable" in Include3) Test.fail("globalVariable shouldn't be in Include3");
+
+  delete globalVariable;
 });
 
-t.test(function() {
+t.test("Include scriptDir referenced file", function() {
   var Include4 = {};
-  var file = scriptDir.clone();
-  file.append("include2.js");
-  include('file://' + file.path, Include4);  //Constructs the full path name string
+  include('include2.js', Include4);  //as file is present in the directory of this file
   Test.assertEquals(5, Include4.add(2,3));
 });
 
-t.test(function() {
+t.test("Include Full file path", function() {
   var Include5 = {};
-  include("http://uid.csail.mit.edu/chickenfoot/includeTest/include.js", Include5);  //Constructs the full URL path name string
-  Test.assertEquals(9, Include5.add_three(2,3,4));
-  Test.assertEquals(92, Include5.k);
+  var file = scriptDir.clone();
+  file.append("include2.js");
+  include('file://' + file.path, Include5);  //Constructs the full path name string
+  Test.assertEquals(5, Include5.add(2,3));
 });
 
-t.test(function() {
+t.test("Include remote URL and remote reference", function() {
   var Include6 = {};
-  include("pages/include-test1/in*.js", Include6);
-  Test.assertEquals(10, Include6.x);
-  Test.assertEquals(7, Include6.y);
+  include("http://uid.csail.mit.edu/chickenfoot/includeTest/include.js", Include6);  //Constructs the full URL path name string
+  Test.assertEquals(9, Include6.add_three(2,3,4));
+  Test.assertEquals(92, Include6.k);
 });
 
-t.test(function() {
+t.test("Include Wildcard", function() {
   var Include7 = {};
-  include("pages/include-test1/tester1.js", Include7);
-  Test.assertEquals(55, Include7.x);
-  Test.assertEquals(43, Include7.y);
+  include("pages/include-test1/in*.js", Include7);
+  Test.assertEquals(10, Include7.x);
+  Test.assertEquals(7, Include7.y);
 });
 
-t.test("libraries", function() {
-  var File = {};
-  include("fileio.js", File);
-  Test.assert(File.write);
+t.test("Include Nested includes", function() {
+  var Include8 = {};
+  include("pages/include-test1/tester1.js", Include8);
+  Test.assertEquals(55, Include8.x);
+  Test.assertEquals(43, Include8.y);
+});
+
+t.test("Include libraries", function() {
+  var Include9 = {};
+  include("fileio.js", Include9);
+  Test.assert(Include9.write);
 });
 
 t.close();
