@@ -89,31 +89,32 @@ function clickImpl(/*Document*/ doc, /*string*/ pattern, /*chromeWindow*/chrome,
   var allowDefaultAction = fireMouseEvent('click', node);
 
   if (node.tagName == 'menu') { //|| (node.tagName == 'menulist')) {
-  menuBox = node.boxObject.QueryInterface(Components.interfaces.nsIMenuBoxObject)
-  menuBox.openMenu(true);
-  node.open = true
-  
-  //this event listener makes sure that the popup will close again with any other click event
-  function closeMenus(event) {
-    menus = doc.getElementsByTagName('menu')
-    var i=0
-    while (i<menus.length) {
-        if (menus[i].wrappedJSObject) {menus[i].wrappedJSObject.open = false;}
-        else {menus[i].open = false;}
-        menus[i].boxObject.QueryInterface(Components.interfaces.nsIMenuBoxObject).openMenu(false); 
-        i += 1
-      }}
-   if (chrome) {chrome.addEventListener("click", closeMenus, false);}
-   else {doc.addEventListener("click", closeMenus, false);}
+      menuBox = node.boxObject.QueryInterface(Components.interfaces.nsIMenuBoxObject)
+      menuBox.openMenu(true);
+      node.open = true
+      
+      //this event listener makes sure that the popup will close again with any other click event
+      function closeMenus(event) {
+        menus = doc.getElementsByTagName('menu')
+        var i=0
+        while (i<menus.length) {
+            if (menus[i].wrappedJSObject) {menus[i].wrappedJSObject.open = false;}
+            else {menus[i].open = false;}
+            menus[i].boxObject.QueryInterface(Components.interfaces.nsIMenuBoxObject).openMenu(false); 
+            i += 1
+          }}
+       if (chrome) {chrome.addEventListener("click", closeMenus, false);}
+       else {doc.addEventListener("click", closeMenus, false);}
    }
-  
-  if (allowDefaultAction
+   
+   if (allowDefaultAction
       && element.tagName == "A"
-      && element.href != "") {
+      && element.href
+      && !element.target) {
     // We want to exclude anchor tags that are not links, such as:
     // <a name="section2">Section 2: Related Work</a>
     // Ideally, we would check if element is in doc.links, but that
     // may be expensive if there are a lot of links
-    goImpl(doc.defaultView, element.toString(), true);
-  }
+     goImpl(doc.defaultView, element.toString(), true);
+   }
 }
