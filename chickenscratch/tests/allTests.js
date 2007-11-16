@@ -2,6 +2,7 @@
 var testsRun = [];
 
 runTest("findTest.js");
+runTest("clickTest.js");
 runTest("pickTest.js");
 runTest("checkTest.js");
 runTest("xpathTest.js");
@@ -39,6 +40,7 @@ function runTest(name) {
     testsRun.push(test);
   }
 }
+
 
 
 
