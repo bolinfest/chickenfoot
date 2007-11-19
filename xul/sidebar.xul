@@ -133,22 +133,8 @@
                      accesskey="R"
                      oncommand="runSelectedBuffer()"
                      observes="requiresSelectedEditor"
-                     type="menu-button"
             		>
-        <menupopup id="chickenfoot-run-popup"/>
       </toolbarbutton>
-      
-      <script><![CDATA[
-        window.setTimeout(function() {
-          try {
-            if (Chickenfoot.getPrefBranch().getBoolPref("useKeywordCommands")) {
-              document.getElementById("cfRunButton").setAttribute("type", "menu-button");
-            }
-          } catch (e) {
-            // fail silently if chickenfoot.useKeywordCommands preference is missing
-          }        
-        }, 1);
-      ]]></script>
 
       <!-- STOP -->
       <toolbarbutton class="disablableToolbarButton"

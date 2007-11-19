@@ -12,7 +12,6 @@ function loadHandler() {
     window.setTimeout(firstChickenfootUse, 0);
     prefs.setBoolPref("installed", true);
   }
-  populateRunPopup();
   populateTemplatePopup();
   
   focusEditorWhenTabSelected();
@@ -155,42 +154,6 @@ function getTemplateData() {
     prefs.setCharPref('templates', DEFAULT_CHICKENFOOT_TEMPLATES);
   }
   return templates;
-}
-/**
- * Populate the run dropdown under the run button
- */
-function populateRunPopup() {
-  var runPopup = document.getElementById('chickenfoot-run-popup');
-  var runButton = document.getElementById('cfRunButton');
-  while (runPopup.firstChild) {
-    templatePopup.removeChild(runPopup.firstChild);
-  }
-  var normal = document.createElement('menuitem');
-  normal.setAttribute('type', 'radio');
-  normal.setAttribute('label', 'Run as Javascript');
-  normal.setAttribute('checked', 'true');
-  normal.id = 'normal-chickenfoot-eval';
-  runPopup.appendChild(normal);
-  normal.addEventListener('command', function() {
-	runButton.setAttribute('style', jsIcon);
-   	var buffer = Chickenfoot.getSidebarWindow(chromeWindow).getSelectedBuffer();
-    buffer.useKeywordCommands(false);
-  }, true); 
-  var kwc = document.createElement('menuitem');
-  kwc.setAttribute('type', 'radio');
-  kwc.setAttribute('label', 'Run as Keyword');
-  kwc.id = 'kwc-chickenfoot-eval';
-  kwc.addEventListener('command', function () {
-    if (Chickenfoot.hasJava()) {
-      runButton.setAttribute('style', kwIcon);
-   	  var buffer = Chickenfoot.getSidebarWindow(chromeWindow).getSelectedBuffer();
-      buffer.useKeywordCommands(true);
-    } else {
-      Chickenfoot.showNeedsJavaDialog(chromeWindow)
-    }
-  }, true);
-  
-  runPopup.appendChild(kwc);
 }
 
 /**

@@ -91,12 +91,6 @@ function testRecord(/*DOM node*/ target, /*string*/ eventType) {
         }
         output(command);
         Test.assertEquals(result, 1, testName + " - " + target.name + " returned error: " + command);
-        
-        /*var m = Chickenfoot.interpretKeywordCommand(target.ownerDocument, command);   
-        var matchedNode = m[0].node.nodeName == "OPTION" ? m[0].node.parentNode : m[0].node;
-    	if (m.length == 0 || matchedNode != target) result = 0;
-    	
-    	Test.assertEquals(result, 1, testName + " - keyword command matched wrong node: " + matchedNode.nodeName);*/
     });
 }
 

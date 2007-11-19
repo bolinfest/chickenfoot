@@ -41,6 +41,7 @@ function Buffer(/*optional File*/ file,
                 /*optional boolean*/ dirty,
                 /*optional String*/ text,
                 /*optional int*/ cursorPosition) {
+  var thisBuffer = this;
   this._file = file ? file : null;
   this._dirty = dirty;
   this._trigger = file ? Chickenfoot.gTriggerManager.getTriggerFromFile(file) : null;
@@ -48,7 +49,6 @@ function Buffer(/*optional File*/ file,
   this._initialDirty = dirty;
   this._initialCursorPosition = cursorPosition;
   this._initialText = text;
-  this._useKwc = false;
   this._makeGuess = false;
   
   // create the editor widget
@@ -98,18 +98,19 @@ function Buffer(/*optional File*/ file,
 
 
   if (useHtmlEditor) {
-    var thisBuffer = this;
     editor.contentWindow.addEventListener("load", function() { thisBuffer.startEditing(); }, false);
   }  
-  //this.editor.addEventListener("keyup", keywordColor, true);
   this.editor.addEventListener("keyup", syntaxColorEvent, true);
   //this.editor.addEventListener("mouseup", syntaxColorMouseEvent, true);
   //this.editor.addEventListener("keydown", syntaxColorEventDown, true);
   //this.editor.addEventListener("keypress", syntaxColorEventPress, true);
   //this.editor.addEventListener("keyup", syntaxColorEventUp, true);
   //this.editor.addEventListener("keyup", tabAndSyntaxColorEvent, true);
-  this.updateMode(); 
-  this.editor.addEventListener("keyup", runCurrentLine, true);
+  this.editor.addEventListener("keyup", function(event) {
+      if (event.ctrlKey && (event.keyCode == 13 /* for Win/Linux*/ || event.keyCode == 77 /* for Mac OS */)) {
+          thisBuffer.runCurrentLine();
+      }
+  }, true);
 
   // This should only happen when I release enter and control is pressed.
 
@@ -583,14 +584,74 @@ Buffer.prototype.run = function() {
   if (this.file === null) { file = this.file; }
   else { file = this.file.parent; }
   
-  if (this._useKwc) {
-  	Chickenfoot.evaluateHybrid(chromeWindow, this.text, file);
-  }
-  else {
-  	Chickenfoot.evaluate(chromeWindow, this.text, true, null, null, file);
-  }
-  
+  Chickenfoot.evaluate(chromeWindow, this.text, true, null, null, file);
 }
+
+Buffer.prototype.runCurrentLine = function() {
+    var thisBuffer = this;
+    
+    // if web page steals focus from us, grab it back (just once)
+    var listener = function(event) {
+      setTimeout(function() {thisBuffer.editor.contentWindow.focus()}, 1);
+      thisBuffer.editor.removeEventListener("blur", listener, true);
+    }
+    thisBuffer.editor.addEventListener("blur", listener, true);
+    
+    // get the line to run
+    var line = getTextAtLine(getCursorLine());
+    debug(line);
+    
+    // run it
+    Chickenfoot.evaluate(chromeWindow, line, true, this.file); 
+  
+    function getTextAtLine(/* int */ line) {
+      var ed = thisBuffer.editor;
+      var content = ed.contentDocument.getElementById('body');
+      var walker = Chickenfoot.createTreeWalker(content, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+      var currentLine = 0;
+      var lineText = "";
+      while (walker.nextNode() && currentLine <= line) {
+        var node = walker.currentNode;
+        if (node.nodeType == Node.TEXT_NODE && currentLine == line) {
+          lineText+=node.nodeValue;
+        }
+        else if (node.nodeType == Node.ELEMENT_NODE && node.nodeName=="BR") {
+          currentLine++;
+        }
+      }
+      return lineText;
+    }
+    
+    function getCursorLine() {
+      var ed = thisBuffer.editor;
+      var sel = ed.contentWindow.getSelection();
+      var anchorNode = sel.anchorNode;
+      var content = ed.contentDocument.getElementById('body');
+      var walker = Chickenfoot.createTreeWalker(content, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+      var currentLine = 0;
+      if (anchorNode.nodeType == Node.TEXT_NODE) {
+        while (walker.nextNode()) {
+          var node = walker.currentNode;
+          if (node == anchorNode) {
+            break;
+          }
+          else if (node.nodeType == Node.ELEMENT_NODE && node.nodeName =="BR") {
+            currentLine++;
+          }
+        }
+      }
+      else {
+        var children = anchorNode.childNodes;
+        for (var i = 0; i < sel.anchorOffset; i++) {
+          if (children.item(i).nodeType == Node.ELEMENT_NODE && children.item(i).nodeName == "BR") {
+            currentLine++;
+          }
+        }
+      }
+      return currentLine;
+    }
+}
+
 
 Buffer.prototype.onFocus = function() {
   if (this._file) {
@@ -695,11 +756,10 @@ function loadIntoBuffer(file) {
     buffer.trigger = Chickenfoot.gTriggerManager.getTriggerFromFile(file);
     buffer.text = Chickenfoot.SimpleIO.read(file);
     buffer.dirty = false;
-    buffer.updateMode();
     buffer.focus();
   }
   else {
-  newBufferWithFile(file);  //else call the usual create new buffer procedure
+    newBufferWithFile(file);  //else call the usual create new buffer procedure
   }
 }
 
@@ -758,19 +818,6 @@ function focusEditorWhenTabSelected() {
     var result = oldSelectNewTab.apply(this, arguments);
     var buffer = getSelectedBuffer();
     if (buffer) buffer.focus();
-    var kwc = document.getElementById('kwc-chickenfoot-eval');
-    var normal = document.getElementById('normal-chickenfoot-eval');
-    var runButton = document.getElementById('cfRunButton');
-    if (buffer._useKwc) {
-      normal.setAttribute('checked', 'false');
-      kwc.setAttribute('checked', 'true');
-      runButton.setAttribute('style', kwIcon);
-    }
-    else {
-      normal.setAttribute('checked', 'true');
-      kwc.setAttribute('checked', 'false');
-      runButton.setAttribute('style', jsIcon);
-    }	
     return result;
   }
 }
@@ -842,9 +889,6 @@ function closeAllBuffersButSelected(){
     }
 }
 
-Buffer.prototype.useKeywordCommands = function(useKwc) {
-	this._useKwc = useKwc;
-}
 Buffer.prototype.runSelectedText = function() {
   var editor = this.editor;
   var sb = new Chickenfoot.StringBuffer();
@@ -873,45 +917,4 @@ function firstChickenfootUse() {
 // Follow the directions on the web site\n\
 // to start learning how to use Chickenfoot.\n';
 }
-/* 
-Method that behaves like Buffer.run() except it runs keyword commands instead.
-*/
-function interpretKWC() {
-  var htmlWindow = Chickenfoot.getVisibleHtmlWindow(chromeWindow);
-  var editor = getSelectedBuffer().editor;
-  var content = editor.contentDocument.getElementById('body');
-  var walker = Chickenfoot.createTreeWalker(content, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
-  //Chickenfoot.showLoadingEvents = true;
-  while (walker.nextNode()) {
-    var node = walker.currentNode;
-    if (node.nodeType == Node.TEXT_NODE) {
-      //debug(node.nodeValue);
-      var document = Chickenfoot.getLoadedHtmlDocument(htmlWindow);
-      var kwcObject = Chickenfoot.interpretKeywordCommand(document, node.nodeValue)[0];
-      if (kwcObject.node) {
-        Chickenfoot.animateTransparentRectangleOverNode(kwcObject.node, function() {});
-        Chickenfoot.sleep(0.45);
-      }
-      kwcObject.execute();
-      //debug("done " + node.nodeValue);
-      //alert(kwcObject.text);
-    }
-  }
-}
 
-Buffer.prototype.updateMode = function() {
-  var kwc = document.getElementById('kwc-chickenfoot-eval');
-  var normal = document.getElementById('normal-chickenfoot-eval');
-  var runButton = document.getElementById('cfRunButton');
-  if (normal==null||kwc==null||runButton==null) {
-    return;
-  }
-  normal.setAttribute('checked', ''+!this._useKwc);
-  kwc.setAttribute('checked', ''+this._useKwc);
-  if (this._useKwc) {
-    runButton.setAttribute('style', kwIcon);
-  }
-  else {
-    runButton.setAttribute('style', jsIcon);
-  }
-}
