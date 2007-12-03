@@ -5,7 +5,8 @@
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         buttons="accept,cancel"
         onload="doLoad();"
-        width="40em"
+        width="200em"
+        height="200em"
         ondialogaccept="return doOK();"
         ondialogcancel="return doCancel();">
 
@@ -14,7 +15,8 @@
 <script>
 <![CDATA[
   var Chickenfoot;
-  var code;
+  var mainTrigger;
+  var triggersToAdd = [];
 
   function gel(id) {
     return document.getElementById(id);
@@ -32,6 +34,57 @@
   function doLoad() {
     // unparcel items from window.arguments
     Chickenfoot = window.arguments[0].chickenfoot;
+    mainTrigger = window.arguments[0].mainTrigger;
+    
+    //set the main trigger field with the name of the main trigger
+    gel('mainTrigger').value = mainTrigger.name;
+    
+    //add the main trigger to the list of triggers to include in the xpi
+    triggersToAdd[triggersToAdd.length] = mainTrigger;
+    
+    //add any existing information in saved packaging configurations to the dialog
+    var icon = window.arguments[0].icon;
+    if(icon) { gel('icon').value = icon; } //icon
+    
+    var name = window.arguments[0].templateTags.extensionName;
+    if(name) { gel('name').value = name; } //name
+    
+    var author = window.arguments[0].templateTags.extensionAuthor;
+    if(author) { gel('author').value = author; } //author
+    
+    var description = window.arguments[0].templateTags.extensionDescription;
+    if(description) { gel('description').value = description; } //description
+    
+    var guid = window.arguments[0].templateTags.extensionGUID;
+    if(guid) { gel('guid').value = guid; } //guid
+    
+    var updateURL = window.arguments[0].templateTags.updateURL;
+    if(updateURL) { gel('updateURL').value = updateURL; } //updateURL
+    
+    var triggers = window.arguments[0].triggers; //triggers
+    var lstBox = gel('userFiles');
+    if(triggers) {
+      for(var k=0; k<triggers.length; k++) {
+        var itm = lstBox.appendItem(triggers[k].name, triggers[k].path.path);
+        itm.setAttribute("image", "chrome://chickenfoot/skin/trigger.png");
+        itm.setAttribute("class", "listitem-iconic");
+        triggersToAdd[triggersToAdd.length] = triggers[k];
+      }
+    }
+    
+    var userFiles = window.arguments[0].userFiles; //userFiles (not triggers)
+    if(userFiles) {
+      for(var k=0; k<userFiles.length; k++) {
+        if(!userFiles[k]) { continue; }
+        var fullPath = userFiles[k];
+        var broken = fullPath.split(/\\/);
+        var leafName = broken[broken.length - 1];
+        var itm = lstBox.appendItem(leafName, fullPath);
+        itm.setAttribute("image", "chrome://chickenfoot/skin/folder.png");
+        itm.setAttribute("class", "listitem-iconic");
+      }
+    }
+    
     
     // If the user does not have the GUID box populated, then he is probably
     // going to press the Generate GUID button.
@@ -43,36 +96,11 @@
         pregeneratedGuid = Chickenfoot.generateRandomGuid();
       }, 0);
     }
-      var ckbxParent = gel('triggers');
-      ckbxParent.removeChild(ckbxParent.firstChild);
-      var existingTriggers = Chickenfoot.gTriggerManager.triggers;
-      for (var k=0; k<existingTriggers.length; k++) {
-        var ckbx = window.document.createElement("checkbox");
-        ckbx.setAttribute("label", existingTriggers[k].name);
-        ckbx._trigger = existingTriggers[k];
-        ckbxParent.appendChild(ckbx);
-      }
   }
 
   var attributes = [
     'name', 'author', 'description', 'version', 'guid'
   ];
-  
-  function populateDialog(attributeMap) {
-    var focusSet = false;
-    for (var i = 0; i < attributes.length; ++i) {
-      var field = attributes[i];
-      var value = (field in attributeMap) ? attributeMap[field][0] : "";
-      if (!value && field === 'version') value = "0.1";
-      gel(field).setAttribute('value', value);
-      if (!value && !focusSet) {
-        gel(field).focus();
-        focusSet = true;
-      }
-    }
-    
-    if (!focusSet) gel('outputPath').focus();
-  }
 
   /**
    * @param guid {string} matching [a-f0-9-]*
@@ -141,18 +169,19 @@
     if (!Chickenfoot.trim(gel('outputPath').value)) {
       throw 'You must specify a file to save the XPI as';
     }
-    
-    var triggerPaths = new Array(); var c=0;
-    var ckbxs = gel("triggers").childNodes;
-    for (var h=0; h<ckbxs.length; h++) {
-      if (ckbxs[h].checked == true) {
-        triggerPaths[c] = ckbxs[h]._trigger;
-        c++;
+
+    //concat all the user included files into a string, separating multiple files with '/n'
+    //leave out the trigger files 
+    var filesLstBx = gel('userFiles');
+    var userFiles = "";
+    for(var k=0; k<filesLstBx.getRowCount(); k++) {
+      var current = filesLstBx.getItemAtIndex(k);
+      var isTrigger = false;
+      for(var y=0; y<triggersToAdd.length; y++){
+        if(triggersToAdd[y].path.path == current.value) { isTrigger = true; break; }
       }
-      else {continue;}
+      if(!isTrigger && (current.value != undefined)) { userFiles += current.value + "\n"; }
     }
-    
-    if (triggerPaths.length == 0) {throw 'You must choose at least one trigger to package';}
 
     // because we are copying the Chickenfoot and Chicken-bypass XPCOM objects,
     // we need to give them unique GUID contract ids, as well,
@@ -172,14 +201,15 @@
       CHICKENFOOT_GUID : chickenfootGuid,
       CHICKEN_BYPASS_GUID : chickenbypassGuid,
       CHICKENFOOT_COMMAND_LINE_HANDLER_GUID : chickenfootCommandLineHandlerGuid,
-      IS_EXPORTED_XPI : "true"
+      IS_EXPORTED_XPI : "true",
+      EXTENSION_UPDATE_URL : Chickenfoot.removeXmlChars(Chickenfoot.trim(gel('updateURL').value))
     };
     
     return {
       outputPath : Chickenfoot.trim(gel('outputPath').value),
       templateTags : templateTags,
-      userFiles : Chickenfoot.trim(gel('userFiles').value),
-      triggers : triggerPaths,
+      userFiles : userFiles,
+      triggers : triggersToAdd,
       icon : Chickenfoot.trim(gel('icon').value)
     };
   }
@@ -229,11 +259,11 @@
       fp.defaultExtension = ".xpi";    
       var res = fp.show();
       if (res == nsIFilePicker.returnOK || res == nsIFilePicker.returnReplace) {
-        gel('outputPath').setAttribute('value', fp.file.path);
+        gel('outputPath').value = fp.file.path;
       }
     }
     
-    function pickUserFiles(textboxID) {
+    function pickUserFiles(boxID) {
       var nsIFilePicker = Components.interfaces.nsIFilePicker;
       var mode = nsIFilePicker.modeOpen;
       var fp = Components.classes["@mozilla.org/filepicker;1"]
@@ -247,8 +277,12 @@
       fp.filterIndex = 0; 
       var res = fp.show();
       if (res == nsIFilePicker.returnOK || res == nsIFilePicker.returnReplace) {
-        var currentValue = gel('userFiles').getAttribute('value');
-        gel(textboxID).setAttribute('value', currentValue + fp.file.path + "\n");
+        try { 
+          var itm = gel(boxID).appendItem(fp.file.leafName, fp.file.path);
+          itm.setAttribute("image", "chrome://chickenfoot/skin/folder.png");
+          itm.setAttribute("class", "listitem-iconic");
+        }
+        catch(e) { gel(boxID).value = fp.file.path; }
       }
     }
     
@@ -261,8 +295,31 @@
       fp.filterIndex = 0;    
       var res = fp.show();
       if (res == nsIFilePicker.returnOK || res == nsIFilePicker.returnReplace) {
-        var currentValue = gel('userFiles').getAttribute('value');
-        gel('userFiles').setAttribute('value', currentValue + fp.file.path + "\n");
+        var itm = gel('userFiles').appendItem(fp.file.leafName, fp.file.path);
+        itm.setAttribute("image", "chrome://chickenfoot/skin/folder.png");
+        itm.setAttribute("class", "listitem-iconic");
+      }
+    }
+    
+    function openPickTrigger() {
+      //open the pick trigger dialog
+      var dialogArguments = { 
+          chickenfoot : Chickenfoot,
+          triggersChosen : undefined
+      };
+      window.openDialog("chrome://chickenfoot/content/pickTriggerDialog.xul",
+        "dlg",
+        "chrome,modal,centerscreen,resizable",
+        dialogArguments
+      );
+      
+      //add the triggers to the userFiles listbox and to the list of triggers to add to the xpi
+      var triggersChosen = dialogArguments.triggersChosen;
+      for(var k=0; k<triggersChosen.length; k++) {
+        triggersToAdd[triggersToAdd.length] = triggersChosen[k];
+        var itm = gel('userFiles').appendItem(triggersChosen[k].name, triggersChosen[k].path.path);
+        itm.setAttribute("image", "chrome://chickenfoot/skin/trigger.png");
+        itm.setAttribute("class", "listitem-iconic");
       }
     }
     
@@ -301,6 +358,17 @@
   
   <rows>
 
+    <!-- EMPTY ROW -->
+    <row align="center"></row>
+
+    <!-- MAIN TRIGGER -->
+    <row align="center">
+      <label value="Main Trigger:" />
+      <!-- <vbox id="triggers"> -->
+        <label value="no triggers currently exist" id="mainTrigger" flex="1" />
+      <!-- </vbox> -->
+    </row>
+
     <!-- NAME -->
     <row align="center">
       <label value="Name:" control="name" accesskey="n" />
@@ -323,14 +391,6 @@
     <row align="center">
       <label value="Version:" control="version" accesskey="v" />
       <textbox id="version" flex="1" />
-    </row>
-    
-    <!-- TRIGGERS -->
-    <row align="center">
-      <label value="Triggers to Include:" />
-      <vbox id="triggers">
-        <label value="no triggers currently exist" flex="1" />
-      </vbox>
     </row>
 
     <!-- GUID -->
@@ -359,6 +419,17 @@ The GUID will be written into your script so you do not lose it.
       </label>
     </row>
 
+    <!-- UPDATE URL -->
+    <row align="center">
+      <vbox>
+      <label value="Update URL:" control="updateURL" />
+      <label value="(optional)" />
+      </vbox>
+      <hbox flex="1">
+        <textbox id="updateURL" flex="1" />
+      </hbox>
+    </row>
+
     <!-- ICON FILE -->
     <row align="center">
       <vbox>
@@ -370,6 +441,23 @@ The GUID will be written into your script so you do not lose it.
         <button label="Browse..." oncommand="pickUserFiles('icon')" />
       </hbox>
     </row>
+    
+    <!-- OTHER INCLUDED FILES -->
+    <row>
+      <vbox flex="1">
+        <label value="Other Included Files:" control="userFiles" accesskey="i" />
+      </vbox>
+      <hbox flex="1">
+        <!-- <textbox id="userFiles" multiline="true" flex="4"/> -->
+        <listbox id="userFiles" rows="3" flex="2"/>
+        <vbox flex="1">
+          <button label="Add Trigger" flex="1" oncommand="openPickTrigger()"/>
+          <button label="Add File" flex="1" oncommand="pickUserFiles('userFiles')"/>
+          <button label="Add Folder" flex="1" oncommand="pickUserFolders()"/>
+        </vbox>
+        <vbox flex="5"> </vbox>
+      </hbox>
+    </row>
 
     <!-- OUTPUT FILE -->
     <row align="center">
@@ -377,21 +465,6 @@ The GUID will be written into your script so you do not lose it.
       <hbox flex="1">
         <textbox id="outputPath" flex="1" />
         <button label="Browse..." oncommand="pickOutputFile()" accesskey="b" />
-      </hbox>
-    </row>
-    
-    <!-- INCLUDE FILES -->
-    <row>
-      <vbox flex="1">
-        <label value="Other Included Files:" control="userFiles" accesskey="i" />
-      </vbox>
-      <hbox flex="1">
-        <textbox id="userFiles" multiline="true" flex="4"/>
-        <vbox flex="1">
-          <button label="Add File" flex="1" oncommand="pickUserFiles('userFiles')"/>
-          <button label="Add Folder" flex="1" oncommand="pickUserFolders()"/>
-        </vbox>
-        <vbox flex="2"> </vbox>
       </hbox>
     </row>
 

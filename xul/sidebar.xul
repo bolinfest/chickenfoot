@@ -488,7 +488,8 @@
                 <toolbarbutton class="disablableToolbarButton"
                                style="list-style-image: url(chrome://chickenfoot/skin/package-xpi.png)"
                                tooltiptext="Package script as a Firefox extension"
-                               oncommand="packageSelectedTriggers()"
+                               oncommand="packageSelectedTriggers(document.getElementById('CF_TRIGGERS_PANE').selectedItems[0]._trigger)"
+                               observes="requiresSelectedTrigger"
                                />
                 
 

@@ -1,5 +1,5 @@
 /**
- * @param triggerFiles {string array} the pathname of the trigger script that is going to be packaged as an XPI
+ * @param triggers {Trigger array} the Trigger objects to be packaged
  * @param templateTags {object} map of template tags, such as CHICKENFOOT_GUID,
  *     to template values
  * @param outputPath {string} the path where the XPI should be saved
@@ -25,8 +25,9 @@ function xpiTie(triggers, templateTags, outputPath, userFiles, iconFile) {
   // to a Java string array and replace '\' with '\\' in file pathnames
   var numUserFiles = userFiles.length;
   var userFilesJava = java.lang.reflect.Array.newInstance(java.lang.String, numUserFiles);
-  for (var j = 0; j < numUserFiles; ++j) {
-    userFilesJava[j] = userFiles[j].replace("\\", "\\\\");
+  for (var r = 0; r < numUserFiles; r++) {
+    userFilesJava[r] = userFiles[r].replace("\\", "\\\\");
+    //catch(e) {}
   }
     
   var exportXpiClass = getJavaClass("chickenfoot.ExportXpi");
@@ -42,6 +43,7 @@ function xpiTie(triggers, templateTags, outputPath, userFiles, iconFile) {
   var file = loc.getItemLocation("{@GUID@}");  
   var extensionPath = file.path;
   
+  //write all the trigger files into the triggers.xml file
   var triggersXML = createTriggersXML(triggers);
   if (!iconFile) { iconFile = null; }
   
@@ -59,6 +61,12 @@ function xpiTie(triggers, templateTags, outputPath, userFiles, iconFile) {
   return ("" + xpiPath.toString()); // ensure this is a JS string, not a Java one
 }
 
+
+/**
+ * This method creates a triggers.xml file (as a string) given a list of triggers.
+ * @param triggers : list of Trigger objects //the triggers to add to the triggers.xml file
+ * @return the generated xml document as a string
+ */
 function createTriggersXML(triggers) {
   var domParser = Components.classes["@mozilla.org/xmlextras/domparser;1"].
                   getService(Components.interfaces.nsIDOMParser);

@@ -430,30 +430,75 @@ function rulesParsing(rulesTxt){
 /**
  * Take the code in the currently selected trigger and
  * prompt the user to package it as an XPI
+ * @param mainTrigger : Trigger //the trigger to store the packaging metadata in
  */
-function packageSelectedTriggers() {
+function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
   if (!Chickenfoot.hasJava()) {
     Chickenfoot.showNeedsJavaDialog(window)
     return;
   }
   
+  //try to extract any existing packaging information from the metadata of the main trigger file
+  var mainTriggerCode = Chickenfoot.SimpleIO.read(mainTrigger.path);
+  var packagingConfig = Chickenfoot.extractUserScriptAttributes(mainTriggerCode);
+  
+  //put some of the existing information about packaging information into a map called templateTags
+  //(these pieces of information are used later to fill in templates by the xpiTie java class)
+  //all other information (extra text files for example) should be passed separately in dialogArguments,
+  // not through this map
+    var templateTags = {
+      extensionName : packagingConfig.extensionName,
+      extensionAuthor : packagingConfig.extensionAuthor,
+      extensionGUID : packagingConfig.extensionGUID,
+      extensionDescription : packagingConfig.extensionDescription,
+      updateURL : packagingConfig.updateURL
+    };
+  
+  //need to create Trigger objects from the triggerPaths to give to exportDialog
+  var triggers = [];
+  if(packagingConfig.triggerPaths) {
+    for(var k=0; k<packagingConfig.triggerPaths.length; k++) {
+      var currentPath = packagingConfig.triggerPaths[k];
+      var triggerCode = Chickenfoot.SimpleIO.read(currentPath);
+      var attMap = Chickenfoot.extractUserScriptAttributes(triggerCode);
+      var tName = attMap.name; if(!tName) { tName = "unresolved"; }
+      var tDescription = attMap.description; if(!tDescription) { tDescription = "unresolved"; }
+      var tIncludes = attMap.includes; if(!tIncludes) { tIncludes = []; }
+      var tExcludes = attMap.excludes; if(!tExcludes) { tExcludes = []; }
+      var tWhen = attMap.when; if(!tWhen) { tWhen = "Firefox Starts"; }
+      var tPath = Chickenfoot.SimpleIO.toFile(currentPath);
+      var currentTrigger = new Chickenfoot.Trigger(tName, null, tDescription, true, tIncludes, tExcludes, tPath, tWhen);
+      triggers[triggers.length] = currentTrigger;
+    }
+  }
+  
+  //put existing packaging configuration in a map to send to the exportDialog.xul window
   var dialogArguments = {
     chickenfoot : Chickenfoot,
     createXpi : false,
-    templateTags : undefined,
+    templateTags : templateTags,
     outputPath : undefined,
     mutatedAttributes : undefined,
-    userFiles : undefined,
-    triggers : undefined,
-    icon : undefined
+    userFiles : packagingConfig.userFiles,
+    triggers : triggers,
+    icon : packagingConfig.extensionIcon,
+    mainTrigger : mainTrigger
   };
+  
+  //open the exportDialog.xul window and send it the information in dialogArguments
   window.openDialog("chrome://chickenfoot/content/exportDialog.xul",
     "showmore",
     "chrome,modal,centerscreen,dialog,resizable",
     dialogArguments
   );
+  
+   //extension packaging canceled, return here
    if (!dialogArguments.createXpi) return;
-   
+
+    //the list of user files (everything except the triggers) is a string, so parse it here
+    //maintain two lists (one to send to xpiTie and the other to send to updateAttributes)
+    //we will add to the xpiTie list later, so that's why we need two copies
+    var userFiles = new Chickenfoot.SlickSet();
     var userFilesJava = new Array();
     var stringFiles = dialogArguments.userFiles;
     var toparse = stringFiles.replace(/\n/g, ";");
@@ -465,18 +510,46 @@ function packageSelectedTriggers() {
         i++;
       }
       userFilesJava[j] = strFile;
+      userFiles.add(strFile);
       if (i+1 >= toparse.length) {toparse = "";}
       else {toparse = toparse.substring(i+1, toparse.length);}
       i=0; j++; strFile = "";
     }
-    
-    // add trigger files to list of user files to add to jar
+
+    //add trigger files to list of user files to add to jar (to send to xpiTie and java world)
     for(var m=0; m<dialogArguments.triggers.length; m++) {
-      var currentLength = userFilesJava.length;
-      userFilesJava[currentLength] = dialogArguments.triggers[m].path.path;
+      userFilesJava[userFilesJava.length] = dialogArguments.triggers[m].path.path;
     }
+    
+    //don't include the main trigger in the list of triggers in the metadata (only extra triggers)
+    metadataTPaths = new Chickenfoot.SlickSet();
+    for(var m=0; m<dialogArguments.triggers.length; m++) {
+      if(dialogArguments.triggers[m] == mainTrigger) { continue; }
+      else { metadataTPaths.add(dialogArguments.triggers[m].path.path); }
+    }
+
+    //put metadata in a map to send to updateAttributes
+    var metadata = {
+        extensionName : dialogArguments.templateTags.EXTENSION_DISPLAY_NAME,
+        extensionAuthor : dialogArguments.templateTags.EXTENSION_AUTHOR,
+        extensionDescription : dialogArguments.templateTags.DESCRIPTION,
+        extensionGUID : dialogArguments.templateTags.GUID,
+        updateURL : dialogArguments.templateTags.EXTENSION_UPDATE_URL,
+        userFiles : undefined,
+        triggerPaths : undefined,
+        extensionIcon : undefined
+    };
+
+    //only add metadata for non-empty fields
+    if(dialogArguments.icon) { metadata.extensionIcon = dialogArguments.icon; }
+    if(userFiles.size() > 0) { metadata.userFiles = userFiles; }
+    if(metadataTPaths.size() > 0) { metadata.triggerPaths = metadataTPaths; }
+
+    //update the metadata in the main trigger file
+    var newTriggerCode = Chickenfoot.updateAttributes(mainTriggerCode, metadata);
+    Chickenfoot.SimpleIO.write(mainTrigger.path, newTriggerCode);
   
-  
+  //send it to javascript xpiTie, where everything is translated into java arguments and sent to the xpiTie java class
   try {
     var file = Chickenfoot.xpiTie(dialogArguments.triggers, dialogArguments.templateTags, dialogArguments.outputPath, 
                                    userFilesJava, dialogArguments.icon);

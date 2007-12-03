@@ -56,35 +56,45 @@ function extractUserScriptAttributes(code,
   return map;
 }
 
+/**
+ * This method takes a map of attributes and a string of code. It updates the
+ * attributes in the code, and returns the new string. It does not overwrite any
+ * existing attributes that are not being updated.
+ * @param oldCode : string //the code to update
+ * @param map : key->value attribute map //the attributes to update and their new values
+ * @return a string of the updated code
+ */
 function updateAttributes(oldCode, map) {
-   // keys that have already been read
-  var readKeys = {
-    includes : "",
-    excludes : ""
-  };
-  var includes = map.includes;
-  var excludes = map.excludes;  
-  
+  //get all the attributes in the existing code, and add all of the non-matching key->value
+  // mappings to 'map' so that we don't overwrite any attributes that we don't want to update
+  var existingAttMap = {};
+  try { existingAttMap = extractUserScriptAttributes(oldCode); }
+  catch(e) {}
   var code = removeExistingAttributes(oldCode);
+  
   var lineBuffer = [];
   lineBuffer.push('// ==UserScript==');
 
+  //put in all non-includes/excludes attributes
   for (var key in map) {
-    if (!(key in readKeys)) lineBuffer.push('// @' + key + ' ' + map[key]);
+    try {
+      var currentArray = map[key].toArray();
+      if(currentArray.length == 0) { Chickenfoot.debug("length is zero"); Chickenfoot.debug(currentArray); continue; }
+      for(var i=0; i<currentArray.length; i++) {
+        lineBuffer.push('// @' + key + ' ' + currentArray[i]);
+      }
+    }
+    catch(e) { if(map[key]) { lineBuffer.push('// @' + key + ' ' + map[key]); } }
   }
 
-  var includesArray = includes.toArray();
-  for (var i = 0; i < includesArray.length; ++i) {
-    lineBuffer.push('// @include ' + includesArray[i]);
-  }
-
-  var excludesArray = excludes.toArray();
-  for (var i = 0; i < excludesArray.length; ++i) {
-    lineBuffer.push('// @exclude ' + excludesArray[i]);
+  //put in all the non-updated attributes
+  for(var key in existingAttMap) {
+    if (!(key in map)) lineBuffer.push('// @' + key + ' ' + existingAttMap[key]);
   }
   
   lineBuffer.push('// ==/UserScript=='); 
   var newCode = lineBuffer.join('\n') + "\n\n" + code;
+
   return newCode;
 }
 

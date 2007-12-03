@@ -1,0 +1,75 @@
+<?xml-stylesheet href="chrome://browser/skin/" type="text/css" ?>
+
+<dialog id="chickenfootPickTriggerDialog"
+        title="Add A Trigger To My Firefox Extension"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        buttons="accept,cancel"
+        onload="doLoad();"
+        width="40em"
+        ondialogaccept="return doOK();"
+        ondialogcancel="return doCancel();">
+
+<script type="application/x-javascript" src="chrome://chickenfoot/content/libraries/json.js"  />
+
+<script>
+<![CDATA[
+  var Chickenfoot;
+
+  function gel(id) {
+    return document.getElementById(id);
+  }
+
+  function doLoad() {
+    // unparcel items from window.arguments and get a list of triggers
+    Chickenfoot = window.arguments[0].chickenfoot;
+    var existingTriggers = Chickenfoot.gTriggerManager.triggers;
+    
+    var parentBox = gel('triggersBox');
+    if(existingTriggers.length > 0) { parentBox.removeChild(parentBox.firstChild); }
+    else { parentBox.removeChild(parentBox.lastChild); }
+    
+    var lstBx = gel('triggers');
+    for (var k=0; k<existingTriggers.length; k++) {
+      var newItem = lstBx.appendItem(existingTriggers[k].name, existingTriggers[k].path.path);
+      newItem.trigger = existingTriggers[k];
+    }
+  }
+
+  function doOK() {
+    //get the triggers selected
+    var selection = gel('triggers').selectedItems;
+
+    var triggersChosen = [];
+    for(var k=0; k<selection.length; k++) {
+      triggersChosen[k] = selection[k].trigger;
+    }
+  
+    window.arguments[0].triggersChosen = triggersChosen;
+    return true;
+  }
+  
+  function doCancel() {
+      return true;
+  }
+]]>
+</script>
+
+<vbox>
+
+<grid>
+  
+  <rows>
+    <!-- TRIGGERS -->
+    <row>
+      <vbox id="triggersBox" flex="1">
+        <textbox value="no triggers currently exist" flex="1" />
+        <listbox id="triggers" rows="9" flex="10"/>
+      </vbox>
+    </row>
+  </rows>
+
+</grid>
+
+</vbox>
+
+</dialog>

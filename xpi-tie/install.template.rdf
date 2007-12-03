@@ -12,6 +12,7 @@
     <em:description>@DESCRIPTION@</em:description>
     <em:creator>@EXTENSION_AUTHOR@</em:creator>
     <em:iconURL>chrome://@EXTENSION_NAME@/content/icon.png</em:iconURL>
+    <em:updateURL>@EXTENSION_UPDATE_URL@</em:updateURL>
     
     <em:targetApplication>
       <Description>
