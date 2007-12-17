@@ -79,7 +79,7 @@ function updateAttributes(oldCode, map) {
   for (var key in map) {
     try {
       var currentArray = map[key].toArray();
-      if(currentArray.length == 0) { Chickenfoot.debug("length is zero"); Chickenfoot.debug(currentArray); continue; }
+      if(currentArray.length == 0) { Chickenfoot.debug(currentArray); continue; }
       for(var i=0; i<currentArray.length; i++) {
         lineBuffer.push('// @' + key + ' ' + currentArray[i]);
       }

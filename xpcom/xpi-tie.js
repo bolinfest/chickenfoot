@@ -7,11 +7,21 @@
  * @param iconFile{string} the path for the icon for the extension
  */
 function xpiTie(triggers, templateTags, outputPath, userFiles, iconFile) {
+  //add template tags for the updateLink and updateURL
+  var updateSite = templateTags.EXTENSION_URL;
+  templateTags.EXTENSION_UPDATE_URL = updateSite + "update.rdf";
+  
+  var outputFile = Components.classes["@mozilla.org/file/local;1"].
+       createInstance(Components.interfaces.nsILocalFile);
+  outputFile.initWithPath(outputPath);
+  templateTags.EXTENSION_UPDATE_LINK = updateSite + outputFile.leafName;
+
   var templateTagsArray = [];
   for (var t in templateTags) {
     templateTagsArray.push(t);
     templateTagsArray.push(templateTags[t]);
   }
+
   var len = templateTagsArray.length;
   var javaArray = java.lang.reflect.Array.newInstance(java.lang.String, len);
   
@@ -27,7 +37,6 @@ function xpiTie(triggers, templateTags, outputPath, userFiles, iconFile) {
   var userFilesJava = java.lang.reflect.Array.newInstance(java.lang.String, numUserFiles);
   for (var r = 0; r < numUserFiles; r++) {
     userFilesJava[r] = userFiles[r].replace("\\", "\\\\");
-    //catch(e) {}
   }
     
   var exportXpiClass = getJavaClass("chickenfoot.ExportXpi");
@@ -40,7 +49,7 @@ function xpiTie(triggers, templateTags, outputPath, userFiles, iconFile) {
        .getService(Components
        .interfaces.nsIExtensionManager);
   var loc = mgr.getInstallLocation("{@GUID@}");
-  var file = loc.getItemLocation("{@GUID@}");  
+  var file = loc.getItemLocation("{@GUID@}");
   var extensionPath = file.path;
   
   //write all the trigger files into the triggers.xml file

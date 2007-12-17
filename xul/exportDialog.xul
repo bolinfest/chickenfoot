@@ -41,7 +41,12 @@
     
     //add the main trigger to the list of triggers to include in the xpi
     triggersToAdd[triggersToAdd.length] = mainTrigger;
-    
+
+    //add the main trigger to the listbox of files to include in this package
+    var trigItm = gel('userFiles').appendItem(mainTrigger.name, mainTrigger.path.path);
+    trigItm.setAttribute("image", "chrome://chickenfoot/skin/trigger.png");
+    trigItm.setAttribute("class", "listitem-iconic");
+
     //add any existing information in saved packaging configurations to the dialog
     var icon = window.arguments[0].icon;
     if(icon) { gel('icon').value = icon; } //icon
@@ -55,11 +60,14 @@
     var description = window.arguments[0].templateTags.extensionDescription;
     if(description) { gel('description').value = description; } //description
     
+    var version = window.arguments[0].templateTags.version; //version number
+    if(version) { gel('version').value = version; }
+    
     var guid = window.arguments[0].templateTags.extensionGUID;
     if(guid) { gel('guid').value = guid; } //guid
     
-    var updateURL = window.arguments[0].templateTags.updateURL;
-    if(updateURL) { gel('updateURL').value = updateURL; } //updateURL
+    var updateURL = window.arguments[0].templateTags.updateURL; //updateURL
+    if(updateURL) { gel('updateURL').value = updateURL; }
     
     var triggers = window.arguments[0].triggers; //triggers
     var lstBox = gel('userFiles');
@@ -80,7 +88,11 @@
         var broken = fullPath.split(/\\/);
         var leafName = broken[broken.length - 1];
         var itm = lstBox.appendItem(leafName, fullPath);
-        itm.setAttribute("image", "chrome://chickenfoot/skin/folder.png");
+        var fileInst = Components.classes["@mozilla.org/file/local;1"].
+            createInstance(Components.interfaces.nsILocalFile);
+        fileInst.initWithPath(fullPath);
+        if(fileInst.isDirectory()) { itm.setAttribute("image", "chrome://chickenfoot/skin/folder.png"); }
+        else { itm.setAttribute("image", "chrome://chickenfoot/skin/file.png"); }
         itm.setAttribute("class", "listitem-iconic");
       }
     }
@@ -202,7 +214,7 @@
       CHICKEN_BYPASS_GUID : chickenbypassGuid,
       CHICKENFOOT_COMMAND_LINE_HANDLER_GUID : chickenfootCommandLineHandlerGuid,
       IS_EXPORTED_XPI : "true",
-      EXTENSION_UPDATE_URL : Chickenfoot.removeXmlChars(Chickenfoot.trim(gel('updateURL').value))
+      EXTENSION_URL : Chickenfoot.removeXmlChars(Chickenfoot.trim(gel('updateURL').value))
     };
     
     return {
@@ -268,6 +280,7 @@
       var mode = nsIFilePicker.modeOpen;
       var fp = Components.classes["@mozilla.org/filepicker;1"]
           .createInstance(nsIFilePicker);
+      fp.displayDirectory = Chickenfoot.gTriggerManager._getChickenfootProfileDirectory();
       fp.init(window, "Include With My Chickenfoot Extension", mode);
       fp.appendFilters(fp.filterAll);
       fp.appendFilter("Javascript files (*.js)", "*.js");  
@@ -279,7 +292,7 @@
       if (res == nsIFilePicker.returnOK || res == nsIFilePicker.returnReplace) {
         try { 
           var itm = gel(boxID).appendItem(fp.file.leafName, fp.file.path);
-          itm.setAttribute("image", "chrome://chickenfoot/skin/folder.png");
+          itm.setAttribute("image", "chrome://chickenfoot/skin/file.png");
           itm.setAttribute("class", "listitem-iconic");
         }
         catch(e) { gel(boxID).value = fp.file.path; }
@@ -291,8 +304,9 @@
       var mode = nsIFilePicker.modeGetFolder;
       var fp = Components.classes["@mozilla.org/filepicker;1"]
           .createInstance(nsIFilePicker);
+      fp.displayDirectory = Chickenfoot.gTriggerManager._getChickenfootProfileDirectory();
       fp.init(window, "Include Folder In Chickenfoot Extension", mode);
-      fp.filterIndex = 0;    
+      fp.filterIndex = 0;  
       var res = fp.show();
       if (res == nsIFilePicker.returnOK || res == nsIFilePicker.returnReplace) {
         var itm = gel('userFiles').appendItem(fp.file.leafName, fp.file.path);
@@ -320,6 +334,24 @@
         var itm = gel('userFiles').appendItem(triggersChosen[k].name, triggersChosen[k].path.path);
         itm.setAttribute("image", "chrome://chickenfoot/skin/trigger.png");
         itm.setAttribute("class", "listitem-iconic");
+      }
+    }
+    
+    function removeItems(itmLst) {
+      //get a reference to the userFiles listbox
+      var lstBox = gel('userFiles');
+      for(var k=0; k<itmLst.length; k++) {
+        //if item is a trigger, then remove it from the triggersToAdd list
+        //all other files are only read when the dialog is closed, so don't do anything
+        var newTriggersLst = [];
+        for(var y=0; y<triggersToAdd.length; y++){
+          if(triggersToAdd[y].path.path == itmLst[k].value) { continue; }
+          else { newTriggersLst[newTriggersLst.length] = triggersToAdd[y]; }
+        }
+        triggersToAdd = newTriggersLst;
+        
+        //remove itm from listbox
+        lstBox.removeItemAt(lstBox.getIndexOfItem(itmLst[k]));
       }
     }
     
@@ -449,11 +481,12 @@ The GUID will be written into your script so you do not lose it.
       </vbox>
       <hbox flex="1">
         <!-- <textbox id="userFiles" multiline="true" flex="4"/> -->
-        <listbox id="userFiles" rows="3" flex="2"/>
+        <listbox id="userFiles" rows="3" seltype="multiple" flex="2"/>
         <vbox flex="1">
           <button label="Add Trigger" flex="1" oncommand="openPickTrigger()"/>
           <button label="Add File" flex="1" oncommand="pickUserFiles('userFiles')"/>
           <button label="Add Folder" flex="1" oncommand="pickUserFolders()"/>
+          <button label="Remove" flex="1" oncommand="removeItems(gel('userFiles').selectedItems)"/>
         </vbox>
         <vbox flex="5"> </vbox>
       </hbox>

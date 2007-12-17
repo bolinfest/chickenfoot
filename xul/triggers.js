@@ -428,6 +428,19 @@ function rulesParsing(rulesTxt){
 }
 
 /**
+ * Take the file leaf name and return the nsIFile object of this file in the chickenfoot
+ * folder inside the Chickenfoot profile directory. (This folder is where all the trigger
+ * files and triggers.xml file are).
+ * @param leafStr : String //the leaf name of the file to return
+ */
+function getFileInProfileDirectory(/*String*/ leafStr) {
+  var profDir = Chickenfoot.gTriggerManager._getChickenfootProfileDirectory();
+  profDir.append(leafStr);
+  return profDir;
+}
+
+
+/**
  * Take the code in the currently selected trigger and
  * prompt the user to package it as an XPI
  * @param mainTrigger : Trigger //the trigger to store the packaging metadata in
@@ -451,14 +464,16 @@ function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
       extensionAuthor : packagingConfig.extensionAuthor,
       extensionGUID : packagingConfig.extensionGUID,
       extensionDescription : packagingConfig.extensionDescription,
-      updateURL : packagingConfig.updateURL
+      updateURL : packagingConfig.updateURL,
+      version : packagingConfig.version
     };
-  
+
   //need to create Trigger objects from the triggerPaths to give to exportDialog
   var triggers = [];
-  if(packagingConfig.triggerPaths) {
-    for(var k=0; k<packagingConfig.triggerPaths.length; k++) {
-      var currentPath = packagingConfig.triggerPaths[k];
+  if(packagingConfig.trigger) {
+    for(var k=0; k<packagingConfig.trigger.length; k++) {
+      //trigger paths are relative to Chickenfoot profile directory
+      var currentPath = getFileInProfileDirectory(packagingConfig.trigger[k]).path;
       var triggerCode = Chickenfoot.SimpleIO.read(currentPath);
       var attMap = Chickenfoot.extractUserScriptAttributes(triggerCode);
       var tName = attMap.name; if(!tName) { tName = "unresolved"; }
@@ -471,7 +486,7 @@ function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
       triggers[triggers.length] = currentTrigger;
     }
   }
-  
+
   //put existing packaging configuration in a map to send to the exportDialog.xul window
   var dialogArguments = {
     chickenfoot : Chickenfoot,
@@ -479,7 +494,7 @@ function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
     templateTags : templateTags,
     outputPath : undefined,
     mutatedAttributes : undefined,
-    userFiles : packagingConfig.userFiles,
+    userFiles : packagingConfig.file,
     triggers : triggers,
     icon : packagingConfig.extensionIcon,
     mainTrigger : mainTrigger
@@ -525,7 +540,7 @@ function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
     metadataTPaths = new Chickenfoot.SlickSet();
     for(var m=0; m<dialogArguments.triggers.length; m++) {
       if(dialogArguments.triggers[m] == mainTrigger) { continue; }
-      else { metadataTPaths.add(dialogArguments.triggers[m].path.path); }
+      else { metadataTPaths.add(dialogArguments.triggers[m].path.leafName); }
     }
 
     //put metadata in a map to send to updateAttributes
@@ -534,22 +549,23 @@ function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
         extensionAuthor : dialogArguments.templateTags.EXTENSION_AUTHOR,
         extensionDescription : dialogArguments.templateTags.DESCRIPTION,
         extensionGUID : dialogArguments.templateTags.GUID,
-        updateURL : dialogArguments.templateTags.EXTENSION_UPDATE_URL,
-        userFiles : undefined,
-        triggerPaths : undefined,
+        version : dialogArguments.templateTags.VERSION,
+        updateURL : dialogArguments.templateTags.EXTENSION_URL,
+        file : undefined,
+        trigger : undefined,
         extensionIcon : undefined
     };
 
     //only add metadata for non-empty fields
     if(dialogArguments.icon) { metadata.extensionIcon = dialogArguments.icon; }
-    if(userFiles.size() > 0) { metadata.userFiles = userFiles; }
-    if(metadataTPaths.size() > 0) { metadata.triggerPaths = metadataTPaths; }
+    if(userFiles.size() > 0) { metadata.file = userFiles; }
+    if(metadataTPaths.size() > 0) { metadata.trigger = metadataTPaths; }
 
     //update the metadata in the main trigger file
     var newTriggerCode = Chickenfoot.updateAttributes(mainTriggerCode, metadata);
     Chickenfoot.SimpleIO.write(mainTrigger.path, newTriggerCode);
   
-  //send it to javascript xpiTie, where everything is translated into java arguments and sent to the xpiTie java class
+  //send it to javascript xpiTie, where everything is translated into java
   try {
     var file = Chickenfoot.xpiTie(dialogArguments.triggers, dialogArguments.templateTags, dialogArguments.outputPath, 
                                    userFilesJava, dialogArguments.icon);

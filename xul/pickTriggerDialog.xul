@@ -1,11 +1,11 @@
 <?xml-stylesheet href="chrome://browser/skin/" type="text/css" ?>
 
 <dialog id="chickenfootPickTriggerDialog"
-        title="Add A Trigger To My Firefox Extension"
+        title="Add a Trigger to Extension"
         xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
         buttons="accept,cancel"
         onload="doLoad();"
-        width="40em"
+        width="200em"
         ondialogaccept="return doOK();"
         ondialogcancel="return doCancel();">
 
@@ -54,6 +54,8 @@
 ]]>
 </script>
 
+<label value="Select a trigger to include with your extension." />
+
 <vbox>
 
 <grid>
@@ -61,9 +63,9 @@
   <rows>
     <!-- TRIGGERS -->
     <row>
-      <vbox id="triggersBox" flex="1">
-        <textbox value="no triggers currently exist" flex="1" />
-        <listbox id="triggers" rows="9" flex="10"/>
+      <vbox id="triggersBox">
+        <textbox value="no triggers currently exist"/>
+        <listbox id="triggers" rows="9" seltype="multiple"/>
       </vbox>
     </row>
   </rows>
