@@ -56,7 +56,7 @@ public final class ExportXpi {
 		TEMPLATE_TO_JAR_PATH = Collections.unmodifiableMap(map);
 	}
 
-	private static final Map<String, String> TEMPLATE_TO_XPI_PATH;
+	private static Map<String, String> TEMPLATE_TO_XPI_PATH;
 
 	static {
 		Map<String, String> map = new HashMap<String, String>();
@@ -68,10 +68,11 @@ public final class ExportXpi {
 		// interfere with Chickenfoot, if it is also installed.
 		// But be aware that we are not copying it.
 		// map.put("ChickenfootCommandLineHandler.js", "components/ChickenfootCommandLineHandler.js");
-
+		
+		map.put("update.template.rdf", "update.rdf");
 		map.put("install.template.rdf", "install.rdf");
 		map.put("preferences.js", "defaults/preferences/preferences.js");
-		TEMPLATE_TO_XPI_PATH = Collections.unmodifiableMap(map);
+		TEMPLATE_TO_XPI_PATH = map; //Collections.unmodifiableMap(map);
 	}
 
 	/** Utility class -- do not instantiate */
@@ -107,6 +108,18 @@ public final class ExportXpi {
 					populateTemplate(getFileContents(template), tagMap));
 		}
 
+		//only write the update.rdf file to disk if an update url was specified
+		if(tagMap.get("EXTENSION_URL") != null && !tagMap.get("EXTENSION_URL").equals("")) {
+			File extensionDir = (new File(outputPath)).getParentFile();
+			File updateRdf = new File(extensionDir, "update.rdf");
+			FileWriter w = new FileWriter(updateRdf);
+			w.write(fileName2populatedTemplate.get("update.template.rdf"));
+			w.flush();
+			w.close();
+		}
+		//take it out of the map so that it isn't added to the xpi file
+		TEMPLATE_TO_XPI_PATH.remove("update.template.rdf");
+		
 		// write ASCII entries into JAR
 		File jarFile = File.createTempFile("output", ".jar");
 		JarOutputStream jarStream = new JarOutputStream(new FileOutputStream(
