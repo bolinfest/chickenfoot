@@ -2,7 +2,7 @@
 <RDF:RDF xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
-  <RDF:Description>
+  <RDF:Description about="urn:mozilla:extension:{@GUID@}>
     <em:updates>
       <RDF:Seq>
         <RDF:li>
@@ -10,7 +10,7 @@
             <em:version>@VERSION@</em:version>
             <em:targetApplication>
               <RDF:Description>
-                <em:id>{@GUID@}</em:id>
+                <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
                 <em:minVersion>1.5</em:minVersion>
                 <em:maxVersion>2.0+</em:maxVersion>
                 <em:updateLink>@EXTENSION_UPDATE_LINK@</em:updateLink>
