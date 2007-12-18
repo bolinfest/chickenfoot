@@ -7,7 +7,7 @@
       <RDF:Seq>
         <RDF:li>
           <RDF:Description>
-            <em:version><version/></em:version>
+            <em:version>@VERSION@</em:version>
             <em:targetApplication>
               <RDF:Description>
                 <em:id>{@GUID@}</em:id>
@@ -21,7 +21,7 @@
         </RDF:li>
       </RDF:Seq>
     </em:updates>
-    <em:version><version/></em:version>
+    <em:version>@VERSION@</em:version>
     <em:updateLink>@EXTENSION_UPDATE_LINK@</em:updateLink>
   </RDF:Description>
 
