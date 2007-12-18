@@ -435,8 +435,10 @@ function rulesParsing(rulesTxt){
  */
 function getFileInProfileDirectory(/*String*/ leafStr) {
   var profDir = Chickenfoot.gTriggerManager._getChickenfootProfileDirectory();
-  profDir.append(leafStr);
-  return profDir;
+  try {profDir.append(leafStr);
+    if(profDir.exists()) { return profDir; }
+  } catch(e) {}
+  return null;
 }
 
 
@@ -473,7 +475,9 @@ function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
   if(packagingConfig.trigger) {
     for(var k=0; k<packagingConfig.trigger.length; k++) {
       //trigger paths are relative to Chickenfoot profile directory
-      var currentPath = getFileInProfileDirectory(packagingConfig.trigger[k]).path;
+      var triggerFile = getFileInProfileDirectory(packagingConfig.trigger[k]);
+      if(triggerFile == null) { continue; }
+      var currentPath = triggerFile.path;
       var triggerCode = Chickenfoot.SimpleIO.read(currentPath);
       var attMap = Chickenfoot.extractUserScriptAttributes(triggerCode);
       var tName = attMap.name; if(!tName) { tName = "unresolved"; }
@@ -487,6 +491,20 @@ function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
     }
   }
 
+  //all of the user files should be relative to the chickenfoot profile directory
+  var files = packagingConfig.file; var userFiles = [];
+  if(files) {
+    for(var i=0; i<files.length; i++) {
+      var nsiFile = getFileInProfileDirectory(files[i]);
+      if(nsiFile) { userFiles[userFiles.length] = nsiFile.path; }
+    }
+  }
+  var iconPath = null;
+  if(packagingConfig.extensionIcon) {
+    var iconFile = getFileInProfileDirectory(packagingConfig.extensionIcon);
+    if(iconFile) { iconPath = iconFile.path; }
+  }
+
   //put existing packaging configuration in a map to send to the exportDialog.xul window
   var dialogArguments = {
     chickenfoot : Chickenfoot,
@@ -494,9 +512,9 @@ function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
     templateTags : templateTags,
     outputPath : undefined,
     mutatedAttributes : undefined,
-    userFiles : packagingConfig.file,
+    userFiles : userFiles,
     triggers : triggers,
-    icon : packagingConfig.extensionIcon,
+    icon : iconPath,
     mainTrigger : mainTrigger
   };
   
@@ -513,7 +531,7 @@ function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
     //the list of user files (everything except the triggers) is a string, so parse it here
     //maintain two lists (one to send to xpiTie and the other to send to updateAttributes)
     //we will add to the xpiTie list later, so that's why we need two copies
-    var userFiles = new Chickenfoot.SlickSet();
+    var userFiles = [];
     var userFilesJava = new Array();
     var stringFiles = dialogArguments.userFiles;
     var toparse = stringFiles.replace(/\n/g, ";");
@@ -525,7 +543,7 @@ function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
         i++;
       }
       userFilesJava[j] = strFile;
-      userFiles.add(strFile);
+      userFiles[userFiles.length] = strFile;
       if (i+1 >= toparse.length) {toparse = "";}
       else {toparse = toparse.substring(i+1, toparse.length);}
       i=0; j++; strFile = "";
@@ -542,6 +560,27 @@ function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
       if(dialogArguments.triggers[m] == mainTrigger) { continue; }
       else { metadataTPaths.add(dialogArguments.triggers[m].path.leafName); }
     }
+    
+    //if file or folder included is not in the top level chickenfoot profile directory, still
+    // add it to the extension, but don't add it to the metadata (since it would throw an
+    // exception on someone else's computer)
+    var metadataFPaths = new Chickenfoot.SlickSet();
+    var CprofDir = Chickenfoot.gTriggerManager._getChickenfootProfileDirectory();
+    for(var j=0; j<userFiles.length; j++) {
+        var currentFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+        currentFile.initWithPath(userFiles[j]);
+        if(CprofDir.contains(currentFile, false)) { 
+          metadataFPaths.add(currentFile.leafName);
+        }
+        else { continue; }
+    }
+    var iconFile = null; var iconPath = null;
+    if(dialogArguments.icon) { 
+      iconFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
+      iconFile.initWithPath(dialogArguments.icon);
+      if(iconFile) { iconPath = iconFile.path; }
+      if(!CprofDir.contains(iconFile, false)) { iconFile = null; }
+    }
 
     //put metadata in a map to send to updateAttributes
     var metadata = {
@@ -557,9 +596,10 @@ function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
     };
 
     //only add metadata for non-empty fields
-    if(dialogArguments.icon) { metadata.extensionIcon = dialogArguments.icon; }
-    if(userFiles.size() > 0) { metadata.file = userFiles; }
+    var iconPath = dialogArguments.icon;
+    if(iconFile) { metadata.extensionIcon = iconFile.leafName; iconPath = iconFile.path; }
     if(metadataTPaths.size() > 0) { metadata.trigger = metadataTPaths; }
+    if(metadataFPaths.size() > 0) { metadata.file = metadataFPaths; }
 
     //update the metadata in the main trigger file
     var newTriggerCode = Chickenfoot.updateAttributes(mainTriggerCode, metadata);
@@ -568,7 +608,7 @@ function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
   //send it to javascript xpiTie, where everything is translated into java
   try {
     var file = Chickenfoot.xpiTie(dialogArguments.triggers, dialogArguments.templateTags, dialogArguments.outputPath, 
-                                   userFilesJava, dialogArguments.icon);
+                                   userFilesJava, iconPath);
   } catch (e) {
     alert(e);
     return;

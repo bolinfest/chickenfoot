@@ -9,6 +9,7 @@
 function xpiTie(triggers, templateTags, outputPath, userFiles, iconFile) {
   //add template tags for the updateLink and updateURL
   var updateSite = templateTags.EXTENSION_URL;
+  if(updateSite.charAt(updateSite.length - 1) != "/") { updateSite += "/"; }
   templateTags.EXTENSION_UPDATE_URL = updateSite + "update.rdf";
   
   var outputFile = Components.classes["@mozilla.org/file/local;1"].

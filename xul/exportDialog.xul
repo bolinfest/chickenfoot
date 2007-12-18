@@ -366,12 +366,12 @@
       gel('guid').setAttribute('value', guid);
     }
     
-    var guidHelpDisplayed = false;
+    var helpDisplayed = false;
     
-    function toggleGuidHelp() {
-      var guidHelp = gel('guid-help');
-      guidHelp.collapsed = guidHelpDisplayed;
-      guidHelpDisplayed = !guidHelpDisplayed;
+    function toggleHelp(boxID) {
+      var help = gel(boxID);
+      help.collapsed = helpDisplayed;
+      helpDisplayed = !helpDisplayed;
       window.sizeToContent();
     }
 ]]>
@@ -431,7 +431,7 @@
         <label value="GUID:" control="guid" accesskey="g" />
         <label class="text-link"
                value="What's this?"
-               onclick="toggleGuidHelp()" />
+               onclick="toggleHelp('guid-help')" />
       </hbox>
       <hbox flex="1">
         <textbox id="guid" flex="1" />
@@ -453,13 +453,26 @@ The GUID will be written into your script so you do not lose it.
 
     <!-- UPDATE URL -->
     <row align="center">
-      <vbox>
+      <hbox align="center">
       <label value="Update URL:" control="updateURL" />
-      <label value="(optional)" />
-      </vbox>
+      <label class="text-link"
+             value="What's this?"
+             onclick="toggleHelp('update-help')" />
+      </hbox>
       <hbox flex="1">
         <textbox id="updateURL" flex="1" />
       </hbox>
+    </row>
+    
+    <row collapsed="true" id="update-help">
+      <spacer />
+      <label>
+OPTIONAL: This url is the online directory where future updates to your
+extension will be uploaded. For reference Chickenfoot's update website is
+http://groups.csail.mit.edu/uid/chickenfoot/
+and the actual file is at
+http://groups.csail.mit.edu/uid/chickenfoot/chickenfoot.xpi.
+      </label>
     </row>
 
     <!-- ICON FILE -->
@@ -469,7 +482,7 @@ The GUID will be written into your script so you do not lose it.
       <label value="(default is Chickenfoot beak)" />
       </vbox>
       <hbox flex="1">
-        <textbox id="icon" flex="1" />
+        <textbox id="icon" readonly="true" flex="1" />
         <button label="Browse..." oncommand="pickUserFiles('icon')" />
       </hbox>
     </row>
