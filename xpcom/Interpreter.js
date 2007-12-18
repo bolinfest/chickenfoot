@@ -267,6 +267,7 @@ function setStopButtonEnabled(/*ChromeWindow*/ chromeWindow, /*boolean*/ enabled
   if (!sbwin) return; // Chickenfoot sidebar isn't open
   
   var stopButton = sbwin.document.getElementById("cfStopButton");
-
+  if (!stopButton) return;
+  
   stopButton.disabled = !enabled;
 }
