@@ -5,6 +5,5 @@
 	<classpathentry kind="lib" path="jars/class-loader.jar"/>
 	<classpathentry kind="lib" path="jars/development-only/junit.jar"/>
 	<classpathentry kind="lib" path="jars/development-only/plugin.jar"/>
-	<classpathentry kind="lib" path="jars/js.jar"/>
 	<classpathentry kind="output" path="build/java"/>
 </classpath>
