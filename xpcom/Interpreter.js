@@ -196,8 +196,9 @@ function getEvaluationContext(/*Object*/ context,
   context.localUrl = function localUrl(url) { return localUrlImpl(url); };
 
   context.openTab = function openTab(url, show) { return openTabImpl(chromeWindow, url, show); };
-  context.Chrome = function openChrome(cwin) {if (cwin) {return new Chrome(cwin);}
-                                                  else {return new Chrome(chromeWindow);} }
+
+  context.Chrome = function openChrome(cwin) { return new Chrome(cwin ? cwin : chromeWindow); };
+  context.chrome getter = function getChrome() { return new Chrome(chromeWindow); };
 
   context.wait = function wait(tabs) { return waitImpl(chromeWindow, tabs, true); };
   context.ready = function ready(tabs) { return waitImpl(chromeWindow, tabs, false); };

@@ -33,7 +33,7 @@ t.test("enter", function() {
   enter("first textbox", "yahoo.com");
   Test.assert(document.wrappedJSObject.getElementById("urlbar").textValue == "yahoo.com");
   enter("second textbox", "mozilla");
-  Test.assert(find('second textbox')._node.wrappedJSObject.value == "mozilla");
+  Test.assert(find('second textbox').element.wrappedJSObject.value == "mozilla");
   });
 
 //click
@@ -42,14 +42,14 @@ t.test("click", function() {
   
   click("main");
   click("feeds");
-  Test.assert(find('feeds radiobutton')._node.wrappedJSObject.selected);
+  Test.assert(find('feeds radiobutton').element.wrappedJSObject.selected);
   click("main");
-  Test.assert(find('main radiobutton')._node.wrappedJSObject.selected);
+  Test.assert(find('main radiobutton').element.wrappedJSObject.selected);
   });
   
 //keypress
 t.test("keypress", function() {
-  with(Chrome()) {
+  with(chrome) {
     click("first textbox");
     keypress("y a h o o . c o m enter", "first textbox");
   }
@@ -58,7 +58,7 @@ t.test("keypress", function() {
 
 //onClick
 t.test("onClick", function() {
-  with(Chrome()) {
+  with(chrome) {
     var numStopbuttons = find('stop button').count;
     insert(before('home button'), find('stop button'));
     onClick('second stop button', function() {remove('second stop button');});
@@ -69,13 +69,13 @@ t.test("onClick", function() {
 
 //onKeypress
 t.test("onKeypress", function() {
-  with(Chrome()) {
+  with(chrome) {
     var numTextboxes = find('textbox').count;
     insert(after('second textbox'), find('first textbox'));
     onKeypress('ctrl shift h', function() {remove('third textbox');}, 'third textbox');
     keypress('ctrl shift h', 'third textbox');
   }
-  Test.assert(Chrome().find('textbox').count == numTextboxes);
+  Test.assert(chrome.find('textbox').count == numTextboxes);
 });
   
 //pick and unpick
@@ -87,7 +87,7 @@ t.test("pick and unpick", function() {
   pick("print to file");
   Test.assert(document.wrappedJSObject.getElementById("fileCheck").checked == true);
   unpick("print to file");
-  Test.assert(!find("print to file")._node.wrappedJSObject.checked)
+  Test.assert(!find("print to file").element.wrappedJSObject.checked)
 });
 
 //check and uncheck
@@ -95,28 +95,22 @@ t.test("check and uncheck", function() {
   go("chrome://global/content/filepicker.xul");
   
   check("show hidden");
-  Test.assert(find('show hidden')._node.wrappedJSObject.checked == true);
+  Test.assert(find('show hidden').element.wrappedJSObject.checked == true);
   uncheck("checkbox");
-  Test.assert(!find('show hidden')._node.wrappedJSObject.checked);
+  Test.assert(!find('show hidden').element.wrappedJSObject.checked);
 });
 
-//window matching and Chrome()
+//window matching and chrome
 t.test("window matching and Chrome", function() {
-  with(Chrome()) {click("file"); click("new window menuitem");}
+  with(chrome) {click("file"); click("new window menuitem");}
   sleep(5);
   var w = find('first window');
-  var c = Chrome(w._node);
+  var c = Chrome(w.element);
   c.remove('home button')
   c.close()
   Test.assert(!c.find('home button').hasMatch);
-  var thisChrome = Chrome();
+  var thisChrome = chrome;
   Test.assert(thisChrome.find('home button').count == 1);
 });
 
 t.close();
-
-
-
-
-
-

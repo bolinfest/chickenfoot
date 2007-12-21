@@ -79,8 +79,7 @@ function clickImpl(/*Document*/ doc, /*string*/ pattern, /*chromeWindow*/chrome,
    * events rather than click events, so all three pieces of the event
    * (mousedown, mouseup, click) are fired by Chickenfoot to provide better automation.
    */
-  //fire mouse event at node (instead of element) to make this work for xul anonymous nodes
-  node = m._node;
+  node = m.element;
   if (node.wrappedJSObject) {node = node.wrappedJSObject;}
   
   fireMouseEvent('mousedown', node);

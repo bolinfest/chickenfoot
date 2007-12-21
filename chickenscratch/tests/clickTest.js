@@ -18,8 +18,15 @@ t.test("click", function() {
   click("mit")
   Test.assert(/www.google.com/.test(document.location));
 });
-  
+
+// regression tests for bug #288
+t.test("click", function() {
+  go("file://" + scriptDir.path + "/pages/housingbubbleblog.html");
+  var m = find(new XPath("//img[@class='collapseicon']"))
+  click(m)
+});
 
 t.close();
+
 
 

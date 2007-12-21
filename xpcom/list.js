@@ -65,16 +65,14 @@ function listImpl(obj, opt_regexp, opt_expandibleList) {
     buffer.push([obj, "wrappedJSObject", obj.wrappedJSObject])}
   
   if (opt_expandibleList && (opt_expandibleList == "expandibleList") && (instanceOf(obj, Match))) {
-    buffer.push([obj, "count", obj._count]);
-    buffer.push([obj, "document", obj._document]);
-    buffer.push([obj, "element", obj._element]);
-    buffer.push([obj, "hasMatch", obj._hasMatch]);
-    buffer.push([obj, "html", obj._html]);
-    buffer.push([obj, "index", obj._index]);
-    buffer.push([obj, "next", obj._next]);
-    buffer.push([obj, "node", obj._node]);
-    buffer.push([obj, "range", obj._range]);
-    buffer.push([obj, "text", obj._text]);
+    buffer.push([obj, "count", obj.count]);
+    buffer.push([obj, "document", obj.document]);
+    buffer.push([obj, "element", obj.element]);
+    buffer.push([obj, "hasMatch", obj.hasMatch]);
+    buffer.push([obj, "html", obj.html]);
+    buffer.push([obj, "index", obj.index]);
+    buffer.push([obj, "range", obj.range]);
+    buffer.push([obj, "text", obj.text]);
   }
 
   if (opt_expandibleList && (opt_expandibleList == "expandibleList")) {return groupPropertiesAndMethods(buffer);}

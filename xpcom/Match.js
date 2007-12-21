@@ -5,17 +5,19 @@
  */
 function Match(/*string*/ html,
                /*Match*/ next,
+               /*Element*/ element,
                /*Range*/ range,
                /*Document*/ document,
                /*int*/ index,
-               /*boolean*/ hasMatch,
-               /*Node*/ node
+               /*boolean*/ hasMatch
                ) {
   this._html = html;
   this._count = (next) ? next.count + 1 : 0;
   this._next = next;
+  this._element = element;
   this._range = range;
-  this._element = range ? rangeToElement(range) : null;
+  if (!element && range) this._element = rangeToElement(range);
+  if (!range && element) this._range = nodeToRange(element);
   this._document = document;
   this._index = index;
   this._hasMatch = !!hasMatch;
@@ -23,34 +25,27 @@ function Match(/*string*/ html,
   if (!this._hasMatch) {this._text =  "no matches";}
   else if (this._range) {this._text = this._range.toString();}
   else {this._text = "";}
-  //add new property to match object to make clicks
-  //and keypress events work on xul anonymous nodes
-  this._node = node;
 }
 
 function winToMatch(/*win*/win) {
   var html = "chromeWindow"
   var range = null
   var doc = win.document
-  return new Match(html, EMPTY_MATCH, range, doc, 0, true, win);
+  return new Match(html, EMPTY_MATCH, win, range, doc, 0, true);
 }
 
 function nodeToMatch(/*Node*/ node) {
-  var doc = node.ownerDocument;
-  var range = nodeToRange(node);
   return new Match((flattenDom(node))[0],
                               EMPTY_MATCH,
-                              range,
-                              doc,
+                              nodeToElement(node),
+                              nodeToRange(node),
+                              node.ownerDocument,
                               0,  
-                              true,
-                              node);  
-/* OLD: we used to let MozillaDocument handle this, but
-   now MozillaDocument has been moved to LapisChickenfoot
-  recordCreatedRanges(doc);
-  var mozdoc = MozillaDocument.createMozillaDocument(doc);
-  return mozdoc.nodeToMatch(node);
-*/
+                              true);
+}
+
+function nodeToElement(/*Node*/ node) {
+  return (node.nodeType == Node.ELEMENT_NODE) ? node : nodeToElement(node.parentNode);
 }
 
 function nodesToMatches(/*Node[]*/ nodes) {
@@ -71,6 +66,7 @@ function oneMatch(/*Match*/ m) {
   if (!m.hasMatch) return EMPTY_MATCH;
   else return new Match(m.html,
                        EMPTY_MATCH,
+                       m.element,
                        m.range,
                        m.document,
                        0,

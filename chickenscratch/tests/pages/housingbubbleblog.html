@@ -1,0 +1,2440 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head profile="http://gmpg.org/xfn/11">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>The Housing Bubble Blog &raquo; The First Sign Of A Housing Bust</title>
+<meta name="generator" content="WordPress 2.0" /> <!-- leave this for stats please -->
+
+<link rel="stylesheet" media="screen" href="style.css"/>
+<link rel="stylesheet" media="print" href="print.css"/>
+
+<link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="http://thehousingbubbleblog.com/?feed=rss2" />
+<link rel="alternate" type="text/xml" title="RSS .92" href="http://thehousingbubbleblog.com/?feed=rss" />
+<link rel="alternate" type="application/atom+xml" title="Atom 0.3" href="http://thehousingbubbleblog.com/?feed=atom" />
+<link rel="pingback" href="http://thehousingbubbleblog.com/xmlrpc.php" />
+	<link rel='archives' title='December 2007' href='http://thehousingbubbleblog.com/?m=200712' />
+	<link rel='archives' title='November 2007' href='http://thehousingbubbleblog.com/?m=200711' />
+	<link rel='archives' title='October 2007' href='http://thehousingbubbleblog.com/?m=200710' />
+	<link rel='archives' title='September 2007' href='http://thehousingbubbleblog.com/?m=200709' />
+	<link rel='archives' title='August 2007' href='http://thehousingbubbleblog.com/?m=200708' />
+	<link rel='archives' title='July 2007' href='http://thehousingbubbleblog.com/?m=200707' />
+	<link rel='archives' title='June 2007' href='http://thehousingbubbleblog.com/?m=200706' />
+	<link rel='archives' title='May 2007' href='http://thehousingbubbleblog.com/?m=200705' />
+	<link rel='archives' title='April 2007' href='http://thehousingbubbleblog.com/?m=200704' />
+	<link rel='archives' title='March 2007' href='http://thehousingbubbleblog.com/?m=200703' />
+	<link rel='archives' title='February 2007' href='http://thehousingbubbleblog.com/?m=200702' />
+	<link rel='archives' title='January 2007' href='http://thehousingbubbleblog.com/?m=200701' />
+	<link rel='archives' title='December 2006' href='http://thehousingbubbleblog.com/?m=200612' />
+	<link rel='archives' title='November 2006' href='http://thehousingbubbleblog.com/?m=200611' />
+	<link rel='archives' title='October 2006' href='http://thehousingbubbleblog.com/?m=200610' />
+	<link rel='archives' title='September 2006' href='http://thehousingbubbleblog.com/?m=200609' />
+	<link rel='archives' title='August 2006' href='http://thehousingbubbleblog.com/?m=200608' />
+	<link rel='archives' title='July 2006' href='http://thehousingbubbleblog.com/?m=200607' />
+	<link rel='archives' title='June 2006' href='http://thehousingbubbleblog.com/?m=200606' />
+	<link rel='archives' title='May 2006' href='http://thehousingbubbleblog.com/?m=200605' />
+	<link rel='archives' title='April 2006' href='http://thehousingbubbleblog.com/?m=200604' />
+	<link rel='archives' title='March 2006' href='http://thehousingbubbleblog.com/?m=200603' />
+	<link rel='archives' title='February 2006' href='http://thehousingbubbleblog.com/?m=200602' />
+	<link rel='archives' title='January 2006' href='http://thehousingbubbleblog.com/?m=200601' />
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://thehousingbubbleblog.com/xmlrpc.php?rsd" />
+<script language="javascript" type="text/javascript">
+<!--
+		function collapseThread( theId ) {
+			var comment = document.getElementById(theId);
+			if(!comment)
+			{
+				alert("ERROR:\nThe document structure is different\nfrom what Threaded Comments expects.\nYou are missing the element '"+theId+"'");
+				return;
+			}
+			var theBody = findBody(comment);
+			if(comment.className.indexOf("collapsed") > -1) {
+				comment.className = comment.className.replace(" collapsed", "");;
+			} else {
+				comment.className += " collapsed";
+			}
+		}
+
+		function expandThread( theId ) {
+			var comment = document.getElementById(theId);
+			if(!comment)
+			{
+				alert("ERROR:\nThe document structure is different\nfrom what Threaded Comments expects.\nYou are missing the element '"+theId+"'");
+				return;
+			}
+			var theBody = findBody(comment);
+			if(comment.className.indexOf("collapsed") > -1) {
+				comment.className = comment.className.replace(" collapsed", "");;
+			} 
+		}
+		
+		function findBody(el)
+		{
+			var divs = el.getElementsByTagName("div");
+			var ret;
+			for(var i = 0; i < divs.length; ++i) {
+				if(divs.item(i).className.indexOf("body") > -1)
+					return divs.item(i);
+			}
+			return false;
+		}
+	
+		function onAddComment() {
+			checkDocumentIntegrity();
+			var el = document.getElementById("commentform");
+			// Future release: Check if form is filled correctly and mark the form fields.
+			el.submit();
+		}
+		
+		function moveAddCommentBelow(theId, threadId, collapse)
+		{
+			expandThread( theId );
+			var addComment = document.getElementById("addcomment");
+			if(!addComment)
+			{
+			  	alert("ERROR:\nThreaded Comments can't find the 'addcomment' div.\nThis is probably because you have changed\nthe comments.php file.\nMake sure there is a tag around the form\nthat has the id 'addcomment'"); 
+				return
+			}
+			var comment = document.getElementById(theId);
+			if(collapse)
+			{
+				for(var i = 0; i < comment.childNodes.length; ++i) {
+					var c = comment.childNodes.item(i);
+					if(typeof(c.className) == "string" && c.className.indexOf("collapsed")<0) {
+						c.className += " collapsed";
+					}
+				}
+			}
+			addComment.parentNode.removeChild(addComment);
+
+			comment.appendChild(addComment);
+			if(comment.className.indexOf("alt")>-1) {
+				addComment.className = addComment.className.replace(" alt", "");					
+			} else {
+				addComment.className += " alt";
+			}
+		        var replyId = document.getElementById("comment_reply_ID");
+			if(replyId == null)
+			{
+				alert("Brians Threaded Comments Error:\nThere is no hidden form field called\n'comment_reply_ID'. This is probably because you\nchanged the comments.php file and forgot\nto include the field. Please take a look\nat the original comments.php and copy the\nform field over.");
+			}
+			replyId.value = threadId;
+			var reRootElement = document.getElementById("reroot");
+			if(reRootElement == null)
+			{
+				alert("Brians Threaded Comments Error:\nThere is no anchor tag called 'reroot' where\nthe comment form starts.\nPlease compare your comments.php to the original\ncomments.php and copy the reroot anchor tag over.");
+			}
+			reRootElement.style.display = "block";
+			var aTags = comment.getElementsByTagName("A");
+			var anc = aTags.item(0).id;
+			document.location.href = "#"+anc;
+			document.getElementById("comment").focus();
+		}
+
+		function checkDocumentIntegrity()
+		{
+			str = "";
+			
+			str += checkElement("reroot","div tag");
+			str += checkElement("addcomment", "div tag");
+			str += checkElement("comment_reply_ID", "hidden form field");
+			str += checkElement("content", "div tag");
+			str += checkElement("comment", "textfield");
+			str += checkElement("addcommentanchor", "anchor tag");
+			
+			if(str != "")
+			{
+				str = "Brian's Threaded Comments are missing some of the elements that are required for it to function correctly.\nThis is probably the because you have changed the original comments.php that was included with the plugin.\n\nThese are the errors:\n" + str;
+				str += "\nYou should compare your comments.php with the original comments.php and make sure the required elements have not been removed.";
+
+				alert(str);
+			}
+		}
+               
+		function checkElement(theId, elDesc)
+		{
+			var el = document.getElementById(theId);
+			if(!el)
+			{
+				if(elDesc == null)
+					elDesc = "element";
+				return "- The "+elDesc+" with the ID '" +theId + "' is missing\n"; 
+			}
+			else 
+				return "";
+		}
+		
+		function reRoot()
+		{
+			var addComment = document.getElementById("addcomment");			
+			var reRootElement = document.getElementById("reroot");
+			reRootElement.style.display = "none";
+			var content = document.getElementById("content");
+			addComment.parentNode.removeChild(addComment);
+			content.appendChild(addComment);
+			addComment.className = addComment.className.replace(" alt", "");
+			document.location.href = "#addcommentanchor";
+			document.getElementById("comment").focus();				
+			document.getElementById("comment_reply_ID").value = "0";
+		}			
+		
+		function changeCommentSize(d)
+		{
+			var el = document.getElementById("comment");
+			var height = parseInt(el.style.height);
+			if(!height && el.offsetHeight)
+				height = el.offsetHeight;
+			height += d;
+			if(height < 20) 
+				height = 20;
+			el.style.height = height+"px";
+		}		
+-->
+</script>
+<style type="text/css">
+.comment 
+{
+	position: 				relative;
+	margin:					3px;
+	margin-top:				6px;
+/*	border: 				1px solid #666; */
+	padding:				4px 4px 4px 8px;
+	background-color:		#fff;
+}
+
+.odd
+{
+	background-color: #f8f8f8;
+}
+
+.comment div {
+	position: 				relative;
+}
+
+.comment .comment img
+{
+	margin: 				0px;
+}
+
+.comment .collapseicon 
+{
+	width: 					13px;
+	height: 				13px;
+	overflow:				hidden;
+	background-image: 		url(http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=subthread-open.png);
+}
+
+.collapsed .collapseicon 
+{
+	background-image: 		url(http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=subthread.png);
+}
+
+
+.comment .reply {
+	text-align: 			right;
+	font-size: 				80%;
+	padding: 				0px 6px 6px 0px;
+}
+
+.comment
+{
+	border: 	1px solid #ddd;
+	margin-top: 			10px;
+}
+
+input#subscribe
+{
+	width: auto;
+}
+
+.comment .body .content
+{
+	padding:				0px 3px 0px 3px;
+	width: 					100%;	
+	overflow: 				auto; 
+}
+
+.comment .title abbr
+{
+	border: none;
+}
+
+.collapsed .body, .collapsed .comment
+{
+	display:				none;
+}
+/*
+#addcomment small, #addcomment div
+{
+	padding:				3px;
+}
+*/
+#commentform textarea {
+	width: 97%;
+}
+</style>
+
+</head>
+
+<body onload="MM_preloadImages('images/ap_link_roll.jpg')">
+
+<!--<center><img src="http://thehousingbubbleblog.com/images/hbb_banner.jpg" alt=""/></center>-->
+
+<!-- Begin #content - Centers all content and provides edges for floated columns -->
+<div id="content">
+
+<!-- Blog Header -->
+<div id="header"><div>
+<h1 id="blog-title"><a href="http://thehousingbubbleblog.com" title="Back to home page.">The Housing Bubble</a></h1>
+<p id="description">Examining the home price boom and its effect on owners, lenders, regulators, realtors and the economy as a whole.</</p>
+<center><script type="text/javascript"><!--
+google_ad_client = "pub-4205366296275175";
+google_ad_width = 728;
+google_ad_height = 90; 
+google_ad_format = "728x90_as";
+google_ad_channel ="";
+google_color_border = "335577";
+google_color_bg = "335577";
+google_color_link = "ffffff";
+google_color_url = "aabbcc"; 
+google_color_text = "aabbcc";
+//--></script>
+<script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js ">
+</script>
+</center>
+</div>
+</div>
+
+<!-- Begin #main - Contains main-column blog content -->
+<div id="main">
+<div id="main2">
+
+<div id="main3">
+
+
+<h2 class="date-header"><h2>September 15, 2007</h2></h2>
+  
+<!-- Begin .post -->
+<div class="post"><p></p></a>
+<h3 class="post-title"><a href="http://thehousingbubbleblog.com/?p=3420" rel="bookmark">The First Sign Of A Housing Bust</a></h3>
+
+<div class="post-body">
+
+<p>
+<div style="clear:both;"></div>
+<p>A <a target="_blank" href="http://www.nytimes.com/2007/09/16/realestate/16cov.html?_r=1&#038;pagewanted=all&#038;oref=slogin">report from</a> the New York Times. &#8220;For more than a year, home buyers who have been looking in the suburbs of Manhattan have struggled to reconcile market rhetoric with metro-area reality. Sellers were clinging tightly to the past, and many scoffed at price reductions of more than a few percentage points. Now, after a nearly nonexistent spring selling season and a summer marred by stock-market jitters, buyers and sellers are closer to a meeting of the minds.&#8221;</p>
+<p>&#8220;Real estate agents and market watchers throughout the region report that houses are selling at prices 5 to 18 percent lower than a year ago.&#8221;</p>
+<p>&#8220;&#8216;Homes that have come on the market in the last two or three months have started at prices that are more conservative,&#8217; said Savo Fries, manager of the Houlihan Lawrence offices in Yorktown and Croton-on-Hudson, both in Westchester County. &#8216;Sellers are finally more willing to listen.&#8217;&#8221;</p>
+<p>&#8220;Roberta Feuerstein, a sales associate with Shawn Elliott, said that in the Dix Hills and Melville area in Suffolk County, just over the Nassau border, prices have come down about 10 percent. Some homeowners are having to reduce their prices by much more, she said, but those houses are usually the ones that were most grossly overpriced.&#8221;</p>
+<p>&#8220;Not all sellers have come around to the new reality. &#8216;We have homes overpriced by $300,000 or $400,000 out of just pure insistence,&#8217; she said.&#8221;</p>
+<p>From <a target="_blank" href="http://www.newsday.com/business/ny-bzhome0912,0,306979,full.story">Newsday</a> in New York. &#8220;Housing prices plunged in Queens, likely due in part to increased foreclosures in the borough, experts said. These homes, concentrated south of the Grand Central Parkway, sell at a discount, which depresses the median price borough-wide.&#8221;</p>
+<p>&#8220;&#8216;Those are the first homes to be sold,&#8217; said Robert Campbell, professor of real estate finance at Hofstra University. He expects Queens to suffer greater price drops than Long Island for at least a year.&#8221;</p>
+<p>&#8220;More upscale homes in Queens can&#8217;t fetch the prices they once did either, said Judy Markowitz, who owns Re/Max Millennium in Flushing. Homes that sold last year for $715,000 are now going for $675,000, she said. This is in part because the interest rates on jumbo mortgages have risen over the summer.&#8221;</p>
+<p>&#8220;&#8216;Buyers either moved to rentals or just decided to offer less to compensate for the increase in rate,&#8217; said Markowitz, noting it&#8217;s easier to find a rental in Queens than on Long Island.&#8221;</p>
+<p>&#8220;Long Island real estate agents are seeing small declines in prices, particularly in more expensive homes, and some are sitting on the market longer. The number of homes for sale last month rose to 36,309 versus 34,045 the same time a year ago.&#8221;</p>
+<p>&#8220;Higher-end properties aren&#8217;t selling as quickly because the owners are still trying to get what their neighbors did a year ago, said Marilyn Urso, who owns Long Island Village Realty in Syosset. &#8216;They are not looking at prices realistically,&#8217; she said.&#8221;</p>
+<p>The <a target="_blank" href="http://www.nyjournalnews.com/apps/pbcs.dll/article?AID=/20070915/NEWS01/709150364">New York</a> Journal News. &#8220;National problems with the subprime mortgage market are surfacing in the Lower Hudson Valley, as creditors go to court to foreclose in sharply higher numbers this year, a survey of county clerks&#8217; offices shows.&#8221;</p>
+<p>&#8220;&#8216;Unfortunately, it&#8217;s kind of grim,&#8217;&#8221; said Blanca Lopez, director of Port Chester-based Human Development Services of Westchester. &#8216;We know in the long run these people are not going to be able to afford their homes.&#8217;&#8221;</p>
+<p>&#8220;In Westchester, the number of foreclosure filings brought by creditors rose 39.4 percent through August, year over year, to 1,414. Actual judgments of foreclosure, were up 61.8 percent to 424. In Rockland County, where numbers were available through July, the filings were up 12.7 percent to 692. Judgments were up 94.4 percent to 175.&#8221;</p>
+<p>&#8220;In Putnam County, foreclosure filings were up 50 percent through August to 294. &#8216;A lot of people, they&#8217;re living by paycheck to paycheck in their general lives,&#8217; said David L. Babel, an Eastchester attorney who specializes in clients with troubled credit. &#8216;They have options, but in many cases they&#8217;re not that good.&#8217;&#8221;</p>
+<p>&#8220;Gerri Levy, executive director of the Rockland Housing Action Coalition in Nanuet, said one woman who came to her for help four months ago had been able to obtain a $360,000 mortgage, even though she made only $25,000 to $30,000 a year.&#8221;</p>
+<p>&#8220;&#8216;The bank knew what she was making, and they gave her the loan anyway,&#8217; Levy said.&#8221;</p>
+<p>The <a target="_blank" href="http://www.nj.com/news/expresstimes/pa/index.ssf?/base/news-13/118982923480940.xml&#038;coll=2">Express Times</a> from New Jersey. &#8220;Age-restricted homes at the Riverview Estates development in Forks Township are being auctioned Sunday starting at more than half off prior asking prices.&#8221;</p>
+<p>&#8220;&#8216;I&#8217;m not surprised to see it happen,&#8217; said Stephen Thode, director of the Goodman Center for Real Estate Studies at Lehigh University. &#8216;Developers can be motivated sellers.&#8217;&#8221;</p>
+<p>&#8220;Signs of a housing market slowdown have been evident for more than a year. Reported sales are declining while many suspect that migration from New Jersey, which fueled much of the boom earlier this decade, has finally cooled.&#8221;</p>
+<p>&#8220;Hovnanian Enterprises Inc. is offering discounts of more than 20 percent on certain homes this weekend. The Hovnanian offer, which began Friday and ends Sunday, includes reductions of up to $100,000 at selected developments in Lower Macungie Township.&#8221;</p>
+<p>&#8220;Thode said it is more common for builders to offer incentives such as free upgrades because those things don&#8217;t affect the nominal price recorded for public view in deeds. Cutting the price outright, Thode said, &#8216;could make it more difficult for the developer to increase the price at a later point.&#8217;&#8221;</p>
+<p>The <a target="_blank" href="http://www.nhregister.com/site/news.cfm?newsid=18812119&#038;BRD=1281&#038;PAG=461&#038;dept_id=7546&#038;rfi=6">New Haven</a> Register from Connecticut. &#8220;The number of single-family homes sold in Connecticut in July remain 4 percent below 2006 levels, The Warren Group reported Wednesday.&#8221;</p>
+<p>&#8220;&#8216;There are not the quantity of buyers in the marketplace right now that there had been&#8217; in previous years, said John Cuozzo of Press/Cuozzo Realtors in Hamden. &#8216;We’ve got a number of people who seem to be waiting on the sidelines.&#8217;&#8221;</p>
+<p>&#8220;Problems in the mortgage industry, particularly among faltering subprime lenders, are making buyers more cautious, he said. With fewer buyers in the market, home sellers, who in recent years had been able to set high asking prices, have started to price homes more realistically, Cuozzo said.&#8221;</p>
+<p>&#8220;&#8216;Some of the over-inflated asking prices are beginning to be more in line with what things are actually selling for,&#8217; he said. &#8216;It may not be quite as easy to sell a home in Connecticut as it was two years ago, and homeowners can’t expect the prices to appreciate by double-digit percentages every year.&#8217;&#8221;</p>
+<p>From <a target="_blank" href="http://www.theday.com/re.aspx?re=50cd2cec-7279-4a01-95e3-3d79daa34aff">the Day</a> in Connecticut. &#8220;Housing permits in New London County fell 16.7 percent last year when compared to 2005, according to the Department of Community &#038; Economic Development. But the statewide drop in permits was even greater, at 22.3 percent.&#8221;</p>
+<p>&#8220;Condominiums are not moving quickly anywhere but in Fairfield County. Locally, condo sales in July were off more than 20 percent, and the prices fell nearly 12 percent from the previous year.&#8221;</p>
+<p>&#8220;&#8216;They&#8217;re selling, but there&#8217;s an oversupply,&#8217; said John Bolduc, executive VP of the Eastern Connecticut Association of Realtors. &#8216;We&#8217;re in what I call a normal real estate market. If you compare to the year 2000, the year before the boom, the numbers are very similar.&#8217;&#8221;</p>
+<p>The <a target="_blank" href="http://www.thestreet.com/_htmlmdb/funds/followmoney/10379077.html">Street.com</a> on Massachusetts. &#8220;Places don&#8217;t get much richer than Nantucket. The quaint Massachusetts island is an enclave of the super-rich. But even here, in what may be America&#8217;s most rarefied real estate market, the first signs are emerging that the housing bust is starting to be felt.&#8221;</p>
+<p>&#8220;On Nantucket, the number of transactions through the end of August has plunged 13% from a year ago, according to local data. Compared with the same period during the boom year of 2005, it&#8217;s down by a third. And the local market may be heading for the worst year since the big real estate crash of 1990.&#8221;</p>
+<p>&#8220;The figures are tracked by veteran local real estate agent Flint Janney, who&#8217;s been running Denby Real Estate on the island for a quarter-century. &#8216;The market is in a slow period,&#8217; he concedes. &#8216;Prices are down, too.&#8217;&#8221;</p>
+<p>&#8220;As the rest of America has relearned over the past two years, the first sign of a housing bust is when the volumes fall off. Prices only start coming down later.&#8221;</p>
+<p>The <a target="_blank" href="http://news.bostonherald.com/business/real_estate/view.bg?articleid=1031428">Boston Herald</a> from Massachusetts. &#8220;The number of building permits for new homes in Massachusetts has plummeted by more than 30 percent since July 2005.&#8221;</p>
+<p>&#8220;&#8216;It’s shocking,&#8217; said Gary Ruping, owner of Ruping Cos., a Bedford homebuilder. &#8216;Many builders I know have simply stopped building.&#8217;&#8221;</p>
+<p>&#8220;The numbers reviewed by the Herald are grim. Single-family home construction permits in July, compared with the same month two years ago, were off nearly 40 percent.&#8221;</p>
+<p>&#8220;The housing market’s woes have spread to other sectors as well. &#8216;If people stop buying and building new homes, they stop buying furniture,&#8217; said Al Salameh, co-owner of Al Salameh Home Furniture in Brockton. Salameh estimated his business is down by about 50 percent since last year.&#8221;</p>
+<p>The <a target="_blank" href="http://www.projo.com/business/content/HO_falloutlook0916_09-16-07_NT6RBV7.254e4fa.html">Providence</a> Journal from Rhode Island. &#8220;As the summer draws to a close, the slowdown in the Rhode Island housing market has settled in, with a drop of about 3 percent in both the median house price and the number of houses sold in the first half of this year, according to statistics from the state Realtors’ association.&#8221;</p>
+<p>&#8220;The condominium market has fared a little better, and a little worse: the median sales price dropped nearly 8 percent, but the number of sales increased 5 percent, in the first half of the year, the Rhode Island Association of Realtors reports.&#8221;</p>
+<p>&#8220;According to Alan Pasnik, an analyst with The Warren Group in Boston, inventory is a key statistic to watch in tracking the real estate market. &#8216;As it goes up, you can be pretty sure that prices will go down,&#8217; he said.&#8221;</p>
+<p>&#8220;Some sellers even blame their real estate agents, but &#8216;the Realtors don’t really control what’s happening out there,&#8217; said Cecile Cohen, president of the Rhode Island Association of Realtors. &#8216;It really is the buyer that controls the market — what they are willing to pay.&#8217;&#8221;</p>
+<p>&#8220;Cohen said that although the five-year housing boom that nearly doubled the average real estate price in Rhode Island ended in 2005, many sellers still haven’t come to terms with the fact that it’s now a buyer’s market. &#8216;There are always sellers who aren’t willing to believe that the market isn’t booming,&#8217; Cohen added. &#8216;They are really in the position of being behind the market.&#8217;&#8221;</p>
+<p>&#8220;Real estate attorney Robert Goldman, of Providence, said he believes there will be a &#8217;second wave of implosion&#8217; in the real estate markets that have seen price depreciation of 20 to 50 percent since the boom ended. In markets where prices have plummeted so far so fast, more people who have refinanced and borrowed against equity that is no longer there will be in trouble, he said.&#8221;</p>
+<p>&#8220;&#8216;Foreclosures, the number of foreclosures are only going to escalate in 2008,&#8217; Goldman said. &#8216;There’s going to be a real problem.&#8217;&#8221;</p>
+<p>&#8220;Phipps said there are buyers in the market who are creditworthy, but they are &#8217;savvy&#8217; and will not pay more than what they think a property is worth. Often they encounter sellers who refuse to negotiate, he said.&#8221;</p>
+<p>&#8220;Phipps said he has been involved in situations as recently as this month in which sellers rejected offers from buyers outright, without making any counteroffer, because the prices were so far below their expectations.&#8221;</p>
+<p>&#8220;&#8216;We still have sellers who are wrapped in nostalgia,&#8217; he said with a sigh. &#8216;If you really don’t want to sell … if you’re waiting for the exuberant buyer who will buy anything … it may make sense to step back and say, &#8216;I should wait a couple of years.&#8217;&#8221;</p>
+<p>&#8220;Joy Sawyer has been playing the waiting game for more than 18 months. She bought a house in 2004, at the height of the boom, in North Kingstown’s coastal Poplar Point neighborhood. Last year, the house went on the market because her husband’s job took them to Albany, N.Y., where they have been renting a one-bedroom apartment.&#8221;</p>
+<p>&#8220;Their North Kingstown house remains unsold, so they plan to return to Rhode Island this month and live there until it does sell. &#8216;We got stuck in one of those places that you never want to be,&#8217; she said.&#8221;</p>
+<p>&#8220;Sawyer’s husband can work from Rhode Island, but his company’s headquarters is in Albany. Sawyer said her husband’s employer has allowed this accommodation because of housing market conditions.&#8221;</p>
+<p>&#8220;Sawyer’s house is now priced at $939,000, but was first listed at about $1.1 million. &#8216;They’re just aren’t that many people who are looking in our price range,&#8217; she said.&#8221;</p>
+<p>&#8220;Having a house on the market for 18 months has been an emotionally draining experience, Sawyer said. &#8216;It’s like being pregnant,&#8217; she joked. &#8216;You talk about it all the time.&#8217;&#8221;
+</p>
+
+<div style="clear:both; padding-bottom: 0.25em;"></div>
+</p>
+
+</div>
+<p class="post-footer">
+ Posted By: Ben Jones @ 6:26 am
+			
+</p><br/>
+
+
+<center>
+<script type="text/javascript"><!--
+google_ad_client = "pub-4205366296275175";
+google_ad_width = 300;
+google_ad_height = 250;
+google_ad_format = "300x250_as";
+google_ad_type = "text_image";
+google_ad_channel = "";
+google_color_border = "eeeecc";
+google_color_bg = "eeeecc";
+google_color_link = "333399";
+google_color_url = "000000";
+google_color_text = "000000";
+//--></script>
+<script type="text/javascript"
+src=" http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+</center>
+
+<br/>
+
+<br/>
+</div>
+
+<!-- You can start editing here. -->
+
+<p><a href='http://thehousingbubbleblog.com/?feed=rss2&amp;p=3420'><abbr title="Really Simple Syndication">RSS</abbr> feed</a> 
+| <a href="http://thehousingbubbleblog.com/wp-trackback.php?p=3420">Trackback <acronym title=\"Uniform Resource Identifier\">URI</acronym></a> |  <a href="http://thehousingbubbleblog.com"><font color="#cc3300">home</font></a>
+
+</p>
+
+<h2 id="comments">64 Comments 
+<a href="#postcomment" title="Leave a comment">&raquo;</a>
+</h2>
+<div class="#commentlist">
+			<div  id="div-comment-934305" class='comment'>
+				<a name='comment-934305' id='comment-934305'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934305")' />
+					<cite>Comment by aladinsane<a href="#comment-934305"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 06:46:25 						
+					</div>					
+					<div class='content'>
+						<p>“‘Homes that have come on the market in the last two or three months have started at prices that are more conservative,’ said Savo Fries, manager of the Houlihan Lawrence offices in Yorktown and Croton-on-Hudson, both in Westchester County. ‘Sellers are finally more willing to listen.’”</p>
+<p>Imagine the psychological pain for poor Savo in his new job, when he has to ask each drive through customer&#8230;</p>
+<p>Would you like Fries with that?
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934305", 934305, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934367" class='comment odd'>
+				<a name='comment-934367' id='comment-934367'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934367")' />
+					<cite>Comment by exeter<a href="#comment-934367"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:27:34 						
+					</div>					
+					<div class='content'>
+						<p>Unfortunately I live and work among the slobs in Westchester and the denial has turned to silence for the most part.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934367", 934367, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934401" class='comment'>
+				<a name='comment-934401' id='comment-934401'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934401")' />
+					<cite>Comment by NYCityBoy<a href="#comment-934401"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:42:43 						
+					</div>					
+					<div class='content'>
+						<p>Westchester has some nice areas but they are way overpriced.  And let us not forget, the financial industry keeps that pig bloated.  If Wall Street and the other financial scammers get the kick in the nuts they deserve, there will be serious problems in Westchester.  They are living in a fantasy up there.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934401", 934401, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934428" class='comment odd'>
+				<a name='comment-934428' id='comment-934428'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934428")' />
+					<cite>Comment by shocked<a href="#comment-934428"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:53:18 						
+					</div>					
+					<div class='content'>
+						<p>&#8220;If Wall Street and the other financial scammers get the kick in the nuts they deserve&#8221; -<br />
+And get they will.
+</p>
+					</div>
+				<small>(Comments wont nest below this level)</small>
+				</div>
+
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934428", 934428, false)'>Reply here</a>
+											</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934494" class='comment odd'>
+				<a name='comment-934494' id='comment-934494'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934494")' />
+					<cite>Comment by P'cola Popper<a href="#comment-934494"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 08:36:02 						
+					</div>					
+					<div class='content'>
+						<p>Kick in the nuts?</p>
+<p>Did you not get the memo about where to pick up your Joshua Tree shipment that is presently being pulled together by West Coast HBBers?
+</p>
+					</div>
+				<small>(Comments wont nest below this level)</small>
+				</div>
+
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934494", 934494, false)'>Reply here</a>
+											</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934306" class='comment'>
+				<a name='comment-934306' id='comment-934306'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934306")' />
+					<cite>Comment by mrktMaven FL<a href="#comment-934306"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 06:48:00 						
+					</div>					
+					<div class='content'>
+						<p>“Having a house on the market for 18 months has been an emotionally draining experience, Sawyer said. ‘It’s like being pregnant,’ she joked. ‘You talk about it all the time.’”</p>
+<p>Had they originally listed the house at the current price, the sale probably would not be so late.  They are following the market down.  We&#8217;ve talke about this many times.  List 5-10 pct below everyone else and push it out.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934306", 934306, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934317" class='comment odd'>
+				<a name='comment-934317' id='comment-934317'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934317")' />
+					<cite>Comment by joeyinCalif<a href="#comment-934317"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 06:58:56 						
+					</div>					
+					<div class='content'>
+						<p>pregnant for 18 months and counting.. i like the analogy.. got knocked up a little.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934317", 934317, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934307" class='comment'>
+				<a name='comment-934307' id='comment-934307'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934307")' />
+					<cite>Comment by palmetto<a href="#comment-934307"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 06:48:05 						
+					</div>					
+					<div class='content'>
+						<p>“Condominiums are not moving quickly anywhere but in Fairfield County.&#8221;</p>
+<p>Yep, I was up there over the winter.  The worst that&#8217;s happening in Fairfield is a bit of a slowdown in the pace of sales, but that&#8217;s about it.  Any thoughts on what would have to happen to make Fairfield tank?  Because that market almost justifies the phrase &#8220;It&#8217;s different here&#8221;.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934307", 934307, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934337" class='comment odd'>
+				<a name='comment-934337' id='comment-934337'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934337")' />
+					<cite>Comment by Yo Momma<a href="#comment-934337"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:12:07 						
+					</div>					
+					<div class='content'>
+						<p>Same here in Wake County, NJ (Raleigh/Durham/Chapel Hill).  Prices are UP from a year ago.  wtf???
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934337", 934337, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934374" class='comment'>
+				<a name='comment-934374' id='comment-934374'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934374")' />
+					<cite>Comment by <a href='http://thehousingbubbleblog.com' rel='external nofollow'>Ben Jones</a><a href="#comment-934374"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:30:42 						
+					</div>					
+					<div class='content'>
+						<p>If there is one thing this blog has documented well, it is the flaws in home price statistics. I find plenty of proof that prices are down in North Carolina.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934374", 934374, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934391" class='comment odd'>
+				<a name='comment-934391' id='comment-934391'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934391")' />
+					<cite>Comment by NYCityBoy<a href="#comment-934391"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:36:48 						
+					</div>					
+					<div class='content'>
+						<p>I&#8217;m heading to Chapel Hill in a few weeks.  I&#8217;ll get the lowdown at that time.  Last time we were there (November &#8216;06) they were building everywhere.  Can the Research Triangle really justify the seas and seas of McMansions and mansions?  I think not.
+</p>
+					</div>
+				<small>(Comments wont nest below this level)</small>
+				</div>
+			<div  id="div-comment-934411" class='comment'>
+				<a name='comment-934411' id='comment-934411'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934411")' />
+					<cite>Comment by mgnyc<a href="#comment-934411"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:46:35 						
+					</div>					
+					<div class='content'>
+						<p>but wait i thought it was different in north carolina because everyone from long island is moving there?</p>
+<p>oh that must have been realtor babble<br />
+never mind</p>
+<p>nothing like a thread on prices dropping like a rock in<br />
+my backyard </p>
+<p>i have been told 3 times this week my decision to rent was the right one. now i feel validated. lmao </p>
+<p>bring on the pain for these greedy dreamers
+</p>
+					</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934391", 934391, false)'>Reply here</a>
+											</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934708" class='comment odd'>
+				<a name='comment-934708' id='comment-934708'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934708")' />
+					<cite>Comment by jinwnc<a href="#comment-934708"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 10:32:12 						
+					</div>					
+					<div class='content'>
+						<p>Amen Ben. I spoke to a realtor friend who closed 11 million in sales the last two years. This year he won&#8217;t hit 4 mil in sales.<br />
+ He is the #1 realtor in this area and not typical.<br />
+ Western NC
+</p>
+					</div>
+				<small>(Comments wont nest below this level)</small>
+				</div>
+
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934708", 934708, false)'>Reply here</a>
+											</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934405" class='comment odd'>
+				<a name='comment-934405' id='comment-934405'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934405")' />
+					<cite>Comment by <a href='http://www.louminatti.blogspot.com/' rel='external nofollow'>Lou Minatti</a><a href="#comment-934405"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:43:28 						
+					</div>					
+					<div class='content'>
+						<p>I spent a few years of my childhood in Norwalk. It came very, very close to turning into Bridgeport during the late 1970s. Lots of abandoned houses.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934405", 934405, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934446" class='comment'>
+				<a name='comment-934446' id='comment-934446'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934446")' />
+					<cite>Comment by aNYCdj<a href="#comment-934446"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 08:02:55 						
+					</div>					
+					<div class='content'>
+						<p>Funny you should talk about Bridgeport,  Because we we told to stay  away from very dangerous downtown Stamford when we were in HS, so we all went  to all the clubs around the U of Bridgeport..they would let us in at 16yo.  drinking was 18 back then
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934446", 934446, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934477" class='comment odd'>
+				<a name='comment-934477' id='comment-934477'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934477")' />
+					<cite>Comment by aladinsane<a href="#comment-934477"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 08:22:11 						
+					</div>					
+					<div class='content'>
+						<p>&#8220;Money is in some respects life&#8217;s fire: it is a very excellent servant, but a terrible master.&#8221;</p>
+<p>&#8220;Barnum built four mansions in Bridgeport, Connecticut during his life: Iranistan, Lindencroft, Waldemere and Marina.&#8221;</p>
+<p><a href='http://en.wikipedia.org/wiki/P._T._Barnum' rel='nofollow'>http://en.wikipedia.org/wiki/P._T._Barnum</a>
+</p>
+					</div>
+				<small>(Comments wont nest below this level)</small>
+				</div>
+
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934477", 934477, false)'>Reply here</a>
+											</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934425" class='comment odd'>
+				<a name='comment-934425' id='comment-934425'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934425")' />
+					<cite>Comment by aNYCdj<a href="#comment-934425"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:52:56 						
+					</div>					
+					<div class='content'>
+						<p>Make Fairfield county tank????&#8230;.Just layoff thousands of people&#8230;..</p>
+<p>I was raised in Norwalk,  when companies layoff there is no other alternative work to do&#8230;it has to be the most congested 9-5 M-F place in America.  the traffic jams on I-95 are really bad at rush hours.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934425", 934425, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934519" class='comment'>
+				<a name='comment-934519' id='comment-934519'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934519")' />
+					<cite>Comment by <a href='http://www.louminatti.blogspot.com/' rel='external nofollow'>Lou Minatti</a><a href="#comment-934519"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 08:52:01 						
+					</div>					
+					<div class='content'>
+						<p>aNYCdj, the house my mom bought when we moved there in 1976 sold for $75,000 when we left in 1979. This is Cornwall Road, near 123. Don&#8217;t know if you&#8217;re familiar with that area. These were houses built in the 1950s, with stinky basements reeking of heating oil and damp air. I Zillowed the house a few months ago and it was &#8220;valued&#8221; at close to $600,000.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934519", 934519, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934567" class='comment odd'>
+				<a name='comment-934567' id='comment-934567'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934567")' />
+					<cite>Comment by aNYCdj<a href="#comment-934567"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 09:24:05 						
+					</div>					
+					<div class='content'>
+						<p>I was raised near Brien Mc Mahon HS, and we had lots of those houses across the street  plus they used to flood too, and everybody put their oil tanks and burners in the basement, but  my father waterproofed our basement so it didn&#8217;t have that damp air smell plus he had 2 sump pumps, and had the hot water pipes uninsulated so we had some heat in  basement in the winter.  Of course now they changed over to gas last year,  the oil smell is gone and there is so much more room in the basement&#8230;we had 2- 250 gal tanks  (2fam house)     I used to DJ in Vista a lot  when in the late 80&#8217;s  when CT changed the drinking laws to 1 during the week and 2 on weekends, from 3 am, no sense driving to vista for 1 hour  we closed at 4&#8230;but for 2-3 more hours, lots of people just stopped going to CT bars and headed straight to vista.
+</p>
+					</div>
+				<small>(Comments wont nest below this level)</small>
+				</div>
+
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934567", 934567, false)'>Reply here</a>
+											</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934761" class='comment odd'>
+				<a name='comment-934761' id='comment-934761'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934761")' />
+					<cite>Comment by AZ-IT<a href="#comment-934761"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 11:06:01 						
+					</div>					
+					<div class='content'>
+						<p>Not so different, grew up in New Canaan.  The 89 one hit there too.  Of course it’ll still be way dang expensive, but as everyone is learning, $$’s are very relative.  Higher priced areas tend to remain higher priced areas, just the scales shifted one direction or another as a whole.  You have to wait for the whole economy to get tanked.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934761", 934761, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934310" class='comment'>
+				<a name='comment-934310' id='comment-934310'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934310")' />
+					<cite>Comment by oikonomikos<a href="#comment-934310"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 06:51:15 						
+					</div>					
+					<div class='content'>
+						<p>OT, but we won&#8217;t be seeing any bank runs in this country, won&#8217;t we?</p>
+<p>Back to the region at hand&#8230;I wonder how many solid towns in CT will fare through the dry spell better than others. Most problems/foreclosures have been in blighted areas: Waterbury and Bridgeport, but not too many in Ridgefield and Woodbridge. Been looking for almost 2 years now and don&#8217;t really see much movement in prices. 6% is really nothing compared with 100% runup over 2 years.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934310", 934310, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934329" class='comment odd'>
+				<a name='comment-934329' id='comment-934329'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934329")' />
+					<cite>Comment by <a href='http://thehousingbubbleblog.com' rel='external nofollow'>Ben Jones</a><a href="#comment-934329"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:07:36 						
+					</div>					
+					<div class='content'>
+						<p>&#8216;6% is really nothing compared with 100% runup over 2 years.&#8217;</p>
+<p>I agree, and what should that tell you?
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934329", 934329, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934345" class='comment odd'>
+				<a name='comment-934345' id='comment-934345'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934345")' />
+					<cite>Comment by jag<a href="#comment-934345"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:15:00 						
+					</div>					
+					<div class='content'>
+						<p>Just in West Hartford CT yesterday. PLENTY of for sale signs.</p>
+<p>PLENTY.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934345", 934345, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934376" class='comment'>
+				<a name='comment-934376' id='comment-934376'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934376")' />
+					<cite>Comment by palmetto<a href="#comment-934376"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:31:25 						
+					</div>					
+					<div class='content'>
+						<p>Homes are for sale all over Connecticut, but certain regions will have more of a decline than others.  </p>
+<p>Just as a side note, some of the towns in CT have some real Yankee ingenuity in their local governments.  One town (which shall remain nameless) gave a developer a stonewalling they&#8217;ll never forget.  As a result, the town will not have to suffer with a deteriorating McMansion development full of foreclosures.  Brilliant, fully legal, delaying tactics.  They never once declined to give permission to build, just asked for more time to &#8220;study&#8221; the issues, more documention, more local meetings to allow the citizenry to give their opinions, more &#8220;continued&#8221; hearings, etc.  All the while smiling politely and avoiding a direct legal confrontation. They just wore the developer down and by the time the boom turned to bust, the developer didn&#8217;t want to build anymore.  </p>
+<p>Wish some of our local govs here in FLA had done the same.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934376", 934376, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934429" class='comment odd'>
+				<a name='comment-934429' id='comment-934429'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934429")' />
+					<cite>Comment by flatffplan<a href="#comment-934429"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:54:24 						
+					</div>					
+					<div class='content'>
+						<p>CT was down 30% 90-95<br />
+same as the rest of NE
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934429", 934429, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-935050" class='comment'>
+				<a name='comment-935050' id='comment-935050'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-935050")' />
+					<cite>Comment by exeter<a href="#comment-935050"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 13:49:16 						
+					</div>					
+					<div class='content'>
+						<p>Correction. CT was down 40% 90-95.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-935050", 935050, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934316" class='comment'>
+				<a name='comment-934316' id='comment-934316'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934316")' />
+					<cite>Comment by txchick57<a href="#comment-934316"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 06:58:41 						
+					</div>					
+					<div class='content'>
+						<p>‘It’s like being pregnant,’ she joked. ‘You talk about it all the time.’”</p>
+<p>And everyone tunes you out.  Same with the house.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934316", 934316, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934375" class='comment odd'>
+				<a name='comment-934375' id='comment-934375'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934375")' />
+					<cite>Comment by <a href='http://recomments.blogspot.com/' rel='external nofollow'>Neil</a><a href="#comment-934375"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:31:23 						
+					</div>					
+					<div class='content'>
+						<p>&#8220;<i> And everyone tunes you out. Same with the house. </i>&#8221;</p>
+<p>It is a good analogy (housing and pregnancy).  In both situations a bunch of guys suddenly leave the county.  <img src='http://thehousingbubbleblog.com/wp-includes/images/smilies/icon_wink.gif' alt=';)' class='wp-smiley' /> </p>
+<p>Got popcorn?<br />
+Neil
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934375", 934375, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934394" class='comment'>
+				<a name='comment-934394' id='comment-934394'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934394")' />
+					<cite>Comment by NYCityBoy<a href="#comment-934394"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:38:16 						
+					</div>					
+					<div class='content'>
+						<p>She&#8217;s been pregnant for 18 months before?  Did she give birth to an elephant?
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934394", 934394, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934461" class='comment odd'>
+				<a name='comment-934461' id='comment-934461'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934461")' />
+					<cite>Comment by speedingpullet<a href="#comment-934461"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 08:08:39 						
+					</div>					
+					<div class='content'>
+						<p>Yes, a White Elephant, apparently.
+</p>
+					</div>
+				<small>(Comments wont nest below this level)</small>
+				</div>
+			<div  id="div-comment-934574" class='comment'>
+				<a name='comment-934574' id='comment-934574'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934574")' />
+					<cite>Comment by <a href='http://deleted' rel='external nofollow'>Muggy</a><a href="#comment-934574"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 09:30:19 						
+					</div>					
+					<div class='content'>
+						<p>I think the elephant is pink&#8230; no matter, most people still don&#8217;t see it.
+</p>
+					</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934461", 934461, false)'>Reply here</a>
+											</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934453" class='comment'>
+				<a name='comment-934453' id='comment-934453'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934453")' />
+					<cite>Comment by GH<a href="#comment-934453"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 08:06:34 						
+					</div>					
+					<div class='content'>
+						<p>Yeah, I love this one too. It is like they got permenantly knocked up with this unwanted house.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934453", 934453, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934562" class='comment odd'>
+				<a name='comment-934562' id='comment-934562'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934562")' />
+					<cite>Comment by death_spiral<a href="#comment-934562"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 09:19:51 						
+					</div>					
+					<div class='content'>
+						<p>&#8230;AND SHE PUKES UP HER GUTS EVERY MORNING
+</p>
+					</div>
+				<small>(Comments wont nest below this level)</small>
+				</div>
+
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934562", 934562, false)'>Reply here</a>
+											</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934779" class='comment odd'>
+				<a name='comment-934779' id='comment-934779'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934779")' />
+					<cite>Comment by AnonyRuss<a href="#comment-934779"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 11:20:21 						
+					</div>					
+					<div class='content'>
+						<p>&#8220;AND SHE PUKES UP HER GUTS EVERY MORNING &#8221;</p>
+<p>Like Jeff from SDCIA.
+</p>
+					</div>
+				<small>(Comments wont nest below this level)</small>
+				</div>
+
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934779", 934779, false)'>Reply here</a>
+											</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934325" class='comment'>
+				<a name='comment-934325' id='comment-934325'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934325")' />
+					<cite>Comment by JP<a href="#comment-934325"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:05:04 						
+					</div>					
+					<div class='content'>
+						<p>“Real estate agents and market watchers throughout the region report that houses are selling at prices 5 to 18 percent lower than a year ago.”</p>
+<p>And since real estate agents are compensated in proportion to prices,  I wonder what the real drop is.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934325", 934325, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934332" class='comment'>
+				<a name='comment-934332' id='comment-934332'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934332")' />
+					<cite>Comment by Professor Bear<a href="#comment-934332"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:10:07 						
+					</div>					
+					<div class='content'>
+						<p>“‘Those are the first homes to be sold,’ said Robert Campbell, professor of real estate finance at Hofstra University. He expects Queens to suffer greater price drops than Long Island for at least a year.”</p>
+<p>Is this the same Robert Campbell of San Diego who used to post here?
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934332", 934332, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934676" class='comment odd'>
+				<a name='comment-934676' id='comment-934676'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934676")' />
+					<cite>Comment by Blano<a href="#comment-934676"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 10:16:48 						
+					</div>					
+					<div class='content'>
+						<p>What kind of postings did he put here??  There&#8217;s a Rob&#8217;t. Campbell from that area that posts on a real estate investing site I read sometimes.  He has some sort of newsletter, website, both or some such thing.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934676", 934676, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934786" class='comment odd'>
+				<a name='comment-934786' id='comment-934786'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934786")' />
+					<cite>Comment by AnonyRuss<a href="#comment-934786"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 11:26:31 						
+					</div>					
+					<div class='content'>
+						<p>It is a different Robert Campbell.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934786", 934786, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934338" class='comment'>
+				<a name='comment-934338' id='comment-934338'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934338")' />
+					<cite>Comment by RJ<a href="#comment-934338"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:12:05 						
+					</div>					
+					<div class='content'>
+						<p>One point that knife catching rhetoric tends to ignore, is the dynamics involved with price drops. With each lower price point, more borrowers end up owing more than their houses are worth, increasing the likelihood that they will walk away from their debt. This forces more homes into foreclosure and thus more REO&#8217;s onto the market insuring further price reductions. Bargain hunting knife catchers are truly the last of the greater fools. Soon they will be gone as well.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934338", 934338, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934353" class='comment'>
+				<a name='comment-934353' id='comment-934353'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934353")' />
+					<cite>Comment by darkmatter<a href="#comment-934353"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:21:33 						
+					</div>					
+					<div class='content'>
+						<p><i>“National problems with the subprime mortgage market are surfacing in the Lower Hudson Valley, as creditors go to court to foreclose in sharply higher numbers this year, a survey of county clerks’ offices shows.”</i></p>
+<p>The new mantra: Housing booms are local (it&#8217;s different here), housing busts are national (it&#8217;s the same here).
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934353", 934353, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934358" class='comment'>
+				<a name='comment-934358' id='comment-934358'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934358")' />
+					<cite>Comment by exeter<a href="#comment-934358"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:25:09 						
+					</div>					
+					<div class='content'>
+						<p>My sense of the consensus on this blog is that sales hit a wall summer 2006. Based on the same for sales signs on the same overpriced garbage and comments from sobered up Real-Turds, I&#8217;d say things hit a bedrock outcrop in summer of 2007.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934358", 934358, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934365" class='comment'>
+				<a name='comment-934365' id='comment-934365'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934365")' />
+					<cite>Comment by <a href='http://www.beachhunter.com' rel='external nofollow'>beachhunter</a><a href="#comment-934365"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:27:20 						
+					</div>					
+					<div class='content'>
+						<p>looks like this is the biggest week on the street and wall street.. many strange things could happen.. financials reporting, rate cuts (should raise to clean the pipes) and homebuilder &#8220;sales&#8221; -thoughts..
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934365", 934365, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934366" class='comment'>
+				<a name='comment-934366' id='comment-934366'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934366")' />
+					<cite>Comment by <a href='http://recomments.blogspot.com/' rel='external nofollow'>Neil</a><a href="#comment-934366"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:27:31 						
+					</div>					
+					<div class='content'>
+						<p>Bubble party/dinner at the Cheesecake factor in Redondo beach, CA.</p>
+<p>Sunday 9/30/2007, 6pm.  I&#8217;ll be in the bar.  We&#8217;re at 9+ (some maybes).</p>
+<p>Would you like to join for some bearish fun?  I&#8217;m recording the RSVP on my blog (click my name).  (Hope you don&#8217;t mind Ben.)</p>
+<p>Neil
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934366", 934366, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-937102" class='comment odd'>
+				<a name='comment-937102' id='comment-937102'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-937102")' />
+					<cite>Comment by jane<a href="#comment-937102"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-16 21:33:47 						
+					</div>					
+					<div class='content'>
+						<p>Thank you for the link to your blog.  It is very well written, creative and informative!  I am sitting on the sidelines in NoVa, having just moved here from CT (Fairfield County, in fact).  Can&#8217;t wait for those folks, who appeared to me incestuous and arrogant, to take it on the chin.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-937102", 937102, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934380" class='comment'>
+				<a name='comment-934380' id='comment-934380'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934380")' />
+					<cite>Comment by We Rent!<a href="#comment-934380"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:33:26 						
+					</div>					
+					<div class='content'>
+						<p>“‘The bank knew what she was making, and they gave her the loan anyway,’ Levy said.”</p>
+<p>Try this:</p>
+<p>SHE knew what SHE was making, and she took out the loan ANYWAY.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934380", 934380, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934434" class='comment odd'>
+				<a name='comment-934434' id='comment-934434'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934434")' />
+					<cite>Comment by P'cola Popper<a href="#comment-934434"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:55:30 						
+					</div>					
+					<div class='content'>
+						<p>&#8220;“‘The bank knew what she was making, and they gave her the loan anyway,’ Levy said.”</p>
+<p>Back in &#8216;98 one of the Russian politicians (Zhirinovsky I think) when asked by someone in a tv interview about repayment of western loans by Russia said something like, &#8220;They knew we were a bunch of deadbeats. Its their fault for giving us the loans. Isn&#8217;t that what capitalism is all about&#8211;risk and return. They risked and we got the return!&#8221;
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934434", 934434, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934427" class='comment'>
+				<a name='comment-934427' id='comment-934427'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934427")' />
+					<cite>Comment by mgnyc<a href="#comment-934427"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 07:53:13 						
+					</div>					
+					<div class='content'>
+						<p>any local nyc people want to do something like neil has organized out west?<br />
+i know there are quite a few manhattan-queens-brooklyn-long islanders lurking here what the hell even jersey people would be welcome too!
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934427", 934427, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934454" class='comment odd'>
+				<a name='comment-934454' id='comment-934454'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934454")' />
+					<cite>Comment by edhopper<a href="#comment-934454"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 08:07:00 						
+					</div>					
+					<div class='content'>
+						<p>Sounds good to me.<br />
+Bohemian Hall, here in Astoria is fun. But we have to see what&#8217;s easiest for most people.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934454", 934454, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934462" class='comment odd'>
+				<a name='comment-934462' id='comment-934462'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934462")' />
+					<cite>Comment by aNYCdj<a href="#comment-934462"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 08:08:41 						
+					</div>					
+					<div class='content'>
+						<p>Anytime  MG, i would really like to meet all of you..it would be fun&#8230;heck i could spin a little music too&#8230;.Maybe Breffini  just steps off the 40th st stop on the 7train,  6 stops from Grand central in sunnyside queens?     Lots of cheap metered parking under the 7 train, and free on sundays.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934462", 934462, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934497" class='comment'>
+				<a name='comment-934497' id='comment-934497'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934497")' />
+					<cite>Comment by mgnyc<a href="#comment-934497"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 08:37:35 						
+					</div>					
+					<div class='content'>
+						<p>ok sounds like a plan i will post on monday in the bits bucket for more locals and post my email so we can do this </p>
+<p>i believe nycboy suggested this awhile back </p>
+<p>lets see who else may be interested i know there<br />
+are quite a few others who are local
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934497", 934497, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934561" class='comment odd'>
+				<a name='comment-934561' id='comment-934561'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934561")' />
+					<cite>Comment by NYCityBoy<a href="#comment-934561"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 09:17:10 						
+					</div>					
+					<div class='content'>
+						<p>I will bring my wife.  If it is planned for a Sunday make sure that the place has plenty of TVs for football.  I will go any place that is easily accessed by public transportation.  We live in the financial district but are willing to do a little travel.  I vacation in October so the end of Sept. would work well.
+</p>
+					</div>
+				<small>(Comments wont nest below this level)</small>
+				</div>
+
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934561", 934561, false)'>Reply here</a>
+											</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934525" class='comment odd'>
+				<a name='comment-934525' id='comment-934525'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934525")' />
+					<cite>Comment by evildoc<a href="#comment-934525"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 08:58:42 						
+					</div>					
+					<div class='content'>
+						<p>sure. Upper West Side get together.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934525", 934525, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934627" class='comment'>
+				<a name='comment-934627' id='comment-934627'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934627")' />
+					<cite>Comment by mgnyc<a href="#comment-934627"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 09:55:12 						
+					</div>					
+					<div class='content'>
+						<p>if you are interested in getting together in the nyc area </p>
+<p>send me an email and we can do this </p>
+<p><a href="mailto:mgnyc99@hotmail.com">mgnyc99@hotmail.com</a>
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934627", 934627, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934641" class='comment odd'>
+				<a name='comment-934641' id='comment-934641'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934641")' />
+					<cite>Comment by <a href='http://recomments.blogspot.com/' rel='external nofollow'>Neil</a><a href="#comment-934641"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 09:58:45 						
+					</div>					
+					<div class='content'>
+						<p>I like this trend!</p>
+<p>I admit to copying &#8220;Big V&#8221; trying to organize a SFO area meeting.  But this cannot be the first ones&#8230; (I have vague memories from a while ago&#8230;).  To whomever was first (or just early) in getting HBB meetings, I lift my cup of coffee to you.</p>
+<p>Got popcorn?<br />
+Neil
+</p>
+					</div>
+				<small>(Comments wont nest below this level)</small>
+				</div>
+
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934641", 934641, false)'>Reply here</a>
+											</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934648" class='comment odd'>
+				<a name='comment-934648' id='comment-934648'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934648")' />
+					<cite>Comment by <a href='http://thehousingbubbleblog.com/?p=3420#comment-934427' rel='external nofollow'>nycjoe</a><a href="#comment-934648"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 10:02:34 						
+					</div>					
+					<div class='content'>
+						<p>I&#8217;d be interested in meeting other fanatic watchers for a couple of drinks as well. What would be a central location? I&#8217;m in Carroll Gardens, work midtown West. Could swing it Sat-Sun-Mon. Funny the mention of Sunnyside bar &#8230; I skulk out there every few weeks to play in a pool tourney down the street (39th &amp; Boulevard of Death) at Master Billiards on Mondays.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934648", 934648, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934473" class='comment'>
+				<a name='comment-934473' id='comment-934473'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934473")' />
+					<cite>Comment by QueensDude<a href="#comment-934473"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 08:16:02 						
+					</div>					
+					<div class='content'>
+						<p>A new condo conversion of a pre-war building near the Kew Gardens Long<br />
+Island Railroad station is just beginning to offer renovated apartments to<br />
+the general public.  (For those of you who don&#8217;t know New York, Kew Gardens is one of the more attractive outer borough neighborhoods<br />
+in the city.)  The renovations are beautifully done, restoring wood<br />
+burning fireplaces, offering great kitchens, etc., but at $524 a square<br />
+foot, a 1600 square foot apartment is hardly a bargain.  Boosters point to the units as being much cheaper than comparable units on the Upper West Side, but a location nine miles from the UWS is not exactly prime.<br />
+Any fellow or sister locals care to predict what might be the fate of<br />
+this conversion as more of its units are revamped and offered for sale?
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934473", 934473, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934501" class='comment odd'>
+				<a name='comment-934501' id='comment-934501'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934501")' />
+					<cite>Comment by spike66<a href="#comment-934501"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 08:39:15 						
+					</div>					
+					<div class='content'>
+						<p>Queensdude,<br />
+I live on the Westside&#8230;and prices here tanked in 90, 91, 92&#8230;if you want to live here, patience. Just keep saving, and wait. $524 a square foot? You&#8217;ll pay less on the West Side if you hold&#8230;just wait til the first announcement of layoffs on Wall Street, then prices, now stagnant, will start to slide. Happened before, will happen again.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934501", 934501, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934541" class='comment'>
+				<a name='comment-934541' id='comment-934541'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934541")' />
+					<cite>Comment by evildoc<a href="#comment-934541"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 09:06:56 						
+					</div>					
+					<div class='content'>
+						<p>would not mind UWS back down to $500sqft. That&#8217;d be about a 50% haircut. So far, no sign of fall, recognizing NYC will be last to fall.  For reasons i&#8217;ve outlined before, it&#8230; uhhh&#8230; really IS different here. But&#8230; I would bet it is not&#8230; different enough <img src='http://thehousingbubbleblog.com/wp-includes/images/smilies/icon_wink.gif' alt=';)' class='wp-smiley' /> </p>
+<p>e.d.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934541", 934541, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934506" class='comment odd'>
+				<a name='comment-934506' id='comment-934506'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934506")' />
+					<cite>Comment by mgnyc<a href="#comment-934506"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 08:40:59 						
+					</div>					
+					<div class='content'>
+						<p>i have quite a few friends who live right there on talbot street </p>
+<p>they will not get that kind of money (plus the parking situation is awful but kew gardens pre war apartments are huge nad the lirr right there is a plus as well, we looked at a few but did not pull the trigger.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934506", 934506, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934481" class='comment'>
+				<a name='comment-934481' id='comment-934481'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934481")' />
+					<cite>Comment by Theresa P.<a href="#comment-934481"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 08:26:43 						
+					</div>					
+					<div class='content'>
+						<p>“Thode said it is more common for builders to offer incentives such as free upgrades because those things don’t affect the nominal price recorded for public view in deeds. Cutting the price outright, Thode said, ‘could make it more difficult for the developer to increase the price at a later point.’”</p>
+<p>I think any monies given in &#8220;kick backs&#8221; to the new owner needs to be taken off the back end of the house price to reflect the actual price. This ploy has become commonplace in Hampton Roads and it&#8217;s one reason why the prices have barely budged.  It&#8217;s unbelievable what 250K will get you here:  a broken down townhouse in a crappy neighborhood. </p>
+<p>I&#8217;ve seen builders offer cruises and plasma tvs instead of lowering the price on their artificially priced shacks. And people fall for it! That part boggles the mind! It&#8217;s like they WANT to overpay here. But with the median income of 64K in a military town + the median home price of 329K, just do the math. The prices can&#8217;t sustain and when the inevitable happens, prices finally do adjust and the people that bought at these ridiculous prices are swimming in their negative equity, I hope they&#8217;re comforted by their 50k plasma televisions.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934481", 934481, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-934699" class='comment'>
+				<a name='comment-934699' id='comment-934699'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934699")' />
+					<cite>Comment by Ernest<a href="#comment-934699"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 10:24:53 						
+					</div>					
+					<div class='content'>
+						<p>Goldman said he believes there will be a “second wave of implosion” in the real estate markets that have seen price depreciation of 20 to 50 percent since the boom ended. In markets where prices have plummeted so far so fast, more people who have refinanced and borrowed against equity that is no longer there will be in trouble, he said.</p>
+<p>“Foreclosures, the number of foreclosures are only going to escalate in 2008,” Goldman said. “There’s going to be a real problem.”</p>
+<p>Round &amp; round &amp; round we go&#8230;After a point it is not just &#8220;people who have refinanced and borrowed against equity&#8221; that can end up in trouble. Some people who think they are &#8220;safe&#8221; might not be.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934699", 934699, true)'>Reply to this comment</a>
+											</div>
+				</div>
+			<div  id="div-comment-934910" class='comment odd'>
+				<a name='comment-934910' id='comment-934910'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-934910")' />
+					<cite>Comment by Professor Bear<a href="#comment-934910"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 12:39:57 						
+					</div>					
+					<div class='content'>
+						<p>Housing deflation death spiral, here we come.  The glaring inevitability of this scenario makes me suspect that a bailout is in the bag, which will morph the prospects for a quick correction that punishes bad actors into a long period of economic stagnation closely resembling the Japanese economy from 1990-2005.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-934910", 934910, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-935089" class='comment'>
+				<a name='comment-935089' id='comment-935089'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-935089")' />
+					<cite>Comment by are they crazy<a href="#comment-935089"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 14:36:34 						
+					</div>					
+					<div class='content'>
+						<p>OT, but great article in Vanity Fair about Lazy A** Americans and how we&#8217;ve lost our can-do attitude.  I think we will see the effects of this in the coming months when people who have used their homes as ATMs and maxed credit cards to live the so called &#8220;good life&#8221; will be forced to come back to earth and be mortals instead of faux supposed upper class moguls.  What&#8217;s horrible is how many have passed this superficial attention whore attitude to their kids.  Anyone ever seen &#8220;my super sweet 16&#8243; on MTV?
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-935089", 935089, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+			<div  id="div-comment-935143" class='comment'>
+				<a name='comment-935143' id='comment-935143'></a>
+				<div class="title">
+					<img class="collapseicon" src="http://thehousingbubbleblog.com/wp-content/plugins/briansthreadedcomments.php?image=spacer.png" onclick='collapseThread("div-comment-935143")' />
+					<cite>Comment by aeyra<a href="#comment-935143"></a></cite> 
+														
+				</div>
+				<div class='body'>
+					<div class='meta'>
+						2007-09-15 15:23:35 						
+					</div>					
+					<div class='content'>
+						<p>I stand by my opinion: 40 - 70% plunge in prime areas, 90+% death collapse everywhere else.
+</p>
+					</div>
+					<div class='reply'>
+						 
+						<a href='javascript:moveAddCommentBelow("div-comment-935143", 935143, true)'>Reply to this comment</a>
+											</div>
+				</div>
+					
+
+			</div>
+			<!-- This has to be here because of Internet Explorers plethora of layout bugs -->
+			<div style="height: 1px; overflow: hidden;">&nbsp;</div>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="http://thehousingbubbleblog.com"><font color="#cc3300">home</font></a>	</div>
+<div id="addcomment" class="comment">
+
+<a id="addcommentanchor" name="addcommentanchor"></a>
+<form action="http://thehousingbubbleblog.com/wp-comments-post.php" method="post" id="commentform">
+<div class="add">
+	<div id="reroot" style="display: none;">
+		<small><a href="javascript:reRoot()">
+			Click here to cancel "reply".
+		</a></small>
+	</div>
+	<small>
+		Name (required)	</small>
+	<div>
+		<input type="text" name="author" id="author" class="textarea" value="" size="28" tabindex="1" />
+	</div>
+	<small>
+		E-mail (required - never shown publicly)	</small>
+	<div>
+		<input type="text" name="email" id="email" value="" size="28" tabindex="2" />
+	</div>
+	<small>
+		<acronym title="Uniform Resource Identifier">URI</acronym>	</small>
+	<div>
+		<input type="text" name="url" id="url" value="" size="28" tabindex="3" />	
+	</div>
+
+	<small>
+		Your Comment (<a href="javascript:changeCommentSize(-80);">smaller size</a> | <a href="javascript:changeCommentSize(80)">larger size</a>)
+	</small>
+	<div style="width: 100%;">
+		<textarea name="comment" id="comment" cols="60" rows="4" tabindex="4"></textarea>
+
+	</div>
+	<small>
+		You may use 
+		&lt;a href=&quot;&quot; title=&quot;&quot;&gt; &lt;abbr title=&quot;&quot;&gt; &lt;acronym title=&quot;&quot;&gt; &lt;b&gt; &lt;blockquote cite=&quot;&quot;&gt; &lt;code&gt; &lt;em&gt; &lt;i&gt; &lt;strike&gt; &lt;strong&gt; 		in your comment.
+	</small>
+	<div>
+		<input type="hidden" name="comment_post_ID" value="3420" />
+		<input type="hidden" name="redirect_to" value="/?p=3420" />
+		<input onclick="if(typeof(onAddComment) == 'function') { onAddComment(); } else { alert('ERROR:\nIt looks like the website administrator hasn\'t activated the Brians Threaded Comments plugin from the plugin page'); };" name="addcommentbutton" type="button" id="addcommentbutton" value="Add comment" />
+
+</div>
+</div>
+<input type='hidden' id='comment_reply_ID' name='comment_reply_ID' value='0' /></form>
+</div>
+
+
+
+
+ <!-- End .post -->
+<!-- Begin #comments -->
+<!-- End #comments -->
+<div id="printPage"><script language="Javascript1.2">
+
+var message = "Print this Page";
+
+function printpage() {
+window.print();  
+}
+
+document.write("<form><input type=button "
++"value=\""+message+"\" onClick=\"printpage()\"></form>");
+
+//-->
+</script></div>
+
+</div>
+</div>
+</div>
+<!-- End #main -->
+
+<!-- Begin #sidebar -->
+<div id="sidebar">
+  
+  <!-- Begin #profile-container -->
+           <div id="profile-container"> 
+<h2 class="sidebar-title">About Me</h2> 
+
+<dl class="profile-datablock">
+ 
+<p class="profile"><strong>Name:</strong>Ben Jones <br/><strong>Location:</strong>Northern Arizona, United States<br/><strong>To donate by mail, or to otherwise contact this blogger, please send emails to: </strong><a href="mailto:thehousingbubble@gmail.com">thehousingbubble@gmail.com</a><br/><span class="gb">Ben Jones<br/>
+PO Box 1764<br/>
+Flagstaff, AZ 86002</span></p> 
+<p class="profile"><strong>Photo Submission:</strong> <a class="photo" href="mailto:hbbphotos@gmail.com">hbbphotos@gmail.com</a></p>
+<p class="profile"><a href="http://thehousingbubbleblog.com/js_slideshow/"><span class="pg">View the HBB Photo Gallery</span></a> <small>*updated 12/18/2007</small></p>
+
+<p>&nbsp;</p>
+</dl>   
+<dl class="profile-datablock">
+<form class="pp" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="image" src="https://www.paypal.com/en_US/i/btn/x-click-but04.gif" border="0" name="submit" alt="Make payments with PayPal - it's fast, free and secure!">
+<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="62" height="31">
+<input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----MIIHVwYJKoZIhvcNAQcEoIIHSDCCB0QCAQExggEwMIIBLAIBADCBlDCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20CAQAwDQYJKoZIhvcNAQEBBQAEgYBx7ODI5ActS8Vh1c2K5YMxljcsMmr0hI3jh3aHz21sEg3pp7ffo9DFelifODvXA0W/LgPBWPdX4z6V9cmdbwBhl+LxR7N3z2QaEtHoDRlc0SzNgFKyj4jzV36nIFSGZvy+xYSZf70ucK8bM5bLhi8cUTkwQR38gbPS+RZPGcBcDjELMAkGBSsOAwIaBQAwgdQGCSqGSIb3DQEHATAUBggqhkiG9w0DBwQIsLaNI7Gkyi+AgbCmWmEScJEasd+CT8Ue1K1f22y2KTmCyjGOm7HiS0zBsHSmp6F0MUp2enqFRLocorDvNPoRT7RInha5/ObzAlAoofYRL6fZ9yqXUUYKB2sLOBFajZQE8Thjcujj7SfMXJkPB3/nMXZ+7ac98qkeNGW9777jlGvkvFUVh3BHe7Fl/0gBvl/QiC+/+BWdeNTG5mc1EIKx4Dt+Ns0ArW1PO6cgLaaVc+pmNewZXy15lCKioKCCA4cwggODMIIC7KADAgECAgEAMA0GCSqGSIb3DQEBBQUAMIGOMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFjAUBgNVBAcTDU1vdW50YWluIFZpZXcxFDASBgNVBAoTC1BheVBhbCBJbmMuMRMwEQYDVQQLFApsaXZlX2NlcnRzMREwDwYDVQQDFAhsaXZlX2FwaTEcMBoGCSqGSIb3DQEJARYNcmVAcGF5cGFsLmNvbTAeFw0wNDAyMTMxMDEzMTVaFw0zNTAyMTMxMDEzMTVaMIGOMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFjAUBgNVBAcTDU1vdW50YWluIFZpZXcxFDASBgNVBAoTC1BheVBhbCBJbmMuMRMwEQYDVQQLFApsaXZlX2NlcnRzMREwDwYDVQQDFAhsaXZlX2FwaTEcMBoGCSqGSIb3DQEJARYNcmVAcGF5cGFsLmNvbTCBnzANBgkqhkiG9w0BAQEFAAOBjQAwgYkCgYEAwUdO3fxEzEtcnI7ZKZL412XvZPugoni7i7D7prCe0AtaHTc97CYgm7NsAtJyxNLixmhLV8pyIEaiHXWAh8fPKW+R017+EmXrr9EaquPmsVvTywAAE1PMNOKqo2kl4Gxiz9zZqIajOm1fZGWcGS0f5JQ2kBqNbvbg2/Za+GJ/qwUCAwEAAaOB7jCB6zAdBgNVHQ4EFgQUlp98u8ZvF71ZP1LXChvsENZklGswgbsGA1UdIwSBszCBsIAUlp98u8ZvF71ZP1LXChvsENZklGuhgZSkgZEwgY4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJDQTEWMBQGA1UEBxMNTW91bnRhaW4gVmlldzEUMBIGA1UEChMLUGF5UGFsIEluYy4xEzARBgNVBAsUCmxpdmVfY2VydHMxETAPBgNVBAMUCGxpdmVfYXBpMRwwGgYJKoZIhvcNAQkBFg1yZUBwYXlwYWwuY29tggEAMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADgYEAgV86VpqAWuXvX6Oro4qJ1tYVIT5DgWpE692Ag422H7yRIr/9j/iKG4Thia/Oflx4TdL+IFJBAyPK9v6zZNZtBgPBynXb048hsP16l2vi0k5Q2JKiPDsEfBhGI+HnxLXEaUWAcVfCsQFvd2A1sxRr67ip5y2wwBelUecP3AjJ+YcxggGaMIIBlgIBATCBlDCBjjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRQwEgYDVQQKEwtQYXlQYWwgSW5jLjETMBEGA1UECxQKbGl2ZV9jZXJ0czERMA8GA1UEAxQIbGl2ZV9hcGkxHDAaBgkqhkiG9w0BCQEWDXJlQHBheXBhbC5jb20CAQAwCQYFKw4DAhoFAKBdMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTA2MDYyNDE3MzgyMlowIwYJKoZIhvcNAQkEMRYEFLMMGMda7SftTNa6yAe3fu1ONyKZMA0GCSqGSIb3DQEBAQUABIGAo6Dy95MvFe9TsQL1hN2bdze6sDzWzQR4wazs06sayjd0yJtXNUgeh5a832li3OvJrHdIkm4YL399u0ejGMbkKadCTn5H+/IFXDo6bdL27NKdwStMFAiXNIjJTNbxx8HUiEs3ShvwbJ/2eMVOQkeM1PnTy9qKWQI9BY7g4t5L+y4=-----END PKCS7-----
+">
+</form>
+
+<p class="profile">PayPal is a secure online payment method which accepts ALL major credit cards.<br/><br/><img src="images/cc.jpg"/></p>
+</dl>
+</div>  
+  <!-- End #profile -->
+
+  
+  <!-- Begin .box -->
+  <div class="box"><div class="box2"><div class="box3">
+<center>
+
+<script type="text/javascript"><!--
+                                        google_ad_client="pub-4205366296275175";
+                                        google_ad_width = 160;
+                                        google_ad_height = 600;
+                                        google_ad_format = "160x600_as";
+                                        google_ad_type = "text_image";
+                                        google_ad_channel = "";
+                                        google_color_border = "FFFFFF";
+                                        google_color_bg = "558866";
+                                        google_color_link = "0066cc";
+                                        google_color_text = "FFFFFF";
+                                        google_color_url = "FFFFFF";
+google_ui_features = "rc:6";
+                                        //-->
+
+                        </script>
+                        <script type="text/javascript"
+src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+                        </script>
+
+</center>
+
+<!--<br/>
+<center>
+<iframe src="http://rcm.amazon.com/e/cm?t=fungious-20&o=1&p=8&l=as1&asins=0595341632&fc1=000000&IS2=1&lt1=_blank&lc1=0000FF&bc1=000000&bg1=FFFFFF&f=ifr&nou=1" style="width:120px;height:240px;" scrolling="no" marginwidth="0" marginheight="0" frameborder="0"></iframe>
+</center>
+-->
+<br/>
+<center>
+<style type="text/css">
+
+.ad2 a:hover	{
+color: #003300;
+}
+
+.ad2 a:hover	{
+color:#990000;
+}
+
+</style>
+
+<table class="ad2" border="1" bordercolor="#FF0000" width="150px" height="67px" cellpadding="0" cellspacing="0" bgcolor="#ffffff">
+
+<tr>
+ <td align="center"><font color="#333333">  The key to finding a good lender in today's market is comparing <a href="http://www.anyloansolution.com" target="blank" title="www.anyloansolutions.com">personal loans</a>  online.</font></td>
+</tr>
+
+</table>
+
+<br/>
+
+<p><a href="http://www.themortgagemess.com" title="Mortgage Trouble and Mortgage Problems Solved!" target="blank"><img border="0" src=" http://www.themortgagemess.com/images/uploads/mortgagemess-120x60.gif " width="120" height="60" alt="Mortgage Trouble and Mortgage Problems Solved!"/></a></p>
+  	
+<br/>
+
+<p><a href="http://www.teaparty07.com" title="Liberty is Brewing.  www.teaparty07.com" target="blank"><img border="0" src=" images/tea_party.jpg " width="150" height="67" alt="Liberty is Brewing.  www.teaparty07.com"/></a></p>
+  	 	
+
+</center>
+
+<br/>
+<h2 class="sidebar-title">Links</h2>
+	<li id="linkcat-1"><h2></h2>
+	<ul>
+<li><a href="http://thehousingbubbleblog.com/">This Site</a></li>
+<li><a href="http://thehousingbubble.blogspot.com/">Original Site</a></li>
+<li><a href="http://www.nationalmortgagenews.com/">National Mortgage News</a></li>
+<li><a href="http://www.cnbc.com/id/15837671">Realty Check</a></li>
+<li><a href="http://www.piggington.com/">San Diego Real Estate Chrono-Collapsometer</a></li>
+<li><a href="http://housebubble.com/">HouseBubble.com</a></li>
+<li><a href="http://www.socketsite.com/">SocketSite</a></li>
+<li><a href="http://www.viewfromsiliconvalley.com/index.html">View From Silicon Valley</a></li>
+<li><a href="http://www.socalbubble.blogspot.com/">SoCal Real Estate Crash</a></li>
+<li><a href="http://marinrealestatebubble.blogspot.com/">Marin Real Estate Bubble</a></li>
+<li><a href="http://seattlebubble.blogspot.com/">Seattle Bubble</a></li>
+<li><a href="http://njrereport.com/">New Jersey RE Report</a></li>
+<li><a href="http://moneyandmetals.blogspot.com/">Ben&#039;s Money And Metals</a></li>
+<li><a href="http://getforeclosures.blogspot.com/">Ben&#039;s Foreclosure Report</a></li>
+
+	</ul>
+</li>
+
+<br/>
+
+<script type="text/javascript"><!--
+google_ad_client = "pub-4205366296275175"; 
+google_ad_width = 160;
+google_ad_height = 90;
+google_ad_format = "160x90_0ads_al";
+google_ad_channel ="";
+google_color_border = "223344";
+google_color_bg = "223344"; 
+google_color_link = "99ddbb";
+google_color_url = "000000";
+google_color_text = "000000";
+//--></script>
+<script type="text/javascript"
+  src=" http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
+<br/>
+<br/>
+<center>
+<p><a href="http://royalinteractive.com/" target="blank" title="Royal Interactive | design & development for web + mobile"><img src="images/royal_interactive.gif" alt="Royal Interactive | design & development for web + mobile" /></a></p>
+</center>
+<br/>
+
+<ul> 
+<li id="calendar">
+	<table id="wp-calendar">
+	<caption>December 2007</caption>
+	<thead>
+	<tr>
+		<th abbr="Monday" scope="col" title="Monday">M</th>
+		<th abbr="Tuesday" scope="col" title="Tuesday">T</th>
+		<th abbr="Wednesday" scope="col" title="Wednesday">W</th>
+		<th abbr="Thursday" scope="col" title="Thursday">T</th>
+		<th abbr="Friday" scope="col" title="Friday">F</th>
+		<th abbr="Saturday" scope="col" title="Saturday">S</th>
+		<th abbr="Sunday" scope="col" title="Sunday">S</th>
+	</tr>
+	</thead>
+
+	<tfoot>
+	<tr>
+		<td abbr="November" colspan="3" id="prev"><a href="http://thehousingbubbleblog.com/?m=200711" title="View posts for November 2007">&laquo; Nov</a></td>
+		<td class="pad">&nbsp;</td>
+		<td abbr="November" colspan="3" id="next"><a href="http://thehousingbubbleblog.com/?m=200811" title="View posts for November 2008">Nov &raquo;</a></td>
+	</tr>
+	</tfoot>
+
+	<tbody>
+	<tr>
+		<td colspan="5" class="pad">&nbsp;</td><td><a href="http://thehousingbubbleblog.com/?m=20071201" title="Bits Bucket And Craigslist Finds For December 1, 2007, One Or Two Cows Start Running Then The Stampede Begins, A New Twist Or Is Everyone Pretending?, A Continual Slide We&#8217;re Still Going Down">1</a></td><td><a href="http://thehousingbubbleblog.com/?m=20071202" title="Local Market Observations!, Bits Bucket And Craigslist Finds For December 2, 2007, People Are Taking Their Time Looking – Because They Can, This Collapse Was Based On Psychology, The Tables Have Turned In California">2</a></td>
+	</tr>
+	<tr>
+		<td><a href="http://thehousingbubbleblog.com/?m=20071203" title="Bits Bucket And Craigslist Finds For December 3, 2007, The Definition Of Normal In Florida, Another Sign Of The Collapse, A Pyramid Of Little Golden Crumbs, This Thing Has Just Barely Started In California">3</a></td><td><a href="http://thehousingbubbleblog.com/?m=20071204" title="Bits Bucket And Craigslist Finds For December 4, 2007, Foreclosures Caused Primarily By Falling Housing prices, It May Not Be The Best Time To Buy A House, You Swing Way Up, You’re Going To Swing Way Down, There Has Been Some Adjustment In California">4</a></td><td><a href="http://thehousingbubbleblog.com/?m=20071205" title="Bits Bucket And Craigslist Finds For December 5, 2007, It&#8217;s Now Clear Housing Prices Simply Rose Too Quickly, Severe Correction Is Expected To Be Nationwide, Four Years Of Stupid, It Used To Be A Thriving Business In California, Bits Bucket And Craigslist Finds For December 14, 2007">5</a></td><td><a href="http://thehousingbubbleblog.com/?m=20071206" title="Bits Bucket And Craigslist Finds For December 6, 2007, The Slap Heard Round The World, There Are Always Periods Of Excess, A Downturn Unlike Anything Seen Before, It&#8217;s Really Changed Drastically In California">6</a></td><td><a href="http://thehousingbubbleblog.com/?m=20071207" title="Weekend Topic Suggestions!, Bits Bucket And Craigslist Finds For December 7, 2007, Too Many Foreclosures, But It&#8217;s Reality, The Return Of Sanity Has Come At A Price, Foreclosures Become The Norm In California, There Are Enormous Losses Everywhere">7</a></td><td><a href="http://thehousingbubbleblog.com/?m=20071208" title="Bits Bucket And Craigslist Finds For December 8, 2007, A National Question Everyone Wants To Know, Some People Made Dumb Bets, A Correction That Needed To Happen In California">8</a></td><td><a href="http://thehousingbubbleblog.com/?m=20071209" title="Local Market Observations!, Bits Bucket And Craigslist Finds For December 9, 2007, The Market Has Gone Back To 2004 And 2003 Prices, Has Anyone Given You The, &#8216;You Were Right&#8217; Speech Yet?, Still Coming Down From The Boom">9</a></td>
+	</tr>
+	<tr>
+		<td><a href="http://thehousingbubbleblog.com/?m=20071210" title="Bits Bucket And Craigslist Finds For December 10, 2007, They&#8217;re Stacking Up Like Cordwood In Florida, Battered Housing Market On The Verge Of Stabilizing, It&#8217;s A Buyer&#8217;s Market, They Should Be Buying, Common Sense Just Went Out The Window In California">10</a></td><td><a href="http://thehousingbubbleblog.com/?m=20071211" title="Bits Bucket And Craigslist Finds For December 11, 2007, It Was Like A Light Switch Went Off, Quietly Turning Into A Major Bust, August Happened, And The Props Were Gone, An Often Unsung High Note In California">11</a></td><td><a href="http://thehousingbubbleblog.com/?m=20071212" title="Bits Bucket And Craigslist Finds For December 12, 2007, A Cycle That Won&#8217;t Stop, Greenspan: An Accident Waiting To Happen, An Alligator To Feed Every Month, It Seems Like Sort Of A Fiasco In California">12</a></td><td><a href="http://thehousingbubbleblog.com/?m=20071213" title="Bits Bucket And Craigslist Finds For December 13, 2007, Florida Speculators Didn’t Want To Miss Out On The Boom, Not Just Looking For Good Deals; Looking For Payback, The End Is Nowhere Near In California">13</a></td><td><a href="http://thehousingbubbleblog.com/?m=20071214" title="Weekend Topic Suggestions!, Bits Bucket And Craigslist Finds For December 14, 2007, The Ballooning Of Easy Credit Has Come Back To Roost, The Revolving-Door Flow Of Customers Has Vanished, The Workout Doesn&#8217;t Work Anymore, Everyone Involved Was A Willing, Foolish, Party">14</a></td><td><a href="http://thehousingbubbleblog.com/?m=20071215" title="Bits Bucket And Craigslist Finds For December 15, 2007, Let&#8217;s Be Serious, Things Have Burst, What Will Happen After New Years Day?, It&#8217;s &#8216;Price Reduced,&#8217; &#8216;Price Reduced&#8217; In California">15</a></td><td><a href="http://thehousingbubbleblog.com/?m=20071216" title="Local Market Observations!, Bits Bucket And Craigslist Finds For December 16, 2007, The Bloom Goes Up And It Does Come Down, Most People Don&#8217;t Even Realize That This Is Happening, Let The Chips Fall Where They May">16</a></td>
+	</tr>
+	<tr>
+		<td><a href="http://thehousingbubbleblog.com/?m=20071217" title="Bits Bucket And Craigslist Finds For December 17, 2007, If You&#8217;re Willing To Take Less, You Should Be Able To Sell, Depending More On Luck Than Judgment, Sometimes The American Dream Is Unattainable, A Lot Of People Made Dumb Decisions In California">17</a></td><td><a href="http://thehousingbubbleblog.com/?m=20071218" title="Bits Bucket And Craigslist Finds For December 18, 2007, Not Enough Effort Was Put Into Understanding The Risks, A Very Slow Moving Commodity, The Euphoric Final Days Of A Gung-Ho Real Estate Market, It&#8217;s A Strange Christmas In California">18</a></td><td><a href="http://thehousingbubbleblog.com/?m=20071219" title="Bits Bucket And Craigslist Finds For December 19, 2007, It’s Not A Happy Time To Be A Banker In Florida, The Factors That Created This Downturn Are Different, A Function Of Time In California">19</a></td><td><a href="http://thehousingbubbleblog.com/?m=20071220" title="Bits Bucket And Craigslist Finds For December 20, 2007, An Assumption That Proved To Be False, Surprises Continue To Pop Up, Tumbling Prices A Real Possibility In California">20</a></td><td id="today"><a href="http://thehousingbubbleblog.com/?m=20071221" title="Weekend Topic Suggestions!, Bits Bucket And Craigslist Finds For December 21, 2007">21</a></td><td>22</td><td>23</td>
+	</tr>
+	<tr>
+		<td>24</td><td>25</td><td>26</td><td>27</td><td>28</td><td>29</td><td>30</td>
+	</tr>
+	<tr>
+		<td>31</td>
+		<td class="pad" colspan="6">&nbsp;</td>
+	</tr>
+	</tbody>
+	</table> </li>
+ </ul>
+
+	<li id="search">
+		<form method="get" action="/index.php">
+		<h2><label for="s">Search</label></h2>
+		<p>
+		<input type="text" value="" name="s" id="s"  size="20" />
+		<input type="submit" id="searchsubmit" value="Go" />
+		</p>
+		</form>
+	</li>
+	<br/>
+
+
+<a href="wp-rss2.php"><img src="images/rss2_button.gif"/></a><br/>
+<br/>
+
+<a href="http://feeds.feedburner.com/TheHousingBubbleBlog"><img src="images/feed_burner.jpg"/></a>
+
+    <!--
+    <p>This is a paragraph of text that could go in the sidebar.</p>
+    -->
+  
+  </div></div></div>
+
+  <!-- End .box -->
+
+</div>
+<!-- End #sidebar -->
+
+
+
+
+<!-- Begin #footer -->
+<div id="footer"><div><div><hr />
+
+<center>
+<script>
+<!--
+var cn="6thb";
+-->
+</script> 
+<script language="JavaScript" src="http://www.elliottwave.com/fw/regular_banner.js"></script>
+
+
+	</center>
+</div></div></div>
+<!-- End #footer -->
+
+
+
+</div>
+<!-- End #content -->
+</body>
+</html>
+<script language="JavaScript" type="text/JavaScript">
+<!--
+function MM_swapImgRestore() { //v3.0
+  var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
+}
+
+function MM_preloadImages() { //v3.0
+  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
+    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
+    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
+}
+
+function MM_findObj(n, d) { //v4.01
+  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
+    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
+  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
+  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
+  if(!x && d.getElementById) x=d.getElementById(n); return x;
+}
+
+function MM_swapImage() { //v3.0
+  var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
+   if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
+}
+//-->
+</script>

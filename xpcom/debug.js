@@ -227,7 +227,7 @@ function addDebugOutput(/*Node*/ node, /*anything*/ obj, /*boolean*/ isHTML, /*c
     //event listener function to highlight match objects in html pages
     function highlightMatch() {
       //if no matches, just clear the document
-      if (obj == EMPTY_MATCH) { 
+      if (!obj.hasMatch) { 
         try {clearAll(chromeWindow, header); fireMouseEvent("click", chromeWindow.content.wrappedJSObject.document.body); return;}
         catch(err) {return;} 
       }
@@ -243,7 +243,7 @@ function addDebugOutput(/*Node*/ node, /*anything*/ obj, /*boolean*/ isHTML, /*c
       }
       else {
         clearAll(chromeWindow, obj);
-        var matchToSelect = new Match(obj.html, EMPTY_MATCH, obj.range, obj.document, obj.index, obj.hasMatch, obj.node);
+        var matchToSelect = oneMatch(obj);
         selectAll(obj.document.defaultView, matchToSelect);
         header.childNodes[3].style.color = 'red';
         header.title = 'green';
@@ -539,8 +539,7 @@ function getMatchIteration(/*Match object*/ matchObj, /*Array*/ listOutput) {
   }
   else {
     var matchIteration = new Array();
-    var firstMatchCopy = new Match(matchObj.html, matchObj.next, matchObj.range, matchObj.document, 
-                               matchObj.index, matchObj.hasMatch, matchObj.node);
+    var firstMatchCopy = oneMatch(matchObj);
     matchIteration.push(firstMatchCopy);
     firstMatchCopy._toExpand = true;
     matchObj = matchObj.next;
