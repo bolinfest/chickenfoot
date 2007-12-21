@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "DTD/xhtml1-transitional.dtd">
+<!-- IMP: Copyright 2001-2004, The Horde Project. IMP is under the GPL. -->
+<!--   Horde Project: http://horde.org/ | IMP: http://horde.org/imp/    -->
+<!--      GNU Public License: http://www.fsf.org/copyleft/gpl.html      -->
+<html lang="en-US"><head>
+<script language="JavaScript" type="text/javascript" src="/horde/js/enter_key_trap.js?Horde=fdedde9f7fecd4ac29724c4156544366"></script>
+<title>MIT Webmail</title>
+<link href="/horde/imp/themes/graphics/favicon.ico" rel="SHORTCUT ICON" />
+<link href="/horde/imp/mailbox.php?Horde=fdedde9f7fecd4ac29724c4156544366&amp;mailbox=INBOX" rel="Top" />
+<link href="/horde/imp/search.php?Horde=fdedde9f7fecd4ac29724c4156544366" rel="search" />
+<link href="/horde/themes/screen.css" rel="stylesheet" type="text/css" />
+<link href="/horde/themes/mit/screen.css" rel="stylesheet" type="text/css" />
+<link href="/horde/imp/themes/screen.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+<table width="100%" border="0" cellspacing="0" cellpadding="3"><tr><td>
+<p>
+<font face="Verdana, Arial, Helvetica, sans-serif" color="#FFFFFF" size="+1">
+<b>MIT WebMail</b></font><br>
+<font face="Verdana, Arial, Helvetica, sans-serif" color="#FFFFFF" size="-1">
+An email service from Information Services &amp; Technology</font></p>
+</td></tr></table>
+
+
+<script language="JavaScript" type="text/javascript">
+
+function setFocus()
+{
+    if (document.imp_login.imapuser.value == "") {
+        document.imp_login.imapuser.focus();
+    } else {
+        document.imp_login.pass.focus();
+    }
+}
+</script>
+
+<!--
+
+function submit_login(e)
+{
+    if (typeof e != 'undefined' && !enter_key_trap(e)) {
+        return;
+    }
+
+    if (document.imp_login.imapuser.value == "") {
+        alert('Please provide your username.');
+        document.imp_login.imapuser.focus();
+        return false;
+    } else if (document.imp_login.pass.value == "") {
+        alert('Please provide your password.');
+        document.imp_login.pass.focus();
+        return false;
+    } else {
+        document.imp_login.loginButton.disabled = true;
+        document.imp_login.submit();
+        return true;
+    }
+}
+//-->
+</script>
+
+<form name="imp_login" action="https://webmail.mit.edu/horde/imp/redirect.php" method="post" target="_parent">
+<input type="hidden" name="Horde" value="fdedde9f7fecd4ac29724c4156544366" />
+<input type="hidden" name="actionID" value="" />
+<input type="hidden" name="url" value="" />
+<input type="hidden" name="mailbox" value="INBOX" />
+<input type="hidden" name="load_frameset" value="1" />
+<input type="hidden" name="autologin" value="0" />
+
+<table width="100%" border="1" cellpadding="3" cellspacing="0">
+<tr bgcolor="#cccccc"><td>
+<a
+href="http://web.mit.edu/ist/services/email/webmail/using.html">Using
+WebMail</a> &nbsp; | &nbsp;
+<a
+href="http://web.mit.edu/ist/services/email/webmail/spamscreen.html">Spam
+Screening</a> &nbsp; | &nbsp;
+<a
+href="http://web.mit.edu/ist/services/email/autoresponder.html">Auto-Responder
+(Vacation E-mail)</a> &nbsp; | &nbsp;
+<a
+href="http://web.mit.edu/accounts/www/password.html">Change your password
+</a> &nbsp; | &nbsp;
+<a href="http://web.mit.edu/ist/topics/email/">E-mail at MIT</a>
+</td></tr></table>
+
+<br class="spacer" />
+
+<table width="100%"><tr><td align="center"><table align="left">
+
+<tr>
+    <td colspan="2">
+        <input type="hidden" name="server" value="localhost" />
+        <input type="hidden" name="port" value="9999" />
+        <input type="hidden" name="namespace" value="INBOX." />
+        <input type="hidden" name="maildomain" value="mit.edu" />
+        <input type="hidden" name="protocol" value="imap/notls" />
+        <input type="hidden" name="realm" value="" />
+    </td>
+</tr>
+
+<tr>
+    <td colspan="2"><input type="hidden" name="folders" value="" /></td>
+</tr>
+
+<tr>
+    <td align="right" class="light"><b>MIT Kerberos<br>Username</b><br><br></td>
+    <td align="left" class="light" nowrap="nowrap">
+      <input type="text" tabindex="1" name="imapuser" value="" />
+        <br><br></td>
+</tr>
+<tr>
+    <td align="right" class="light"><b>Password</b><br><br></td>
+    <td align="left"><input type="password" tabindex="2" name="pass" /><br><br></td>
+</tr>
+
+<tr>
+    <td align="right" class="light"><b>Language</b><br><br></td>
+    <td align="left" class="light"><select tabindex="3" name="new_lang" onchange="selectLang()"><option value="ar_OM">Arabic (Oman) (&#x0627;&#x0644;&#x0639;&#x0631;&#x0628;&#x064a;&#x0629;)</option><option value="ar_SY">Arabic (Syria) (&#x0627;&#x0644;&#x0639;&#x0631;&#x0628;&#x064a;&#x0629;)</option><option value="id_ID">Bahasa Indonesia</option><option value="bg_BG">Bulgarian (&#x0411;&#x044a;&#x043b;&#x0433;&#x0430;&#x0440;&#x0441;&#x043a;&#x0438;)</option><option value="ca_ES">Catal&agrave;</option><option value="zh_CN">Chinese (Simplified) (&#x7b80;&#x4f53;&#x4e2d;&#x6587;)</option><option value="zh_TW">Chinese (Traditional) (&#x6b63;&#x9ad4;&#x4e2d;&#x6587;)</option><option value="cs_CZ">Czech (&#x010c;esky)</option><option value="da_DK">Dansk</option><option value="de_DE">Deutsch</option><option value="en_US" selected="selected">English (American)</option><option value="en_GB">English (British)</option><option value="en_CA">English (Canadian)</option><option value="es_ES">Espa&ntilde;ol</option><option value="et_EE">Eesti</option><option value="fr_FR">Fran&ccedil;ais</option><option value="gl_ES">Galego</option><option value="el_GR">Greek (&#x0395;&#x03bb;&#x03bb;&#x03b7;&#x03bd;&#x03b9;&#x03ba;&#x03ac;)</option><option value="is_IS">&Iacute;slenska</option><option value="it_IT">Italiano</option><option value="ja_JP">Japanese (&#x65e5;&#x672c;&#x8a9e;)</option><option value="ko_KR">Korean (&#xd55c;&#xad6d;&#xc5b4;)</option><option value="lv_LV">Latvie&#x0161;u</option><option value="lt_LT">Lietuvi&#x0173;</option><option value="mk_MK">Macedonian (&#x041c;&#x0430;&#x043a;&#x0435;&#x0434;&#x043e;&#x043d;&#x0441;&#x043a;&#x0438;)</option><option value="hu_HU">Magyar</option><option value="nl_NL">Nederlands</option><option value="nb_NO">Norsk bokm&aring;l</option><option value="nn_NO">Norsk nynorsk</option><option value="fa_IR">Persian (Western) (&#1601;&#1575;&#1585;&#1587;&#1609;)</option><option value="pl_PL">Polski</option><option value="pt_PT">Portugu&ecirc;s</option><option value="pt_BR">Portugu&ecirc;s Brasileiro</option><option value="ro_RO">Rom&acirc;n&auml;</option><option value="ru_RU">Russian (&#x0420;&#x0443;&#x0441;&#x0441;&#x043a;&#x0438;&#x0439;)</option><option value="sk_SK">Slovak (Sloven&#x010d;ina)</option><option value="sl_SI">Slovenian (Sloven&#x0161;&#x010d;ina)</option><option value="fi_FI">Suomi</option><option value="sv_SE">Svenska</option><option value="th_TH">Thai (&#x0e44;&#x0e17;&#x0e22;)</option><option value="tr_TR">T&uuml;rk&ccedil;e</option><option value="uk_UA">Ukrainian (&#x0423;&#x043a;&#x0440;&#x0430;&#x0457;&#x043d;&#x0441;&#x044c;&#x043a;&#x0430;)</option></select><br><br>
+    </td>
+</tr>
+
+<tr>
+    <td>&nbsp;</td>
+    <td align="left" class="light"><input type="submit" class="button" name="loginButton" tabindex="4" value="Log in" onclick="return submit_login();" /><br><br></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td colspan="2" class="light">
+Current time at MIT: Fri December 21, 2007 11:13 am</td> </tr>
+
+
+</table></td></tr></table>
+</form>
+
+<script language="JavaScript" type="text/javascript">
+<!--
+
+function updatePort()
+{
+}
+
+function selectLang()
+{
+    // We need to reload the login page here, but only if the user hasn't
+    // already entered a username and password.
+    if (document.imp_login.imapuser.value == '' &&
+        document.imp_login.pass.value == '') {
+        var lang_page = 'login.php?new_lang=' + document.imp_login.new_lang[document.imp_login.new_lang.selectedIndex].value;
+        self.location = lang_page;
+    }
+}
+
+if (parent.frames.horde_main) {
+    document.imp_login.target = '_parent';
+}
+//-->
+</script>
+<script language="JavaScript1.2" type="text/javascript">
+<!--
+// Setup the enter keytrap code.
+if (window.document.captureEvents != null) {
+    window.document.captureEvents(Event.KEYPRESS);
+    window.document.onkeypress = submit_login;
+}
+//-->
+</script>
+<script type="text/javascript">
+        document.imp_login.imapuser.focus();
+</script>
+
+<!-- This file contains any "Message Of The Day" Type information -->
+<!-- It will be included below the log-in form on the login page. -->
+
+<br><br>
+<table width="100%" border="1" cellspacing="0" cellpadding="5">
+
+<tr><td bgcolor="#cccccc">
+
+<table align="right"><tr><td>
+<img src="/horde/imp/themes/graphics/mit2.gif" alt="" title="" /> 
+</td></tr></table>
+
+<!--
+<b>Announcements</b><br><br> 
+Late July 2005, the MIT WebMail
+service was upgraded to Horde's<br>
+latest WebMail, IMP 4.x.<br><br>
+
+IS&T would like to hear what WebMail users think about the upgraded<br>
+service. To provide feedback, please visit the WebMail User Feedback<br>
+Form at <a href=http://web.mit.edu/webmail/feedback>http://web.mit.edu/webmail/feedback.</a> 
+-->
+
+<style type="text/css" media="all"> 
+/* begin styles for RSS Feed */
+
+.rss_box {
+	 margin: 1em;
+	 width: 98%;
+#	 background-color: #EEE;
+#	 border: 1px solid silver;
+	 
+}
+.rss_items {
+	margin-top:0px;
+	padding:0.5em; 0.5em;
+	margin-left:0px;
+	color:#000000;
+}
+p.rss_title {padding:0.5em;}
+.rss_title {
+	font-size: 8pt;
+	background-color: silver;
+	color: gray;
+	font-weight:bold;
+	text-align: left;
+}
+
+.rss_item  {
+  font-size: 9pt;
+  list-style:none;
+  padding-bottom:1em;
+}
+
+.rss_item a {
+	color:navy;
+	font-size: 9pt;
+	font-weight:bold;
+	}
+	
+.rss_item a:visited {
+	color: black;
+}
+
+.rss_date {
+	font-size: 8pt;
+	color: black;
+	}
+</style>
+<script language="JavaScript" src="https://rss.mit.edu/rss/feed2js.php?src=http%3A%2F%2Fis3down.mit.edu%2Ffcgi-bin%2F3down%3Frss%3D1%26section%3Demail&chan=n&num=0&desc=1&date=y&targ=n" type="text/javascript"></script>
+<noscript>
+<a href="https://rss.mit.edu/rss/feed2js.php?src=http%3A%2F%2Fis3down.mit.edu%2Ffcgi-bin%2F3down%3Frss%3D1%26section%3Demail&chan=n&num=0&desc=1&date=y&targ=n&html=y">View RSS feed</a>
+</noscript>
+<br>
+Visit the <a href="http://web.mit.edu/webmail/">WebMail homepage</a>
+for documentation.<br>
+
+<a href="http://web.mit.edu/is/helpdesk/newcase.html">Ask for
+computing help</a> or call 617-253-1101.
+
+<br>
+<center>
+<br>
+MIT Webmail <a href="http://www.horde.org">(IMP 4.0)</a>w92-130-webmail-6.mit.edu</center>
+</td>
+</tr></table>
+<p>
+</body>
+</html>
+

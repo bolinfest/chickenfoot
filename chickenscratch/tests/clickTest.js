@@ -17,6 +17,8 @@ t.test("click", function() {
     "<a href='http://web.mit.edu' target='mit'>MIT</a>")
   click("mit")
   Test.assert(/www.google.com/.test(document.location));
+  sleep(0.5)
+  closeTabFrom("http://web.mit.edu/")
 });
 
 // regression tests for bug #288
@@ -29,4 +31,17 @@ t.test("click", function() {
 t.close();
 
 
+function closeTabFrom(/*String*/ url) {
+  var tabBrowser = Chickenfoot.getTabBrowser(chromeWindow)
+  var tabs = tabBrowser.mTabBox._tabs.childNodes;
+  for (var i = 0; i < tabs.length; ++i) {
+    var tb = tabs[i];
+    var browser = tabBrowser.getBrowserForTab(tb);
+    if (browser.contentWindow.location == url) {
+      browser.contentWindow.close()
+      return;
+    }
+  }
+  throw new Error("can't find tab from " + url + " to close")
+}
 

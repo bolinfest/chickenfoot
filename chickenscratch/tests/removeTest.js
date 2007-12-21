@@ -3,7 +3,7 @@ var Test = Chickenfoot.Test;
 var t = new Test();
 
 t.test(function() {
-  go("https://webmail.mit.edu");
+  go("file://" + scriptDir.path + "/pages/mit-webmail.html");
   
   // remove something and make sure it's gone
   var x = remove("MIT Kerberos");
@@ -11,7 +11,7 @@ t.test(function() {
   
   // put it back somewhere else
   insert(after("Password"),x)
-  Test.assert(find(/PasswordMIT Kerberos/).hasMatch)
+  Test.assert(find("PasswordMIT").hasMatch)
   
   // remove something not found
   var x = remove("asdfasdfasdfasdfasdfasdf");
@@ -20,7 +20,7 @@ t.test(function() {
 
 // removing multiple matches to pattern
 t.test(function() {
-  go("http://www.google.com/");
+  go("file://" + scriptDir.path + "/pages/google.html");
   
   var n = find("link").count;
   while (n > 0) {
@@ -35,4 +35,5 @@ t.test(function() {
 });
 
 t.close();
+
 
