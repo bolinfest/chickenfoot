@@ -1,0 +1,891 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+ <meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1">
+<title>Using accesskey attribute in HTML forms and links</title>
+ <link rel="stylesheet" title="Yucca's style" href="../basic.css">
+<STYLE TYPE="text/css">
+TABLE.parallel TD { width : 50% }
+form p { margin-top:0; margin-bottom: 0; } 
+</STYLE>
+</head>
+<body>
+
+<H1>
+Using <code>accesskey</code> attribute in HTML forms and links
+</H1>
+
+<div class="minitoc" style="width:19em">
+Content:
+<ul>
+  <li> <a href="#why">Why access keys?</a>
+  <li>
+<a href="#expl">The
+       specification of <code>accesskey</code>, with annotations</a>
+  <li> <a href="#support">Browser support</a>
+  <li> <a href="#mask">Effect on built-in shortcuts</a>
+  <li> <a href="#ex">Examples</a>
+  <li> <a href="#display">Displaying the access key assignments</a>
+  <li> <a href="#assign">"Standard" access key assignments?</a>
+  <li><a href="#concl">Conclusion</a>
+</ul>
+</div>
+
+<p class="summary">The <code>accesskey</code> attribute,
+aimed at making web pages more accessible e.g. to people with
+motoric disabilities, has proved out to be poorly designed and poorly
+implemented. Although it is still endorsed by some recommendations,
+it tends to reduce accessibility rather than help people, though
+there are some special situations where it might improve useability.</p>
+<p>The original version of this document had a much more
+positive attitude to the <code>accesskey</code> attribute.
+Experience and analysis has shown, however, that the idea of
+author-defined shortcuts is generally not useful on the Web.
+Moreover, serious damage is often caused by the way in which
+the attribute has been implemented in browsers: it uses key combinations
+that override built-in functionality in browsers and other software.
+I have preserved the technical descriptions, however, since
+they might be of some use.</p>
+<P>
+In <A TITLE="Getting Started with HTML; a primer by J. Korpela"
+HREF="../html-primer.html">HTML</A>,
+one can use the
+<code>accesskey</code> attribute in
+<a href="index.html"
+title=
+"Annotated links to tutorials, references, and specialized documents about HTML forms" 
+>forms</a>
+and
+<a href="../HTML3.2/4.7.html"
+title=
+"Discussion of links in an HTML 3.2 tutorial"
+>links</a>.
+When supported by a browser,
+it allows the user to use keyboard keys for
+functions which are normally done using a mouse.
+For example, to follow a link, one might (in some environments)
+use the Alt key and a letter, as alternative to clicking on the link.
+This requires that the author has specified an access key assignment
+for that link, using the <code>accesskey</code> attribute.
+Unfortunately, browser
+support to the attribute is limited, and rather primitive.
+The <code>accesskey</code> attribute tends to mask out the
+functionality of a browser's predefined keyboard control,
+which is often much more important than page-specific access keys.
+Moreover, browsers do not indicate that access keys are available.
+Authors may wish to consider including explicit notes about
+access key assignments in their documents; this document suggests
+some conventions about this. It also presents reasons for using
+only <em>digit</em> keys as access keys.</P>
+
+<h2><a name="why">Why access keys?</a></h2>
+<P>
+In the W3C note
+<cite><a href="http://www.w3.org/TR/WAI-WEBCONTENT-TECHS/"
+>Techniques for Web Content Accessibility Guidelines 1.0</a></cite>,
+section
+<cite><a href="http://www.w3.org/TR/WAI-WEBCONTENT-TECHS/#keyboard"
+>Keyboard access</a></cite>, the need for
+access keys is motivated as follows:
+<BLOCKQUOTE><p>
+Not every user has a graphic environment with a mouse or other pointing device. Some users rely on keyboard, alternative keyboard or voice input to navigate links, activate form controls, etc. Content developers should always ensure that users may interact with a page with devices other than a pointing device. A page designed for keyboard access (in addition to mouse access) will generally be accessible to users with other input devices. What's more, designing a page for keyboard access will usually improve its overall design as well.
+</p></BLOCKQUOTE>
+
+<P>	    This can be crucial to people with
+	    motoric disabilities.
+Of course there are other
+conditions where it could be necessary or useful.
+To take a trivial example, if your mouse is temporarily broken,
+you might still wish to do some Web surfing.
+And in technologies which differ from "normal" PCs or terminals,
+such as WebTV, laptops, and handheld devices,
+a pointing device or function&nbsp;- if available at all&nbsp;- can
+be significantly more difficult to use for exact pointing than
+a good mouse.
+</P>
+<p>
+Browsers generally support "tabbing" from one field to another in a form.
+Thus, a form could usually be filled out without using a mouse or other
+pointing device.
+No special effort (like writing extra attributes)
+is required from the author, except that 
+he should put form fields into a logical order;
+but that should be done anyway, so it's no <em>extra</em> effort.
+Note that <dfn>order</dfn> here refers to the order in which the
+form field elements appear in the HTML source.
+If this does not coincide with the order in which they appear on <em>screen</em>,
+problems may arise; this is one reason why one should not use
+tables e.g. for formatting a table that way
+but only for <a href="tables.html"
+title="How to use tables to structurize forms in HTML"
+>expressing the structure of a form</a>.
+The problems caused by unnatural ordering of form fields could, in principle,
+be reduced by using the
+<a href="http://www.w3.org/TR/REC-html40/interact/forms.html#adef-tabindex"
+><code>tabindex</code> attribute</a>, but that too has limited
+browser support.
+</p>
+<p>
+For a <strong>large form</strong> with lots of optional fields,
+so that the user would have to "tab" through quite a many fields
+when he is ready to submit the form,
+an author could make things easier.
+He could
+include an
+<strong>accesskey</strong> attribute for the submit field.
+That way, a user could use the access key to get into that field and
+press enter or return key to submit the form.
+</p>
+
+<h2><a name="expl">The specification of <code>accesskey</code>, with annotations</a></h2>
+
+<P>The following presentation contains some explanations to the
+<a href=
+"http://www.w3.org/TR/html4/interact/forms.html#adef-accesskey"
+>description of the <code>accesskey</code> attribute</a>
+in the
+<a href=
+"http://www.w3.org/TR/html4/"
+>HTML 4.0 specification</a>.
+(Minor editorial changes have been made to the text of the specification,
+in order to make this presentation require less horizontal space.)
+</P>
+
+<TABLE BORDER="1" CELLPADDING="4" CLASS="parallel">
+<TR><TH>Quotation from the HTML 4.0 specification </TH><TH>Comments<BR></TH></TR>
+<TR><TD>
+<h3><a name="h-17.11.2">17.11.2</a>
+<span class="index-def" title="access key|control::access key
+for|accessibility::access keys"><a name="access-keys">Access
+keys</a></span></h3>
+
+<div class="adef-list">
+<P><em>Attribute definitions</em></P>
+
+<dl>
+  <dt><a name="adef-accesskey"><samp class="adef">accesskey</samp></a> =
+        <a href="http://www.w3.org/TR/REC-html40/types.html#type-character"><em>character</em></a>
+       <a href="http://www.w3.org/TR/REC-html40/types.html#case-neutral">[CN]</a>
+
+       <dd>This attribute assigns an access key to an element.  <span
+	    class="index-inst" title="characters::access key"><a name="idx-characters">An access key</a></span>
+	    is a single character from the document character set.
+<strong>Note.
+	    </strong> Authors should consider the input method of the expected
+	    reader when specifying an accesskey.
+	    </dl>
+	    </div>
+</TD><TD>
+In principle,
+the access key character could be any
+<a href="../chars.html#10646">Unicode</a>
+	    character.
+In practice, the
+<a href="#support" title="On accesskey support on browsers">support</a>
+is much more limited; e.g., IE 4.0 supports
+	    only the Latin letters "a" through "z"
+	    as access keys
+and treats upper and lower case letters as
+	    identical in this context.
+</TD></TR>
+<TR><TD>
+	    <P>
+	    <span class="index-inst" title="focus::and access key"><a name="idx-focus-2">
+	    Pressing an access key assigned to an element gives focus to the
+	    element.</a></span> The action that occurs when an element receives focus
+	    depends on the element. For example, when a user activates a link
+	    defined by the <a href="http://www.w3.org/TR/REC-html40/struct/links.html#edef-A" class="noxref"><samp class="einst">A</samp></a> element, the user agent
+	    generally follows the link. When a user activates a radio button, the
+	    user agent changes the value of the radio button.  When the user
+	    activates a text field, it allows input, etc.
+</TD><TD>
+<div>"Pressing an access key" is apparently not to be taken literally only (see
+	    <a href="#invoc">notes on invocation methods</a> below).
+The point is that the user can use the keyboard instead of a mouse
+(or a pointing device in general).</div>
+<div>Note the vagueness of the semantics: is "give focus to"
+the same thing as "activates"? Not surprisingly,
+<a href="#support">browsers interpret this differently</a>.</div>
+</TD></TR>
+<TR><TD>
+	    <P>The following elements support the <a href="http://www.w3.org/TR/REC-html40/interact/forms.html#adef-accesskey" class="noxref"><samp
+	    class="ainst">ACCESSKEY</samp></a> attribute: <a href="http://www.w3.org/TR/REC-html40/struct/links.html#edef-A" class="noxref"><samp
+	    class="einst">A</samp></a>, <a href="http://www.w3.org/TR/REC-html40/struct/objects.html#edef-AREA" class="noxref"><samp class="einst">AREA</samp></a>, <a href="http://www.w3.org/TR/REC-html40/interact/forms.html#edef-BUTTON" class="noxref"><samp
+	    class="einst">BUTTON</samp></a>, <a href="http://www.w3.org/TR/REC-html40/interact/forms.html#edef-INPUT" class="noxref"><samp class="einst">INPUT</samp></a>, <a href="http://www.w3.org/TR/REC-html40/interact/forms.html#edef-LABEL" class="noxref"><samp
+	    class="einst">LABEL</samp></a>, and <a href="http://www.w3.org/TR/REC-html40/interact/forms.html#edef-LEGEND" class="noxref"><samp class="einst">LEGEND</samp></a>, and
+	    <a href="http://www.w3.org/TR/REC-html40/interact/forms.html#edef-TEXTAREA" class="noxref"><samp class="einst">TEXTAREA</samp></a>.
+
+</TD><TD>
+The <code>A</code> element is related to links.
+The <code>AREA</code> element is used for
+clickable image maps (which also define links in a sense).
+The other elements mentioned are for form input fields.
+</TD></TR>
+<TR><TD>
+	    <div class="example">
+	    <P>This example assigns the access key "U" to a label associated with an
+	    <a href="http://www.w3.org/TR/REC-html40/interact/forms.html#edef-INPUT" class="noxref"><samp class="einst">INPUT</samp></a> control. Typing the access key gives
+	    focus to the label which in turn gives it to the associated control. The
+	    user may then enter text into the <a href="http://www.w3.org/TR/REC-html40/interact/forms.html#edef-INPUT" class="noxref"><samp class="einst">INPUT</samp></a> area.</P>
+
+<pre>
+&lt;FORM action="..." method="post"&gt;
+&lt;P&gt;
+&lt;LABEL for="fuser" accesskey="U"&gt;
+User Name
+&lt;/LABEL&gt;
+&lt;INPUT type="text" name="user" id="fuser"&gt;
+&lt;/P&gt;
+&lt;/FORM&gt;
+</pre>
+</div>
+</TD><TD>
+<P>The user could fill out and submit the form without using the
+mouse at all. He might, for example, type Alt-u followed by
+his input text and press the enter key.
+<P>Note, however, that the sketchy form presented in the
+example has no explicit submit field;
+<a href="../HTML3.2/5.25.html#submit"
+title="Notes on form submission (by pressing enter and other means)">it
+would improve the accessibility to add
+an <code>INPUT TYPE="SUBMIT"</code> element</A>.
+</TD></TR>
+<TR><TD>
+<div class="example">
+<P>In this example, we assign an access key to a link defined by the
+<a href="http://www.w3.org/TR/REC-html40/struct/links.html#edef-A" class="noxref"><samp class="einst">A</samp></a> element. Typing this access key takes the
+user to another document, in this case, a table of contents.</P>
+
+<PRE>
+&lt;P&gt;&lt;A accesskey="C"
+rel="contents" href=
+"http://someplace.com/spec/contents.html"
+&gt;Table of Contents&lt;/A&gt;
+</PRE>
+</div>
+</TD><TD>
+Instead of the typical method of following a link by clicking
+(on the words "Table of Contents" in this case), the user could
+alternatively use the "C" access key (e.g. Alt-C).
+</TD></TR>
+<TR><TD>
+
+<P>The invocation of access keys depends on the underlying system.
+For instance, on machines running MS Windows, one generally has to
+press the "alt" key in addition to the access key. On Apple systems,
+one generally has to press the "cmd" key in addition to the access
+key.
+</TD><TD>
+<A NAME="invoc">Thus, for example, if we have
+<code>accesskey="a"</code></A>, pressing the <kbd>a</kbd> key
+typically
+has
+no effect or could be taken as normal input (in a form input field)
+or as a command to the browser; a user would typically need to type
+Alt-a (that is, hit the <kbd>a</kbd> key while keeping the Alt key
+pressed down).
+</TD></TR>
+<TR><TD>
+
+<P>The rendering of access keys depends on the user agent. We recommend
+that authors include the access key in label text or wherever the access
+key is to apply. User agents should render the value of an access key in
+such a way as to emphasize its role and to distinguish it from other
+characters (e.g., by underlining it).
+
+</TD><TD>
+<a name="asg">
+It seems to be the intent that the author specifies a label
+(using the <code>LABEL</code> element) and that the browser
+uses that information for making it clear to the user what
+the access key assignments are.</a> In practice, things don't work that way
+at present. See <a href="#display"
+title="Displaying the access key assignments"
+>below</a>
+for more discussion.
+</TD></TR>
+</TABLE>
+
+<h2><a name="support">Browser support</a></h2>
+
+<p>Browser support
+to the <code>accesskey</code> attribute is getting wider, but it's
+still not universal; e.g., Netscape&nbsp;4 lacks it.
+Since the whole idea is to provide <em>additional possibilities</em>
+to users, this is not so serious as it may sound. As an author,
+you can start using the attribute, and those users who really need
+those possibilities will hopefully be able to select a browser
+which supports them.</p>
+
+<p>As some support has been added, the <strong>quality</strong>
+of implementations has become an issue. The following discussion
+will show that the implementations are still rather immature.
+Naturally, the situation keeps changing, and some of the notes below
+might be somewhat outdated. See also some interesting notes on
+implementations in section
+<cite><a href="http://www.blooberry.com/indexdot/html/tagpages/attributes/accessibility.htm">Accessibility Attributes</a></cite>
+of
+<cite>Index DOT Html</cite>.</p>
+
+<p><small>Generally, as regards to support to the features introduced
+in the HTML&nbsp;4.0 specification, see the document
+<a href="http://www.webreference.com/dev/html4nsie/"
+       ><cite>HTML 4.0 in Netscape and Explorer</cite></a> 
+(and
+       <a href="../www/4.html">my margin notes</a> to it). There has
+of course been progress after versions 4.0 of those browsers, but
+the steps are far smaller than you would expect if you took the
+version number game seriously.</small></P>
+
+<p><strong>Internet Explorer on Windows</strong> has to some extent
+supported <code>accesskey</code> since
+version&nbsp;4.0. On IE&nbsp;4.0, if the value of that attribute is
+a letter of the English alphabet,
+then using the corresponding keyboard
+key together with the Alt key will focus on the element where the
+attribute appears. On newer versions, the support is wider; e.g.,
+IE&nbsp;5.5 supports digits as access keys, too. For details, see
+Microsoft's documentation of
+<a href=
+"http://msdn.microsoft.com/workshop/author/dhtml/reference/properties/accesskey.asp"
+><code>accesskey</code> on IE</a>. Microsoft calls it
+"accelerator key" in prose, since similar functionality 
+in Windows user interface (e.g., in command menus)
+was already called that way. The name reflects the idea of
+speeding things up, rather than accessibility.
+It is often faster to
+use keyboard keys rather than the mouse.</p>
+
+<p>Note that on IE, using the access key typically
+<em>only</em> gives focus to the element. If the
+element is a link, it is not followed. The user can thus move
+to a link (e.g., in order to proceed by tabbing then), as separately
+from following it, which can be activating by hitting the Enter key when
+the focus is on the link. I think this is how things should be,
+although there's the counterargument that <em>mostly</em> people just
+want to follow links when they use access keys for links.
+But the IE implementation
+ might be seen as differing from what the specification suggests,
+especially if you consider the example there that says
+"In this example, we assign an access key to a link defined by the
+<code>A</code>&nbsp;element.
+Typing this access key takes the user to another document, in this case, a table of contents."
+<p>The implementation of accesskeys on IE is not very consistent. For example,
+using an accesskey for a checkbox does not just focus on it but
+also toggles its setting. 
+I can imagine the logic behind this, since for a link, there are
+several things you could do with it (e.g., open in a new window
+or view link properties), whereas for a checkbox, you normally
+just want to toggle it.
+<p>
+There are many other
+problems as regards to what using an access key really causes. For
+example, if a submit button has an <code>accesskey</code> attribute,
+should we assume that using the access key <em>submits</em>
+ the form, instead of
+just <em>focusing</em> on submit button? It would be rather natural to interpret
+that it should indeed, if we consider what the specification says:</p>
+<blockquote cite="http://www.w3.org/TR/html4/interact/forms.html#adef-accesskey">
+<p><span class="index-inst" title="focus::and access key"><a name=
+"idx-focus-2">Pressing an access key assigned to an element gives focus to the
+element.</a></span> The action that occurs when an element receives focus
+depends on the element. For example, when a user activates a link defined by
+the <a href="http://www.w3.org/TR/html4/struct/links.html#edef-A" class="noxref"><samp class="einst">
+A</samp></a> element, the user agent generally follows the link. When a user
+activates a radio button, the user agent changes the value of the radio button.
+When the user activates a text field, it allows input, etc.</p>
+</blockquote>
+
+<p>This seems to say implicitly that "giving focus" automagically causes some
+"activation", intentionally leaving it more or less open what "activation"
+means in each case.
+The specification should be clarified quite a lot as regards to the
+semantics. But I'm afraid there's little hope; the work is oriented towards
+<a href="http://www.w3.org/MarkUp/Forms/"
+title="XForms - The Next Generation of Web Forms"
+>XForms</a> and other XML based approaches that break continuity
+with HTML.</p>
+
+<p>Testing on Netscape 6.1, Opera 6.0, and IE 5.5, all on Windows 98, 
+I noticed confusing differences as regards to an access key for a submit
+button:</p>
+<ul>
+<li> Opera doesn't support access keys
+<li> IE focuses on a link when an access key is used but does not follow the
+link (hitting "Enter" is needed), and it submits a form if an access key for
+the submit button is used
+<li> Netscape follows a link when an access key is used.
+</ul>
+
+<p>In IE on the 
+Mac platform, access key is performed with the
+control key, in combination with the 
+key specified in the
+<code>accesskey</code> attribute.
+For links,
+the implementation follows the link rather than just setting
+focus on it.</p>
+
+<p>On <strong>Netscape 6</strong>, the support is similar.
+Using an access key to select a link causes the link to be followed.
+And it seems that access keys are not supported for form buttons.</p>
+
+<p>On Netscape,
+the focus must first be on the web page itself before the accesskey
+will work. In other words, if you just bring up Netscape and go to a page
+with accesskeys specified, the accesskeys will not work until you either tab
+into the web page or click on it with your mouse.</p>
+
+<h2><a name="mask">Effect on built-in shortcuts</a></h2>
+
+<P CLASS="warning"><a name="warn">
+The <code>accesskey</code> attribute implementation typically
+uses the same technique (Alt key) as the browser's built-in
+user interface. This means that access key assignments in a document
+may mask out some basic functionality
+which users might be familiar with or, less seriously, the built-in
+assignments might mask out the page-specific assignments.</a>
+</P>
+<P>For example, if you specify <code>accesskey="f"</code> for
+some link or field, an IE user will not be able to use
+Alt-F in its <em>normal</em> meaning within IE
+(opening the <U>F</U>ile menu).
+Whether the gain compensates for the loss depends on the
+document and on the user.
+But the browser's own shortcut assignments could be very important
+to users, especially to people with disabilities, so overriding them
+could cause severe problems, especially when the user does not know about
+the situation.
+It would be rather distracting if you are accustomed to, say, using Alt-a to
+Add a page to a bookmark list, and then one day you note that on some page,
+it submitted a form that you hadn't quite filled out yet.
+</P>
+<p>For a survey of conflicts, see the document
+<cite><a href="http://www.wats.ca/resources/accesskeysandkeystrokes/38"
+>Accesskeys and Reserved Keystroke Combinations</a> at
+<a href="http://www.wats.ca" title=
+"WATS.ca - Web Accessibility Testing and Services"
+>WATS.com</a></cite>.</p>
+<p id="alt2">However, the user can hit first the Alt key, then a normal key
+(say, the "a" key), to invoke IE's built-in shortcut assignment.
+I wonder how many users know that.
+Moreover, this really works so that hitting the Alt key separately
+activates the menu bar. Pressing IE's built-in hot key for the
+menu you want then opens that menu.
+This means that the workaround helps in some situations only.</p>
+  
+<P>To make things worse, it is impossible to list the "standard"
+Alt key assignments in browsers since the assignments depend on
+the <em>language</em> of the user interface.
+For example, in the Finnish version of IE, Alt-F is unassigned
+but Alt-T (from Finnish <span lang="fi"><U>T</U>iedosto</span>
+ 'file') opens a file menu.</p>
+<p>Moreover, access key assignments may clash with other
+technologies as well. For example, if you use IE in combination with
+<a href="http://www-3.ibm.com/able/hpr.html">IBM Home Page Reader</a>
+and the document contains an element with <code>accesskey="l"</code>,
+then Alt-L will not work as an access key for the element but as
+Home Page Reader's command (for "links reading mode").
+The keyboard key assignments are often affected
+by settings at the operating system level, too. The problems are
+illustrated in the detailed document
+<cite><a href=
+"http://msdn.microsoft.com/library/?url=/library/en-us/dnacc/html/ATG_KeyboardShortcuts.asp?frame=true"
+>Guidelines for Keyboard User Interface Design</a></cite>. And it needs
+to be remembered that the variation within Windows platforms is just
+one part of the variation in the World Wide Web.</p>
+
+<h2><a name="ex">Examples</a></h2>
+
+<P>Assuming that you are using a browser which supports
+<code>accesskey</code>, you can see how the following works.
+<P>The following simple form has accesskeys for all fields.
+You can try submitting the form; this will only result in the
+form data being echoed back to you.
+
+<form
+accept="text/plain"
+method="POST" action="http://www.cs.tut.fi/cgi-bin/run/~jkorpela/echo.cgi">
+Your <strong>n</strong>ame:
+<input type="text" size=40 name="Name"
+accesskey="n"> (accesskey: n)<br>
+Your
+<strong>E</strong>-mail address:
+<input type="text" size=40 name="Email"
+accesskey="e"> (accesskey: e)<br>
+<strong>S</strong>ubject of your message: 
+<input type="text" size=40 name="Subject"
+accesskey="s"> (accesskey: s)<br>
+<strong>I</strong>nstitution/Company:
+<input type="text" size=40 name="institution"
+accesskey="i"> (accesskey: i)<br>
+The <strong>t</strong>ext of your comments (accesskey: t):<br>
+<TEXTAREA NAME="comments" ROWS=10 COLS=50
+accesskey="t"></TEXTAREA>
+<br>
+<input type=submit value="Mail Message" accesskey="m">
+(accesskey: m)
+</form>
+
+<P>A simple link:
+<a href="../personal.html" lang="fi" title=
+"Personal home page of Jukka K. Korpela, IT generalist and specialist"
+accesskey="J"><strong>J</strong>ukka K. Korpela</a> (accesskey: J).
+</P>
+<P>Another simple link, with a digit as accesskey:
+<a href="../index.html"
+accesskey="1">Home (main page of this site)</a> (accesskey: digit 1).</P>
+
+<h2><a name="display">Displaying the access key assignments</a></h2>
+
+<P>As mentioned <a href="#asg">above</a>, one cannot rely on
+browsers displaying the access key assignments (at present or
+in the near future).
+To clarify the situation, consider
+the following example given in the HTML 4.0 specification:
+<PRE>
+ &lt;LABEL for="fuser" accesskey="U"&gt;
+ User Name
+ &lt;INPUT type="text" name="user" id="fuser"&gt;
+ &lt;/LABEL&gt;
+</PRE>
+<P>On your current browser, this looks like the following:
+<form
+accept="text/plain"
+method="POST" action="http://www.cs.tut.fi/cgi-bin/run/~jkorpela/echo.cgi">
+<LABEL for="fuser" accesskey="U"> User Name
+ <INPUT type="text" name="user" id="fuser"> </LABEL>
+</form>
+
+<P>The specification seems to suggest that a browser should
+automatically indicate to the user that "U" is an accesskey for
+the input field, e.g. by underlining that character (presumably
+as it appears within the <code>LABEL</code> element).
+But although IE supports (from version 4.0 onwards)
+<code>accesskey</code>,
+there's no underlining in the presentation. In fact there is no
+evidence of real support to <code>LABEL</code>.
+It is also debatable
+whether the specification really suggests what it
+seems to be suggesting--that browsers should, in a case like this,
+check the content of the <code>LABEL</code>
+field and underline (any?) occurrence
+of the accesskey character!
+</P><P>
+Thus it seems that the <strong>author</strong>
+should take care of the underlining or other specific presentation,
+e.g. writing the content of <code>LABEL</code> in this case as
+<PRE>
+ &lt;U&gt;U&lt;/U&gt;ser Name
+</PRE>
+<P>Such explicit presentational suggestions may become
+unnecessary in the future if the browser support improves,
+of course.
+But for the time being, we need to consider how to present them.
+</P>
+
+<P CLASS="important">
+To let users benefit from access keys,
+you need to take care of displaying the access key assignments.
+</P>
+<p>
+The method used in the <a href="#ex">examples</a> above--explicitly
+telling the access key after an element, and additionally bolding
+the access key letter when applicable--is
+somewhat naivistic but it can reasonably be expected to carry the
+message to those who need it. The main problem with it would probably
+not be the naivity but the fact that a reference to access keys might
+confuse people who do <em>not</em> need that information. They might
+have difficulties in understanding whether "accesskey" is something
+they need to know about. You might consider making that word a link
+to a suitable document about access keys. (The present document of mine
+can be used for the purpose, although it would probably be all too
+detailed for that.)
+<P>
+If there is a large number of access key assignments on a page
+or if you would otherwise like to express the assignments
+concisely, you could use one or several of the following
+alternatives:
+</P>
+<TABLE BORDER=1 CELLPADDING=4>
+<TR><TH>Sample <TH>Explanation of the method<BR></TR> 
+<TR><TD><U>h</U>ome <TD>
+Make the access key letter <U>underlined</U>, using the
+       <code>U</code> element. This would correspond to widespread
+       usage for analogous assignments in many widely used programs
+       (e.g. Web browsers).<BR>
+  <TR><TD>Home<BR><TD> Make the access key letter appear in UPPERCASE. This too
+       would correspond to widespread practice
+  <TR><TD><STRONG>h</STRONG>ome <TD>
+Make the access key letter <strong>strongly emphasized</strong>,
+       using the
+       <code>STRONG</code> element, or <B>bolded</B>, using the
+       <code>B</code> element. (In this context, there isn't much
+       practical difference between these; but in principle, a
+speech-based user agent can be expected to present <code>STRONG</code>
+in some meaningful way whereas <code>B</code>
+would be meaningless to it.)
+       This would make it more prominent. You might even consider
+       suggesting--via a stylesheet or via the deprecated <code>FONT</code>
+       element--a presentation where the letter appears in some
+       distinctive color (although this might easily interfere with
+       link colors).<BR>
+</TABLE>
+<P>These are all based on the assumption that the access key letter
+appears in the context e.g. in the link text or in the explanatory
+text (or label) preceding an input field. Usually that can be arranged;
+as an author, <em>you</em> formulate those texts and you select the access key
+assignments.
+</P>
+<P>
+It can hardly cause harm to use <em>all</em> of the methods mentioned
+to make the message clearer. 
+</P>
+<P>For normal submit (or reset)
+<strong>buttons</strong> in forms, underlining and bolding
+are impossible, 
+since the text in a button is specified using an attribute,
+and attribute values cannot contain HTML markup. Thus, for
+example, if you have
+<PRE>
+&lt;INPUT TYPE="SUBMIT" VALUE="Add this" accesskey="A"&gt;
+</PRE>
+<P>then you cannot underline or bold the letter "A" in "Add this".
+Theoretically,
+you could use
+<code>INPUT TYPE="IMAGE"</code>
+and an image which contains the text "<U>A</U>dd this"
+with A underlined (and/or bolded),
+but in practice
+<a href="imagebutton.html">image buttons cause more problems
+than they might solve</a>.
+Since the use of uppercase alone is not a very good signal--even
+if you otherwise use all lowercase in submit button texts--it seems to
+be necessary to include an explicit remark about the access key.
+</P>
+
+<P CLASS="summary">
+For <em>links</em>
+it seems best to present the access key letter underlined, bold face,
+and in upper case.
+For <em>buttons</em>, write the access key
+letter in upper case and provide an explanatory
+statement about the access key.
+</P>
+<P>This is illustrated with the following simple examples:
+<TABLE BORDER=1 CELLPADDING=4>
+<TR><TH>HTML markup <TH>Presentation on your current browser </TR>
+<TR><TD>
+<PRE>
+&lt;A HREF="index.html" accesskey="C"
+&gt;table of &lt;STRONG&gt;&lt;U&gt;C&lt;/U&gt;&lt;/STRONG&gt;ontent&lt;/A&gt;
+</PRE>
+<TD>
+<A HREF="index.html" accesskey="C"
+>table of <STRONG><U>C</U></STRONG>ontent</A>
+<TR><TD>
+<PRE>
+&lt;INPUT TYPE="SUBMIT" NAME="action" VALUE="Add this"
+accesskey="A"&gt; (accesskey:&amp;nbsp;A)
+</PRE>
+<TD>
+<form
+accept="text/plain"
+method="POST" action="http://www.cs.tut.fi/cgi-bin/run/~jkorpela/echo.cgi">
+<INPUT TYPE="SUBMIT" VALUE="Add this" accesskey="A" name="action">
+(accesskey:&nbsp;A)
+</form>
+</TABLE>
+
+<h2><a name="assign">"Standard" access key assignments?</a></h2>
+<P>
+It might be desirable to have some common conventions on access
+key assignments, e.g. so that some specific access key would
+always take you upwards in a document hierarchy.
+There seems be little hope of uniformity in this area.
+Quite often the access keys <em>need</em> to be application-dependent;
+for example, when you have a form with lots of input fields, you
+might have to use all characters a - z for them.
+Moreover, access key assignments in a document might interfere
+with <em>browser "standards"</em>, if the browser implements
+<code>accesskey</code> similarly to access keys in its own
+built-in user interface (as <a href="#warn">several browsers do</a>).
+<P>
+But should you like to adopt some <em>site-wide</em> "standard",
+here is one possibility:</p>
+<TABLE BORDER="1">
+<CAPTION>Suggested "standard" access key assignments</CAPTION>
+<TR><TH>key <TH>Meaning (and corresponding
+<A HREF="../HTML3.2/4.7.html#relrev">
+<code>REL</code> value</A>
+if applicable)
+<TR><TH>A <TD><strong>a</strong>uthor's home page
+<TR><TH>B <TD><strong>b</strong>eginning of a series of documents to which
+  the current document belongs
+ (<code>REL="Start"</code>)
+<TR><TH>C <TD>table of <strong>c</strong>ontents
+ for current document
+ (<code>REL="Contents"</code>)
+<TR><TH>G <TD> <strong>g</strong>lossary for current document
+ (<code>REL="Glossary"</code>)
+<TR><TH>H <TD> <strong>h</strong>elp for using current document
+ (<code>REL="Help"</code>)
+<TR><TH>I <TD>(keyword) <strong>i</strong>ndex for current document
+ (<code>REL="Index"</code>)
+<TR><TH>M <TD><strong>m</strong>ail to author (for a <code>mailto:</code>
+  link with the author's address)
+<TR><TH>N <TD><strong>n</strong>ext document in
+  a series of documents to which
+  the current document belongs
+ (<code>REL="Next"</code>)
+<TR><TH>P <TD><strong>p</strong>revious document in
+  a series of documents to which
+  the current document belongs
+ (<code>REL="Prev"</code>)
+<TR><TH>R <TD><strong>r</strong>eset a form
+<TR><TH>S <TD><strong>s</strong>ubmit a form
+<TR><TH>U <TD><strong>u</strong>pwards in a hierarchy--typically,
+  this leads to a page describing (e.g. as a list of links)
+  a collection of documents to which the current document belongs
+</TABLE>
+
+<P>That would still leave several letters unassigned, so they
+could be used for form fields and for essential links which
+are not covered in the general scheme.</P>
+       
+<p>The <a href="http://www.webaim.org/">WebAIM</a>
+(Web Accessibility In Mind)
+site uses the following assignments:</p>
+
+<TABLE BORDER="1">
+<CAPTION>WebAIM access keys</CAPTION>
+<TR><TH>key <TH>Meaning
+<TR><TH>1 <TD>home page (i.e., main page of site)
+<TR><TH>2 <TD>skip navigation (i.e., location after navigational links
+at the start of page)
+<TR><TH>3 <TD>printer version
+<TR><TH>4 <TD>index/search
+</table>
+
+<p>Paul Bohman has explained this in his
+<a href="http://www.webaim.org/discussion/mail_message.php?id=800">message</a>
+ on the
+<a href="http://www.webaim.org/discussion/"
+><cite>WebAIM Forum</cite> mailing list</a>:</p>
+<blockquote cite="http://www.webaim.org/discussion/mail_message.php?id=800">
+<p>You'll notice that we used numbers rather than letters. I would have
+preferred to use letters, but, unfortunately, when you use letters, there is
+a much greater likelihood that you will interfere with pre-existing keyboard
+shortcuts in either the browser or the assistive technologies (e.g. JAWS,
+Home Page Reader).</p>
+</blockquote> 
+
+<p>On the other hand, even digit keys are used as built-in access keys by
+several programs. However, this typically means that in the case of conflict,
+the built-in assignment is in use.</p>
+
+<!--
+"http://www.e-envoy.gov.uk/Resources/WebGuidelines/fs/en"
+"http://www.e-envoy.gov.uk/oee/oee.nsf/sections/webguidelines-content/$file/04.htm#4"-->
+<!--<p>The
+<a href=
+"http://www.e-envoy.gov.uk/Resources/WebGuidelines/fs/en"
+<abbr title="United Kingdom">UK</abbr> public website
+guidelines</a> contain, in
+<cite>Framework for senior managers</cite>,
+an appendix that suggests the following accesskey standard:</p>-->
+
+<p>In the United Kingdom, the
+<cite><a href=
+"http://www.cabinetoffice.gov.uk/e-government/resources/handbook/introduction.asp">
+Guidelines for UK Government websites</a></cite> specify, in section
+<cite><a href=
+"http://www.cabinetoffice.gov.uk/e-government/resources/handbook/html/2-4.asp#2.4.4">
+2.4.4 UK Government accesskeys standard</a></cite>,
+recommends the following assignments:</p>
+
+<table border="1" cellspacing="0" cellpadding="3"
+summary="First column: accesskey character. Second column: its meaning"
+>
+<tr><th>S</th><td> skip navigation</td></tr>
+<tr><th>1</th><td> home page</td></tr>
+<tr><th>2</th><td> what's new page</td></tr>
+<tr><th>3</th><td> site map</td></tr>
+<tr><th>4</th><td> search facility on the site</td></tr>
+<tr><th>5</th><td> frequently asked questions (FAQ)</td></tr>
+<tr><th>6</th><td> help page/facility</td></tr>
+<tr><th>7</th><td> complaints procedure</td></tr>
+<tr><th>8</th><td> terms and conditions (including privacy statement)</td></tr>
+<tr><th>9</th><td> feedback page</td></tr>
+<tr><th>0</th><td> information about of accesskeys</td></tr>
+</table>
+
+<p>In practice, UK government sites contain other accesskeys as well.
+For example the <a href="http://www.cabinetoffice.gov.uk">CabinetOffice</a>
+site also assigns C, I, J, K, L, M, N, O, P, Q, R, U, X, Y, and Z.
+In practice this guarantees that there are many conflicts
+with built-in keyboard shortcuts in browsers and other software.</p>
+
+<p>The UK recommendation adds:</p>
+<blockquote>
+<p>When this navigational system is made available, it is important to inform your website users, as soon as they enter. Otherwise, users who are least able to do so will be faced with a mouse-dependent navigational system that could have been bypassed. Each page could display a message, e.g. 
+&#8216;UK government accesskeys system&#8217;</p>
+</blockquote>
+
+<p>This means that all users will receive an announcement about
+technicalities, breaking a fundamental design principle.
+Moreover, the announcement is apparently meant to be prominent.
+This means causing disturbing all users in order to
+potentially help a few.</p>
+
+<p><span lang="da">Jesper Tverskov</span> has made an interesting suggestion:
+<cite><a href=
+"http://www.klapmusen.dk/artikel.aspx?xml=20021031&amp;lg=en"
+>Use
+first letter as <small>accesskey</small></a></cite>. Systematically
+using the first letter of a link text as the accesskey could
+be a simple, easy to understand and easy to remember scheme.</p>
+
+<h2><a name="concl">Conclusion</a></h2>
+
+<p>The <em>need</em> for access keys (in some sense) is obvious. There are many
+reasons why pages should be made useable using keyboard only, without
+a mouse,
+and in a convenient way. But the 
+<code>accesskey</code> attributes don't seem to help in
+solving the problem very well.
+They might be useful, if a site-wide system of access keys makes
+a site more easily navigable. 
+If you use them, the assignments should
+be described separately, not in <code>title</code>
+attributes or relying on underlining
+or other small hints. And I would recommend using just <em>digits</em>
+for access
+keys, with digit&nbsp;0 acting as access key to a document that describes the
+other assignments.</p>
+
+<hr title="Information about this document">
+<div class="footer">
+<div><A TITLE=
+"ISO 8601, the date and time representation standard"
+HREF="../iso8601.html">
+Date</A> of last update: 2006-05-08.
+Originally written in 1998. Original title:
+<cite>Improving accessibility with <code>accesskey</code> in HTML forms and links</cite>.</div>
+<div>This page belongs to division
+<cite><a href="../www.html">Web authoring and surfing</a></cite>,
+especially subdivision
+<cite><a href="index.html"
+title=
+"How to write HTML forms; links to tutorials and references and documents on special topics related to forms"
+>Forms</a></cite> in
+the free information site
+<cite><a href="../indexen.html">IT and communication</a></cite>
+by
+<a href="../personal.html" title=
+"Jukka K. Korpela, an IT generalist and specialist (personal home page)"
+><span lang="fi">Jukka</span> "Yucca" <span lang="fi">Korpela</span></a>.
+</div></div>
+</body>
+</html>

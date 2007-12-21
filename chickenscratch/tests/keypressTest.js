@@ -3,7 +3,7 @@ var Test = Chickenfoot.Test;
 var t = new Test();
 
 t.test("keypress:", function(){
-  go("http://www.google.com");
+  go("file://" + scriptDir.path + "/pages/google.html");
   
   // use keypresses to write something in first textbox and see if it is there
   var x = keypress("h e l l o", "first textbox");
@@ -12,7 +12,7 @@ t.test("keypress:", function(){
 
 
 t.test("onKeypress:", function(){
-  go("https://webmail.mit.edu/");
+  go("file://" + scriptDir.path + "/pages/mit-webmail.html");
 
   // make an onKeypress event and simulate a keypress() that will trigger it
   onKeypress("Ctrl enter", function() { enter("Username textbox", "Testing"); })
@@ -21,7 +21,7 @@ t.test("onKeypress:", function(){
 });
 
 t.test("accessKeys:", function(){
-  go("http://www.cs.tut.fi/~jkorpela/forms/accesskey.html");
+  go("file://" + scriptDir.path + "/pages/accesskey.html");
   
   // test using keypress() to trigger accessKey element which takes you to a new page
   keypress("alt m")
@@ -30,3 +30,4 @@ t.test("accessKeys:", function(){
 
 
 t.close();
+
