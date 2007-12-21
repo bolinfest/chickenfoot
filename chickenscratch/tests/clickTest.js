@@ -42,6 +42,7 @@ function closeTabFrom(/*String*/ url) {
       return;
     }
   }
-  throw new Error("can't find tab from " + url + " to close")
+  //throw new Error("can't find tab from " + url + " to close")
 }
+
 

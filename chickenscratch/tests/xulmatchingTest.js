@@ -67,6 +67,7 @@ t.test("onClick", function() {
   }
 });
 
+/*** FIX BUG # 342 before re-enabling the next 3 tests
 //onKeypress
 t.test("onKeypress", function() {
   with(chrome) {
@@ -99,6 +100,10 @@ t.test("check and uncheck", function() {
   uncheck("checkbox");
   Test.assert(!find('show hidden').element.wrappedJSObject.checked);
 });
+***********************/
+
+
+/*** FIX BUG # 378 before re-enabling this test
 
 //window matching and chrome
 t.test("window matching and Chrome", function() {
@@ -112,5 +117,6 @@ t.test("window matching and Chrome", function() {
   var thisChrome = chrome;
   Test.assert(thisChrome.find('home button').count == 1);
 });
+****************************/
 
 t.close();
