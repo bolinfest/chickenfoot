@@ -1,5 +1,6 @@
 
 var testsRun = [];
+debug = Chickenfoot.debug;
 
 runTest("findTest.js");
 runTest("clickTest.js");
@@ -25,14 +26,14 @@ runTest("resetTest.js");
 runTest("keypressTest.js");
 runTest("xulmatchingTest.js");
 
-output("*********** SUMMARY *************** ")
+debug("*********** SUMMARY *************** ")
 for (var i = 0; i < testsRun.length; ++i) {
   var test = testsRun[i];
-  output(test.name + " " + test);
+  debug(test.name + " " + test);
 }
 
 function runTest(name) {
-  output(name + " ****************************** ")
+  debug(name + " ****************************** ")
   
   var test = include(name, {});
   if (test) {

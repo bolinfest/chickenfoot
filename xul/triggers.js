@@ -607,11 +607,22 @@ function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
   
   //send it to javascript xpiTie, where everything is translated into java
   try {
-    var file = Chickenfoot.xpiTie(dialogArguments.triggers, dialogArguments.templateTags, dialogArguments.outputPath, 
+    var xpifile = Chickenfoot.xpiTie(dialogArguments.triggers, dialogArguments.templateTags, dialogArguments.outputPath, 
                                    userFilesJava, iconPath);
   } catch (e) {
     alert(e);
     return;
   }
-    alert("Your new extension was created at: " + file.toString());
+  
+  var message  
+   if (metadata.updateURL) {
+     message = "Your new extension " + xpifile.leafName + " and an update description file update.rdf "
+     message += "were created in " + xpifile.parent.path + "\n"
+     message += "\n"
+     message += "In order to make Firefox automatic updating work correctly, "
+     message += "place both files on the Web at " + metadata.updateURL;
+   } else {
+     message = "Your new extension was created at: " + xpifile.path;
+   }
+   alert(message);
 }

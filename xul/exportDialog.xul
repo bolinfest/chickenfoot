@@ -467,11 +467,11 @@ The GUID will be written into your script so you do not lose it.
     <row collapsed="true" id="update-help">
       <spacer />
       <label>
-OPTIONAL: This url is the online directory where future updates to your
-extension will be uploaded. For reference Chickenfoot's update website is
-http://groups.csail.mit.edu/uid/chickenfoot/
-and the actual file is at
-http://groups.csail.mit.edu/uid/chickenfoot/chickenfoot.xpi.
+OPTIONAL.  If you plan to publish your extension on the Web and want
+Firefox to automatically detect new updates, the Update URL should 
+specify the online directory where you will place your extension.
+For example, the Update URL for Chickenfoot is 
+http://uid.csail.mit.edu/chickenfoot/
       </label>
     </row>
 

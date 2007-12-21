@@ -5,6 +5,7 @@
  * @param outputPath {string} the path where the XPI should be saved
  * @param userFiles {string array} the pathnames of other files to be included in the XPI
  * @param iconFile{string} the path for the icon for the extension
+ * @return nsIFile object representing the XPI file that was created
  */
 function xpiTie(triggers, templateTags, outputPath, userFiles, iconFile) {
   //add template tags for the updateLink and updateURL
@@ -68,7 +69,10 @@ function xpiTie(triggers, templateTags, outputPath, userFiles, iconFile) {
    iconFile
   ]);
 
-  return ("" + xpiPath.toString()); // ensure this is a JS string, not a Java one
+  var xpiFile = Components.classes["@mozilla.org/file/local;1"].
+            createInstance(Components.interfaces.nsILocalFile);
+  xpiFile.initWithPath(xpiPath.toString());
+  return xpiFile;
 }
 
 
