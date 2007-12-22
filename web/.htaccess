@@ -1,0 +1,15 @@
+# Home page 
+DirectoryIndex index.php
+
+# Some redirections
+Redirect permanent /uid/chickenfoot/index.html http://groups.csail.mit.edu/uid/chickenfoot/index.php
+Redirect permanent /uid/chickenfoot/wiki http://groups.csail.mit.edu/uid/wiki
+Redirect permanent /uid/chickenfoot/flyspray http://groups.csail.mit.edu/uid/flyspray
+
+# Make sure that update.rdf and release-notes.xml are never cached by browser
+AddType text/xml rdf
+AddType text/xml xml
+ExpiresByType text/xml now
+
+# Tell web server to treat all *.html files as server-side includes
+AddHandler server-parsed html
