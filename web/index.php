@@ -34,10 +34,12 @@ include('rss2html.php');
 
 <h3>Acknowledgements</h3>
 
-Chickenfoot was supported in part by the National Science Foundation
-(award number IIS-0447800). Any opinions, findings, conclusions or
-recommendations expressed herein are those of the authors and do not
-necessarily reflect the views of the National Science Foundation.
+Chickenfoot was supported in part by the <a href="http://nsf.gov">National Science Foundation</a>
+(award number IIS-0447800) and by Quanta Computer, Inc as part of the
+<a href="http://projects.csail.mit.edu/tparty/">T-Party
+project</a>. Any opinions, findings, conclusions or recommendations
+expressed herein are those of the authors and do not necessarily
+reflect the views of the sponsors.
 
  
 <?php
