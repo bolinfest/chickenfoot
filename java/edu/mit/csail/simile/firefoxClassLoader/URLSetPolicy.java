@@ -102,9 +102,9 @@ public class URLSetPolicy extends Policy {
         if (url != null) {
             String s = url.toExternalForm();
             if (m_urls.contains(s) || "file:".equals(s)) {
-                Enumeration e = m_permissions.elements();
+                Enumeration<Permission> e = m_permissions.elements();
                 while (e.hasMoreElements()) {
-                    pc.add((Permission) e.nextElement());
+                    pc.add(e.nextElement());
                 }
             }
         }
