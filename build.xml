@@ -47,6 +47,8 @@
     <property name="export.dir"     value="${xpi.dir}/export" />
 
     <property name="xpi.name"    value="${ant.project.name}-${version.value}.xpi" />
+
+    <property name="source.zip.name"    value="${ant.project.name}-source-${version.value}.zip" />
     
     <property name="xpidl.dir" value="${basedir}/xpidl" />
 
@@ -442,12 +444,13 @@
     <target name="zip"
             description="Packages the project as a zip file.">
         <mkdir dir="${build.dir}" />
-        <zip destfile="${build.dir}/${ant.project.name}.zip">
-            <zipfileset prefix="${ant.project.name}"
+        <zip destfile="${build.dir}/${source.zip.name}">
+            <zipfileset prefix="${ant.project.name}-${version.value}"
                         dir="${basedir}"
                         >
                 <!-- must use build literally because ${build.dir} fails for some reason -->   
                 <exclude name="build/**" />
+                <exclude name="web/**" />
             </zipfileset>   
         </zip>
     </target>
@@ -466,11 +469,12 @@
     </target>
 
     <target name="release"
-            depends="build"
+            depends="build,zip"
             description="Builds the HTML component of the website.">
         <!-- add the latest XPI to the releases dir -->
         <copy todir="${html.dir}/releases" overwrite="true">
           <fileset file="${build.dir}/${xpi.name}"/>
+          <fileset file="${build.dir}/${source.name}"/>
         </copy>
         <!-- include images from XUL, some of which are handy -->
         <copy todir="${html.dir}/images" overwrite="true">
