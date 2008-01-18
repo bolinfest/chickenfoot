@@ -10,10 +10,26 @@
 	<title>Chickenfeed</title>
 	<link>http://groups.csail.mit.edu/uid/chickenfoot/blog</link>
 	<description>The Official Chickenfoot Blog</description>
-	<pubDate>Sun, 30 Dec 2007 14:30:53 +0000</pubDate>
+	<pubDate>Fri, 18 Jan 2008 17:31:20 +0000</pubDate>
 	<generator>http://wordpress.org/?v=2.3.2</generator>
 	<language>en</language>
 			<item>
+		<title>Chickenfoot 1.0.1</title>
+		<link>http://groups.csail.mit.edu/uid/chickenfoot/blog/2008/01/18/chickenfoot-101/</link>
+		<comments>http://groups.csail.mit.edu/uid/chickenfoot/blog/2008/01/18/chickenfoot-101/#comments</comments>
+		<pubDate>Fri, 18 Jan 2008 17:31:20 +0000</pubDate>
+		<dc:creator>Rob</dc:creator>
+		
+		<category><![CDATA[New Release]]></category>
+
+		<guid isPermaLink="false">http://groups.csail.mit.edu/uid/chickenfoot/blog/2008/01/18/chickenfoot-101/</guid>
+		<description><![CDATA[Fixes a bug in regular expression matching.
+]]></description>
+			<content:encoded><![CDATA[<p>Fixes a bug in regular expression matching.</p>
+]]></content:encoded>
+			<wfw:commentRss>http://groups.csail.mit.edu/uid/chickenfoot/blog/2008/01/18/chickenfoot-101/feed/</wfw:commentRss>
+		</item>
+		<item>
 		<title>Chickenfoot 1.0.0 released</title>
 		<link>http://groups.csail.mit.edu/uid/chickenfoot/blog/2007/12/30/chickenfoot-100-released/</link>
 		<comments>http://groups.csail.mit.edu/uid/chickenfoot/blog/2007/12/30/chickenfoot-100-released/#comments</comments>
@@ -23,16 +39,16 @@
 		<category><![CDATA[New Release]]></category>
 
 		<guid isPermaLink="false">http://groups.csail.mit.edu/uid/chickenfoot/blog/2007/12/30/chickenfoot-100-released/</guid>
-		<description><![CDATA[We&#8217;re happy to announce the 1.0.0 release of Chickenfoot, just in time for 2008.  This release includes several major improvements:
+		<description><![CDATA[We&#8217;re happy to announce the 1.0.0 release of Chickenfoot, just in time for 2008.  This release includes several major improvements:
 
-The extension packager now allows you to select multiple trigger scripts, files, and folders to include in the extension package.  You can also set an update URL for the extension package, so that when you release [...]]]></description>
-			<content:encoded><![CDATA[<p>We&#8217;re happy to announce the 1.0.0 release of Chickenfoot, just in time for 2008.  This release includes several major improvements:</p>
+The extension packager now allows you to select multiple trigger scripts, files, and folders to include in the extension package.  You can also set an update URL for the extension package, so that when [...]]]></description>
+			<content:encoded><![CDATA[<p>We&#8217;re happy to announce the 1.0.0 release of Chickenfoot, just in time for 2008.  This release includes several major improvements:</p>
 <ul>
-<li>The extension packager now allows you to select multiple trigger scripts, files, and folders to include in the extension package.  You can also set an update URL for the extension package, so that when you release your extension on the web, Firefox will automatically check for updates.</li>
+<li>The extension packager now allows you to select multiple trigger scripts, files, and folders to include in the extension package.  You can also set an update URL for the extension package, so that when you release your extension on the web, Firefox will automatically check for updates.</li>
 <li>Trigger metadata is now stored in a //UserScript comment, in GreaseMonkey style.</li>
 <li>When you output a Match object returned by a find() command, the Output pane allows you to browse the matches it found, highlighting them in the page.</li>
 <li>The Output pane also browses other objects displayed with output(), allowing you to expand them as deeply as you like.</li>
-<li>The Chickenscratch language now includes keypress() and onKeypress() commands for simulating and responding to keyboard actions.  For example, keypress(&#8221;Ctrl d&#8221;) presses Control-D on whatever part of the page currently has the keyboard focus; keypress(&#8221;Enter&#8221;, &#8220;search textbox&#8221;) presses Enter on the Search textbox; onKeypress(&#8221;Enter&#8221;, &#8220;search textbox&#8221;, function) runs the given function whenever Enter is pressed on the Search textbox.</li>
+<li>The Chickenscratch language now includes keypress() and onKeypress() commands for simulating and responding to keyboard actions.  For example, keypress(&#8221;Ctrl d&#8221;) presses Control-D on whatever part of the page currently has the keyboard focus; keypress(&#8221;Enter&#8221;, &#8220;search textbox&#8221;) presses Enter on the Search textbox; onKeypress(&#8221;Enter&#8221;, &#8220;search textbox&#8221;, function) runs the given function whenever Enter is pressed on the Search textbox.</li>
 </ul>
 <p>A few small bug fixes are also included in this release:</p>
 <ul>
@@ -40,7 +56,7 @@ The extension packager now allows you to select multiple trigger scripts, files,
 <li>click() on Element and Match objects now works again</li>
 <li>click() on a link with a target attribute no longer clicks the link twice</li>
 </ul>
-<p>Finally, the experimental keyword-commands feature has been removed from this release, so keyword commands will no longer work.  Keyword commands will be released separately as another extension that can be installed alongside Chickenfoot to enhance its behavior, like the way LAPIS is distributed.</p>
+<p>Finally, the experimental keyword-commands feature has been removed from this release, so keyword commands will no longer work.  Keyword commands will be released separately as another extension that can be installed alongside Chickenfoot to enhance its behavior, like the way LAPIS is distributed.</p>
 ]]></content:encoded>
 			<wfw:commentRss>http://groups.csail.mit.edu/uid/chickenfoot/blog/2007/12/30/chickenfoot-100-released/feed/</wfw:commentRss>
 		</item>
@@ -110,7 +126,7 @@ In addition, Chickenfoot scripts can now use Javascript 1.7 constructs, assuming
 for (img in find(&#8221;image&#8221;)) remove(img);<br />
 for (number in find(/\d+/)) output(number);</p>
 <p>JS 1.7 has a few other nice features, like proper lexical scoping for local variables.  See<br />
-<a class="moz-txt-link-freetext" href="http://developer.mozilla.org/en/docs/New_in_JavaScript_1.7">http://developer.mozilla.org/en/docs/New_in_JavaScript_1.7</a><br />
+<a href="http://developer.mozilla.org/en/docs/New_in_JavaScript_1.7" class="moz-txt-link-freetext">http://developer.mozilla.org/en/docs/New_in_JavaScript_1.7</a><br />
 for more details.</p>
 <p>The file-handling commands (read, write, append, exists) have been moved out of the Chickenfoot core and into a library.  You need to put include(&#8221;fileio.js&#8221;) at the top of your script to use these commands.</p>
 <p>Also fixed a bug in the extension generator, so that Firefox extensions generated from Chickenfoot work once more.</p>
@@ -165,24 +181,24 @@ for more details.</p>
 		<category><![CDATA[New Release]]></category>
 
 		<guid isPermaLink="false">http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/11/27/chickenfoot-0920061127-released/</guid>
-		<description><![CDATA[Chickenfoot now has a new feature called keyword commands, which allows simple scripts to be written without knowing any Javascript syntax.  For example, here&#8217;s a simple script of commands that takes you to the Chickenfoot page:
+		<description><![CDATA[Chickenfoot now has a new feature called keyword commands, which allows simple scripts to be written without knowing any Javascript syntax.  For example, here&#8217;s a simple script of commands that takes you to the Chickenfoot page:
 go to google.com
 type &#8220;chickenfoot mit&#8221;
 search
-Keyword commands are still an experimental feature, not enabled by default.  You can switch to keyword [...]]]></description>
-			<content:encoded><![CDATA[<p>Chickenfoot now has a new feature called <em>keyword commands</em>, which allows simple scripts to be written without knowing any Javascript syntax.  For example, here&#8217;s a simple script of commands that takes you to the Chickenfoot page:<br />
+Keyword commands are still an experimental feature, not enabled by default.  You can switch [...]]]></description>
+			<content:encoded><![CDATA[<p>Chickenfoot now has a new feature called <em>keyword commands</em>, which allows simple scripts to be written without knowing any Javascript syntax.  For example, here&#8217;s a simple script of commands that takes you to the Chickenfoot page:<br />
 go to google.com<br />
 type &#8220;chickenfoot mit&#8221;<br />
 search</p>
-<p>Keyword commands are still an experimental feature, not enabled by default.  You can switch to keyword command execution mode by using the new drop-down menu on the Run button.  Keyword commands require Java support in your browser.</p>
-<p>The Chickenfoot script editor also now supports Ctrl-Enter to execute the current line in the editor. Ctrl-Enter provides the same behavior as a command line (such as the Javascript command line in the Error Console).  Ctrl-Enter works on both Javascript code and keyword command code.<br />
+<p>Keyword commands are still an experimental feature, not enabled by default.  You can switch to keyword command execution mode by using the new drop-down menu on the Run button.  Keyword commands require Java support in your browser.</p>
+<p>The Chickenfoot script editor also now supports Ctrl-Enter to execute the current line in the editor. Ctrl-Enter provides the same behavior as a command line (such as the Javascript command line in the Error Console).  Ctrl-Enter works on both Javascript code and keyword command code.<br />
 Bug fixes:</p>
 <ul>
 <li>Java is now loaded lazily when needed, rather than every time Firefox starts.</li>
 <li>Packaged Chickenfoot extensions can now be installed in Firefox 2.0.</li>
-<li>The fetch() command no longer  conflicts with AdBlocker or causes crashes on MacOS when no Firefox windows are visible.  Instead, fetch() now loads pages into invisible tabs in the current window.</li>
+<li>The fetch() command no longer  conflicts with AdBlocker or causes crashes on MacOS when no Firefox windows are visible.  Instead, fetch() now loads pages into invisible tabs in the current window.</li>
 <li>Triggers now run on the first page loaded by Firefox.</li>
-<li>A number of startup race conditions have been fixed.  Symptoms of these bugs varied, but generally Firefox  refused to start up, hung on startup, or started up with important features disabled, like the Back/Forward buttons or menu items.  Because it was a race condition, these effects were intermittent, not seen all the time or on all platforms.</li>
+<li>A number of startup race conditions have been fixed.  Symptoms of these bugs varied, but generally Firefox  refused to start up, hung on startup, or started up with important features disabled, like the Back/Forward buttons or menu items.  Because it was a race condition, these effects were intermittent, not seen all the time or on all platforms.</li>
 </ul>
 ]]></content:encoded>
 			<wfw:commentRss>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/11/27/chickenfoot-0920061127-released/feed/</wfw:commentRss>
@@ -227,26 +243,6 @@ Fixed bugs in XPI export mechanism.  If you exported a [...]]]></description>
 </ul>
 ]]></content:encoded>
 			<wfw:commentRss>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/09/16/chickenfoot-0920060916-released/feed/</wfw:commentRss>
-		</item>
-		<item>
-		<title>Chickenfoot Tech Talk on Google Video</title>
-		<link>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/08/03/chickenfoot-tech-talk-on-google-video/</link>
-		<comments>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/08/03/chickenfoot-tech-talk-on-google-video/#comments</comments>
-		<pubDate>Thu, 03 Aug 2006 06:39:46 +0000</pubDate>
-		<dc:creator>Michael</dc:creator>
-		
-		<category><![CDATA[General]]></category>
-
-		<guid isPermaLink="false">http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/08/03/chickenfoot-tech-talk-on-google-video/</guid>
-		<description><![CDATA[Last week, Rob and I gave a tech talk at Google about developing JavaScript in Chickenfoot, but we also talked about keyword commands and showed off a number of demos.
-The talk is available on Google Video, and
-if you expand the Details link on our Google Video page, it brings you to important points in the [...]]]></description>
-			<content:encoded><![CDATA[<p>Last week, Rob and I gave <a href="http://video.google.com/videoplay?docid=-8967914974980683249">a tech talk at Google about developing JavaScript in Chickenfoot</a>, but we also talked about keyword commands and showed off a number of demos.<br />
-The talk is available on <a href="http://video.google.com/">Google Video</a>, and<br />
-if you expand the <strong>Details</strong> link on our Google Video page, it brings you to important points in the talk.</p>
-<p>Now we also have a dedicated <a href="http://groups.csail.mit.edu/uid/chickenfoot/publications.html">publications page</a> for Chickenfoot so you no longer have to dig through the <a href="http://groups.csail.mit.edu/uid/chickenfoot/faq.html">FAQ</a> to find the papers we&#8217;ve written. The new page also has a high-resolution copy of the tech talk in case you want a better look at the demos, but put if you decide to watch it, put some coffee on because it&#8217;s a whopping 437MB, so it may take a little while to download.</p>
-]]></content:encoded>
-			<wfw:commentRss>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/08/03/chickenfoot-tech-talk-on-google-video/feed/</wfw:commentRss>
 		</item>
 	</channel>
 </rss>
