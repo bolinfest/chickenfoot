@@ -274,12 +274,16 @@ function testElement(attr,val,type,pattern, /*optional*/ context) {
 function testCount(count,type,pattern, /*optional*/ context) {
   var m; 
   t.test(testName, function() {
-    m = doFind(type, pattern, context); 
+    m = doFind(type, pattern, context);
     Test.assertEquals(count, m.count, 
                     patternToString(type,pattern) + " matched " + m.count + " times instead of " + count + ": \n" + matchesToString(m));
+    Test.assertEquals(count > 0, m.hasMatch,
+                    patternToString(type,pattern) + ".hasMatch==" + m.hasMatch + " but has " + m.count + " matches");
   });
   return m;
 }
+
+
 
 function patternToString(type,pattern) {
   if (!pattern) return type;
@@ -295,12 +299,3 @@ function matchesToString(m) {
   }
   return sb.toString();
 }
-
-
-
-
-
-
-
-
-

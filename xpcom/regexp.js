@@ -24,6 +24,7 @@ function findRegexp(/*Document*/ doc, /*RegExp*/ pattern, /*optional Range*/ con
     //debug(range.toString());
     lastMatch = new Match(range.toString(), // FIX: need to return HTML if range spans several nodes
                           lastMatch,
+                          null,
                           range,
                           doc,
                           i,  

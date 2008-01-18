@@ -474,7 +474,7 @@
         <!-- add the latest XPI to the releases dir -->
         <copy todir="${html.dir}/releases" overwrite="true">
           <fileset file="${build.dir}/${xpi.name}"/>
-          <fileset file="${build.dir}/${source.name}"/>
+          <fileset file="${build.dir}/${source.zip.name}"/>
         </copy>
         <!-- include images from XUL, some of which are handy -->
         <copy todir="${html.dir}/images" overwrite="true">
