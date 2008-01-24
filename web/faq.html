@@ -9,13 +9,6 @@
   <li><a href="#chickenfoot-history">What is the history of Chickenfoot?</a></li>
 </ul>
 
-<b>Limitations</b>
-
-<ul>
-  <li><a href="#fetch">Why doesn't the fetch command work with AdBlock installed?</a></li>
-  <li><a href="#whenLoaded">Why is the whenLoaded command needed on Mac and Linux?</a></li>
-</ul>
-
 <b>How Chickenfoot differs from Greasemonkey</b>
 
 <ul>
@@ -97,43 +90,6 @@ Version 0.5 appeared just in time for the ACM Symposium on User-Interface Softwa
 There, Chickenfoot was presented as the main subject of the paper
 <a href="http://uid.csail.mit.edu/projects/chickenfoot/uist05.pdf"><i>Automation and Customization of Rendered Web Pages</i></a>,
 which received the best paper award for the conference.
-
-<h3>Limitations</h3>
-
-<b><a name="fetch">Why doesn't the fetch command work with AdBlock installed?</a></b><br/>
-AdBlock uses Firefox's hidden window to store data.  Chickenfoot's fetch command also 
-uses the hidden window to load pages in the background.  For now, Chickenfoot disables
-the fetch command if AdBlock is installed.
-
-<p/>
-
-<b><a name="whenLoaded">Why is the whenLoaded command needed on Mac and Linux?</a></b><br/>
-Chickenfoot is mostly written in JavaScript, which is single-threaded on Mac and Linux.
-This is a problem because a Chickenfoot script often needs to wait while a page
-is loading.  For example, this simple script must wait between go and enter for the
-Google page to load:
-<pre>
-  go("google")
-  enter("chickenfoot mit")
-  click("feeling lucky")
-</pre>
-On Microsoft Windows, other threads in the browser continue to run 
-while the script is waiting, so the page actually finishes loading.  On Mac and 
-Linux, however, the entire browser waits when a Chickenfoot script waits, so the
-page would <i>never</i> finish loading if the script waited.  So Chickenfoot
-doesn't wait on Mac/Linux, and instead throws the error "use whenLoaded on 
-Mac/Linux".
-<p/>
-If you see this error, it means that a command in your script tried to access a 
-page that was still loading.  You have to fix it by judicious application of the 
-whenLoaded command.  For example:
-<pre>
-  go("google")
-  whenLoaded(function() {
-    enter("chickenfoot mit")
-    click("feeling lucky")
-  })
-</pre>
 
 
 <h3>How Chickenfoot differs from Greasemonkey</h3>
