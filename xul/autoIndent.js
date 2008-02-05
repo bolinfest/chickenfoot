@@ -1,64 +1,4 @@
 /**
-*This event first syntax colors the entire document and then uses the spans around
-*words and nodes in the document to help the autoIndent function tell where commented 
-*code is.  
-*
-*Auto-Indent:
-*breaks the document into lines by looking for BR elements, then will auto indent just
-*the selected line by getting a reference line and using the text of the reference line to
-*calculate how much the next line should be indented.  Once the indent calculation is made
-*it adjusts the whitespace of the selected line by replacing the line.
-*
-*/
-
-function tabAndSyntaxColorEvent(event) {
- 	if (event) {//event.keyCode ==32
- 		const nsIDOMNodeFilter = Components.interfaces.nsIDOMNodeFilter;
- 		var sbwin = Chickenfoot.getSidebarWindow(chromeWindow);
-    	var ed = sbwin.getSelectedBuffer().editor;
-    	//debug(sbwin.getSelectedBuffer());
-    	var doc = ed.contentDocument;
-    	//debug(doc);
-    	var pre = doc.getElementById("pre");   
-    	//debug(pre); 
-    	var anchorNodeCaret = sbwin.getSelectedBuffer().api.selection.anchorNode;
-    	var anchorOffsetCaret = sbwin.getSelectedBuffer().api.selection.anchorOffset;
-    	//debug('offset: '+anchorOffsetCaret);
-    	//debug(anchorNodeCaret);
-    	//debug(anchorNodeCaret.innerHTML);
-    	//debug(anchorOffsetCaret);
-    	    	
-    	var lines = makeLines(pre);
-    	//debug('lines');
-    	//for(line in lines){
-    	//	debug(lines[line]);
-    	//}
-    	//debug(lines);
-   		var lineNum=findNodeInLines(lines,anchorNodeCaret,anchorOffsetCaret);
-   		//debug('lineNum= '+lineNum);
-		//this is how many spaces we need to indent our line by
-		var indents=calculateIndents(lines,lineNum);
-		//debug('INDENTS: '+indents);
-		//debug('lines[lineNum]');
-		for(n in lines[lineNum]){
-			//debug(lines[lineNum][n].data+'end');
-		}
-		//debug('lineText');
-		var lineText=getLineText(lines[lineNum]); //returns undefined if the line was a pre???
-		//debug(lineText+'end');
-		var newLine = adjustSpaces(lineText, indents);
-		//debug('new Line');
-		//debug(newLine);
-		//debug('now im going to insert a new line');
-		insertNewLine(newLine, doc, pre, lineNum, lines, anchorNodeCaret, anchorOffsetCaret);
-    	//debug('end of execution:');
-    	//var endAnchorNodeCaret = sbwin.getSelectedBuffer().api.selection.anchorNode;
-    	//debug(endAnchorNodeCaret.nodeName);
-    }
-}
-
-
-/**
 Takes the PRE node as an argument and makes lines (array of ordered nodes)
 as the user sees them in the Chickenfoot Script Editor.  
 The first line is just #text, all other lines start with a BR element.
@@ -67,7 +7,7 @@ COMMENTS!!! Handling?
 
 returns an array of list
 */
-function makeLinesOld(node){
+function makeLines(node){
 	//debug('MAKES LINES nodes children:')
 	//debug(node);
 	var lines = [];
@@ -85,7 +25,7 @@ function makeLinesOld(node){
 	
 	while(nodeMarker<kids.length){
 		var line =[];
-		line.push(kids[nodeMarker]);
+		line.push(kids[nodeMarker]); //this will always be a BR node
 		nodeMarker++;	
 		// as long as there are more nodes and the next node is not
 		// a comment or a BR keep adding the next node to the line
@@ -95,7 +35,30 @@ function makeLinesOld(node){
 			if(kids[nodeMarker].nodeName=="SPAN"){
 				//it's a SPAN
 				if(kids[nodeMarker].style.getPropertyValue('color')=='blue'){
-					//it's a comment - don't include it, just increment
+					//it's a comment - include the SPAN node on the current line
+					//then look at it's children for BRs
+					//Only increment nodeMarker once 
+					line.push(kids[nodeMarker]);
+					var spanNodeMarker=0;
+					var spanNodeKids=kids[nodeMarker].childNodes;
+					var spanNodeKidsLength=spanNodeKids.length;
+					while(spanNodeMarker<spanNodeKidsLength){
+						//the nodes are either text or br 
+						if(spanNodeKids[spanNodeMarker].nodeName=="#text"){
+							line.push(spanNodeKids[spanNodeMarker]);
+							spanNodeMarker++;
+							
+						}else{
+							if(spanNodeKids[spanNodeMarker].nodeName=="BR"){
+								lines.push(line);
+								var newline=[];
+								line=newline;
+								line.push(spanNodeKids[spanNodeMarker]);
+								spanNodeMarker++;
+							}
+						}
+						//debug('done while');
+					}			
 					nodeMarker++;
 				}else{
 					//it's a span but not a comment.  Include it!
@@ -118,7 +81,7 @@ Given an array of lines, a node and and offset, this function will report
 what line # (0-indexed) the node, offset is at.)
 */
 
-function findNodeInLinesOld(lines,node,offset){
+function findNodeInLines(lines,node,offset){
 	
 	//debug('findNodeInLines');
 	//debug(node);
@@ -131,61 +94,101 @@ function findNodeInLinesOld(lines,node,offset){
 			//debug("aLine[i]");
 			//debug(aLine[i]);
 			//debug(node);
-			if(aLine[i]==node){
-				//debug("aLine[i]");
+			if(aLine[i]==node && aLine[i].nodeName!="SPAN"){
+				//debug("aLine[i] not SPAN");
 				//debug(aLine[i]);
 				return line;
 			}
 			if(aLine[i].nodeName=="SPAN"){
-				//debug("aLine[i].nodeName=");
+				//debug("aLine[i].nodeName=SPAN");
 				//debug(aLine[i].nodeName);
 				//since we are looking in lines we can assume there are no BRs 
 				//in the children of a SPAN
 				//the first child will be the only child
 				if(aLine[i].firstChild==node){
+					//debug(aLine[i].firstChild);
 					return line;
 				}
 			}
+			
 		}
 	}
+	//debug('maybe PRE NODE');
 	//if you're in the PRE node, it really means you're on a blank line OR at the end of a line
 	//line number is calculated by the offset minus the # of nodes that are comments if you're at a blank line
 	//debug("node.nodeName");
 	//debug(node.nodeName);
+	//debug(node.childNodes[offset-1]);
 	//debug(node.childNodes[offset]);
+	//if(offset>=
 	if(node.nodeName=='PRE' && node.childNodes[offset].nodeName=='BR'){
+		//debug('PRE NODE');
 		if(node.childNodes[offset-1].nodeName=='BR'){
 		//if it is a new line (i.e. there is a BR ahead of it)
 			//debug('PRE NODE');
 			//debug(node.childNodes);
+			var nodeBefore=node.childNodes[offset-1];
+			//debug("nodeBefore");
+			//debug(nodeBefore);
+			
+			for(line in lines){
+				if(lines[line][0]==nodeBefore){
+					//debug("it is the end of a line");
+					return line;
+				}
+				
+			}
+			
+			/*
 			var line=0;
 			for(var i=0;i<offset;i++){
 				if(node.childNodes[i].nodeName=='BR'){
 					line=line+1;
 				}
 			}
+			*/
+			//debug("node.childNodes[offset-1].nodeName=='BR'");
 			return line;
 		}else{
 		//it is the end of a line.
-		var nodeBefore=node.childNodes[offset-1];
-		for(line in lines){
-			var aLine=lines[line];
-			for(i in aLine){
-				if(aLine[i]==nodeBefore){
-				return line;
+		
+			var nodeBefore=node.childNodes[offset-1];
+			if(nodeBefore.nodeName=="SPAN"){
+				if(nodeBefore.style.getPropertyValue('color')=='blue'){
+					nodeBefore==nodeBefore.childNodes[nodeBefore.childNodes.length-1];
 				}
 			}
-		}
+			for(line in lines){
+				var aLine=lines[line];
+				for(i in aLine){
+					if(aLine[i]==nodeBefore){
+					//debug("it is the end of a line");
+					return line;
+					}
+				}
+			}
 		}
 	}else{
 		//debug('find pre, text node or span node');
 		//debug(node.childNodes);
 		var targetNode=node.childNodes[offset];
+		//debug("target node");
+		//debug(targetNode);
 		for(line in lines){
 			var aLine=lines[line];
 			for(i in aLine){
+				//debug('aLine[i]');
+				//debug(aLine[i]);
 				if(aLine[i]==targetNode){
-				return line;
+				//debug("lasr claus");
+				//debug(node);
+				//debug(offset);
+				//debug(targetNode);
+				if(node.nodeName=="SPAN" &&	node.childNodes[offset].nodeName=="BR"){
+					return line-1;
+				}else{
+					return line;
+				}
 				}
 			}
 		}
@@ -208,7 +211,8 @@ function findNodeInLinesOld(lines,node,offset){
 *immediately following the leading whitespace. 
 */
 
-function calculateIndentsOld(lines,lineNum){
+function calculateIndents(lines,lineNum){
+
 	var spacesPerTab = 8 //empiraclly observed to be 8, this variable does not set this value
 	var indents=0;
 	if(lineNum<1){
@@ -219,20 +223,37 @@ function calculateIndentsOld(lines,lineNum){
 		var indents=0;
 		//debug('line num');
 		//debug(lineNum);
-		var	previousLine=lines[lineNum-1];
-		//var bpreviousLine=findPreviousLine(lines, lineNum);
-		//debug(bpreviousLine);
 		
+		//var	previousLine=lines[lineNum-1];
 		//debug('previous line');
 		//debug(previousLine);
 		//get text of previousLine
-		var previousLineText=getLineText(previousLine);
+		//var previousLineText=getLineText(previousLine);
 		//debug('previous linetext: ')
 		//debug(previousLineText);
 		
-		//count leading whitespace
+		var refLines=getRefLine(lines, lineNum);
+		//debug("refLines");
+		for(i in refLines){
+			//debug(refLines[i]);
+		}
+		//debug(refLines);
+		var	refLinesLength=refLines.length;
+		
+		var firstLineText=getLineText(refLines[refLinesLength-1]);
+		//debug("firstLineText");
+		//debug(firstLineText);
+		var otherLines="";
+		//starting at 
+		
+		for(c=refLinesLength-2; c>=0; c--){
+			otherLines=otherLines+getLineText(refLines[c]);
+		}
+		//debug("otherLines");
+		//debug(otherLines);
+		//count leading whitespace (just at first line in refLines)
 		var beginningTabRegEx= /^[ \t]+/g; //identifies leading whitespace
-		var leadingWhitespace=previousLineText.match(beginningTabRegEx);
+		var leadingWhitespace=firstLineText.match(beginningTabRegEx);
 		//debug('leadingWhitespace');
 		//debug(leadingWhitespace+"e");
 		if(leadingWhitespace!=null){
@@ -251,25 +272,18 @@ function calculateIndentsOld(lines,lineNum){
 		}
 		var openCurlyRegEx = /{/g; //all tab characters
 		var closeCurlyRegEx = /}/g; //all space characters
-		if(previousLineText.match(openCurlyRegEx)){
-			var openCurlys=previousLineText.match(openCurlyRegEx);
+		if(firstLineText.match(openCurlyRegEx)){
+			var openCurlys=firstLineText.match(openCurlyRegEx);
 			//debug('leading { = '+openCurlys.length);
 			indents=indents+spacesPerTab*openCurlys.length;
 		}
 		//I don't want to match all the close curly braces, just the once that wouldn't 
 		//get detected by the auto-indent operating on the current line (specified below)
-		/*
-		if(previousLineText.match(closeCurlyRegEx)){
-			var closeCurly=previousLineText.match(closeCurlyRegEx);
-			//debug('leading } = '+closeCurly.length);
-			indents=indents-spacesPerTab*closeCurly.length;
-		}
-		*/
 		var leadingCloseCurlyRegEx=/^[ \t]*}+/ 
-		if(previousLineText.match(leadingCloseCurlyRegEx)){
+		if(firstLineText.match(leadingCloseCurlyRegEx)){
 		//if there are leading }
 			//debug('there are leading } to account for');
-			var previousLineWithoutLeadingCurlys=previousLineText.replace(leadingCloseCurlyRegEx,"");
+			var previousLineWithoutLeadingCurlys=firstLineText.replace(leadingCloseCurlyRegEx,"");
 			if(previousLineWithoutLeadingCurlys.match(closeCurlyRegEx)){
 				var closeCurly=previousLineWithoutLeadingCurlys.match(closeCurlyRegEx);
 				//debug('leading } = '+closeCurly.length);
@@ -278,14 +292,28 @@ function calculateIndentsOld(lines,lineNum){
 		}else{
 			//there are no leading },procede as normal
 			//debug('no leading }');
-			if(previousLineText.match(closeCurlyRegEx)){
-				var closeCurly=previousLineText.match(closeCurlyRegEx);
+			if(firstLineText.match(closeCurlyRegEx)){
+				var closeCurly=firstLineText.match(closeCurlyRegEx);
 				//debug('leading } = '+closeCurly.length);
 				indents=indents-spacesPerTab*closeCurly.length;
 			}
 		}
 		
-		//debug('and now its over');
+		//account for indent-alterings on the otgher reference lines
+		//basically, count the { and } in otherLines
+		
+		if(otherLines.match(openCurlyRegEx)){
+			var openCurlys=otherLines.match(openCurlyRegEx);
+			//debug('leading { otherLines	= '+openCurlys.length);
+			indents=indents+spacesPerTab*openCurlys.length;
+		}
+		if(otherLines.match(closeCurlyRegEx)){
+			var closeCurly=otherLines.match(closeCurlyRegEx);
+			//debug('leading } otherLines	= '+closeCurly.length);
+			indents=indents-spacesPerTab*closeCurly.length;
+		}
+		
+		
 		
 		//correct for starting }'s on the current line
 		//var leadingCloseCurlyRegEx=/^[ \t]*}+/ 
@@ -308,56 +336,79 @@ function calculateIndentsOld(lines,lineNum){
 	}
 
 }
-/*
-The function actually finds the reference line in lines for the lineNum specified.
-To find the reference line, it looks at the line directly above it.  If that line has text,
-it uses it as the reference line.  If not, it look one more up, and keeps looking up
-until it finds a line with text on it.
-*/
-function findPreviousLineOld(lines, lineNum){
-	var allBlankRegEx=/^\s*$/;
-	var i=1;
-	while(lineNum-i>=0){
-		if(getLineText(lines[lineNum-i]).match(allBlankRegEx)){
-			i++;
-			//debug('must try another line');
-		}else{
-			//debug('ref line is number: ')
-			//debug(lineNum-i);
-			return lines[lineNum-i];
-		}
-	}
-	//debug('returned the 0th line');
-	return lines[0];
-}
+
 /*
 Given a line (which is an array of nodes, it gets the text from those nodes,
 concatenates it all, and return a string of the text.
 
 */
-function getLineTextOld(line){
+function getLineText(line){
 	var sb = new Chickenfoot.StringBuffer();
 	for(n in line){
 		//debug('getting line text of:');
 		//debug(line[n]);
 		//debug((line[n]).data);
 		if(line[n].nodeName=="SPAN"){
-			sb.append(line[n].childNodes[0].data);
+			if(line[n].style.getPropertyValue('color')=='blue'){
+				//do nothing
+			}else{
+				sb.append(line[n].childNodes[0].data);
+			}
 		}else{
 			if(line[n].nodeName=="BR"){
+				//do nothing
 			}else{
-				sb.append(line[n].data);
+				var p=line[n].parentNode;
+				
+				if(p.nodeName=="SPAN"){
+					//SPAN parent
+					if(p.style.getPropertyValue('color')=='blue'){
+						//do nothing
+					}else{
+						sb.append(line[n].data);
+					}
+				
+				}else{
+					sb.append(line[n].data);
+				}
 			}
 		}
 	}
 	return sb.toString();
+}
+
+/*
+* Returns an array of consequitive lines directly above the current line that  
+* constitute all the lines mecessary to determine the indent of the current line
+*
+* Finds the latest line that does not begin with a BR in a SPAN.
+*/
+function getRefLine(lines, lineNum){
+
+	var currNum=lineNum-1;
+	var refLines=[];
+	while(currNum>=0){
+		//debug("currNum= "+currNum);
+		if(lines[currNum][0].parentNode.nodeName=="SPAN"){
+			//debug("span node");
+			
+			refLines.push(lines[currNum]);
+			currNum--;
+		}else{
+			refLines.push(lines[currNum]);
+			//debug("else");
+			return refLines;
+		}
+	}
+	return refLines;
+	
 }
 /*
 Given a line (potentially with leading whitespace), and a desired indentation
 this will rip out all the old leadingwhitespace (if any) and replace it with the desired 
 amount of whitespace.
 */
-function adjustSpacesOld(/*String*/oldLineText, /*integer*/indent){
+function adjustSpaces(/*String*/oldLineText, /*integer*/indent){
 	//this is how much total leading whitespaces is wanted
 	var tabs=Math.floor(indent/8);
 	var spaces = indent % 8;
@@ -400,85 +451,88 @@ function adjustSpacesOld(/*String*/oldLineText, /*integer*/indent){
 	return newLine;
 }
 
-/**
-Given the line we want to insert and the line that it replaces
-This function will make the insert and deletion. 
 
-The function is very particular because there are 3 different cases of trying to 
-do an insert and delete. 
 
-The first line doesn't begin with a BR element, it's just text
-
-The beginning of some lines and the end of some lines in some circumstances
-get reported as node=PRE element and offset=i, a number representing that 
-this is the i-th child of node=PRE.
-*/
-
-function insertNewLine(newLine, doc, pre, lineNum, lines, node, offset){
-//debug('inserting:')
-//debug(newLine+'nl');
-	//if the node is the PRE node, with a BR node immediately ahead of it,
-	//then the offset is really the number
-	//of nodes down from the top we are, not a location in text
-	//The line is blank - just insert new text.
-	if(node.nodeName=='PRE' && node.childNodes[offset].nodeName=='BR' && node.childNodes[offset-1].nodeName=='BR'){
-		//debug('the node is a pre');
-		//debug(offset);
-		//debug(offset-1);
-		//debug(node.childNodes);
-		//debug(node.childNodes[offset]);
-		//debug(node.childNodes[offset-1]);
-		var newTextNode = doc.createTextNode(newLine);
-		//var newTextNode = doc.createTextNode("foo");
-		var newBR = doc.createElement('BR');
-		//debug('pre - new text node');
-		//debug(newTextNode);
-		//debug(pre);
-		//debug('offset');
+function changeIndent(line,indents,doc,pre,sbwin,node,offset){
+		var sel=sbwin.getSelectedBuffer().api.selection;
+		var firstNode=line[0];
 		
-		var o=pre.childNodes[offset];
-		//debug(o);
-		if(o.nextSibling){
-			//debug('pre - has next sibling:');
-			//debug(o.nextSibling);
-			pre.insertBefore(newTextNode, o.nextSibling);
-		}else{
-			//this seems to work
-			//debug('pre - append child');
-			//debug(pre.childNodes);
-			pre.insertBefore(newTextNode, o);
-		}
-		//debug('done inserting for pre');
-	}else{
-		//if the node is the end-of-line kind of PRE, then we just have to turn it into a real node.
-		if(node.nodeName=='PRE' && node.childNodes[offset].nodeName=='BR' && node.childNodes[offset-1].nodeName!='BR'){
-			//debug('the node IS AN END-OF-LINE pre');
+		if(firstNode.nodeName=="BR" && indents>=0){
+			//debug("change indent================");
+			//debug(line);
+			// indent is needed
+			//if(true){
+			if(!line[1]){//need to add text node, blank line
+				//debug("change indent= blankLine");
+				var newText=adjustSpaces("",indents);
+				//debug(newText+"end");
+				var newTextNode = doc.createTextNode(newText);
+				pre.insertBefore(newTextNode, firstNode.nextSibling);
+				//replace cursor at end of blankspaces just added
+				//debug("newText.length");
+				//debug(newText.length);
+				sel.collapse(newTextNode,newText.length);
+			}else{
+				//need to look at line[1]
+				if(line[1].nodeName=="#text"){
+					//debug("change indent= text");
+					//debug(line);
+					//we need to change the text
+					var oldText=line[1].nodeValue;
+					//debug('oldText');
+					//debug(oldText+'e');
+					var newText=adjustSpaces(oldText,indents);
+					//debug('newText');
+					//debug(newText+'e');
+					var newTextNode = doc.createTextNode(newText);
+					pre.removeChild(line[1]);
+					pre.insertBefore(newTextNode, firstNode.nextSibling);
+					//replace cursor:
+					//if we can place it at the node, offset, do so
+					//debug(node);
+					//debug(offset);
+					//debug(pre.childNodes[offset]);
+					//debug(line[1]);
+					//debug(pre.childNodes[offset]==line[1]);
+					
+					
+					if(line[1]==node){//if the oldText text node was the node you were on,
+						//then get the distance from the end and 
+						//replace at that distance from the new end
+						var distFromEnd=oldText.length-offset;
+						var newOffset=Math.max(0,newText.length-distFromEnd);
+						sel.collapse(newTextNode,newOffset);
+						//debug("placed at NEW location");
+					}else{
+						
+						if(node.nodeName=="PRE" && (pre.childNodes[offset-1].nodeName=="BR"||pre.childNodes[offset].nodeName=="BR")){
+							//if the node is at	the first BR or on the second Node
+							//right after the BR
+							//debug("placed at indents locatiol");
+							//debug(offset);
+							//debug(pre.childNodes[offset]);
+							//debug(pre.childNodes[offset].data+"e");
+							var distFromEnd=newText.length-oldText.length;
+							sel.collapse(pre.childNodes[offset],distFromEnd);
+							//debug("placed at indents locatiol");
+						}else{
+							//this will work if the node, offset is on 
+							//a location that is not the node that was deleted and replaced
+							sel.collapse(node,offset);
+							//debug("placed at old locatiol");
+						}
+					}
+				}else{
+					//we just need to add a text node
+					//debug("change indent= span?");
+					//debug(line);
+					var newText=adjustSpaces("",indents);
+					var newTextNode = doc.createTextNode(newLine);
+					pre.insertBefore(newTextNode, firstNode.nextSibling);
+				}
+			}
 			
 		}
-		//the node and offset are normal, we can just reference the lines.
-		//debug('the node is not a pre');
-		var newBR = doc.createElement('BR');
-		var newTextNode=doc.createTextNode(newLine);
 		
-		//debug('notpre - new text node');
-		//debug(newTextNode);
-		//debug(lines[lineNum]);
-		//debug(lines[lineNum][0]);
-		//debug(node);
-		if(lineNum>0){ 
-			//for every line EXCEPT the first line, you need to reinsert a BR
-			//for the first line, no BR is needed, it just starts on a #text node.
-			//debug('insert br');
-			pre.insertBefore(newBR, lines[lineNum][0]);
-		}
-		//debug('1 insert before');
-		//debug(newTextNode.data+'end');
-		pre.insertBefore(newTextNode, lines[lineNum][0]);
-		//debug('2 insert before');
-		for(n in lines[lineNum]){
-			//debug('remove '+n);
-			pre.removeChild(lines[lineNum][n]);
-		}
-	}
-
+		//else no indent needed, this is the first line	
 }

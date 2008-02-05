@@ -21,7 +21,7 @@
  */
  function syntaxColorEvent(event) {
 	 if(Chickenfoot.getPrefBranch().getBoolPref("syntaxColor")){
-	 	if (event.keyCode !=17 && !(event.ctrlKey&&event.keyCode==67) && !(event.ctrlKey&&event.keyCode==86)) {
+	 	if (event.keyCode !=16 && event.keyCode !=17) {//don't activate on shift key
 	 		//debug(event.keyCode);
 	 		var sbwin = Chickenfoot.getSidebarWindow(chromeWindow);
 	    	var anchorNodeCaret = sbwin.getSelectedBuffer().api.selection.anchorNode;
@@ -56,7 +56,7 @@ function regularSyntaxColoringAndAutoIndent(event){
     	var pre = doc.getElementById("pre");   
     	var anchorNodeCaret = sbwin.getSelectedBuffer().api.selection.anchorNode;
     	var anchorOffsetCaret = sbwin.getSelectedBuffer().api.selection.anchorOffset;
-    	
+    	/*
     	debug('PRE - BEGINNING !!!!!');
     	debug(pre.childNodes);
     	debug(pre.innerHTML);
@@ -64,7 +64,7 @@ function regularSyntaxColoringAndAutoIndent(event){
     	debug(anchorNodeCaret);
     	debug("anchorOffsetCaret");
     	debug(anchorOffsetCaret);
-    	
+    	*/
     	
     	//count characters
     	var chars=0;
@@ -92,30 +92,31 @@ function regularSyntaxColoringAndAutoIndent(event){
 		//replace caret
 		caretPlacement(chars,pre,sbwin);
 		
-		//autoIndent : only on return, } , and ctrl+m
+		//autoIndent : only on return, } , and ctrl+tab
     	var pre2 = doc.getElementById("pre"); 
-    	debug('event.keyCode');
-    	debug(event.keyCode);
-    	if(event.keyCode==13||event.keyCode==16||(event.ctrlKey && event.keyCode==9)){
+    	//debug('event.keyCode');
+    	//debug(event.keyCode);
+    	//if(false){
+    	if(event.keyCode==13||event.keyCode==221||(event.ctrlKey && event.keyCode==9)){
     		var lines = makeLines(pre2);
-    		debug('lines');
+    		//debug('lines');
     		//debug(lines);
     		for (i in lines){
-    		debug(lines[i]);
+    		//debug(lines[i]);
     		}
     		var anchorNodeCaret2 = sbwin.getSelectedBuffer().api.selection.focusNode;
     		var anchorOffsetCaret2 = sbwin.getSelectedBuffer().api.selection.focusOffset;
    			var lineNum=findNodeInLines(lines,anchorNodeCaret2,anchorOffsetCaret2);
-   			debug('lineNum= '+lineNum);
+   			//debug('lineNum= '+lineNum);
 			//this is how many spaces we need to indent our line by
 			
 			if (lines[lineNum][0].parentNode.nodeName=="SPAN"){
 				//do nothing
-				debug('inside a span node, dont change indent');
+				//debug('inside a span node, dont change indent');
 			}else{
 				var indents=calculateIndents(lines,lineNum);
 				
-				debug('INDENTS: '+indents)
+				//debug('INDENTS: '+indents)
 				/*
 				debug("event.keycode");
 				debug(lines[lineNum]);
@@ -126,7 +127,7 @@ function regularSyntaxColoringAndAutoIndent(event){
 				debug(anchorOffsetCaret2);
 				debug("event.keycode");
 				*/
-				debug("changeIndent");
+				//debug("changeIndent");
 				changeIndent(lines[lineNum],indents,doc,pre,sbwin,anchorNodeCaret2,anchorOffsetCaret2);
 			}
 		}
@@ -205,14 +206,14 @@ function selectionAutoIndent(event){
 		//autoIndent : only on return, } , and alt
     	var pre2 = doc.getElementById("pre"); 
     	
-    	if(event.keyCode==13||event.keyCode==16||(event.ctrlKey && event.keyCode==77)){
+    	if(event.keyCode==13||event.keyCode==221||(event.ctrlKey && event.keyCode==9)){
     		var lines = makeLines(pre2);
-    		debug('lines');
-    		debug(lines);
+    		//debug('lines');
+    		//debug(lines);
     		var anchorNodeCaret2 = sbwin.getSelectedBuffer().api.selection.focusNode;
     		var anchorOffsetCaret2 = sbwin.getSelectedBuffer().api.selection.focusOffset;
    			var lineNum=findNodeInLines(lines,anchorNodeCaret2,anchorOffsetCaret2);
-   			debug('lineNum= '+lineNum);
+   			//debug('lineNum= '+lineNum);
 			//this is how many spaces we need to indent our line by
 			var indents=calculateIndents(lines,lineNum);
 			changeIndent(lines[lineNum],indents,doc,pre,sbwin,anchorNodeCaret2,anchorOffsetCaret2);
@@ -243,26 +244,26 @@ function selectionAutoIndent(event){
 *
 */
 function charCount(n,offset,nodes){
-	debug("counting chars function");
-	debug(n);
-	debug(offset);
+	//debug("counting chars function");
+	//debug(n);
+	//debug(offset);
 	var node;
 	var off;
 	if(n.nodeName=="PRE"){
-		debug("PRE");
+		//debug("PRE");
 		node=n.childNodes[offset];
 		off=0;
 	}else{
 		node=n;
 		off=offset;
 	}
-	debug(node);
-	debug(offset);
+	//debug(node);
+	//debug(offset);
 	var count=0;
 	var currNodeNum=0;
 	var len=nodes.length;
 	while(currNodeNum<len){
-	
+	/*
 		debug("while");
 		debug("currNodeNum "+currNodeNum);
 		debug("total num nodes "+len);
@@ -271,18 +272,18 @@ function charCount(n,offset,nodes){
 		debug(nodes[currNodeNum] );
 		debug("node ");
 		debug(node);
-		
+		*/
 		//if the current node is a span, we want to look inside it for the node we are looking
 		//for
 		if(nodes[currNodeNum].nodeName=="SPAN"){
-			debug("thiss is the SPAN node");
+			//debug("thiss is the SPAN node");
 			var c=spanCharCount(n,offset,nodes[currNodeNum].childNodes);
 			//debug(c);
 			if(c[0]==true){
-				debug("c[0]==true");
+				//debug("c[0]==true");
 				return count+c[1];
 			}else{
-				debug("c[0]==false");
+				//debug("c[0]==false");
 				count=count+c[1];
 				currNodeNum++;
 			}
@@ -324,12 +325,12 @@ function charCount(n,offset,nodes){
 *
 */
 function spanCharCount(n,offset,nodes){
-	debug("doing spanCharCount");
+	/*debug("doing spanCharCount");
 	debug("node");
 	debug(n);
 	debug("off");
 	debug(offset);
-	
+	*/
 	
 	
 	var node;
@@ -367,33 +368,53 @@ function spanCharCount(n,offset,nodes){
 	var len=nodes.length;
 	while(currNodeNum<len){
 	
-	/*
 	
+	/*
 		debug("while");
 		debug("currNodeNum "+currNodeNum);
 		debug("total num nodes "+len);
 		debug("count "+count);
 		debug("nodes[currNodeNum] ");
 		debug(nodes[currNodeNum] );
-		*/
+		
 		
 		debug("node ");
 		debug(node);
 		debug("off");
 		debug(off);
-		
+		*/
 		if(nodes[currNodeNum]==node){
 			//debug("thiss is the node");
 			//debug("off= "+off);
 			if(nodes[currNodeNum].nodeName=="BR"){
-				debug("end on a BR");
-				count=count+1
+				//debug("end on a BR");
+				if(n.nodeName=="SPAN"){
+					//debug("a BR in a SPAN");
+					if(n.style.getPropertyValue('color')=='blue'){
+						//debug("blue - count=count+1");
+						//do not increment count by 1
+						if(node=n.childNodes[offset]){
+							//do not increment
+							//if this is the node and its a BR and it is the SPAN
+							//then dont increment.  it is already accounted for in there being
+							//an extra BR in the SPAN.
+							//debug("do not increment count by 1, it is already accounted for");
+						}else{
+							count=count+1;
+						}
+					}else{
+						//do not increment count by 1
+						//debug("NOT blue do not increment count by 1");
+					}
+				}else{
+					count=count+1
+				}
 			}
 			var retT=new Array(true,count+off)
 			return retT;
 			//break;		
 		}else{
-			debug("increment count");
+			//debug("increment count");
 			//debug(nodes[currNodeNum].nodeName);
 			
 			if(nodes[currNodeNum].nodeName=="SPAN"){
@@ -401,11 +422,11 @@ function spanCharCount(n,offset,nodes){
 				count=count+nodes[currNodeNum].firstChild.nodeValue.length;
 			}
 			if(nodes[currNodeNum].nodeName=="#text"){
-				debug("text node add "+nodes[currNodeNum].nodeValue.length);
+				//debug("text node add "+nodes[currNodeNum].nodeValue.length);
 				count=count+nodes[currNodeNum].nodeValue.length;
 			}
 			if(nodes[currNodeNum].nodeName=="BR"){
-				debug("br node add 1");
+				//debug("br node add 1");
 				count=count+1;
 			}
 			currNodeNum++;
@@ -413,7 +434,7 @@ function spanCharCount(n,offset,nodes){
 		
 	}
 	
-	debug("spanCharCount did not contain node");
+	//debug("spanCharCount did not contain node");
 	var retF=new Array(false,count)
 	return retF;
 }
@@ -468,7 +489,7 @@ function charCountSpanBr(span,nodes){
 		}
 		
 	}
-	debug("charCount found NO NODE");
+	//debug("charCount found NO NODE");
 	return count;
 }
 
@@ -478,7 +499,7 @@ function charCountSpanBr(span,nodes){
 *
 */
 function caretPlacement(charCount,pre,sbwin1){
-	debug("do replace; "+charCount);
+	//debug("do replace; "+charCount);
 	var nodes=pre.childNodes;
 	var sel=sbwin1.getSelectedBuffer().api.selection;
 	if(charCount==0){
@@ -493,7 +514,7 @@ function caretPlacement(charCount,pre,sbwin1){
 			currNodeNum++;	
 		}
 		if(charCountLength(nodes[currNodeNum])==count){
-			debug("== case");
+			//debug("== case");
 			//debug(nodes[currNodeNum].nodeName);
 			if(nodes[currNodeNum].nodeName=="SPAN"){
 				//debug("span node add "+nodes[currNodeNum].firstChild.nodeValue.length);
@@ -524,11 +545,11 @@ function caretPlacement(charCount,pre,sbwin1){
 				}
 			}
 			if(nodes[currNodeNum].nodeName=="#text"){
-				debug("text node add "+nodes[currNodeNum].nodeValue.length);
+				//debug("text node add "+nodes[currNodeNum].nodeValue.length);
 				sel.collapse(nodes[currNodeNum],nodes[currNodeNum].nodeValue.length);
 			}
 			if(nodes[currNodeNum].nodeName=="BR"){
-				debug("br node ");
+				//debug("br node ");
 				if(currNodeNum<len){
 					sel.collapse(pre,currNodeNum+1);
 				}else{
@@ -539,8 +560,8 @@ function caretPlacement(charCount,pre,sbwin1){
 		}
 		
 		if(charCountLength(nodes[currNodeNum])>count){
-			debug("> case");
-			debug(nodes[currNodeNum].nodeName);
+			//debug("> case");
+			//debug(nodes[currNodeNum].nodeName);
 			
 			if(nodes[currNodeNum].nodeName=="SPAN"){
 				//debug("span node add "+nodes[currNodeNum].firstChild.nodeValue.length);
