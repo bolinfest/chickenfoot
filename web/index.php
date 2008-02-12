@@ -9,6 +9,8 @@ so you can write scripts to manipulate web pages and automate web browsing.
 In Chickenfoot, scripts are written in a superset of Javascript
 that includes special functions specific to web tasks.
 
+<p><a href="install.html"><img src="images/install.gif" style="border:none; vertical-align: middle">Install Chickenfoot</a></p>
+
 <p/>
 To participate in the growing Chickenfoot community, you can:
 <ul>
