@@ -92,6 +92,10 @@ function createTriggersXML(triggers) {
   var docElement = xmlDoc.documentElement;
   
   for(var g=0; g<triggers.length; g++) {
+    
+    // Fixed bug #382: when triggers are packaged as an extension, all triggers should be enabled in the package
+    triggers[g].enabled = true;
+    
     gTriggerManager._appendTriggerXmlNode(xmlDoc, docElement, triggers[g]);
   }
   var xmlArray = new Array();
