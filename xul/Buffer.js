@@ -400,13 +400,19 @@ Buffer.prototype.text getter = function() {
       sb.append('\n');
     }
   }
-  return sb.toString();
+  
+  var text = sb.toString();
+  
+  text = Buffer.removeGarbageCharacter(text);
+  return text;
 }
 
 /**
  * Replaces contents of script editor with a plaintext string.
  */
 Buffer.prototype.text setter = function(/*String*/ newScript) {
+  newScript = Buffer.removeGarbageCharacter(newScript);
+  
   var editor = this.editor;
   var api = editor.getEditor(editor.contentWindow);    
   
@@ -447,6 +453,16 @@ Buffer.prototype.text setter = function(/*String*/ newScript) {
   this.dirty = false;
   //debug(Chickenfoot.domToString(doc));
 }
+
+/**
+ * Workaround for bug #290: script sometimes becomes corrupted with
+ * garbage character.  Find the character and delete it.
+ */
+Buffer.removeGarbageCharacter = function(/*String*/ text) {
+  debug("removing garbage from " + text);
+  return text.replace(/\302\240/g, "");
+}
+  
 
 /**
  * Apply syntax coloring to the editor.
