@@ -116,8 +116,8 @@ function Buffer(/*optional File*/ file,
 	    	var ed = sbwin.getSelectedBuffer().editor;
     		var doc = ed.contentDocument;
     		var pre = doc.getElementById("pre"); 
-    		debug(focusOffsetCaret);
-    		debug(focusNodeCaret);
+    		//debug(focusOffsetCaret);
+    		//debug(focusNodeCaret);
     		
     		
     		//focusNodeCaret.parentNode.insertBefore(newTab, focusNodeCaret);
@@ -137,8 +137,8 @@ function Buffer(/*optional File*/ file,
 	    			sel.collapse(focusNodeCaret,newCaretOffset);
 	    		}else if(focusNodeCaret.nodeName=="PRE"){
 	    			var newTab= doc.createTextNode("  ");
-	    			debug(newTab);
-	    			debug(focusNodeCaret.childNodes[focusOffsetCaret]);
+	    			//debug(newTab);
+	    			//debug(focusNodeCaret.childNodes[focusOffsetCaret]);
 	    			focusNodeCaret.insertBefore(newTab, focusNodeCaret.childNodes[focusOffsetCaret]);
 	    			var sel=sbwin.getSelectedBuffer().api.selection;
 	    			sel.collapse(newTab,2);
