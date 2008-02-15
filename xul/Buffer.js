@@ -99,13 +99,61 @@ function Buffer(/*optional File*/ file,
 
   if (useHtmlEditor) {
     editor.contentWindow.addEventListener("load", function() { thisBuffer.startEditing(); }, false);
-  }  
+  } 
+  this.editor.addEventListener("keypress", function(event){
+  		alt = (event.altKey) ? true : false;
+ 		ctrl = (event.ctrlKey) ? true : false;
+        shift = (event.shiftKey) ? true : false;
+        meta = (event.metaKey) ? true: false;
+  		if(event.keyCode==9 && !alt && !ctrl && !shift && !meta){
+ 			//debug(event);
+ 			event.preventDefault();
+	 		var sbwin = Chickenfoot.getSidebarWindow(chromeWindow);
+	    	var anchorNodeCaret = sbwin.getSelectedBuffer().api.selection.anchorNode;
+	    	var anchorOffsetCaret = sbwin.getSelectedBuffer().api.selection.anchorOffset;
+	    	var focusNodeCaret = sbwin.getSelectedBuffer().api.selection.focusNode;
+	    	var focusOffsetCaret = sbwin.getSelectedBuffer().api.selection.focusOffset;
+	    	var ed = sbwin.getSelectedBuffer().editor;
+    		var doc = ed.contentDocument;
+    		var pre = doc.getElementById("pre"); 
+    		debug(focusOffsetCaret);
+    		debug(focusNodeCaret);
+    		
+    		
+    		//focusNodeCaret.parentNode.insertBefore(newTab, focusNodeCaret);
+    	
+	    	if(anchorNodeCaret==focusNodeCaret &&anchorOffsetCaret==focusOffsetCaret){
+	    		if(focusNodeCaret.nodeName=="#text"){
+	    			//debug("text");
+	    			var nodeText=focusNodeCaret.nodeValue;
+	    			var len = focusNodeCaret.length;
+	    			var sub1= nodeText.substring(0,focusOffsetCaret);
+	    			var sub2= nodeText.substring(focusOffsetCaret, len);
+	    			var newNode = sub1+"  "+sub2;
+	    			focusNodeCaret.nodeValue=newNode;
+	    			var newCaretOffset= sub1.length+2;
+	    			//replace the caret
+	    			var sel=sbwin.getSelectedBuffer().api.selection;
+	    			sel.collapse(focusNodeCaret,newCaretOffset);
+	    		}else if(focusNodeCaret.nodeName=="PRE"){
+	    			var newTab= doc.createTextNode("  ");
+	    			debug(newTab);
+	    			debug(focusNodeCaret.childNodes[focusOffsetCaret]);
+	    			focusNodeCaret.insertBefore(newTab, focusNodeCaret.childNodes[focusOffsetCaret]);
+	    			var sel=sbwin.getSelectedBuffer().api.selection;
+	    			sel.collapse(newTab,2);
+	    		}else{
+	    			debug("Tab replace error.  Report to hmslydia@mit.edu");
+	    		}
+	    	}
+	    	/*
+	    	else{
+	    		selectionAutoIndent(event);
+	    	}
+  			*/
+  		}
+  },true); 
   this.editor.addEventListener("keyup", syntaxColorEvent, true);
-  //this.editor.addEventListener("mouseup", syntaxColorMouseEvent, true);
-  //this.editor.addEventListener("keydown", syntaxColorEventDown, true);
-  //this.editor.addEventListener("keypress", syntaxColorEventPress, true);
-  //this.editor.addEventListener("keyup", syntaxColorEventUp, true);
-  //this.editor.addEventListener("keyup", tabAndSyntaxColorEvent, true);
   this.editor.addEventListener("keyup", function(event) {
       if (event.ctrlKey && (event.keyCode == 13 /* for Win/Linux*/ || event.keyCode == 77 /* for Mac OS */)) {
           thisBuffer.runCurrentLine();
