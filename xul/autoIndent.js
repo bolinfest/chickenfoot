@@ -410,6 +410,17 @@ amount of whitespace.
 */
 function adjustSpaces(/*String*/oldLineText, /*integer*/indent){
 	//this is how much total leading whitespaces is wanted
+	
+	//all indents are space.  There are no more tabs \t.
+	var newSpace="";	
+	for(var s=0; s<indent; s++){
+		//debug('add a space');
+		newSpace=newSpace+" ";
+		//debug('done adding space');
+	}
+	
+	//redone to comply with tabs even though it looks like it already does.
+	/*
 	var tabs=Math.floor(indent/8);
 	var spaces = indent % 8;
 	//debug('tabs: '+tabs+' spaces: '+spaces);
@@ -424,6 +435,8 @@ function adjustSpaces(/*String*/oldLineText, /*integer*/indent){
 		newSpace=newSpace+" ";
 		//debug('done adding space');
 	}
+	*/
+	
 //	newSpace;
 	//debug('the new spaces');
 	//debug('start'+'		'+'end');
