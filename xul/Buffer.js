@@ -663,10 +663,9 @@ Buffer.prototype.runCurrentLine = function() {
     
     // get the line to run
     var line = getTextAtLine(getCursorLine());
-    debug(line);
     
     // run it
-    Chickenfoot.evaluate(chromeWindow, line, true, this.file); 
+    Chickenfoot.evaluate(chromeWindow, line, true, null, null, this.file, Chickenfoot.animateTransparentRectangleOverNode); 
   
     function getTextAtLine(/* int */ line) {
       var ed = thisBuffer.editor;

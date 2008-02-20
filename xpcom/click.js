@@ -24,7 +24,7 @@
 /**
  * Clicks the link or button that best matches pattern.
  */
-function clickImpl(/*Document*/ doc, /*string*/ pattern, /*chromeWindow*/chrome, /*optional Match*/ context) {
+function clickImpl(/*Document*/ doc, /*string*/ pattern, /*chromeWindow*/chrome, /*optional Match*/ context, /*optional function*/ feedbackHandler) {
   var m = Pattern.find(doc, pattern, [Pattern.LINK, Pattern.BUTTON, Pattern.MENU, Pattern.LISTITEM,
                                       Pattern.CHECKBOX, Pattern.RADIOBUTTON, Pattern.TAB], context);
   // It is possible that the user is trying to use do "click('foo')" to
@@ -82,38 +82,43 @@ function clickImpl(/*Document*/ doc, /*string*/ pattern, /*chromeWindow*/chrome,
   node = m.element;
   if (node.wrappedJSObject) {node = node.wrappedJSObject;}
   
-  fireMouseEvent('mousedown', node);
-  fireMouseEvent('mouseup', node);
-  if (node.click) { node.click(); }
-  var allowDefaultAction = fireMouseEvent('click', node);
-
-  if (node.tagName == 'menu') { //|| (node.tagName == 'menulist')) {
-      menuBox = node.boxObject.QueryInterface(Components.interfaces.nsIMenuBoxObject)
-      menuBox.openMenu(true);
-      node.open = true
-      
-      //this event listener makes sure that the popup will close again with any other click event
-      function closeMenus(event) {
-        menus = doc.getElementsByTagName('menu')
-        var i=0
-        while (i<menus.length) {
-            if (menus[i].wrappedJSObject) {menus[i].wrappedJSObject.open = false;}
-            else {menus[i].open = false;}
-            menus[i].boxObject.QueryInterface(Components.interfaces.nsIMenuBoxObject).openMenu(false); 
-            i += 1
-          }}
-       if (chrome) {chrome.addEventListener("click", closeMenus, false);}
-       else {doc.addEventListener("click", closeMenus, false);}
-   }
-   
-   if (allowDefaultAction
-      && element.tagName == "A"
-      && element.href
-      && !element.target) {
-    // We want to exclude anchor tags that are not links, such as:
-    // <a name="section2">Section 2: Related Work</a>
-    // Ideally, we would check if element is in doc.links, but that
-    // may be expensive if there are a lot of links
-     goImpl(doc.defaultView, element.toString(), true);
+  if (feedbackHandler) feedbackHandler(node, doClick);
+  else doClick();
+  
+  function doClick() {  
+      fireMouseEvent('mousedown', node);
+      fireMouseEvent('mouseup', node);
+      if (node.click) { node.click(); }
+      var allowDefaultAction = fireMouseEvent('click', node);
+    
+      if (node.tagName == 'menu') { //|| (node.tagName == 'menulist')) {
+          menuBox = node.boxObject.QueryInterface(Components.interfaces.nsIMenuBoxObject)
+          menuBox.openMenu(true);
+          node.open = true
+          
+          //this event listener makes sure that the popup will close again with any other click event
+          function closeMenus(event) {
+            menus = doc.getElementsByTagName('menu')
+            var i=0
+            while (i<menus.length) {
+                if (menus[i].wrappedJSObject) {menus[i].wrappedJSObject.open = false;}
+                else {menus[i].open = false;}
+                menus[i].boxObject.QueryInterface(Components.interfaces.nsIMenuBoxObject).openMenu(false); 
+                i += 1
+              }}
+           if (chrome) {chrome.addEventListener("click", closeMenus, false);}
+           else {doc.addEventListener("click", closeMenus, false);}
+       }
+       
+       if (allowDefaultAction
+          && element.tagName == "A"
+          && element.href
+          && !element.target) {
+        // We want to exclude anchor tags that are not links, such as:
+        // <a name="section2">Section 2: Related Work</a>
+        // Ideally, we would check if element is in doc.links, but that
+        // may be expensive if there are a lot of links
+         goImpl(doc.defaultView, element.toString(), true);
+       }
    }
 }

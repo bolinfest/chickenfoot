@@ -3,7 +3,7 @@
  * Finds the text input that is most closely linked
  * to 'pattern' and sets the value of the input to 'value'
  */
-function enterImpl(/*Document*/ doc, /*string*/pattern, /*string*/value, /*optional Match*/ context) {
+function enterImpl(/*Document*/ doc, /*string*/pattern, /*string*/value, /*optional Match*/ context, /*optional function*/ feedbackHandler) {
   if (value === undefined) {
     value = pattern;
     pattern = null;
@@ -19,15 +19,21 @@ function enterImpl(/*Document*/ doc, /*string*/pattern, /*string*/value, /*optio
   
   // use the one best match
   var node = m.element;
-  if ("value" in node) {
-    node.value = value}
-    //this works on wrapped xul objects and some anonymous nodes
-    else if ("value" in node.wrappedJSObject) {
-           node.wrappedJSObject.value = value}
-         else {
-           throw addMatchToError(new Error("Don't know how to enter text into " + node), m);
-      }
   
-  // simulate events to trigger Javascript handlers on this node
-  fireEvent('change', node);
+  if (feedbackHandler) feedbackHandler(node, doEnter);
+  else doEnter();
+  
+  function doEnter() {
+      if ("value" in node) {
+        node.value = value}
+        //this works on wrapped xul objects and some anonymous nodes
+        else if ("value" in node.wrappedJSObject) {
+               node.wrappedJSObject.value = value}
+             else {
+               throw addMatchToError(new Error("Don't know how to enter text into " + node), m);
+          }
+      
+      // simulate events to trigger Javascript handlers on this node
+      fireEvent('change', node);
+  }
 }

@@ -6,18 +6,20 @@
  *    checked indicates whether the choice should be selected or unselected.  May be omitted, defaults to true.
  * Throws exception if ambiguity or failure to match.
  */
-function checkImpl(/*Document*/doc, /*choicePattern*/choicePattern, /*optional Range*/ context) {
-  doCheck(doc, choicePattern, true, context);
+function checkImpl(/*Document*/doc, /*choicePattern*/choicePattern, /*optional Range*/ context, /*optional function*/ feedbackHandler) {
+  doCheck(doc, choicePattern, true, "check", context, feedbackHandler);
 }
 
-function uncheckImpl(/*Document*/doc, /*choicePattern*/choicePattern, /*optional Range*/ context) {
-  doCheck(doc, choicePattern, false, context);
+function uncheckImpl(/*Document*/doc, /*choicePattern*/choicePattern, /*optional Range*/ context, /*optional function*/ feedbackHandler) {
+  doCheck(doc, choicePattern, false, "uncheck", context, feedbackHandler);
 }
 
 function doCheck (/*Document*/doc, 
                  /*Pattern*/choicePattern, 
                  /*boolean*/ value,
-                 /*optional Range*/ context) {
+                 /*string*/ commandName,
+                 /*optional Range*/ context, 
+                 /*optional function*/ feedbackHandler) {
   var bestMatch = null;
   // find best option, radio button, or checkbox in the whole document
   var m = Pattern.find(doc, choicePattern, [Pattern.CHECKBOX, Pattern.RADIOBUTTON], context);
@@ -28,7 +30,14 @@ function doCheck (/*Document*/doc,
   }    
   bestMatch = m;
   
-  simulateCheck(bestMatch.element, value);
+  var node = bestMatch.element;
+  
+  if (feedbackHandler) feedbackHandler(node, doTheCheck);
+  else doTheCheck();
+  
+  function doTheCheck() {  
+      simulateCheck(node, value);
+  }
 }
 
 /**

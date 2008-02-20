@@ -6,7 +6,8 @@ function evaluate(/*ChromeWindow*/ chromeWindow,
                   /*boolean*/ displayResultInConsole,
                   /*optional HtmlWindow*/ win,
                   /*extra context*/ extraContext,
-                  /*optional nsIFile*/ sourceDir) {
+                  /*optional nsIFile*/ sourceDir,
+                  /*optional function*/ feedbackHandler) {
   enableStopButton(chromeWindow);
   if (!win) win = getVisibleHtmlWindow(chromeWindow);
   if (displayResultInConsole) {
@@ -51,7 +52,7 @@ function evaluate(/*ChromeWindow*/ chromeWindow,
     root.removeChild(frame);
 
     // create the Chickenfoot evaluation context
-    var context = getEvaluationContext({}, chromeWindow, win, chickenscratchEvaluate, sourceDir);
+    var context = getEvaluationContext({}, chromeWindow, win, chickenscratchEvaluate, sourceDir, feedbackHandler);
     for (var k in extraContext) {
         context[k] = extraContext[k]
     }
@@ -79,7 +80,8 @@ function getEvaluationContext(/*Object*/ context,
                               /*ChromeWindow*/ chromeWindow,
                               /*HtmlWindow*/ win,
                               /*EvaluatorFunction*/ chickenscratchEvaluate,
-                              /*nsIFile*/ sourceDir) {
+                              /*nsIFile*/ sourceDir,
+                              /*function*/ feedbackHandler) {
 // In theory, we could add these properties and commands directly to the
 // fresh global object created by evaluate().  In practice, we can't,
 // because at least one property (location) is protected by that global
@@ -95,6 +97,7 @@ function getEvaluationContext(/*Object*/ context,
   context.scriptDir = sourceDir; //is an nsIFile object for the script file
   context.scriptURL = null;
   context.scriptNamespace = null;
+  context.__feedbackHandler = feedbackHandler;
   
   // delegate to properties of window
   context.location getter= function() { return win.location; };
@@ -155,13 +158,13 @@ function getEvaluationContext(/*Object*/ context,
   context.reload = function reload() { win.location.reload(); };
   
   context.find = function find(pattern) { return Pattern.find(context.document, pattern); };
-  context.click = function click(pattern) { clickImpl(context.document, pattern, chromeWindow); };
-  context.enter = function enter(pattern,value) { enterImpl(context.document, pattern,value); };
+  context.click = function click(pattern) { clickImpl(context.document, pattern, chromeWindow, undefined, context.__feedbackHandler); };
+  context.enter = function enter(pattern,value) { enterImpl(context.document, pattern, value, undefined, context.__feedbackHandler); };
   context.keypress = function keypress(keySequence, destination) { keypressImpl(context.document, keySequence, destination); };
-  context.pick = function pick(listPattern,choicePattern,checked) { pickImpl(context.document, arguments); };
-  context.unpick = function unpick(listPattern,choicePattern,checked) { unpickImpl(context.document, arguments); };
-  context.check = function check(pattern) { checkImpl(context.document, pattern); };
-  context.uncheck = function uncheck(pattern) { uncheckImpl(context.document, pattern); };
+  context.pick = function pick(listPattern,choicePattern,checked) { pickImpl(context.document, arguments, undefined, context.__feedbackHandler); };
+  context.unpick = function unpick(listPattern,choicePattern,checked) { unpickImpl(context.document, arguments, context.__feedbackHandler); };
+  context.check = function check(pattern) { checkImpl(context.document, pattern, undefined, context.__feedbackHandler); };
+  context.uncheck = function uncheck(pattern) { uncheckImpl(context.document, pattern, undefined, context.__feedbackHandler); };
   context.reset = function reset(pattern) { resetImpl(context.document, pattern); };
   
   context.insert = function insert(pattern, chunk) { return insertImpl(context.document, pattern, chunk); };
