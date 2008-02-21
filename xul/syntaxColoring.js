@@ -21,7 +21,7 @@
  */
  function syntaxColorEvent(event) {
 	 if(Chickenfoot.getPrefBranch().getBoolPref("syntaxColor")){
-	 	if (event.keyCode !=16 && event.keyCode !=17 && event.keyCode !=34 && event.keyCode !=37 && event.keyCode !=38 && event.keyCode !=34) {//don't activate on shift, control, and the 4 arrow keys
+	 	if (event.keyCode !=16 && event.keyCode !=17 ) {//don't activate on shift, control
 	 		//debug(event.keyCode);
 	 		var sbwin = Chickenfoot.getSidebarWindow(chromeWindow);
 	    	var anchorNodeCaret = sbwin.getSelectedBuffer().api.selection.anchorNode;
@@ -140,7 +140,7 @@ function regularSyntaxColoringAndAutoIndent(event){
 }
 
 function selectionAutoIndent(event){
-
+if(event.keyCode==9){
  		var sbwin = Chickenfoot.getSidebarWindow(chromeWindow);
     	var ed = sbwin.getSelectedBuffer().editor;
     	var doc = ed.contentDocument;
@@ -218,7 +218,7 @@ function selectionAutoIndent(event){
     	*/
     	//debug("FINISHED");
     	
- 	
+}
 }
 /*
 *Creates a count of the number of text characters and carridge returns 
