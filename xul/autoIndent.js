@@ -213,7 +213,7 @@ function findNodeInLines(lines,node,offset){
 
 function calculateIndents(lines,lineNum){
 
-	var spacesPerTab = 8 //empiraclly observed to be 8, this variable does not set this value
+	var spacesPerTab = 2; //empiraclly observed to be 8, this variable does not set this value
 	var indents=0;
 	if(lineNum<1){
 		return 0;

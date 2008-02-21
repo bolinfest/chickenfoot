@@ -209,7 +209,7 @@ function findNodeInLinesOld(lines,node,offset){
 */
 
 function calculateIndentsOld(lines,lineNum){
-	var spacesPerTab = 8 //empiraclly observed to be 8, this variable does not set this value
+	var spacesPerTab = 2 //default would be 8, but cf overrides the tab character to be only 2 spaces.
 	var indents=0;
 	if(lineNum<1){
 		return 0;
