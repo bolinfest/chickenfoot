@@ -21,7 +21,7 @@
  */
  function syntaxColorEvent(event) {
 	 if(Chickenfoot.getPrefBranch().getBoolPref("syntaxColor")){
-	 	if (event.keyCode !=16 && event.keyCode !=17) {//don't activate on shift key
+	 	if (event.keyCode !=16 && event.keyCode !=17 && event.keyCode !=34 && event.keyCode !=37 && event.keyCode !=38 && event.keyCode !=34) {//don't activate on shift, control, and the 4 arrow keys
 	 		//debug(event.keyCode);
 	 		var sbwin = Chickenfoot.getSidebarWindow(chromeWindow);
 	    	var anchorNodeCaret = sbwin.getSelectedBuffer().api.selection.anchorNode;
@@ -56,16 +56,7 @@ function regularSyntaxColoringAndAutoIndent(event){
     	var pre = doc.getElementById("pre");   
     	var anchorNodeCaret = sbwin.getSelectedBuffer().api.selection.anchorNode;
     	var anchorOffsetCaret = sbwin.getSelectedBuffer().api.selection.anchorOffset;
-    	/*
-    	debug('PRE - BEGINNING !!!!!');
-    	debug(pre.childNodes);
-    	debug(pre.innerHTML);
-    	debug("anchorNodeCaret");
-    	debug(anchorNodeCaret);
-    	debug("anchorOffsetCaret");
-    	debug(anchorOffsetCaret);
-    	*/
-    	
+      	
     	//count characters
     	var chars=0;
     	/*
@@ -156,16 +147,7 @@ function selectionAutoIndent(event){
     	var pre = doc.getElementById("pre");   
     	var anchorNodeCaret = sbwin.getSelectedBuffer().api.selection.anchorNode;
     	var anchorOffsetCaret = sbwin.getSelectedBuffer().api.selection.anchorOffset;
-    	/*
-    	debug('PRE - BEGINNING !!!!!');
-    	debug(pre.childNodes);
-    	debug(pre.innerHTML);
-    	debug("anchorNodeCaret");
-    	debug(anchorNodeCaret);
-    	debug("anchorOffsetCaret");
-    	debug(anchorOffsetCaret);
-    	*/
-    	
+     	
     	//count characters
     	var chars=0;
     	//debug(event.keyCode);
@@ -234,7 +216,7 @@ function selectionAutoIndent(event){
     	debug(anchorOffsetCaret2);
     	//debug(pre.innerHTML)
     	*/
-    	debug("FINISHED");
+    	//debug("FINISHED");
     	
  	
 }
