@@ -5,6 +5,9 @@
 // @include http://groups.csail.mit.edu/uid/chickenfoot/scripts/index.php/*
 // ==/UserScript==
 
+function installTriggerButtons(document) {
+
+if(document.location.wrappedJSObject.href.match(/http:\/\/groups.csail.mit.edu\/uid\/chickenfoot\/scripts\/index.php\/*/) == null) { return; }
 var pred = function (node) {
   var results = [];
   for (var h=0; h<node.childNodes.length; h++) {
@@ -89,4 +92,6 @@ function makeTrigger(foundMap) {
   Chickenfoot.gTriggerManager.triggers.push(trigger);
   Chickenfoot.gTriggerManager.saveTriggers();
 }
-output('');
+debug('');
+
+}
