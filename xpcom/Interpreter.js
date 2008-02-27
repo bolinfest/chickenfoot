@@ -184,6 +184,11 @@ function getEvaluationContext(/*Object*/ context,
   context.append = function append(filename, data) { throw "need to include(\"fileio.js\") before calling append" };
   context.exists = function exists(filename) { throw "need to include(\"fileio.js\") before calling exists" };
 
+  //password manager operators
+  context.addPassword = function(hostname, username, password, formSubmitURL, usernameField, passwordField) {return addPasswordImpl(hostname, username, password, formSubmitURL, usernameField, passwordField); };
+  context.removePassword = function(hostname, username) {return removePasswordImpl(hostname, username); };  
+  context.addPassword = function(retrievedEntry, hostname, formSubmitURL, username) {return retrievePasswordImpl(retrievedEntry, hostname, formSubmitURL, username); };
+  
   // pattern operators
   context.before = function before(pattern) { return beforeImpl(context.document, pattern); };
   context.after = function after(pattern) { return afterImpl(context.document, pattern); };

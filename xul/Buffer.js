@@ -507,7 +507,7 @@ Buffer.prototype.text setter = function(/*String*/ newScript) {
  * garbage character.  Find the character and delete it.
  */
 Buffer.removeGarbageCharacter = function(/*String*/ text) {
-  debug("removing garbage from " + text);
+  //debug("removing garbage from " + text);
   return text.replace(/\302\240/g, "");
 }
   
