@@ -5,27 +5,27 @@
 
 function addPasswordImpl(hostname, username, password, formSubmitURL, usernameField, passwordField) {
   if ("@mozilla.org/passwordmanager;1" in Components.classes) {
-    PasswordManager.addEntry(hostname, username, password, formSubmitURL, usernameField, passwordField);
+    return PasswordManager.addEntry(hostname, username, password, formSubmitURL, usernameField, passwordField);
   }
   else if ("@mozilla.org/login-manager;1" in Components.classes) {
-    LoginManager.addEntry(hostname, username, password, formSubmitURL, usernameField, passwordField);
+    return LoginManager.addEntry(hostname, username, password, formSubmitURL, usernameField, passwordField);
   }
 }
 
 function removePasswordImpl(hostname, username) {
   if ("@mozilla.org/passwordmanager;1" in Components.classes) {
-    PasswordManager.removeEntry(hostname, username);
+    return PasswordManager.removeEntry(hostname, username);
   }
   else if ("@mozilla.org/login-manager;1" in Components.classes) {
-    LoginManager.removeEntry(hostname, username);
+    return LoginManager.removeEntry(hostname, username);
   }
 }
 
-function retrievePasswordImpl(retrievedEntry, hostname, formSubmitURL, username) {
+function getPasswordImpl(hostname, username) {
   if ("@mozilla.org/passwordmanager;1" in Components.classes) {
-    PasswordManager.retrieveEntry(retrievedEntry, hostname, formSubmitURL, username);
+    return PasswordManager.retrieveEntry(hostname, username);
   }
   else if ("@mozilla.org/login-manager;1" in Components.classes) {
-    LoginManager.retrieveEntry(retrievedEntry, hostname, formSubmitURL, username);
+    return LoginManager.retrieveEntry(hostname, username);
   }
 }

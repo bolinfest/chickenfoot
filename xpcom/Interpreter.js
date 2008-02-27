@@ -187,7 +187,7 @@ function getEvaluationContext(/*Object*/ context,
   //password manager operators
   context.addPassword = function(hostname, username, password, formSubmitURL, usernameField, passwordField) {return addPasswordImpl(hostname, username, password, formSubmitURL, usernameField, passwordField); };
   context.removePassword = function(hostname, username) {return removePasswordImpl(hostname, username); };  
-  context.addPassword = function(retrievedEntry, hostname, formSubmitURL, username) {return retrievePasswordImpl(retrievedEntry, hostname, formSubmitURL, username); };
+  context.getPassword = function(hostname, username) {return getPasswordImpl(hostname, username); };
   
   // pattern operators
   context.before = function before(pattern) { return beforeImpl(context.document, pattern); };
