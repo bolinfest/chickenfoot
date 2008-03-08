@@ -614,7 +614,7 @@ function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
     return;
   }
   
-  var message  
+  var message;
    if (metadata.updateURL) {
      message = "Your new extension " + xpifile.leafName + " and an update description file update.rdf "
      message += "were created in " + xpifile.parent.path + "\n"
@@ -625,4 +625,134 @@ function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
      message = "Your new extension was created at: " + xpifile.path;
    }
    alert(message);
-}
+} //end packageSelectedTriggers()
+
+
+/**
+ * Take the currently selected trigger and publish it on the scripts wiki.
+ * @param trigger : Trigger //the trigger to publish
+ *
+ * NOTE: Publishing a trigger script on the wiki involves manipulating (i.e clicking, inserting text) the
+ * current HTML document in the browser window. Originally tried to do this directly from xul land, but
+ * had problems with keeping a reference to the current HTML document, particularly when navigating from
+ * one page to the next. Scripts written in the Chickenfoot buffer however, do not seem to have this problem.
+ * So to work around this problem of keeping an up-to-date reference to the current HTML document, passed a
+ * script directly to Chickenfoot.evaluate similar to the way code written in the Chickenfoot buffer is handled.
+ */
+function publishSelectedTrigger(/*Trigger*/ trigger) {
+  //get index of selected trigger in gTriggerManager.triggers
+  var triggerIndex = 0;
+  var triggerList = Chickenfoot.gTriggerManager.triggers;
+  for(var i=0; i<triggerList.length; i++) {
+    if(triggerList[i].path.path == trigger.path.path) { triggerIndex = i; break; }
+  }
+
+  //get a string of the code to evaluate (see note in function documentation above)
+  var code = "//get trigger to publish\n";
+  code += "var trigger = Chickenfoot.gTriggerManager.triggers[" + triggerIndex + "];\n";
+  code += "publishTrigger(trigger);\n";
+
+  code += "function publishTrigger(/*Trigger*/trigger) {\n";
+  
+  code += "  //get name and description of trigger to publish\n";
+  code += "  var name = trigger.name;\n";
+  code += "  var description = trigger.description;\n";
+  code += "  var currentScript = Chickenfoot.SimpleIO.read(trigger.path);\n";
+
+  code += "  //get trigger wiki name out of trigger metadata\n";
+  code += "  var map = Chickenfoot.extractUserScriptAttributes(currentScript);\n";
+  code += "  if(map.wiki) { name = map.wiki; }\n";
+  code += "  else {\n";
+  code += "    map = {};\n";
+  code += "    map.wiki = trigger.name;\n";
+  code += "    var updatedScript = Chickenfoot.updateAttributes(currentScript, map);\n";
+  code += "    Chickenfoot.SimpleIO.write(trigger.path, updatedScript);\n";
+  code += "  }\n";
+
+  code += "  //-----------\n";
+
+  code += "  //go to chickenfoot scripts wiki page if not already there\n";
+  code += "  var currentPage = document.location;\n";
+  code += "  var scriptsWiki = 'http://groups.csail.mit.edu/uid/chickenfoot/scripts/index.php/Main_Page';\n";
+  code += "  if(document.location != scriptsWiki) { go(scriptsWiki); }\n";
+
+  code += "  //go to script section and check if this script already exists there\n";
+  code += "  //just put all scripts uner 'General Scripts' for now\n";
+  code += "  var scriptSection = 'General Scripts';\n";
+  code += "  click(scriptSection);\n";
+  code += "  var existingLink = find(name + ' link');\n";
+  code += "  var existingMatch = existingLink.hasMatch && (existingLink.text == name);\n";
+
+
+
+  code += "  //there is already a trigger called this, ask the user if they want to replace it\n";
+  code += "  var overwrite = false;\n";
+  code += "  if(existingMatch) {\n";
+  code += "    overwrite = window.wrappedJSObject.confirm('Are you sure you want to over-write this existing script?');\n";
+
+  code += "    //if don't want to replace it, then return without doing anything\n";
+  code += "    if(!overwrite) { return; }\n";
+
+  code += "    //else open edit tab for just this section\n";
+  code += "    else{ click(find(name + ' link').element.parentNode.previousSibling.previousSibling.childNodes[1]); }\n";
+  code += "  }\n";
+
+  code += "  //there is not a script already called this\n";
+  code += "  else {\n";
+  code += "    //open edit tab of entire script section\n";
+  code += "    var editLink = find('edit');\n";
+  code += "    while(editLink.next != Chickenfoot.EMPTY_MATCH) { editLink = editLink.next; }\n";
+  code += "    click(editLink);\n";
+  code += "  }\n";
+
+  code += "  //if not logged in, follow the re-direct link to the login page, and leave the user there\n";
+  code += "  var loginLink = find('login link');\n";
+  code += "  if (loginLink.hasMatch) {\n";
+  code += "    click('login link');\n";
+  code += "    return;\n";
+  code += "  }\n";
+
+  code += "  //find editor box\n";
+  code += "  var textbox = find('first textbox').element.wrappedJSObject;\n";
+
+  code += "  //save existing text, so can add to it\n";
+  code += "  var existingTxt = textbox.textContent;\n";
+  code += "  if(overwrite) { existingTxt = ''; }\n";
+
+  code += "  //get new text and insert into textarea\n";
+  code += "  var newTxt = '\\n===[[' + name + ']] ===' + '\\n' + description;\n";
+  code += "  if(overwrite) { newTxt = '=== [[' + name + ']] ===\\n' + description; }\n";
+
+  code += "  var txtToInsert = existingTxt + newTxt;\n";
+  code += "  textbox.textContent = txtToInsert; \n";
+
+  code += "  //save the page and keep location so can go back to this page when done\n";
+  code += "  click('save the page button');\n";
+  code += "  var returnLocation = document.location.toString();\n";
+
+  code += "  //-----------\n";
+
+  code += "  //open edit tab for new page and find editor box\n";
+  code += "  click('' + name + ' link');\n";
+  code += "  textbox = find('first textbox').element.wrappedJSObject;\n";
+  code += "  if(overwrite || !textbox.hasMatch) { \n";
+  code += "    click('edit link');\n";
+  code += "    textbox = find('first textbox').element.wrappedJSObject;\n";
+  code += "  }\n";
+
+  code += "  //replace the existing text with the current script on disk\n";
+  code += "  textbox.textContent = '<pre>' + currentScript + '</pre>';\n";
+
+  code += "  //save the page\n";
+  code += "  click('save the page button');\n";
+
+  code += "  //return to index page of scripts\n";
+  code += "  go(returnLocation);\n";
+
+  code += "}\n";
+  
+  //have Chickenfoot evaluate the code above
+  //need to pass in a reference to the current HTML window, otherwise it defaults to the chromeWindow
+  Chickenfoot.evaluate(chromeWindow, code, false, chromeWindow.content, null, null);
+  
+}//end publishSelectedTrigger
