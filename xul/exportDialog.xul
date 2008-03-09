@@ -96,18 +96,6 @@
         itm.setAttribute("class", "listitem-iconic");
       }
     }
-    
-    
-    // If the user does not have the GUID box populated, then he is probably
-    // going to press the Generate GUID button.
-    if (!gel('guid').value) {
-      // generateRandomGuid() is slow the first time it is called,
-      // so we call it here, in the background, so the response to clicking
-      // the Generate GUID button is fast
-      setTimeout(function() {
-        pregeneratedGuid = Chickenfoot.generateRandomGuid();
-      }, 0);
-    }
   }
 
   var attributes = [
@@ -356,13 +344,7 @@
     }
     
     function pickGuid() {     
-      var guid;
-      if (pregeneratedGuid) {  // if pregenerated one available, use that
-        guid = pregeneratedGuid;
-        pregeneratedGuid = undefined; // destroy it so it cannot be reused
-      } else {
-        guid = Chickenfoot.generateRandomGuid();
-      }
+      var guid = Chickenfoot.generateRandomGuid();
       gel('guid').setAttribute('value', guid);
     }
     
