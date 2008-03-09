@@ -6,8 +6,19 @@
   -moz-image-region: rect(0 48px 24px 24px) !important;
 }
 
+
+tabpanels {
+  background-color: white;
+  border: 1px solid #C0C0C0;
+  -moz-border-colors: rgb(113,111,100);
+}
+
+vbox { border: 1px solid #C0C0C0; }
+
+toolbar { outline: 1px solid #C0C0C0; }
+
 #CF_TRIGGERS_PANE[ignoreAllTriggers="true"] {
-   color: rgb(150,150,150);
+  color: rgb(150,150,150);
 }
 
 #CF_TRIGGERS_PANE[ignoreAllTriggers="false"] {

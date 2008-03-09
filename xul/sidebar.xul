@@ -1,4 +1,5 @@
 <?xml-stylesheet href="chrome://browser/skin/" type="text/css" ?>
+<?xml-stylesheet href="chrome://chickenfoot/skin/sidebar.css" type="text/css"?>
 
 <!--
 /*
@@ -37,7 +38,6 @@
     onload="loadHandler()"
     onunload="unloadHandler()">
 
-  <?xml-stylesheet href="chrome://chickenfoot/skin/sidebar.css" type="text/css"?>
   <command id="cmd_ignoreAllTriggersCheckbox" />
 
   <script><![CDATA[
