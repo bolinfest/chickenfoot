@@ -47,7 +47,7 @@
       // as global variables) will be visible to and modifiable by 
       // the user's code.  So we don't define any -- we just use
       // the arguments list.
-      return eval.call(arguments[0], arguments[1]);
+      with(arguments[0]) {return eval(arguments[1]);}
     }
   ]]></script>
   
@@ -64,7 +64,7 @@
       // as global variables) will be visible to and modifiable by 
       // the user's code.  So we don't define any -- we just use
       // the arguments list.
-      return eval.call(arguments[0], arguments[1]);
+      with(arguments[0]) {return eval(arguments[1]);}
     }
   ]]></script>
   

@@ -12,7 +12,7 @@
     <em:description>End-user programming tool for Firefox.</em:description>
     <em:creator>UID Group, MIT</em:creator>
     <em:homepageURL>http://groups.csail.mit.edu/uid/chickenfoot/</em:homepageURL>
-    <em:updateURL>http://groups.csail.mit.edu/uid/chickenfoot/update.rdf</em:updateURL>
+    <!--<em:updateURL>http://groups.csail.mit.edu/uid/chickenfoot/update.rdf</em:updateURL>-->
     
     <!-- <em:optionsURL></em:optionsURL> -->
     <!-- <em:aboutURL></em:aboutURL> -->
@@ -22,7 +22,7 @@
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
         <em:minVersion>1.5</em:minVersion>
-        <em:maxVersion>2.0+</em:maxVersion>
+        <em:maxVersion>3.0.*</em:maxVersion>
       </Description>
     </em:targetApplication>
     
