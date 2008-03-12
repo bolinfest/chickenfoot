@@ -488,6 +488,18 @@
         <copy todir="${html.dir}/libraries" overwrite="true">
           <fileset dir="${basedir}/chickenscratch/libraries" />
         </copy>
+        <!-- sign update.rdf -->
+        <echo message="${html.dir}/update.rdf"/>
+        <exec executable="mccoy">
+            <arg value="-command"/>
+            <arg value="update"/>
+            <arg value="-updateRDF"/>
+            <arg value="${html.dir}/update.rdf"/>
+            <arg value="-key"/>
+            <arg value="chickenfoot"/>
+            <arg value="-xpi"/>
+            <arg value="${html.dir}/releases/${xpi.name}"/>
+        </exec>
     </target>
 
     <target name="update-rss-feed"

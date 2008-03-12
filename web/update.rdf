@@ -20,8 +20,6 @@
         </RDF:li>
       </RDF:Seq>
     </em:updates>
-    <em:version>1.0.0</em:version>
-    <em:updateLink>http://groups.csail.mit.edu/uid/chickenfoot/chickenfoot.xpi</em:updateLink>
   </RDF:Description>
 
 </RDF:RDF>
