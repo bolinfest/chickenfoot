@@ -21,18 +21,19 @@ t.test(function() {
 
 t.test(function() {
   getDocument().forms[0].lr[9].checked = true;
-  uncheck("english");
+  uncheck("english");
   Test.assertEquals(getDocument().forms[0].lr[9].checked, false, "didn't uncheck english")
 })
 
 
 t.test(function() {
-  check(find("checkbox"));
+  check(find("checkbox"));
   Test.assertEquals(getDocument().forms[0].lr[0].checked, true, "didn't check first checkbox")
 })
 
 // Summarize testing
 t.close();
+
 
 
 

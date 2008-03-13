@@ -1,6 +1,5 @@
 var global_context;
 
-
 function evaluate(/*ChromeWindow*/ chromeWindow,
                   /*String*/ code,
                   /*boolean*/ displayResultInConsole,
@@ -8,6 +7,14 @@ function evaluate(/*ChromeWindow*/ chromeWindow,
                   /*extra context*/ extraContext,
                   /*optional nsIFile*/ sourceDir,
                   /*optional function*/ feedbackHandler) {
+                  
+  // Get a reference to the Javascript SubScript loader, which is used by 
+  // chickenscratchEvaluate().
+  if (!Chickenfoot.jsLoader) {
+    Chickenfoot.jsLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]
+                           .getService(this.Components.interfaces.mozIJSSubScriptLoader);
+  }                          
+                  
   enableStopButton(chromeWindow);
   if (!win) win = getVisibleHtmlWindow(chromeWindow);
   if (displayResultInConsole) {
@@ -86,8 +93,8 @@ function getEvaluationContext(/*Object*/ context,
 // fresh global object created by evaluate().  In practice, we can't,
 // because at least one property (location) is protected by that global
 // object, throwing an exception if you try to replace it.  So we create
-// a fresh object for the Chickenfoot command space and use eval.call()
-// to make sure it's in scope when the user's script is evaluated.
+// a fresh object for the Chickenfoot command space and use mozIJSSubScriptLoader
+// to make sure the user's script is evaluated in the scope of that object.
 
   // getters for important objects
   context.window getter= function getWindow() { return win; };

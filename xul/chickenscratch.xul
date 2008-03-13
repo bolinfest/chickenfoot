@@ -47,7 +47,11 @@
       // as global variables) will be visible to and modifiable by 
       // the user's code.  So we don't define any -- we just use
       // the arguments list.
-      with(arguments[0]) {return eval(arguments[1]);}
+      return arguments[0].Chickenfoot.jsLoader.loadSubScript(
+        "data:application/x-javascript," 
+            + encodeURIComponent(arguments[1]),
+        arguments[0]
+      );
     }
   ]]></script>
   
@@ -64,7 +68,11 @@
       // as global variables) will be visible to and modifiable by 
       // the user's code.  So we don't define any -- we just use
       // the arguments list.
-      with(arguments[0]) {return eval(arguments[1]);}
+      return arguments[0].Chickenfoot.jsLoader.loadSubScript(
+        "data:application/x-javascript," 
+            + encodeURIComponent(arguments[1]),
+        arguments[0]
+      );
     }
   ]]></script>
   

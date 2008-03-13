@@ -76,11 +76,11 @@ function testElement(attr,val,type,pattern, /*optional*/ context) {
   t.test(testName, function() {
     m = doFind(type,pattern,context);
     var matches = matchesToString(m);
-    Test.assertEquals(m.count, 1, 
+    Test.assertEquals(m.count, 1, 
                     patternToString(type,pattern) + " matched " + m.count + " times:\n" + matches);
 
     var attrValue = m.element.getAttribute(attr);
-    Test.assertEquals(val, attrValue, 
+    Test.assertEquals(val, attrValue, 
                     patternToString(type,pattern) + " matched " + attrValue + " instead of " + val + ":\n" + matches);
   });
   return m; 
@@ -110,6 +110,7 @@ function matchesToString(m) {
   }
   return sb.toString();
 }
+
 
 
 

@@ -39,15 +39,22 @@
 function includeImpl(/*string*/ fileName,
                  /*function(context,code)->result*/ chickenscratchEvaluate,
                  /*object*/ evaluationContext,
-                 /*string|object*/ opt_namespace,
+                 /*optional string|object*/ namespace,
                  /*optional nsIFile*/ sourceDir) {
 
+  function makeURL(/*string*/ href) {
+    var url = Components.classes["@mozilla.org/network/standard-url;1"].createInstance(Components.interfaces.nsIURI);
+    url.spec = href;
+    return url;
+  }
+  
   //the return type of getCode()
   function Code() {
     this.state = 0;  //undefined if file not found, 0 if single file, 1 if multiple files, 2 is URL
     this.files = [];  //stores paths of files to be included if multiple files need to be included
     this.script = "";  //stores the content of the included script if single include
     this.scriptDir = null;  //nsIFile stores the folder containing the script if single include
+    this.scriptURL  = null; //nsIURL storing the script's directory url if URL include
   }
   
   function getCode(fileName) 
@@ -57,7 +64,7 @@ function includeImpl(/*string*/ fileName,
     if (typeof fileName == 'string' && fileName.match(/^chrome:/)) {
       code.script = SimpleIO.getChromeContent(fileName);
       code.state = 2;
-      code.scriptDir = fileName.substring(0, fileName.lastIndexOf('/'));
+      code.scriptURL = makeURL(fileName.substring(0, fileName.lastIndexOf('/')));
       return code;
     }
 
@@ -78,7 +85,7 @@ function includeImpl(/*string*/ fileName,
         var chromeName = "chrome://@EXTENSION_NAME@/content/" + fileName;
         code.script = SimpleIO.getChromeContent(chromeName);
         code.state = 2;
-        code.scriptDir = chromeName.substring(0, chromeName.lastIndexOf('/'));
+        code.scriptURL = makeURL(chromeName.substring(0, chromeName.lastIndexOf('/')));
         return code;
       } 
       catch (e) {
@@ -117,7 +124,7 @@ function includeImpl(/*string*/ fileName,
         }
         code.script = scriptContent;
         code.state = 2;
-        code.scriptDir = fileName.substring(0, fileName.lastIndexOf('/'));
+        code.scriptURL = makeURL(fileName.substring(0, fileName.lastIndexOf('/')));
         return code;
       }
       else {
@@ -126,24 +133,27 @@ function includeImpl(/*string*/ fileName,
     }
     
     if (!SimpleIO.exists(file)) {
-      var includeDirectories = new Array();
-      var numDirs = 0;
-      if(evaluationContext.scriptDir) {
-        includeDirectories.push(evaluationContext.scriptDir);
-        numDirs++;
-      }
-      includeDirectories.push(TriggerManager._getChickenfootProfileDirectory());
-      numDirs++;
-      includeDirectories = includeDirectories.concat(getIncludeDirectories());
-      for (var i = 0; i < includeDirectories.length; ++i) {
-        var dir;
-        if (i < numDirs) {
-          dir = includeDirectories[i].clone();
-        } else {
-          dir = Components.classes["@mozilla.org/file/local;1"].
-  	              createInstance(Components.interfaces.nsILocalFile);
-  	      dir.initWithPath(includeDirectories[i]);
-        }
+      // includeDirectories will be the path of directories searched
+      var includeDirectories = new Array();      
+      
+      // first search the including script's own directory
+      if(evaluationContext.scriptDir) includeDirectories.push(evaluationContext.scriptDir.clone())
+      
+      // then search the trigger directory
+      includeDirectories.push(TriggerManager._getChickenfootProfileDirectory().clone());
+      
+      // then search the Chickenfoot library directory and other directories added to the include path
+      var otherIncludeDirs = getIncludeDirectories();
+      for (var i = 0; i < otherIncludeDirs.length; ++i) {
+        var dir = Components.classes["@mozilla.org/file/local;1"].
+	            createInstance(Components.interfaces.nsILocalFile);
+  	    dir.initWithPath(includeDirectories[i]);
+  	    includeDirectories.push(dir);
+  	  }
+  	  
+  	  // check each directory in order
+  	  for (var i = 0; i < includeDirectories.length; ++i) {
+  	    var dir = includeDirectories[i];
         try { 
           while(fileName.indexOf('/')!=-1){
             var leafStr = fileName.substring(0, fileName.indexOf('/'));
@@ -200,150 +210,62 @@ function includeImpl(/*string*/ fileName,
       return code;
     }
   }
+  
+  // Retrieve code to include.
   var code = getCode(fileName); // the code returned by the file
   if (code.state === undefined) {
     throw new Error('The file ' + fileName + ' could not be found.');
   }
-  else if (code.state == 1) {
-    //if multiple files need to be included
-    var originalNamespace = evaluationContext.scriptNamespace;
-    var namespace = originalNamespace;
-    
-    if (opt_namespace) {
-      if (typeof opt_namespace === 'string' 
-          || instanceOf(opt_namespace, String)) {
-        opt_namespace = opt_namespace.valueOf();
-        namespace = {};
-        evaluationContext[opt_namespace] = namespace;
-      } else {
-        namespace = opt_namespace;
-      }
-    }
-    
-    if(namespace) {
-      evaluationContext.scriptNamespace = namespace;
-      evaluationContext.scriptDir = code.scriptDir;
-      var ret; //stores return value
-      try {
-        var func = "function () {for(var i=0; i < arguments[0].length; i++) {include(arguments[0][i], arguments[1]);}}";
-        var multiInclude = chickenscratchEvaluate(evaluationContext, func);
-        var ret = multiInclude(code.files, namespace);
-      }
-      finally {
-        evaluationContext.scriptDir = sourceDir;
-      }
-      return ret;
-    }
-    else {
-      var ret; //stores return value
-      evaluationContext.scriptDir = code.scriptDir;
-      try {
-        var func = "function () {for(var i=0; i < lst.length; i++) {include(arguments[0][i]);}}";
-        var multiInclude = chickenscratchEvaluate(evaluationContext, func);
-        var ret = multiInclude(code.files);
-      }
-      finally {
-        evaluationContext.scriptDir = sourceDir;
-      }  
-      return ret;
-    }
+  
+  // Determine namespace where evaluation should occur.
+  if (typeof namespace === 'string' 
+      || instanceOf(namespace, String)) {
+    namespaceVariable = namespace.toString();
+    namespace = {};
+    evaluationContext[namespaceVariable] = namespace;
   }
-  else if(code.state==0) {
-    // get namespace object
-    var originalNamespace = evaluationContext.scriptNamespace;
-    var originalDir = evaluationContext.scriptDir;
-    var namespace = originalNamespace;
-    
-    if (opt_namespace) {
-      if (typeof opt_namespace === 'string' 
-          || instanceOf(opt_namespace, String)) {
-        opt_namespace = opt_namespace.valueOf();
-        namespace = {};
-        evaluationContext[opt_namespace] = namespace;
-      } else {
-        namespace = opt_namespace;
-      }
-    }
-    
-    if(namespace) {
-      evaluationContext.scriptNamespace = namespace;
-      evaluationContext.scriptDir = code.scriptDir;
-      var ret; //stores return value
-      try {
-        var closure = chickenscratchEvaluate(evaluationContext,
-                                             "function() {return eval.call(arguments[0],arguments[1]);}");
-        ret = closure(namespace, code.script);
-      }
-      finally {
-        evaluationContext.scriptNamespace = originalNamespace;
-        evaluationContext.scriptDir = originalDir;
-      }
-      return ret;
-    } 
-    else {
-      var ret;
-      evaluationContext.scriptDir = code.scriptDir;
-      try {
-        ret = chickenscratchEvaluate(evaluationContext, code.script);
-      }
-      finally {
-        evaluationContext.scriptDir = originalDir;
-      }
-      return ret;
-    }
+  // now namespace is either an object or undefined
+  if (namespace) {
+    // initialize the provided namespace with Chickenscratch identifiers
+    getEvaluationContext(
+          namespace, 
+          evaluationContext.chromeWindow, 
+          evaluationContext.window, 
+          chickenscratchEvaluate, 
+          evaluationContext.scriptDir,
+          evaluationContext.__feedbackHandler
+    );
+  } else {
+    // no namespace provided, so we'll evaluate the included code in the
+    // current evaluation context
+    namespace = evaluationContext;
   }
-  else if(code.state == 2) {
-    // get namespace object
-    var originalNamespace = evaluationContext.scriptNamespace;
-    var originalDir = evaluationContext.scriptDir;
-    var namespace = originalNamespace;
-    
-    if (opt_namespace) {
-      if (typeof opt_namespace === 'string' 
-          || instanceOf(opt_namespace, String)) {
-        opt_namespace = opt_namespace.valueOf();
-        namespace = {};
-        evaluationContext[opt_namespace] = namespace;
-      } else {
-        namespace = opt_namespace;
-      }
-    }
-    
-    if(namespace) {
-      evaluationContext.scriptNamespace = namespace;
-      evaluationContext.scriptDir = null;
-      var url = Components.classes["@mozilla.org/network/standard-url;1"].createInstance(Components.interfaces.nsIURI);
-      url.spec = code.scriptDir;
-      var originalURL = evaluationContext.scriptURL;
-      evaluationContext.scriptURL = url;
-      var ret; //stores return value
-      try {
-        var closure = chickenscratchEvaluate(evaluationContext,
-                                             "function() {return eval.call(arguments[0],arguments[1]);}");
-        ret = closure(namespace, code.script);
-      }
-      finally {
-        evaluationContext.scriptNamespace = originalNamespace;
-        evaluationContext.scriptDir = originalDir;   
-        evaluationContext.scriptURL = originalURL;
-      }
-      return ret;
-    } 
-    else {
-      var ret;
-      evaluationContext.scriptDir = null;
-      var url = Components.classes["@mozilla.org/network/standard-url;1"].createInstance(Components.interfaces.nsIURI);
-      url.spec = code.scriptDir;
-      var originalURL = evaluationContext.scriptURL;
-      evaluationContext.scriptURL = url;
-      try {
-        ret = chickenscratchEvaluate(evaluationContext, code.script);
-      }
-      finally {
-        evaluationContext.scriptDir = originalDir;
-        evaluationContext.scriptURL = originalURL;
-      }
-      return ret;
+  
+  // Evaluate the code in the namespace.
+  if (namespace == evaluationContext) {
+    // need to save and restore the scriptDir and scriptNamespace variables if the
+    // included code shares the same context as the including code
+    var originalNamespace = namespace.scriptNamespace;
+    var originalDir = namespace.scriptDir;
+    var originalURL = namespace.scriptURL;
+  }    
+  try {
+    namespace.scriptNamespace = namespace;
+    namespace.scriptDir = code.scriptDir;
+    namespace.scriptURL = code.scriptURL; 
+    if (code.state == 1) {
+      var func = "(function () {for(var i=0; i < arguments[0].length; i++) {include(arguments[0][i], arguments[1]);}})";
+      var multiInclude = chickenscratchEvaluate(namespace, func);
+      return multiInclude(code.files, namespace);
+    } else {
+      return chickenscratchEvaluate(namespace, code.script);
+    }      
+  } finally {     
+    if (namespace == evaluationContext) {
+      // restore the script-specific variables
+      namespace.scriptNamespace = originalNamespace;
+      namespace.scriptDir = originalDir;
+      namespace.scriptURL = originalURL;
     }
   }
 }
