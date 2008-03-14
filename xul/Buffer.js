@@ -648,7 +648,7 @@ Buffer.prototype.run = function() {
   if (this.file === null) { file = this.file; }
   else { file = this.file.parent; }
   
-  Chickenfoot.evaluate(chromeWindow, this.text, true, null, null, file);
+  Chickenfoot.evaluate(chromeWindow, this.text, true, null, {scriptDir:file});
 }
 
 Buffer.prototype.runCurrentLine = function() {
@@ -665,7 +665,9 @@ Buffer.prototype.runCurrentLine = function() {
     var line = getTextAtLine(getCursorLine());
     
     // run it
-    Chickenfoot.evaluate(chromeWindow, line, true, null, null, this.file, Chickenfoot.animateTransparentRectangleOverNode); 
+    Chickenfoot.evaluate(chromeWindow, line, true, null, 
+            { scriptDir: this.file,
+              __feedbackHandler: Chickenfoot.animateTransparentRectangleOverNode }); 
   
     function getTextAtLine(/* int */ line) {
       var ed = thisBuffer.editor;
@@ -962,7 +964,7 @@ Buffer.prototype.runSelectedText = function() {
     } else if (node.tagName == 'BR') {
       sb.append('\n');
     }
-  Chickenfoot.evaluate(chromeWindow, sb.toString(), true, null, null, this.file);
+  Chickenfoot.evaluate(chromeWindow, sb.toString(), true, null, { scriptDir: this.file });
 }
 
 function firstChickenfootUse() {

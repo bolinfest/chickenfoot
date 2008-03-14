@@ -21,7 +21,7 @@ t.test(function() {
 
 t.test(function() {
   var Include2 = {};
-  include('pages/include1.js', Include2);
+  include('pages\\include1.js', Include2);
 
   Test.assertEquals(42, Include2.definedWithVar);
   Test.assertEquals(102, Include2.definedFunction());
@@ -64,13 +64,6 @@ t.test("Include remote URL and remote reference", function() {
   Test.assertEquals(92, Include6.k);
 });
 
-t.test("Include Wildcard", function() {
-  var Include7 = {};
-  include("pages/include-test1/in*.js", Include7);
-  Test.assertEquals(10, Include7.x);
-  Test.assertEquals(7, Include7.y);
-});
-
 t.test("Include Nested includes", function() {
   var Include8 = {};
   include("pages/include-test1/tester1.js", Include8);
@@ -85,5 +78,4 @@ t.test("Include libraries", function() {
 });
 
 t.close();
-
 

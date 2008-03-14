@@ -753,6 +753,6 @@ function publishSelectedTrigger(/*Trigger*/ trigger) {
   
   //have Chickenfoot evaluate the code above
   //need to pass in a reference to the current HTML window, otherwise it defaults to the chromeWindow
-  Chickenfoot.evaluate(chromeWindow, code, false, chromeWindow.content, null, null);
+  Chickenfoot.evaluate(chromeWindow, code, false, chromeWindow.content);
   
 }//end publishSelectedTrigger

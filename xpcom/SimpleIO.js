@@ -1,25 +1,72 @@
 function SimpleIO() {}
 
 /**
- * @param file the file to be read (either nsIFile or String)
+ * @param fileNameOrURL the file or URL to be read (either nsIFile or String)
  * @return string - the contents of the file
  * @throws exception if file not found or other I/O error
  */
-// http://kb.mozillazine.org/index.phtml?title=Dev_:_Extensions_:_Example_Code_:_File_IO#Reading_from_a_file
-SimpleIO.read = function(/*nsIFile or String*/ fileName) {
-  var file = instanceOf(fileName, Components.interfaces.nsIFile)
-     ? fileName : SimpleIO.toFile(fileName);
-  var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"]
-    .createInstance(Components.interfaces.nsIFileInputStream);
-  var sstream = Components.classes["@mozilla.org/scriptableinputstream;1"]
-    .createInstance(Components.interfaces.nsIScriptableInputStream);
+SimpleIO.read = function(/*nsIFile or String*/ fileNameOrURL) {
+  if (isRemoteURL(fileNameOrURL)) {
+    return loadRemoteURL(fileNameOrURL);
+  } else if (isLocalURL(fileNameOrURL)) {
+    return loadLocalURL(fileNameOrURL);
+  } else {
+    return loadFile(fileNameOrURL);
+  }
 
-  fstream.init(file, 1, 0, false);
-  sstream.init(fstream);
-  var data = "" + sstream.read(-1);
-  sstream.close();
-  fstream.close();
-  return data;  
+  function isRemoteURL(/*any*/ obj) {
+    return (typeof obj == 'string' || instanceOf(obj, String)) &&
+       obj.toString().match(/^(https?|ftp):\/\//);
+  }
+  function loadRemoteURL(/*string*/ url) {
+    var request = new XMLHttpRequest();
+    var asynchronous = false;
+    var scriptContent = null;
+    request.open("GET", url, asynchronous);
+    request.send(null);
+    if (request.status == 200) {
+      return request.responseText;
+    } else {
+      throw new Error('read error: ' + request.status + ' ' + request.statusText);
+    }
+  }
+
+  function isLocalURL(/*any*/ obj) {
+    return (typeof obj == 'string' || instanceOf(obj, String)) &&
+       obj.toString().match(/^(file|chrome|data|resource):\/\//);
+  }
+  function loadLocalURL(/*string*/ url) {
+    // http://forums.mozillazine.org/viewtopic.php?p=921150
+    var ioService=Components.classes["@mozilla.org/network/io-service;1"]
+      .getService(Components.interfaces.nsIIOService);
+    var scriptableStream=Components
+      .classes["@mozilla.org/scriptableinputstream;1"]
+      .getService(Components.interfaces.nsIScriptableInputStream);  
+    var channel = ioService.newChannel(url, null, null);
+    var input=channel.open();
+    scriptableStream.init(input);
+    var str=scriptableStream.read(input.available());
+    scriptableStream.close();
+    input.close();
+    return str;
+  }
+  
+  function loadFile(/*nsIFile or string*/ fileName) {
+      // http://kb.mozillazine.org/index.phtml?title=Dev_:_Extensions_:_Example_Code_:_File_IO#Reading_from_a_file
+      var file = instanceOf(fileName, Components.interfaces.nsIFile)
+         ? fileName : SimpleIO.toFile(fileName);
+      var fstream = Components.classes["@mozilla.org/network/file-input-stream;1"]
+        .createInstance(Components.interfaces.nsIFileInputStream);
+      var sstream = Components.classes["@mozilla.org/scriptableinputstream;1"]
+        .createInstance(Components.interfaces.nsIScriptableInputStream);
+    
+      fstream.init(file, 1, 0, false);
+      sstream.init(fstream);
+      var data = "" + sstream.read(-1);
+      sstream.close();
+      fstream.close();
+      return data;  
+  }
 }
 
 
@@ -40,6 +87,8 @@ SimpleIO.write = function(/*nsIFile or String*/ fileName,
   } else {    
       var file = instanceOf(fileName, Components.interfaces.nsIFile)
           ? fileName : SimpleIO.toFile(fileName);
+      if (file.parent) SimpleIO.makeDir(file.parent);
+            
       var stream = Components.classes["@mozilla.org/network/file-output-stream;1"]
         .createInstance(Components.interfaces.nsIFileOutputStream);
       // use  to open file for appending.
@@ -72,6 +121,8 @@ SimpleIO.writeBytes = function(/*nsIFile or String*/ fileName,
   } else {    
       var file = instanceOf(fileName, Components.interfaces.nsIFile)
           ? fileName : SimpleIO.toFile(fileName);
+      if (file.parent) SimpleIO.makeDir(file.parent);
+      
       var stream = Components.classes["@mozilla.org/network/file-output-stream;1"]
         .createInstance(Components.interfaces.nsIFileOutputStream);
       // use  to open file for appending.
@@ -85,38 +136,31 @@ SimpleIO.writeBytes = function(/*nsIFile or String*/ fileName,
 }
 
 /**
- * @param fileName string filename
- * @param userDir nsIFile custom directory where the file should be referenced
+ * @param fileName (string) filename
+ * @param dir (optional nsIFile) directory where the file should be referenced;
+ *                        defaults to downloadDir() if not given
  * @return nsIFile object representing fileName
  */
-SimpleIO.toFile = function(/*String*/ fileName, /*nsIFile*/ userDir) {  
+SimpleIO.toFile = function(/*String*/ fileName, /*optional nsIFile*/ dir) {  
   var file = Components.classes["@mozilla.org/file/local;1"].
 	             createInstance(Components.interfaces.nsILocalFile);
-	
-	//if file name is a valid path name
-  //else mutate the filename to represent a valid path
-  if(!SimpleIO.checkPathValidity(fileName))
-  {
-  	var dir = userDir ? userDir.clone() : SimpleIO.downloadDir() ;  //saves to downloads directory by default
-  	  //check whether filename has subdirectories of 
-  	  //the form subdir/filename.png
-  	  try {
-      	while(fileName.indexOf('/')!=-1){
-        	  dir.append(fileName.substring(0, fileName.indexOf('/')));
-        	  if( !dir.exists() || !dir.isDirectory() ) {   // if it doesn't exist, create
-              dir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0664);
-            }
-          fileName = fileName.substring(fileName.indexOf('/')+1);
-        }
-        dir.append(fileName);
-        fileName = dir.path;
-      } catch (e) {
-      	//directory names may be invalid
-      	throw new Error("The path is invalid: "+ fileName);
-      }
+  try {
+    // absolute pathname?
+    file.initWithPath(fileName);
+    return file;
+  } catch (e) {
+    // not an absolute pathname
   }
   
-  file.initWithPath(fileName);
+  // interprete relative filenames with respect to dir 
+  file = (dir) ? dir.clone() : SimpleIO.downloadDir();
+  
+  // handle subdirectories in the relative filename
+  var parts = fileName.split(/[\\\/]/);
+  for (var i = 0; i < parts.length; ++i) {
+    if (parts[i]) file.append(parts[i]);
+  }
+  
   return file;
 }
 
@@ -205,50 +249,16 @@ SimpleIO.homeDir = function () {
 }
 
 /**
- * @param dirName string directory name
- * 
- * Create a folder inside Profile directory
+ * Makes a directory.  Does nothing if directory already exists.
+ *
+ * @param dirName (string or nsIFile) directory to be created
  */
 SimpleIO.makeDir = function(/*String*/ dirName) {
-  var file = Components.classes["@mozilla.org/file/directory_service;1"]
-                     .getService(Components.interfaces.nsIProperties)
-                     .get("ProfD", Components.interfaces.nsIFile);
-  file.append(dirName);
-  if(!file.exists() || !file.isDirectory()) {   // if the directory doesn't exist, create it
-    return file.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0664);
-  }else{
-    return "fail to create directory";
+  var dir = instanceOf(dirName, Components.interfaces.nsIFile)
+     ? dirName : SimpleIO.toFile(dirName);
+  if (!dir.exists() || !dir.isDirectory()) {
+    dir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0664);
   }
 }
 
-// http://forums.mozillazine.org/viewtopic.php?p=921150
-SimpleIO.getChromeContent = function(/*String*/ aURL){
-  if((aURL.substring(0,7) == "http://") || (aURL.substring(0,8) == "https://")) {
-    var request = new XMLHttpRequest();
-    var asynchronous = false;
-    var scriptContent = null;
-    request.open("GET", aURL, asynchronous);
-    request.send(null);
-    if (request.status == 200) {
-      scriptContent = request.responseText;
-    }
-    else {
-      throw new Error('getChromeContent URL Error: ' + request.status + ' ' + request.statusText);
-    }
-    return scriptContent;
-  }
-  else{
-    var ioService=Components.classes["@mozilla.org/network/io-service;1"]
-      .getService(Components.interfaces.nsIIOService);
-    var scriptableStream=Components
-      .classes["@mozilla.org/scriptableinputstream;1"]
-      .getService(Components.interfaces.nsIScriptableInputStream);  
-    var channel = ioService.newChannel(aURL, null, null);
-    var input=channel.open();
-    scriptableStream.init(input);
-    var str=scriptableStream.read(input.available());
-    scriptableStream.close();
-    input.close();
-    return str;
-  }
-}
+SimpleIO.getChromeContent = SimpleIO.read;

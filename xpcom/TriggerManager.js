@@ -93,7 +93,7 @@ TriggerManager.prototype.loadTriggers = function(/*nsIFile* or *chromeURL*/ file
     }
   }
   else if(file.substring(0,9) == 'chrome://') {
-    var contents = Chickenfoot.SimpleIO.getChromeContent(file); 
+    var contents = Chickenfoot.SimpleIO.read(file); 
     
     // nsIDOMParser.parseFromStream has problems, so we dump file contents to string instead    
     this.doc = domParser.parseFromString(contents, "text/xml");
@@ -561,33 +561,9 @@ function runTriggerNow(index, chromeWindow) {
            gTriggerManager.triggers[index].getSource(),
            false,
            win,
-           null,
-           gTriggerManager.triggers[index].path.parent);
+           {scriptDir: gTriggerManager.triggers[index].path.parent});
 }
   
-function evaluateFile(chromeWindow, filename, extraContext) {
-  var tabbrowser = chromeWindow.gBrowser;
-  var browser = tabbrowser.getBrowserForTab(tabbrowser.selectedTab);
-  var win = browser.contentWindow.wrappedJSObject;    
-    
-  var path = filename
-  if (!SimpleIO.exists(path)) {    
-      path = TriggerManager._getChickenfootProfileDirectory();
-      path.append(filename);
-  }
-  if (!SimpleIO.exists(path)) {
-      path = TriggerManager._getChickenfootProfileDirectory();
-      path.append(filename + ".js");
-  }
-  
-  if (SimpleIO.exists(path)) {
-      var source = SimpleIO.read(path);
-      evaluate(chromeWindow, source, false, win, extraContext, path.parent);
-  } else {
-      throw "could not run script: " + path.path 
-  }
-}
-
 /**
  * Extract "Firefox Starts" and "New Window" triggers' source scripts
  */

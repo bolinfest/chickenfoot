@@ -92,7 +92,7 @@ function groupPropertiesAndMethods (/*array*/items) {
       else if (typeof value == "object") {objects.push(current);}
       else {properties.push(current);}
   }
-  var joined = properties.concat(methods).concat(objects);
+  var joined = properties.concat(objects).concat(methods);
   return joined;
 }
 

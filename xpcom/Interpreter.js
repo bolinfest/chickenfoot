@@ -1,12 +1,20 @@
-var global_context;
-
+/**
+ * Evaluate an Chickenscratch script.
+ * @param chromeWindow   Firefox chrome window to use for context
+ * @param code           String of code to evaluate
+ * @param displayResultInConsole   if true, the resulting value is displayed in the Output pane
+ * @param win            Particular HTML window (tab) to use for context.
+ *                       If omitted, then the currently-visible tab in chromeWindow is used.
+ * @param extraContext   Additional variables to define in code's evaluation context.
+ *               For example, extraContext often includes:
+ *                   scriptDir  (an nsIFile identifying the folder from which the code was loaded)
+ *                   scriptURL  (an nsIURL identifying the URL folder from which the code was loaded)
+ */ 
 function evaluate(/*ChromeWindow*/ chromeWindow,
                   /*String*/ code,
                   /*boolean*/ displayResultInConsole,
                   /*optional HtmlWindow*/ win,
-                  /*extra context*/ extraContext,
-                  /*optional nsIFile*/ sourceDir,
-                  /*optional function*/ feedbackHandler) {
+                  /*object*/ extraContext) {
                   
   // Get a reference to the Javascript SubScript loader, which is used by 
   // chickenscratchEvaluate().
@@ -59,11 +67,7 @@ function evaluate(/*ChromeWindow*/ chromeWindow,
     root.removeChild(frame);
 
     // create the Chickenfoot evaluation context
-    var context = getEvaluationContext({}, chromeWindow, win, chickenscratchEvaluate, sourceDir, feedbackHandler);
-    for (var k in extraContext) {
-        context[k] = extraContext[k]
-    }
-    global_context = context;
+    var context = getEvaluationContext({}, chromeWindow, win, chickenscratchEvaluate, extraContext);
     try {
       checkForStop();      
       var result = chickenscratchEvaluate(context, code);
@@ -79,6 +83,28 @@ function evaluate(/*ChromeWindow*/ chromeWindow,
   }
 }
 
+function evaluateFile(/*ChromeWindow*/ chromeWindow, 
+                      /*String*/ filename, 
+                      /*object*/ extraContext) {
+  var path = filename
+  if (!SimpleIO.exists(path)) {    
+      path = TriggerManager._getChickenfootProfileDirectory();
+      path.append(filename);
+  }
+  if (!SimpleIO.exists(path)) {
+      path = TriggerManager._getChickenfootProfileDirectory();
+      path.append(filename + ".js");
+  }  
+  if (!SimpleIO.exists(path)) {
+      throw "could not run script: " + path.path 
+  }
+
+  var source = SimpleIO.read(path);
+  extraContext.scriptDir = path.parent;
+  return evaluate(chromeWindow, source, false, win, extraContext);
+}
+
+
 /**
  * Return an object containing the properties and commands 
  * that Chickenscratch scripts can call.
@@ -87,8 +113,7 @@ function getEvaluationContext(/*Object*/ context,
                               /*ChromeWindow*/ chromeWindow,
                               /*HtmlWindow*/ win,
                               /*EvaluatorFunction*/ chickenscratchEvaluate,
-                              /*nsIFile*/ sourceDir,
-                              /*function*/ feedbackHandler) {
+                              /*optional object*/ extraContext) {
 // In theory, we could add these properties and commands directly to the
 // fresh global object created by evaluate().  In practice, we can't,
 // because at least one property (location) is protected by that global
@@ -101,10 +126,8 @@ function getEvaluationContext(/*Object*/ context,
   context.document getter= function getDocument() { return getLoadedHtmlDocument(win); };
   context.chromeWindow getter= function getChromeWindow() { return chromeWindow; };
   context.tab getter= function getTab() { return new Tab(win); };
-  context.scriptDir = sourceDir; //is an nsIFile object for the script file
+  context.scriptDir = null;
   context.scriptURL = null;
-  context.scriptNamespace = null;
-  context.__feedbackHandler = feedbackHandler;
   
   // delegate to properties of window
   context.location getter= function() { return win.location; };
@@ -207,7 +230,7 @@ function getEvaluationContext(/*Object*/ context,
   };
   context.clear = function clear() { clearDebugPane(chromeWindow); };
   context.list = function list(obj, opt_regexp) { printDebug(chromeWindow, listImpl(obj, opt_regexp)); };
-  context.include = function include(path, opt_namespace) { return includeImpl(path, chickenscratchEvaluate, context, opt_namespace, context.scriptDir); };
+  context.include = function include(path, opt_namespace) { return includeImpl(path, context, opt_namespace); };
   context.localUrl = function localUrl(url) { return localUrlImpl(url); };
 
   context.openTab = function openTab(url, show) { return openTabImpl(chromeWindow, url, show); };
@@ -234,7 +257,14 @@ function getEvaluationContext(/*Object*/ context,
   context.chickenscratchEvaluate = chickenscratchEvaluate;
   // global space for sharing data between script runs
   context.global getter = function getGlobal() { return global; };
-  
+
+  // additional context
+  if (extraContext) {
+      for (var k in extraContext) {
+        context[k] = extraContext[k]
+      }
+  }
+      
   return context;
 }
 
