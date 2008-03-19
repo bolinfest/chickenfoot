@@ -34,7 +34,7 @@
     <property name="sleep.dir" value="${basedir}/sleep" />
 
   
-    <property name="html.dir"       value="${basedir}/web" />      
+    <property name="html.dir"       value="${basedir}${file.separator}web" />      
     <property name="api.dir"        value="${build.dir}/api" />
     <property name="java.api"
               value="http://java.sun.com/j2se/1.5.0/docs/api/" />
@@ -494,16 +494,16 @@
         	* the mccoy-profile directory should be renamed to:
         	    C:\Documents and Settings\<username>\Application Data\Mozilla\McCoy
         -->
-        <echo message="${html.dir}/update.rdf"/>
+        <echo message="${html.dir}${file.separator}update.rdf"/>
         <exec executable="mccoy">
             <arg value="-command"/>
             <arg value="update"/>
             <arg value="-updateRDF"/>
-            <arg value="${html.dir}/update.rdf"/>
+            <arg value="${html.dir}${file.separator}update.rdf"/>
             <arg value="-key"/>
             <arg value="chickenfoot"/>
             <arg value="-xpi"/>
-            <arg value="${html.dir}/releases/${xpi.name}"/>
+            <arg value="${html.dir}${file.separator}releases${file.separator}${xpi.name}"/>
         </exec>
     </target>
 
