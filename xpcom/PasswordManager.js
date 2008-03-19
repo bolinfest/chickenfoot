@@ -50,12 +50,11 @@ PasswordManager.removeEntry = function(hostname, username) {
       var entry = e.getNext().QueryInterface(Components.interfaces.nsIPassword);
       if (entry.host.match(host)) {
         if(username == entry.user) {
-          passwordManager.removerUser(entry.host, entry.user)
-          return;
+          return passwordManager.removeUser(entry.host, entry.user)
         }
       }
   }
-  Chickenfoot.debug("Entry not found while removing entry from password manager: hostname=" + hostname + ", username=" + username);
+  throw new Error("Entry not found while removing entry from password manager: hostname=" + hostname + ", username=" + username);
 }
 
 PasswordManager.retrieveEntry = function(hostname, username) {

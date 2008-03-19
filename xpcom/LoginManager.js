@@ -53,11 +53,11 @@ LoginManager.removeEntry = function(hostname, username, formSubmitURL) {
      for (var i = 0; i < entries.length; i++) {
         if (entries[i].hostname.match(host)) {
            if(entries[i].username == username) {
-             loginManager.removeLogin(entries[i]);
+             return loginManager.removeLogin(entries[i]);
            }
         }
      }
-     Chickenfoot.debug("Entry not found while removing entry from login manager: hostname=" + hostname + ", username=" + username);
+     throw new Error("Entry not found while removing entry from login manager: hostname=" + hostname + ", username=" + username);
 }
 
 LoginManager.retrieveEntry = function(hostname, username) {
@@ -77,15 +77,15 @@ LoginManager.retrieveEntry = function(hostname, username) {
           if(username) {
             //if username specified check against it
             if(entries[i].username == username) {
-              retrievedEntry.username = entry.username;
-              retrievedEntry.password = entry.password;
+              retrievedEntry.username = entries[i].username;
+              retrievedEntry.password = entries[i].password;
               return retrievedEntry;
             }
           }
           else {
             //if no username specified, just return first one in list for the hostname
-            retrievedEntry.username = entry.username;
-            retrievedEntry.password = entry.password;
+            retrievedEntry.username = entries[i].username;
+            retrievedEntry.password = entries[i].password;
             return retrievedEntry;
           }
         }
