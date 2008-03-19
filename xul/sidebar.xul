@@ -251,8 +251,7 @@
         <tabs flex="1">
           <tab label="Output" id="CF_DEBUG_TAB" />
 <!--          <tab label="Shell" /> -->
-          <tab label="Patterns"/>
-          <tab label="Actions" id="CF_ACTION_HISTORY_TAB"/>               
+          <tab label="Patterns"/>             
           <tab label="Triggers" />
         </tabs>
         <tabpanels flex="50"
@@ -262,6 +261,12 @@
             <vbox flex="1">
               <toolbar align="center">
                   <label value="Output:" />
+                  <spacer />
+                  <checkbox id="recordingCheckbox"
+                            label=" Record actions"
+                            tooltiptext="When checked, the output panel displays what you do in the browser"
+                            oncommand="setRecording(this.checked)"
+                            />
                   <spacer flex="10" />
                   <!-- http://www.async.com.br/~kiko/pix/icons/stock_clear.png -->  
                   <toolbarbutton class="disablableToolbarButton"
@@ -386,32 +391,6 @@
                     </treechildren>
                   </tree> 
               </vbox>
-
-          <!-- ACTION HISTORY -->
-
-             <vbox flex="1">
-              <toolbar align="center">
-                  <label value="Action History:" />
-                  <spacer />
-                  <checkbox id="recordingCheckbox"
-                            label=" Record actions"
-                            tooltiptext="When checked, the Action History displays what you do in the browser"
-                            oncommand="setRecording(this.checked)"
-                            />
-                  <spacer flex="10" />
-                  <toolbarbutton class="disablableToolbarButton"
-                                 style="list-style-image: url(chrome://chickenfoot/skin/clear.png)"
-                                 tooltiptext="Clear action history"
-                                 oncommand="Chickenfoot.clearDebugPane(chromeWindow, 'CF_ACTION_HISTORY');" />                
-              </toolbar>
- 
-                <browser id="CF_ACTION_HISTORY"
-                         type="content"
-                         src="chrome://chickenfoot/content/actionContent.html"
-                         flex="1"                     
-                         />
-              </vbox>
- 
           
           <!-- TRIGGERS -->
           

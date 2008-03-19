@@ -96,7 +96,6 @@ function generateChickenfootCommand(/*Element*/ e, /*String*/ eventType, /*Boole
     if (checkCorrectness) {
         var label = getLabel(details);
         var m = Pattern.find(e.ownerDocument, label);
-        debug(c);
 
         if (m.count == 1 && m.element == e) {
             return c;

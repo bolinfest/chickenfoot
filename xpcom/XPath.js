@@ -35,7 +35,8 @@ function generateXPath(/*Node*/ target, includeClasses) {
         
         var count = 0;
         for (var i = 0; i < children.length; i++) {
-            if (children[i].nodeName == currentNode.nodeName) {
+            if (children[i].nodeName == currentNode.nodeName
+                  && children[i].nodeType != 10) { // ignore doctype declarations
                 count++;
             }
             

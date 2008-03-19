@@ -1,5 +1,5 @@
-const CF_ACTION_HISTORY_ID = "CF_ACTION_HISTORY";
-const CF_ACTION_HISTORY_TAB = "CF_ACTION_HISTORY_TAB";
+const CF_ACTION_HISTORY_ID = "CF_DEBUG";
+const CF_ACTION_HISTORY_TAB = "CF_DEBUG_TAB";
 
 function startRecording() {
   // set recordingCheckbox
@@ -55,7 +55,7 @@ function doRecordAction(node, type) {
     //if (type == "click" && !Chickenfoot.shouldGenerateClickCommand(node)) return;
 
     try {
-        var result = Chickenfoot.generateChickenfootCommand(node, type);
+        var result = Chickenfoot.generateChickenfootCommand(node, type);      
         recordMatch(result);
     }
     catch (e) {
@@ -74,12 +74,13 @@ function doRecordAction(node, type) {
 
 function recordMatch(/*String*/ record) {
     if (record == "") return;
-    
-    printAction(record);
+    text = "<tag class=actions><i>" + record + "</i></tag>";
+    printAction(text, true);
 }
 
 function recordError(/*String*/ error) {
-    printAction("<font color\"red\">//" + error + "</font>", true);
+    text = "<tag class=actionError><i>" + error + "</i></tag>";
+    printAction(text, true);
 }
 
 function removeTypes(/*String*/ record) {
