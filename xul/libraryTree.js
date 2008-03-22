@@ -6,7 +6,7 @@
 
 function updateLibraryTree () {
   // get the new tree from LAPIS
-  var doc = getLoadedHtmlDocument(Chickenfoot.getVisibleHtmlWindow(chromeWindow));
+  var doc = getLoadedHtmlDocument(chromeWindow, Chickenfoot.getVisibleHtmlWindow(chromeWindow));
   var mozdoc = MozillaDocument.createMozillaDocument(doc);
   var root = mozdoc.getLibraryTree();
 

@@ -54,8 +54,8 @@ function getTabBrowser(/*ChromeWindow*/ chromeWindow) {
  * Get the HTML Window of the visible tab in the given 
  * Firefox chrome window.
  * Note: don't use the document property of an HTML Window
- * directly.  Use getLoadedHtmlDocument(win) instead, to ensure
- * that it's loaded.
+ * directly.  Use getLoadedHtmlDocument(chromeWindow, win) instead, 
+ * to ensure that it's loaded.
  */
 function getVisibleHtmlWindow(/*ChromeWindow*/ chromeWindow) {
   return chromeWindow._content;
@@ -90,6 +90,13 @@ function getTab(/*HtmlWindow*/ htmlWindow) {
 }
 
 /**
+ * Get the chrome window containing an HTML window.
+ */
+function getChromeWindowOfHtmlWindow(/*HTML Window*/ win) {
+  return getTab(win).ownerDocument.defaultView;
+}
+
+/**
  * Get the <browser> XUL object for an HTML Window.
  * @return Browser or null if not found.
  */
@@ -113,7 +120,8 @@ function getWebProgress(/*HtmlWindow*/ htmlWindow) {
  * @returns Document
  * @throws Error if document doesn't finish loading in 30 seconds
  */
-function getLoadedHtmlDocument(/*HtmlWindow*/ win) {
+function getLoadedHtmlDocument(/*ChromeWindow*/ chromeWindow, 
+                               /*HtmlWindow*/ win) {
   var webProgress = getWebProgress(win);
   
   // TODO: I (mbolin) believe that getWebProgress does not work when win
@@ -122,8 +130,8 @@ function getLoadedHtmlDocument(/*HtmlWindow*/ win) {
   // For now:
   if (!webProgress) return win.document;
   
-  const delay = 0.100;
-  const maxDelay = 30;
+  const delay = 100;
+  const maxDelay = 30000;
   const iterations = maxDelay/delay;
   var warningInterval = 5/delay;
   for (var i = 0; i < iterations; ++i) {
@@ -132,7 +140,7 @@ function getLoadedHtmlDocument(/*HtmlWindow*/ win) {
       recordCreatedRanges(win.document);
       return win.document;
     }
-    sleepImpl(delay);
+    sleepImpl(chromeWindow, delay);
   }
   throw new Error("never finished loading " + win.document.title);
 }

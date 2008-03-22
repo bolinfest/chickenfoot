@@ -123,7 +123,7 @@ function getEvaluationContext(/*Object*/ context,
 
   // getters for important objects
   context.window getter= function getWindow() { return win; };
-  context.document getter= function getDocument() { return getLoadedHtmlDocument(win); };
+  context.document getter= function getDocument() { return getLoadedHtmlDocument(chromeWindow, win); };
   context.chromeWindow getter= function getChromeWindow() { return chromeWindow; };
   context.tab getter= function getTab() { return new Tab(win); };
   context.scriptDir = null;
@@ -240,7 +240,7 @@ function getEvaluationContext(/*Object*/ context,
 
   context.wait = function wait(tabs) { return waitImpl(chromeWindow, tabs, true); };
   context.ready = function ready(tabs) { return waitImpl(chromeWindow, tabs, false); };
-  context.sleep = sleep;
+  context.sleep = function sleep(seconds) { return sleepImpl(chromeWindow, parseInt(seconds*1000)); };
   
   context.whenLoaded = function whenLoaded(func, win) { 
     return whenLoadedImpl(chromeWindow, func, win); 

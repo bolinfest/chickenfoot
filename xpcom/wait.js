@@ -49,7 +49,7 @@ function waitImpl(/*ChromeWindow*/ chromeWindow, /*optional Tab[]*/ tabs, /*bool
     
     if (!block) break;
 
-    sleep(0.100);
+    sleepImpl(chromeWindow, 100);
   }
 
   return null;

@@ -158,6 +158,7 @@ function setupWindow(/*ChromeWindow*/ window) {
     
   addTriggerListener(window);
   
+/*
   //add a load listener for the install trigger button script, making it a built-in trigger
   var browser = getTabBrowser(window);  
   browser.addEventListener("load", triggerListener, true);
@@ -166,7 +167,7 @@ function setupWindow(/*ChromeWindow*/ window) {
     var win = doc.defaultView;
     evaluate(window, "Chickenfoot.installTriggerButtons(document);", false, win, null, null);
   }
-  
+*/  
 }
 
 

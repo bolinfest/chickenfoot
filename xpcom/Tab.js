@@ -18,7 +18,7 @@ Tab.prototype.toString = function() {
 };
 
 Tab.prototype.document getter = function() { 
-  return getLoadedHtmlDocument(this._window);
+  return getLoadedHtmlDocument(this._tab.ownerDocument.defaultView, this._window);
 }
 Tab.prototype.show = function() {
   if (!this._tab) {
