@@ -42,6 +42,12 @@ t.test(function() {
   Test.assertEquals(getDocument().forms[0].srccat.selectedIndex, 2, "didn't pick Northeast Regional")
 })
 
+go(prefix + "iframe-xpath.html");
+t.test(function() {
+	var m = find(new XPath("//img"));
+  	Test.assert(m.length > 0, "XPath is not reaching into embedded iframe.");  
+});
+
 // Summarize testing
 t.close();
 

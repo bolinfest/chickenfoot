@@ -28,7 +28,14 @@ function whenLoadedImpl(/*ChromeWindow*/ chromeWindow,
 	}
 	browser.addEventListener("load", wrapperFunc, true)
 	
-	if (isWindowLoaded(window)) {
+	var alreadyLoaded = false;
+	try {
+		alreadyLoaded = isWindowLoaded(window);
+	} catch (e) {
+		// will fall here, e.g., if it's an iframe and we don't know if
+		// it's loaded
+	}
+	if (alreadyLoaded) {
 		wrapperFunc({originalTarget : browser.contentDocument})
 	}
 }

@@ -92,7 +92,7 @@ function inVisibleFrame(/*Node|Document*/ node) {
   // oftentimes, an IFRAME is enclosed by a DIV
   // (I can't remember why -- it may have to do with how IE6 handles them)
   // So we test that both the IFRAME and its parent have a nonzero Box
-  return Box.forNode(frameElement).width && frameElement.offsetLeft >= 0;
+  return Box.forNode(frameElement).width;
 }
 
 isVisible.INVISIBLE_TAGS = {
