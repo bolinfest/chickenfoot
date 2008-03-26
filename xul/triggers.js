@@ -659,16 +659,6 @@ function publishSelectedTrigger(/*Trigger*/ trigger) {
   code += "  var description = trigger.description;\n";
   code += "  var currentScript = Chickenfoot.SimpleIO.read(trigger.path);\n";
 
-  code += "  //get trigger wiki name out of trigger metadata\n";
-  code += "  var map = Chickenfoot.extractUserScriptAttributes(currentScript);\n";
-  code += "  if(map.wiki) { name = map.wiki; }\n";
-  code += "  else {\n";
-  code += "    map = {};\n";
-  code += "    map.wiki = trigger.name;\n";
-  code += "    var updatedScript = Chickenfoot.updateAttributes(currentScript, map);\n";
-  code += "    Chickenfoot.SimpleIO.write(trigger.path, updatedScript);\n";
-  code += "  }\n";
-
   code += "  //-----------\n";
 
   code += "  //go to chickenfoot scripts wiki page if not already there\n";
@@ -753,6 +743,6 @@ function publishSelectedTrigger(/*Trigger*/ trigger) {
   
   //have Chickenfoot evaluate the code above
   //need to pass in a reference to the current HTML window, otherwise it defaults to the chromeWindow
-  Chickenfoot.evaluate(chromeWindow, code, false, chromeWindow.content);
+  Chickenfoot.evaluate(chromeWindow, code, false, chromeWindow.content.wrappedJSObject);
   
 }//end publishSelectedTrigger
