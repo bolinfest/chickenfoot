@@ -488,7 +488,18 @@
         <copy todir="${html.dir}/libraries" overwrite="true">
           <fileset dir="${basedir}/chickenscratch/libraries" />
         </copy>
-        <echo message="${html.dir}${file.separator}update.rdf"/>
+        <!-- copy update.rdf file, filling in version number -->      
+        <copy file="${rdf.dir}/update.template.rdf"               
+            tofile="${html.dir}/update.rdf"
+            overwrite="true" />
+        <replaceregexp match="${version.pattern}"
+                       flags="g"
+                       replace="${version.value}" >
+          <fileset dir="${html.dir}">
+              <include name="update.rdf" />
+          </fileset>
+        </replaceregexp>
+        <!-- sign update.rdf file using McCoy -->      
         <copy todir="${firefox.profile.dir}${file.separator}..${file.separator}..${file.separator}..${file.separator}McCoy" 
               overwrite="true">
             <fileset dir="${basedir}/mccoy-profile" />
