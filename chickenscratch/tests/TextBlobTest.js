@@ -18,12 +18,12 @@ var testName;  // name of current test, inferred from load() argument
 
 test("google.html", 
      "Google", 
-     "©2005 Google - Searching 8,058,044,651 web pages", 
+     "2005 Google - Searching 8,058,044,651 web pages", 
      9);
 
 test("yahoo.html", 
      "Yahoo!", 
-     "Copyright © 2005 Yahoo! Inc. All rights reserved. Copyright/IP Policy.", 
+     "Copyright 2005 Yahoo! Inc. All rights reserved. Copyright/IP Policy.", 
      103);
 
 test("moodle.html", 
@@ -33,7 +33,7 @@ test("moodle.html",
 
 test("google-advanced_search.html", 
      "Go to Google Home", 
-     "©2005 Google", 
+     "2005 Google", 
      102);
 
 
@@ -90,6 +90,7 @@ function getDocument() {
     return document;
   }
 }
+
 
 
 
