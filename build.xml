@@ -488,14 +488,12 @@
         <copy todir="${html.dir}/libraries" overwrite="true">
           <fileset dir="${basedir}/chickenscratch/libraries" />
         </copy>
-        <!-- sign update.rdf
-        	preconditions:
-        	* mccoy.exe must be on the PATH
-        	* the mccoy-profile directory should be renamed to:
-        	    C:\Documents and Settings\<username>\Application Data\Mozilla\McCoy
-        -->
         <echo message="${html.dir}${file.separator}update.rdf"/>
-        <exec executable="mccoy">
+        <copy todir="${firefox.profile.dir}${file.separator}..${file.separator}..${file.separator}..${file.separator}McCoy" 
+              overwrite="true">
+            <fileset dir="${basedir}/mccoy-profile" />
+        </copy>
+        <exec executable="${basedir}/mccoy/mccoy">
             <arg value="-command"/>
             <arg value="update"/>
             <arg value="-updateRDF"/>

@@ -6,7 +6,7 @@ t.test("click", function(){
   go("http://www.google.com");
   click("advanced search");
   Test.assert(/advanced_search/.test(document.location));
-  click("Search button");
+  click("Advanced Search button");
   Test.assert(/webhp/.test(document.location));
 });
 
@@ -44,6 +44,7 @@ function closeTabFrom(/*String*/ url) {
   }
   //throw new Error("can't find tab from " + url + " to close")
 }
+
 
 
 

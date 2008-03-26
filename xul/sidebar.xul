@@ -473,13 +473,14 @@
                                
                 <!-- EXPORT -->
                 <!-- http://www.async.com.br/~kiko/pix/icons/stock_add.png -->
+                <!--
                 <toolbarbutton class="disablableToolbarButton"
                                style="list-style-image: url(chrome://chickenfoot/skin/publish-script.png)"
                                tooltiptext="Publish script on the Scripts Wiki"
                                oncommand="publishSelectedTrigger(document.getElementById('CF_TRIGGERS_PANE').selectedItems[0]._trigger)"
                                observes="requiresSelectedTrigger"
                                />
-                
+                -->
               </toolbar>
 
               <listbox id="CF_TRIGGERS_PANE"

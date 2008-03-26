@@ -1,25 +1,22 @@
 <?xml version="1.0"?>
-<RDF:RDF xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-         xmlns:em="http://www.mozilla.org/2004/em-rdf#">
-
-  <RDF:Description about="urn:mozilla:extension:{896b34a4-c83f-4ea7-8ef0-51ed7220ac94}">
-    <em:updates>
-      <RDF:Seq>
-        <RDF:li>
-          <RDF:Description>
-            <em:version>1.0.1</em:version>
-            <em:targetApplication>
-              <RDF:Description>
-                <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
-                <em:minVersion>1.5</em:minVersion>
-                <em:maxVersion>2.0+</em:maxVersion>
-                <em:updateLink>http://groups.csail.mit.edu/uid/chickenfoot/chickenfoot.xpi</em:updateLink>
-              </RDF:Description>
-            </em:targetApplication>
-          </RDF:Description>
-        </RDF:li>
-      </RDF:Seq>
-    </em:updates>
+<RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#"
+         xmlns:NC="http://home.netscape.com/NC-rdf#"
+         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Seq RDF:about="rdf:#$9lIFR2">
+    <RDF:li RDF:resource="rdf:#$alIFR2"/>
+  </RDF:Seq>
+  <RDF:Description RDF:about="urn:mozilla:extension:{896b34a4-c83f-4ea7-8ef0-51ed7220ac94}"
+                   em:signature="MIGTMA0GCSqGSIb3DQEBDQUAA4GBADBPG6Sb47/+wLKQJ2Nz3tzgw4AUpOPh2bXLOOla5lJH7JQKhc8ONwvDizELAnyFNsl65pQFaDXbgFpkiVP7QBvpRaCxqA/QnH9Mm5BIvnV+i8XLCfClmqUFxrL3mfKf9EoPou53Dpns51unN/HOIorso3jkkS3xXYFeJ4Mim+kY">
+    <em:updates RDF:resource="rdf:#$9lIFR2"/>
   </RDF:Description>
-
+  <RDF:Description RDF:about="rdf:#$alIFR2"
+                   em:version="1.0.1">
+    <em:targetApplication RDF:resource="rdf:#$dlIFR2"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$dlIFR2"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="1.5"
+                   em:maxVersion="2.0+"
+                   em:updateLink="http://groups.csail.mit.edu/uid/chickenfoot/chickenfoot.xpi"
+                   em:updateHash="sha256:468ff161c36fea3b3db5db163b01c4182ebf5fe32703b2b20ee2bd85dadc0816" />
 </RDF:RDF>
