@@ -625,14 +625,14 @@ function addTriggerListener(/*ChromeWindow*/ chromeWindow) {
     if (triggers.length){
       var win = doc.defaultView;
       for (var i = 0; i < triggers.length; ++i) {
-        evaluate(chromeWindow, triggers[i].scriptContent, false, win, null, triggers[i].file.parent);
+        evaluate(chromeWindow, triggers[i].scriptContent, false, win, {scriptDir: triggers[i].file.parent});
       }
     }
 
     if (isFirefoxStart){
       var specificTriggers = getTriggersForEvent("Firefox Starts");
       for (var i = 0; i < specificTriggers.length; ++i) {
-        evaluate(chromeWindow, specificTriggers[i].scriptContent, false, doc.defaultView, null, specificTriggers[i].file.parent);
+        evaluate(chromeWindow, specificTriggers[i].scriptContent, false, doc.defaultView, {scriptDir: triggers[i].file.parent});
       }
       isFirefoxStart = false;
     }
@@ -640,7 +640,7 @@ function addTriggerListener(/*ChromeWindow*/ chromeWindow) {
     if (isNewWindow){
       var specificTriggers = getTriggersForEvent("New Window");
       for (var i = 0; i < specificTriggers.length; ++i) {
-        evaluate(chromeWindow, specificTriggers[i].scriptContent, false, doc.defaultView, null, specificTriggers[i].file.parent);
+        evaluate(chromeWindow, specificTriggers[i].scriptContent, false, doc.defaultView, {scriptDir: triggers[i].file.parent});
       }
       isNewWindow = false;
     }
