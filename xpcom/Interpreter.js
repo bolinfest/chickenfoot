@@ -100,6 +100,7 @@ function evaluateFile(/*ChromeWindow*/ chromeWindow,
   }
 
   var source = SimpleIO.read(path);
+  var win = getVisibleHtmlWindow(chromeWindow);
   extraContext.scriptDir = path.parent;
   return evaluate(chromeWindow, source, false, win, extraContext);
 }
