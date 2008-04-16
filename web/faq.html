@@ -153,8 +153,8 @@ the directory, then you could pop open the Chickenfoot sidebar,
 and after some experimentation, you might come up with something like this:
 <pre>
 for (link = find('link'); link.hasMatch; link = link.next) {
-  if (link.match(/\.(png|gif)$/)) {
-    replace(link, '&lt;img src="' + link + '"&gt;')
+  if (link.text.match(/\.(png|gif)$/)) {
+    replace(link, '&lt;img src="' + link.text + '"&gt;')
   }
 }
 </pre>
