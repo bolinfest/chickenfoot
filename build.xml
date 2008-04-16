@@ -16,7 +16,7 @@
     </path>    
 
     <property file="build.properties" />
-    <property file="firefox3.properties" />
+    <property file="firefox.properties" />
     
     <property name="src.dir"        value="${basedir}/java" />
     <property name="bin.dir"        value="${basedir}/build/java" />
