@@ -24,7 +24,7 @@ runTest("removeTest.js");
 runTest("replaceTest.js");
 runTest("resetTest.js");
 runTest("keypressTest.js");
-runTest("xulmatchingTest.js");
+//runTest("xulmatchingTest.js"); not ready yet
 
 debug("*********** SUMMARY *************** ")
 for (var i = 0; i < testsRun.length; ++i) {

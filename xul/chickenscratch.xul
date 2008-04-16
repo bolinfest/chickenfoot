@@ -42,15 +42,14 @@
      * @return result of evaluating code
      * @throws any exception thrown by evaluating code
      */
-    function chickenscratchEvaluate(/*Object context, String code*/) {
-      // Any local variables in this method (as well
-      // as global variables) will be visible to and modifiable by 
-      // the user's code.  So we don't define any -- we just use
-      // the arguments list.
+    function chickenscratchEvaluate(/*Object*/ context, /*String*/ code) {
+      // Since FF3, mozIJSSubScriptLoader.loadSubScript() accepts only chrome: URLs, so we have to 
+      // put the script we want to run in a variable and call a chrome: script that evaluates
+      // that variable.
+      context.__chickenfootCode = code;
       return arguments[0].Chickenfoot.jsLoader.loadSubScript(
-        "data:application/x-javascript," 
-            + encodeURIComponent(arguments[1]),
-        arguments[0]
+        "chrome://@EXTENSION_NAME@/content/chickenscratch.js",
+        context
       );
     }
   ]]></script>
@@ -63,15 +62,14 @@
      * @return result of evaluating code
      * @throws any exception thrown by evaluating code
      */
-    function chickenscratchEvaluate(/*Object context, String code*/) {
-      // Any local variables in this method (as well
-      // as global variables) will be visible to and modifiable by 
-      // the user's code.  So we don't define any -- we just use
-      // the arguments list.
+    function chickenscratchEvaluate(/*Object*/ context, /*String*/ code) {
+      // Since FF3, mozIJSSubScriptLoader.loadSubScript() accepts only chrome: URLs, so we have to 
+      // put the script we want to run in a variable and call a chrome: script that evaluates
+      // that variable.
+      context.__chickenfootCode = code;
       return arguments[0].Chickenfoot.jsLoader.loadSubScript(
-        "data:application/x-javascript," 
-            + encodeURIComponent(arguments[1]),
-        arguments[0]
+        "chrome://@EXTENSION_NAME@/content/chickenscratch.js",
+        context
       );
     }
   ]]></script>
