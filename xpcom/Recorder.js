@@ -1,79 +1,98 @@
+// don't attempt labelling if node count exceeds this
+const RECORDER_NODE_THRESHOLD = 2200; 
+
+/**
+ * Returns the total number of nodes in the document, including nodes in other
+ * frames in the document.
+ * @param doc Document
+ * @return int total number of nodes
+ */
+function getDocumentNodeCount(/*Document*/ doc) {
+  var allDocuments = getAllFrameDocuments(doc);
+  var nodeCount = 0;
+  for (var i = 0; i < allDocuments.length; i++) {
+    nodeCount += allDocuments[i].evaluate(
+      'count(//node())', allDocuments[i], null, XPathResult.ANY_TYPE, null)
+      .numberValue;
+  }
+  return nodeCount;
+}
+
+
 function generateCommandDetails(/*Element*/ e, /*String*/ eventType) {
-    var action = null;
-	var label = null;
+  var action = null;
+  var label = null;
 	var value = null;
 	var xpath = null;
-	var targetType = null;
+  var targetType = null;
 	var location = null;
 	var ordinal = null;
-
-    if (eventType == "click") {
-        e = getClickableTarget(e);
-        action = Command.CLICK_COMMAND;
-        
-        if (ElementTypes.getType(e) == ElementTypes.OTHER) {
-            e = getContainedTextOrImage(e);
-        }
+  
+  if (eventType == "click") {
+    e = getClickableTarget(e);
+    action = Command.CLICK_COMMAND;
+    if (ElementTypes.getType(e) == ElementTypes.OTHER) {
+      e = getContainedTextOrImage(e);
     }
-    else if (eventType == "change") {
-        if (!ElementTypes.isTextbox(e) && !ElementTypes.isRadioButton(e) && !ElementTypes.isCheckbox(e) && !ElementTypes.isListbox(e)) {
-		    while (e.nodeName != "BODY") {
-		        var forNodeId = e.getAttribute ? e.getAttribute("for") : null;
-		        if (forNodeId) {
-		            e = e.ownerDocument.getElementById(forNodeId);
-		            break;
-		        }
-		        e = e.parentNode;
+  } else if (eventType == "change") {
+    if (!ElementTypes.isTextbox(e) && !ElementTypes.isRadioButton(e) 
+        && !ElementTypes.isCheckbox(e) && !ElementTypes.isListbox(e)) {
+		  while (e.nodeName != "BODY") {
+		    var forNodeId = e.getAttribute ? e.getAttribute("for") : null;
+		    if (forNodeId) {
+		      e = e.ownerDocument.getElementById(forNodeId);
+		      break;
+		    }
+		      e = e.parentNode;
 		    }
 		}
-		
-        if(ElementTypes.isTextbox(e)) {
-            action = Command.ENTER_COMMAND;
-            value = e.value;
-		}
-		else if(ElementTypes.isRadioButton(e)) {
+    if (ElementTypes.isTextbox(e)) {
+        action = Command.ENTER_COMMAND;
+        value = e.value;
+		} else if (ElementTypes.isRadioButton(e)) {
 		    action = Command.CHECK_COMMAND;
 		    value = "true";
-		}
-		else if(ElementTypes.isCheckbox(e)) {
+		} else if (ElementTypes.isCheckbox(e)) {
 		    action = Command.CHECK_COMMAND;
 		    value = e.checked + "";
-		}
-		else if (ElementTypes.isListbox(e)) {
+		} else if (ElementTypes.isListbox(e)) {
 		    action = Command.CHOOSE_COMMAND;
 		    value = e.options[e.selectedIndex].textContent;
 		}	
-    }
-    else if (eventType == "load") {
-        var url = getVisibleHtmlWindow(e.ownerDocument.defaultView).location;
-        action = Command.GO_COMMAND;
-        value = url;
-    }
-    else if (eventType == "keypress") {
-        action = Command.KEYPRESS_COMMAND;
-    }
-    else {
-        throw new Error("unknown command type: " + eventType);
-    }
+  } else if (eventType == "load") {
+      var url = getVisibleHtmlWindow(e.ownerDocument.defaultView).location;
+      action = Command.GO_COMMAND;
+      value = url;
+  } else if (eventType == "keypress") {
+      action = Command.KEYPRESS_COMMAND;
+  } else {
+      throw new Error("unknown command type: " + eventType);
+  }
     
-    if (eventType != "load") {
-        targetType = ElementTypes.getType(e);
-        xpath = generateXPath(e).xpathExpression;
-        label = getLabelForElement(e);
-
-        var nodes = recorderFind(e.ownerDocument, label, targetType, null, true, false);
-
-        if (nodes.length > 1) {
-            for (var i=0; i<nodes.length; i++) {
-                if (nodes[i].element == e) {
-                    ordinal = i+1;
-                    break;
-                }
-            }
+  if (eventType != "load") {
+    targetType = ElementTypes.getType(e);
+    xpath = generateXPath(e).xpathExpression;
+        
+    // get number of nodes in DOM
+    var nodeCount = getDocumentNodeCount(e.ownerDocument);
+    
+    // skip recorderFind and labelling if DOM has too many nodes
+    if (nodeCount <= RECORDER_NODE_THRESHOLD) {
+      label = getLabelForElement(e);
+      var nodes = 
+        recorderFind(e.ownerDocument, label, targetType, null, true, false);
+      if (nodes.length > 1) {
+        for (var i=0; i<nodes.length; i++) {
+          if (nodes[i].element == e) {
+            ordinal = i+1;
+            break;
+          }
         }
-    } 
-
-    return {action: action, label : label, value : value, targetXPath: xpath, targetType : targetType, ordinal : ordinal};
+      }
+    }       
+  } 
+  return {action: action, label : label, value : value, targetXPath: xpath, 
+          targetType : targetType, ordinal : ordinal};
 }
 
 /* takes a DOM Element node and an event type, and returns a keyword command
@@ -92,18 +111,36 @@ function generateChickenfootCommand(/*Element*/ e, /*String*/ eventType, /*Boole
     
     var details = generateCommandDetails(e, eventType);
     var c = generateChickenfootCommandFromDetails(details);
-    
+
     if (checkCorrectness) {
         var label = getLabel(details);
         var m = Pattern.find(e.ownerDocument, label);
 
-        if (m.count == 1 && m.element == e) {
-            return c;
+        if (m.count == 1) {
+          // one of the ancestors or siblings is the right node
+          // hack-ish because e and m.element don't match because of text labels
+          // assuming good labelling
+          var currentNode = e;
+          
+          // check siblings
+          var siblings = currentNode.parentNode.childNodes;
+          for (var i = 0; i < siblings.length; i++) {
+            if (siblings[i] == e) {
+              return c;
+            }
+          }
+          
+          // check ancestors
+          while (currentNode) {
+            if (currentNode == m.element) {
+              return c;
+            } else {
+              currentNode = currentNode.parentNode;
+            }
+          }
         }
-        else {
-            details.label = "";
-            return generateChickenfootCommandFromDetails(details);
-        }
+        details.label = "";
+        return generateChickenfootCommandFromDetails(details);
     }
     
     return c;
@@ -113,13 +150,12 @@ function generateChickenfootCommand(/*Element*/ e, /*String*/ eventType, /*Boole
         
         if (details.label == "") {
 	        label = "new XPath(\"" + details.targetXPath + "\")";
-    	}
-    	else {
+    	  } else {
     	    label = details.label;
     	    
     	    if (details.ordinal) label = getOrdinalText(details.ordinal) + " " + label;
 
-            if (details.action == Command.CLICK_COMMAND && details.targetType == ElementTypes.BUTTON) label += " button";
+          if (details.action == Command.CLICK_COMMAND && details.targetType == ElementTypes.BUTTON) label += " button";
             else if (details.action == Command.CLICK_COMMAND && details.targetType == ElementTypes.LINK) label += " link";
             else if (details.action == Command.ENTER_COMMAND) label += " textbox";
         	else if(details.targetType == ElementTypes.RADIO_BUTTON) label += " radiobutton";
@@ -132,7 +168,7 @@ function generateChickenfootCommand(/*Element*/ e, /*String*/ eventType, /*Boole
 }
 
 function generateChickenfootCommandFromDetails(/*CommandDetails*/ details) {
-    var command = null;
+  var command = null;
 	var label = "";
 	var value = "\"" + details.value + "\"";
 	var type = "";
@@ -308,7 +344,7 @@ function getLabelForElement(/*Element*/ e) {
         
         while (l) {
             if (l.nodeType == Node.TEXT_NODE && l.textContent.match(/\S/)) {
-                label += l.textContent + " " ;
+                label += l.textContent + " " ;   
             }
             else if (!TextBlob.isFlowTag[l.nodeName] && l.nodeName != "LABEL") {
                 break;
@@ -328,6 +364,7 @@ function getLabelForElement(/*Element*/ e) {
                 l = newl;
            }
         }
+        
     }
     else if (type == ElementTypes.TEXT_BOX || type == ElementTypes.LIST_BOX || type == ElementTypes.PASSWORD_BOX) {
         var l = getClosestLabelTo(e);
@@ -358,12 +395,38 @@ function getLabelForElement(/*Element*/ e) {
     }
 }
 
+/**
+ * Returns the offset of the center of the given element with respect to the root document
+ * @param Element element 
+ * @return int[] = [offsetLeft, offsetTop]
+ */
+function getElementOffsets(/*Element*/ e) {
+  var currentElement = e;
+  var offsetLeft = 0;
+  var offsetTop = 0;
+  do {
+    offsetLeft += currentElement.offsetLeft;
+    if (currentElement.scrollLeft) offsetLeft-=currentElement.scrollLeft;
+    offsetTop += currentElement.offsetTop;
+    if (currentElement.scrollTop) offsetTop-=currentElement.scrollTop;
+  } while (currentElement = currentElement.offsetParent); // assignment, not ==
+  return [(offsetLeft+e.offsetWidth)/2,(offsetTop+e.offsetHeight)/2];
+}
+
+function getSquaredPixelDistance(/*Element*/ e1, /*Element*/ e2) {
+  var e1Offsets = getElementOffsets(e1);
+  var e2Offsets = getElementOffsets(e2);
+  return Math.pow(e1Offsets[0]-e2Offsets[0],2) 
+         + Math.pow(e1Offsets[1]-e2Offsets[1],2);
+}
+
 function getClosestLabelTo(/*Element*/ e) {
     var cur = e;
     while (cur && cur.nodeName != "BODY") {
+  
         if (cur.previousSibling) {
             cur = cur.previousSibling
-            
+
             if (cur.textContent.match(/\S/)) {
                 var s = "";
  
@@ -375,8 +438,8 @@ function getClosestLabelTo(/*Element*/ e) {
                     s += " " + text.textContent;
                     text = result.iterateNext();
                 }
-                
-                if (s.match(/\S/)) {
+
+                if (s.match(/\S/) && getSquaredPixelDistance(e,cur) <= 9000) {
                     return s;
                 }
             }
