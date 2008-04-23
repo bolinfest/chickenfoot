@@ -2,20 +2,20 @@
 <RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#"
          xmlns:NC="http://home.netscape.com/NC-rdf#"
          xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
-  <RDF:Description RDF:about="urn:mozilla:extension:{896b34a4-c83f-4ea7-8ef0-51ed7220ac94}"
-                   em:signature="MIGTMA0GCSqGSIb3DQEBDQUAA4GBAGTbiwo2y/Uylfr3a5tvVXM/1sh3HPjwzSTNyXMmoOtDTt2KJ6zlWL1rzk4MGOxdghTbGPHq2MesH02Wpf0VJTClluRVV3gvXqXKa2IiQ6nXkE9q42mfRpLLp8WgRBKpHXyShac74+MNi9HMp7t1iWCygMq8E0nv8xEeuFI+nBlv">
-    <em:updates RDF:resource="rdf:#$9lIFR2"/>
-  </RDF:Description>
   <RDF:Description RDF:about="rdf:#$alIFR2"
-                   em:version="1.0.2">
+                   em:version="1.0.3">
     <em:targetApplication RDF:resource="rdf:#$dlIFR2"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:extension:{896b34a4-c83f-4ea7-8ef0-51ed7220ac94}"
+                   em:signature="MIGTMA0GCSqGSIb3DQEBDQUAA4GBAKOLYYrWrOnoRXW7Cz4FYmXPN6fMeyxYK7W9/MzjCjDurSMZJhTK+l+rBWFy+rjhDc9weV1ZXZpBqmUn1SYmozvyDWtB3ohRKW/Gp1dCv/IxISy3BNHukIWpZfY+/y8ndw6IKengCMA21QfMdQhgcC3GEiaaal1JWWEIV+gf1n7/">
+    <em:updates RDF:resource="rdf:#$9lIFR2"/>
   </RDF:Description>
   <RDF:Description RDF:about="rdf:#$dlIFR2"
                    em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
                    em:minVersion="1.5"
                    em:maxVersion="3.0.*"
                    em:updateLink="http://groups.csail.mit.edu/uid/chickenfoot/chickenfoot.xpi"
-                   em:updateHash="sha256:52326df3825f84cf59e9779dcc4e497961b7fe2fc914429e320d097c9a3c8617" />
+                   em:updateHash="sha256:170bd1171d705fe3d5da69d5904b37263953e944ffa0a2b8a0a2b98a0d0c3802" />
   <RDF:Seq RDF:about="rdf:#$9lIFR2">
     <RDF:li RDF:resource="rdf:#$alIFR2"/>
   </RDF:Seq>
