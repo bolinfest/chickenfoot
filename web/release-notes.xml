@@ -10,10 +10,34 @@
 	<title>Chickenfeed</title>
 	<link>http://groups.csail.mit.edu/uid/chickenfoot/blog</link>
 	<description>The Official Chickenfoot Blog</description>
-	<pubDate>Wed, 26 Mar 2008 21:58:59 +0000</pubDate>
+	<pubDate>Wed, 23 Apr 2008 19:56:09 +0000</pubDate>
 	<generator>http://wordpress.org/?v=2.3.3</generator>
 	<language>en</language>
 			<item>
+		<title>Chickenfoot 1.0.3</title>
+		<link>http://groups.csail.mit.edu/uid/chickenfoot/blog/2008/04/23/chickenfoot-103/</link>
+		<comments>http://groups.csail.mit.edu/uid/chickenfoot/blog/2008/04/23/chickenfoot-103/#comments</comments>
+		<pubDate>Wed, 23 Apr 2008 19:56:09 +0000</pubDate>
+		<dc:creator>Rob</dc:creator>
+		
+		<category><![CDATA[New Release]]></category>
+
+		<guid isPermaLink="false">http://groups.csail.mit.edu/uid/chickenfoot/blog/2008/04/23/chickenfoot-103/</guid>
+		<description><![CDATA[Bug fixes for Firefox 3:
+
+&#8220;Trying to load non-local URI&#8221; bug fixed in FF3
+Extension packager now written in Javascript, not Java
+
+]]></description>
+			<content:encoded><![CDATA[<p>Bug fixes for Firefox 3:</p>
+<ul>
+<li>&#8220;Trying to load non-local URI&#8221; bug fixed in FF3</li>
+<li>Extension packager now written in Javascript, not Java</li>
+</ul>
+]]></content:encoded>
+			<wfw:commentRss>http://groups.csail.mit.edu/uid/chickenfoot/blog/2008/04/23/chickenfoot-103/feed/</wfw:commentRss>
+		</item>
+		<item>
 		<title>Chickenfoot 1.0.2 released</title>
 		<link>http://groups.csail.mit.edu/uid/chickenfoot/blog/2008/03/26/chickenfoot-102-released/</link>
 		<comments>http://groups.csail.mit.edu/uid/chickenfoot/blog/2008/03/26/chickenfoot-102-released/#comments</comments>
@@ -41,7 +65,7 @@ Chickenfoot scripts are now evaluated with mozIJSSubScript [...]]]></description
 <p>Known bugs on Firefox 3:</p>
 <ul>
 <li>Calls down to Java crash the browser, so the extension packager (which currently uses Java) doesn&#8217;t work yet.</li>
-<li>Chickenfoot doesn&#8217;t sleep properly on Mac and Linux, so attempts to wait for a page to load will throw an exception.  Workaround for now is using whenLoaded().</li>
+<li>Intermittent crashing observed on FF3/Windows.</li>
 </ul>
 ]]></content:encoded>
 			<wfw:commentRss>http://groups.csail.mit.edu/uid/chickenfoot/blog/2008/03/26/chickenfoot-102-released/feed/</wfw:commentRss>
@@ -235,22 +259,6 @@ Bug fixes:</p>
 </ul>
 ]]></content:encoded>
 			<wfw:commentRss>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/11/27/chickenfoot-0920061127-released/feed/</wfw:commentRss>
-		</item>
-		<item>
-		<title>Chickenfoot 0.9.20060922 released</title>
-		<link>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/09/22/chickenfoot-0920060922-released/</link>
-		<comments>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/09/22/chickenfoot-0920060922-released/#comments</comments>
-		<pubDate>Sat, 23 Sep 2006 01:13:28 +0000</pubDate>
-		<dc:creator>Rob</dc:creator>
-		
-		<category><![CDATA[New Release]]></category>
-
-		<guid isPermaLink="false">http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/09/22/chickenfoot-0920060922-released/</guid>
-		<description><![CDATA[Fixes &#8220;Components.classes[cid] not found&#8221; bug sometimes seen on Windows.
-]]></description>
-			<content:encoded><![CDATA[<p>Fixes &#8220;Components.classes[cid] not found&#8221; bug sometimes seen on Windows.</p>
-]]></content:encoded>
-			<wfw:commentRss>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/09/22/chickenfoot-0920060922-released/feed/</wfw:commentRss>
 		</item>
 	</channel>
 </rss>
