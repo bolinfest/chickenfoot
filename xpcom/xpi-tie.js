@@ -55,7 +55,7 @@ function xpiTie(/*String*/outputPath, /*Object*/templateTags, /*Array*/triggers,
     var contentDirPath = contentDir.path.replace(/\\/g, "\\");
 
     //add chickenscratch.xul, contents.rdf, and overlay.xul to content directory ------
-    var contentFiles = ["\\chickenscratch.xul", "\\contents.rdf", "\\overlay.xul"];
+    var contentFiles = ["\\chickenscratch.xul", "\\chickenscratch.js", "\\contents.rdf", "\\overlay.xul"];
     for(var i=0; i<contentFiles.length; i++) {
       var templateTxt = io.read(extensionPath + "\\export" + contentFiles[i]);
       io.write(contentDirPath + contentFiles[i], fillTemplate(templateTxt, templateTags));

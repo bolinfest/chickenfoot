@@ -401,6 +401,7 @@
           <fileset dir="${basedir}/xpi-tie" />
           <fileset dir="${content.dir}">
             <include name="chickenscratch.xul" />
+            <include name="chickenscratch.js" />
           </fileset>
         </copy>
       
