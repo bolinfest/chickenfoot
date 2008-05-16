@@ -1,7 +1,7 @@
 /**
  * This method assembles all of the required files to write the xpi file into a temporary directory,
  * then writes the contents of this temporary directory to an xpi file. The temporary directory is
- * a folder called 'cftExtPkgr_TEMP_DIR' in the same directory that the xpi file will be written to.
+ * a folder with a unique, auto-generated name in the same directory that the xpi file will be written to.
  * This temporary directory is deleted upon completion of the packaging. The xpi file and the
  * chickenfoot-xpi-tie.jar inside of it are zipped differently for Firefox 2 and 3. 
  *    Firefox 2: invokes the Java method 'ExportXpi.writeToZip'
@@ -23,17 +23,20 @@ function xpiTie(/*String*/outputPath, /*Object*/templateTags, /*Array*/triggers,
   var xpiFile = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
   xpiFile.initWithPath(outputPath);
   
-  //create a temporary directory for building the jar and xpi files
-  var tempDirPath = xpiFile.parent.path.replace(/\\/g, "\\") + "\\cftExtPkgr_TEMP_DIR";
-  io.makeDir(tempDirPath);
-  var tempDir = io.toFile(tempDirPath);
+  //create a temporary directory inside the system's designated temporary directory for building the jar and xpi files
+  var tempDir = Components.classes["@mozilla.org/file/directory_service;1"]
+                       .getService(Components.interfaces.nsIProperties)
+                       .get("TmpD", Components.interfaces.nsIFile);
+  tempDir.append("cftExtPkgr_TEMP_DIR");
+  tempDir.createUnique(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0666); 
+  var tempDirPath = tempDir.path;
   //debug("tempDirPath = " + tempDirPath);
 
   //get extension path
   var mgr = Components.classes["@mozilla.org/extensions/manager;1"].getService(Components.interfaces.nsIExtensionManager);
   var loc = mgr.getInstallLocation("{@GUID@}");
-  var file = loc.getItemLocation("{@GUID@}");
-  var extensionPath = file.path;
+  var extFile = loc.getItemLocation("{@GUID@}");
+  var extensionPath = extFile.path;
   
   //assemble contents for and zip chickenfoot-xpi-tie.jar
   writeXpiTieJar();
@@ -50,15 +53,22 @@ function xpiTie(/*String*/outputPath, /*Object*/templateTags, /*Array*/triggers,
    **/
   function writeXpiTieJar() {
     //create chickenfoot-xpi-tie.jar
-    io.makeDir(tempDirPath + "\\chickenfoot-xpi-tie_TEMP_DIR\\content");
-    var contentDir = io.toFile(tempDirPath + "\\chickenfoot-xpi-tie_TEMP_DIR\\content");
-    var contentDirPath = contentDir.path.replace(/\\/g, "\\");
+    var contentDir = tempDir.clone();
+    contentDir.append("chickenfoot-xpi-tie_TEMP_DIR"); contentDir.append("content");
+    var contentDirPath = contentDir.path;
 
     //add files to content directory ------
-    var contentFiles = ["\\chickenscratch.xul", "\\chickenscratch.js", "\\contents.rdf", "\\overlay.xul"];
+    var contentFiles = ["chickenscratch.xul", "chickenscratch.js", "contents.rdf", "overlay.xul"];
     for(var i=0; i<contentFiles.length; i++) {
-      var templateTxt = io.read(extensionPath + "\\export" + contentFiles[i]);
-      io.write(contentDirPath + contentFiles[i], fillTemplate(templateTxt, templateTags));
+      //get template file to read
+      var contentReadFile = extFile.clone();
+      contentReadFile.append("export"); contentReadFile.append(contentFiles[i]);
+      var templateTxt = io.read(contentReadFile);
+      
+      //write the templated text into the temp dir
+      var contentWriteFile = contentDir.clone();
+      contentWriteFile.append(contentFiles[i]);
+      io.write(contentWriteFile, fillTemplate(templateTxt, templateTags));
     }
 
     //add icon.png to content directory ------
@@ -68,11 +78,15 @@ function xpiTie(/*String*/outputPath, /*Object*/templateTags, /*Array*/triggers,
     }
     else { //otherwise get the chickenfoot image from chickenfoot.jar
       var zipReader = Components.classes["@mozilla.org/libjar/zip-reader;1"].createInstance(Components.interfaces.nsIZipReader);
-
-      //create a blank image file in the content dir to overwrite with 
-      var jarFile = io.toFile(extensionPath + "\\chrome\\chickenfoot.jar");
-      var iconFile = io.toFile(contentDirPath + "\\icon.png");
+      
+      //create a blank image file in the content dir to overwrite with
+      var iconFile = contentDir.clone();
+      iconFile.append("icon.png");
       io.writeBytes(iconFile, "", false);
+
+      //get a reference to the chickenfoot.jar file inside the chickenfoot extension
+      var jarFile = extFile.clone();
+      jarFile.append("chrome"); jarFile.append("chickenfoot.jar");
 
       //this init call is needed in Firefox 2 and lower, but throws an exception in Firefox 3, so just catch it and continue
       try { zipReader.init(jarFile); } catch(e) { }
@@ -82,12 +96,22 @@ function xpiTie(/*String*/outputPath, /*Object*/templateTags, /*Array*/triggers,
     }
 
     //add libraries to content directory ------
-    var librariesFile = io.toFile(extensionPath + "\\libraries");
+    var librariesFile = extFile.clone();
+    librariesFile.append("libraries");
     librariesFile.copyTo(contentDir, "libraries");
 
     //zip content directory to chrome\\chickenfoot-xpi-tie.jar ------
-    io.makeDir(tempDirPath + "\\chrome");
-    writeToZip(chromeWindow, tempDirPath + "\\chickenfoot-xpi-tie_TEMP_DIR", tempDirPath + "\\chrome\\chickenfoot-xpi-tie.jar");
+    var xpiChromeDir = tempDir.clone();
+    xpiChromeDir.append("chrome");
+    xpiChromeDir.create(Components.interfaces.nsIFile.DIRECTORY_TYPE, 0666);
+    
+    var xpiTempDir = tempDir.clone();
+    xpiTempDir.append("chickenfoot-xpi-tie_TEMP_DIR");
+    
+    var xpiTieFile = tempDir.clone();
+    xpiTieFile.append("chrome"); xpiTieFile.append("chickenfoot-xpi-tie.jar");
+    
+    writeToZip(chromeWindow, xpiTempDir.path, xpiTieFile.path);
     
     //delete content directory from temporary directory ------
     contentDir.parent.remove(true);
@@ -102,40 +126,61 @@ function xpiTie(/*String*/outputPath, /*Object*/templateTags, /*Array*/triggers,
   function writeXpiFile(/*nsILocalFile*/tempDir) {
     //create components directory ------
     // by copying chickenfoot's components directory EXCEPT FOR ChickenfootCommandLineHandler.js
-    var cftComponentsDir = io.toFile(extensionPath + "\\components");
+    var cftComponentsDir = extFile.clone();
+    cftComponentsDir.append("components");
     cftComponentsDir.copyTo(tempDir, "components");
 
-    var commandLineHandlerFile = io.toFile(tempDirPath + "\\components\\ChickenfootCommandLineHandler.js");
+    var commandLineHandlerFile = tempDir.clone()
+    commandLineHandlerFile.append("components"); commandLineHandlerFile.append("ChickenfootCommandLineHandler.js");
     if(io.exists(commandLineHandlerFile)) { commandLineHandlerFile.remove(false); }
     
     //Chickenfoot.js and Chicken-bypass.js are templates and need to be filled in
-    var componentsFiles = ["\\Chicken-bypass.js", "\\Chickenfoot.js"];
+    var componentsFiles = ["Chicken-bypass.js", "Chickenfoot.js"];
     for(var i=0; i<componentsFiles.length; i++) {
-      var templateTxt = io.read(extensionPath + "\\export" + componentsFiles[i]);
-      io.write(tempDirPath + "\\components" + componentsFiles[i], fillTemplate(templateTxt, templateTags));
+      //get template file to read
+      var componentsReadFile = extFile.clone();
+      componentsReadFile.append("export"); componentsReadFile.append(componentsFiles[i]);
+      var templateTxt = io.read(componentsReadFile);
+      
+      //write the templated text into the temp dir
+      var componentsWriteFile = tempDir.clone();
+      componentsWriteFile.append("components"); componentsWriteFile.append(componentsFiles[i]);
+      io.write(componentsWriteFile, fillTemplate(templateTxt, templateTags));
     }
 
     //create defaults directory ------
-    io.makeDir(tempDirPath + "\\defaults\\preferences");
-    var defaultsDir = io.toFile(tempDirPath + "\\defaults\\preferences");
+    //get template file to read
+    var preferencesReadFile = extFile.clone();
+    preferencesReadFile.append("export"); preferencesReadFile.append("preferences.js");
+    var preferencesTxt = io.read(preferencesReadFile);
 
     //add preferences.js file to defaults directory
-    var preferencesTxt = io.read(extensionPath + "\\export\\preferences.js");
-    var preferencesFile = io.toFile("preferences.js", defaultsDir);
-    io.write(preferencesFile, fillTemplate(preferencesTxt, templateTags), false);
+    var preferencesWriteFile = tempDir.clone();
+    preferencesWriteFile.append("defaults"); preferencesWriteFile.append("preferences"); preferencesWriteFile.append("preferences.js");
+    io.write(preferencesWriteFile, fillTemplate(preferencesTxt, templateTags), false);
 
     //create java directory -------
     // by copying chickenfoot's java directory
-    var cftJavaDir = io.toFile(extensionPath + "\\java");
+    var cftJavaDir = extFile.clone();
+    cftJavaDir.append("java");
     cftJavaDir.copyTo(tempDir, "java");
 
     //write install.rdf file ------
-    var installTemplateTxt = io.read(extensionPath + "\\export\\install.template.rdf");
-    io.write(tempDirPath + "\\install.rdf", fillTemplate(installTemplateTxt, templateTags));
+    //get template file to read
+    var installReadFile = extFile.clone();
+    installReadFile.append("export"); installReadFile.append("install.template.rdf");
+    var installTemplateTxt = io.read(installReadFile);
+    
+    //write to upper level xpi directory level
+    var installWriteFile = tempDir.clone();
+    installWriteFile.append("install.rdf");
+    io.write(installWriteFile, fillTemplate(installTemplateTxt, templateTags));
 
     //write triggers.xml file ------
     var triggersXmlTxt = createTriggersXML(triggers);
-    io.write(tempDirPath + "\\triggers.xml", fillTemplate(triggersXmlTxt, templateTags));
+    var triggersWriteFile = tempDir.clone();
+    triggersWriteFile.append("triggers.xml");
+    io.write(triggersWriteFile, fillTemplate(triggersXmlTxt, templateTags));
 
     //write trigger script files ------
     for(var i=0; i<triggers.length; i++) {
@@ -158,8 +203,15 @@ function xpiTie(/*String*/outputPath, /*Object*/templateTags, /*Array*/triggers,
     
     //write update.rdf file if url supplied ------
     if(templateTags.EXTENSION_URL != "") {
-      var updateTemplateTxt = io.read(extensionPath + "\\export\\update.template.rdf");
-      io.write(xpiFile.parent.path.replace(/\\/g, "\\") + "\\update.rdf", fillTemplate(updateTemplateTxt, templateTags));
+      //get template file to read
+      var updateReadFile = extFile.clone();
+      updateReadFile.append("export"); updateReadFile.append("update.template.rdf");
+      var updateTemplateTxt = io.read(updateReadFile);
+      
+      //write to same directory as xpi file
+      var updateWriteFile = xpiFile.parent.clone();
+      updateWriteFile.append("update.rdf");
+      io.write(updateWriteFile, fillTemplate(updateTemplateTxt, templateTags));
     }
   } //end writeXpiFile()
 } //end xpiTie()

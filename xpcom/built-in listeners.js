@@ -1,13 +1,15 @@
-// ==UserScript==
-// @name Install Trigger Script Button
-// @when Pages Match
-// @description inserts a button to install chickenfoot scripts from the wiki
-// @include http://groups.csail.mit.edu/uid/chickenfoot/scripts/index.php/*
-// ==/UserScript==
-
-function installTriggerButtons(document) {
-
-if(document.location.wrappedJSObject.href.match(/http:\/\/groups.csail.mit.edu\/uid\/chickenfoot\/scripts\/index.php\/*/) == null) { return; }
+/**
+ * This function adds install-trigger buttons to pages on the Chickenfoot scripts wiki. The
+ * buttons are added to the bottom of the divs that contain scripts. This function should only
+ * be called when at the Chickenfoot scripts wiki, i.e. when pages match :
+ *    http://groups.csail.mit.edu/uid/chickenfoot/scripts/index.php/*
+ * NOTE: This function was written to be a built-in trigger, see where it is registered as a load
+ *       listener in Chickenfoot.js
+ *
+ * @param document : Document //this is the HTML document node of the Chickenfoot scripts wiki page
+ */
+function installTriggerButtons(/*Document*/document) {
+//search the DOM for divs that contain scripts
 var pred = function (node) {
   var results = [];
   for (var h=0; h<node.childNodes.length; h++) {
@@ -18,6 +20,7 @@ var pred = function (node) {
 var treewalker = Chickenfoot.createDeepTreeWalker(document.wrappedJSObject, NodeFilter.SHOW_ALL, pred);
 var current = treewalker.nextNode();
 
+//iterate through all the scripts divs found and put a button at the bottom of each one
 while(current) {
   if (current.wrappedJSObject) {current = current.wrappedJSObject;}
 
@@ -36,6 +39,8 @@ while(current) {
                   exclude : attMap.exclude,
                   code : codeBody
                 }
+                
+      //create the button html element, then attach it to the script div
       var button = document.wrappedJSObject.createElement('button');
       var buttonText = document.wrappedJSObject.createTextNode('Install Script as Trigger');
       button.appendChild(buttonText);
@@ -48,7 +53,15 @@ while(current) {
   current = treewalker.nextNode();
 }
 
-function filterElements(elements, tag) {
+/**
+ * This function filters a list of DOM elements for the ones that have the specified tag name
+ *
+ * @param elements : Array DOM elements //this is the list of DOM nodes to filter
+ * @param tag : String //this is the tagname to check the nodes against
+ *
+ * @return an array of the filtered elements
+ */
+function filterElements(/*Array DOM elements*/elements,/*String*/tag) {
   var results = [];  var m=0;
   for (var k=0; k<elements.length; k++) {
     if (elements[k].tagName == tag) {results[m] = elements[k]; m++;}
@@ -56,7 +69,13 @@ function filterElements(elements, tag) {
   return results;
 }
 
-function makeTrigger(foundMap) {
+/**
+ * This function creates a new trigger given a map of its properties.
+ * The new created trigger is NOT RETURNED at the end of the function, this function returns nothing.
+ *
+ * @param foundMap : Object //this is the object whose properties store the new trigger's information
+ */
+function makeTrigger(/*Object*/foundMap) {
   //default trigger properties
   var name = "no name";
   var when = "Pages Match";
@@ -64,12 +83,14 @@ function makeTrigger(foundMap) {
   var includes = new Chickenfoot.SlickSet();
   var excludes = new Chickenfoot.SlickSet();
   
+  //if given values for trigger properties, use these instead of default trigger properties
   if (foundMap.name) {name = foundMap.name[0];}
   if (foundMap.when) {when = foundMap.when[0];}
   if (foundMap.description) {description = foundMap.description[0];}
   if (foundMap.include) {includes.addAll(foundMap.include);}
   if (foundMap.exclude) {excludes.addAll(foundMap.exclude);}
 
+  //put the trigger's information into the actual script file as metadata
   var map = { name : name,
               when : when,
               description : description,
@@ -78,6 +99,7 @@ function makeTrigger(foundMap) {
             };
   var newCode = Chickenfoot.updateAttributes(foundMap.code, map);
 
+  //create the new trigger object
   var trigger = new Chickenfoot.Trigger(
     name,
     newCode,

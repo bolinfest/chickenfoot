@@ -158,16 +158,21 @@ function setupWindow(/*ChromeWindow*/ window) {
     
   addTriggerListener(window);
   
-/*
   //add a load listener for the install trigger button script, making it a built-in trigger
   var browser = getTabBrowser(window);  
   browser.addEventListener("load", triggerListener, true);
-  function triggerListener(event) {    
+  function triggerListener(event) {
+    //if listener is fired for loading a xul document, then ignore it
     var doc = event.originalTarget;
     var win = doc.defaultView;
-    evaluate(window, "Chickenfoot.installTriggerButtons(document);", false, win, null, null);
+    if(doc.location == null) { return; }
+    
+    //if not at the chickenfoot scripts wiki, then ignore it
+    if(doc.location.wrappedJSObject.href.match(/http:\/\/groups.csail.mit.edu\/uid\/chickenfoot\/scripts\/index.php\/*/) != null) {
+      Chickenfoot.installTriggerButtons(doc);
+    }
   }
-*/  
+  
 }
 
 
