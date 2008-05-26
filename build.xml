@@ -456,6 +456,8 @@
                 <!-- must use build literally because ${build.dir} fails for some reason -->   
                 <exclude name="build/**" />
                 <exclude name="web/**" />
+                <exclude name="mccoy/**" />
+                <exclude name="mccoy-profile/**" />
             </zipfileset>   
         </zip>
     </target>
