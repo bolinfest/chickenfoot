@@ -10,10 +10,34 @@
 	<title>Chickenfeed</title>
 	<link>http://groups.csail.mit.edu/uid/chickenfoot/blog</link>
 	<description>The Official Chickenfoot Blog</description>
-	<pubDate>Wed, 23 Apr 2008 19:56:09 +0000</pubDate>
+	<pubDate>Tue, 08 Jul 2008 13:55:33 +0000</pubDate>
 	<generator>http://wordpress.org/?v=2.3.3</generator>
 	<language>en</language>
 			<item>
+		<title>Chickenfoot 1.0.4</title>
+		<link>http://groups.csail.mit.edu/uid/chickenfoot/blog/2008/07/08/chickenfoot-104/</link>
+		<comments>http://groups.csail.mit.edu/uid/chickenfoot/blog/2008/07/08/chickenfoot-104/#comments</comments>
+		<pubDate>Tue, 08 Jul 2008 13:55:33 +0000</pubDate>
+		<dc:creator>Rob</dc:creator>
+		
+		<category><![CDATA[General]]></category>
+
+		<guid isPermaLink="false">http://groups.csail.mit.edu/uid/chickenfoot/blog/2008/07/08/chickenfoot-104/</guid>
+		<description><![CDATA[Bug fixes in this release:
+
+extension packager now  works on Macs again
+packaged extensions no longer display &#8220;Trying to load non-local URI&#8221; error
+
+]]></description>
+			<content:encoded><![CDATA[<p>Bug fixes in this release:</p>
+<ul>
+<li>extension packager now  works on Macs again</li>
+<li>packaged extensions no longer display &#8220;Trying to load non-local URI&#8221; error</li>
+</ul>
+]]></content:encoded>
+			<wfw:commentRss>http://groups.csail.mit.edu/uid/chickenfoot/blog/2008/07/08/chickenfoot-104/feed/</wfw:commentRss>
+		</item>
+		<item>
 		<title>Chickenfoot 1.0.3</title>
 		<link>http://groups.csail.mit.edu/uid/chickenfoot/blog/2008/04/23/chickenfoot-103/</link>
 		<comments>http://groups.csail.mit.edu/uid/chickenfoot/blog/2008/04/23/chickenfoot-103/#comments</comments>
@@ -227,38 +251,6 @@ for more details.</p>
 <p>- fixed a few bugs, such as click(&#8221;Next&#8221;) not working on Google search results</p>
 ]]></content:encoded>
 			<wfw:commentRss>http://groups.csail.mit.edu/uid/chickenfoot/blog/2007/02/26/chickenfoot-0920070226-released/feed/</wfw:commentRss>
-		</item>
-		<item>
-		<title>Chickenfoot 0.9.20061127 released</title>
-		<link>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/11/27/chickenfoot-0920061127-released/</link>
-		<comments>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/11/27/chickenfoot-0920061127-released/#comments</comments>
-		<pubDate>Mon, 27 Nov 2006 22:14:30 +0000</pubDate>
-		<dc:creator>Rob</dc:creator>
-		
-		<category><![CDATA[New Release]]></category>
-
-		<guid isPermaLink="false">http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/11/27/chickenfoot-0920061127-released/</guid>
-		<description><![CDATA[Chickenfoot now has a new feature called keyword commands, which allows simple scripts to be written without knowing any Javascript syntax.  For example, here&#8217;s a simple script of commands that takes you to the Chickenfoot page:
-go to google.com
-type &#8220;chickenfoot mit&#8221;
-search
-Keyword commands are still an experimental feature, not enabled by default.  You can switch [...]]]></description>
-			<content:encoded><![CDATA[<p>Chickenfoot now has a new feature called <em>keyword commands</em>, which allows simple scripts to be written without knowing any Javascript syntax.  For example, here&#8217;s a simple script of commands that takes you to the Chickenfoot page:<br />
-go to google.com<br />
-type &#8220;chickenfoot mit&#8221;<br />
-search</p>
-<p>Keyword commands are still an experimental feature, not enabled by default.  You can switch to keyword command execution mode by using the new drop-down menu on the Run button.  Keyword commands require Java support in your browser.</p>
-<p>The Chickenfoot script editor also now supports Ctrl-Enter to execute the current line in the editor. Ctrl-Enter provides the same behavior as a command line (such as the Javascript command line in the Error Console).  Ctrl-Enter works on both Javascript code and keyword command code.<br />
-Bug fixes:</p>
-<ul>
-<li>Java is now loaded lazily when needed, rather than every time Firefox starts.</li>
-<li>Packaged Chickenfoot extensions can now be installed in Firefox 2.0.</li>
-<li>The fetch() command no longer  conflicts with AdBlocker or causes crashes on MacOS when no Firefox windows are visible.  Instead, fetch() now loads pages into invisible tabs in the current window.</li>
-<li>Triggers now run on the first page loaded by Firefox.</li>
-<li>A number of startup race conditions have been fixed.  Symptoms of these bugs varied, but generally Firefox  refused to start up, hung on startup, or started up with important features disabled, like the Back/Forward buttons or menu items.  Because it was a race condition, these effects were intermittent, not seen all the time or on all platforms.</li>
-</ul>
-]]></content:encoded>
-			<wfw:commentRss>http://groups.csail.mit.edu/uid/chickenfoot/blog/2006/11/27/chickenfoot-0920061127-released/feed/</wfw:commentRss>
 		</item>
 	</channel>
 </rss>
