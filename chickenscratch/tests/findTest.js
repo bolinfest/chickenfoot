@@ -16,6 +16,10 @@ var t = new Test();
 
 var testName;  // name of current test, inferred from load() argument
 
+// xhtml (which has lower-case tag names)
+load("classic.xhtml")
+testCount(12, null, "link");
+testCount(2, null, "button");
 
 // iTunes page
 load("artists.html");
@@ -299,4 +303,5 @@ function matchesToString(m) {
   }
   return sb.toString();
 }
+
 

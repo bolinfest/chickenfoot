@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd">
+ <html xmlns="http://www.w3.org/1999/xhtml"> <head> <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8"/> <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0"/> <style type="text/css"> .c0 {font-family:sans-serif;} .c1 {font-size:smaller;} .c2 {padding-top:9pt;} .c3 {text-align:right;} .c4 {vertical-align:middle;text-align:center;} .c5 {font-weight:bold;} </style> <title> Google </title> <script type="text/javascript">
+//<![CDATA[
+start = (new Date()).getTime();
+function qs(ue) {
+  return qs2(ue, '');
+}
+function qs2(ue, u2) {
+ var qe = encodeURIComponent(document.getElementById("q").value);
+ var url;
+  if(ue.indexOf("q=")!=-1) {
+    url = ue.replace(new RegExp("q=[^&$]*"),"q="+qe);
+  } else if (ue.indexOf("?") != -1) {
+    if (qe != '') {      url = ue + String.fromCharCode(38) + 'q=' + qe;
+    } else {      url = ue;
+    }  } else {    if (qe != '') {
+      url = ue + '?q=' + qe;
+    } else {      url = ue;
+    }  }
+  if (u2 != '') {
+    url = u2 + encodeURIComponent(url);
+  }
+  location.href=url;
+}
+//]]> </script> </head> <body class="c0 c1" onload="document.getElementById('q').focus();"> <div> <div class="c2 c3"><a href="http://www.google.com/url?sa=p&amp;pref=wf&amp;pval=3&amp;ct=promo&amp;q=/m" >iGoogle</a> </div> <form action="http://www.google.com/search"> <div> <div class="c4"><img class="c2" src="http://www.google.com/images/logo_sm.gif" alt=""/> </div> <div class="c4"><span class="c5">Web</span>&nbsp;&nbsp;&nbsp;<a href="javascript:qs('http://images.google.com/images')" >Images</a>&nbsp;&nbsp;&nbsp;<a href="javascript:qs('http://www.google.com/news')" >News</a>&nbsp;&nbsp;&nbsp;<a href="javascript:qs('http://maps.google.com/maps')" >Maps</a>&nbsp;&nbsp;&nbsp;<a href="http://www.google.com/m/products" >More&nbsp;&#187;</a> <br/> <input id="q" type="text" name="q" size="40" maxlength="2048"/> </div> <div class="c4" id="f"> <br/> <input class="c1" type="submit" name="btnG" value="Google Search"/> <input class="c1" type="submit" name="btnI" value="I'm Feeling Lucky"/> <br/> <br/>View Google in:&nbsp;<a href="http://www.google.com/url?ct=promo&amp;pref=wf&amp;pval=3&amp;q=http%3A%2F%2Fwww.google.com%2Fm&amp;sa=p&amp;usg=AFQjCNGPi4oaVfQUZEpg5-cVN1O2lifPEw" >Mobile</a>&nbsp;|&nbsp;<span class="c5">Classic</span> <br/> <br/><a href="http://www.google.com/advanced_search" >Advanced Search</a> <br/><a href="http://www.google.com/preferences" >Preferences</a> <br/><a href="http://www.google.com/language_tools" >Language Tools</a> <br/> <br/> <br/><a href="http://www.google.com/intl/en/ads/" >Advertising Programs</a> - <a href="http://www.google.com/services/" >Business Solutions</a> <br/><a href="http://www.google.com/intl/en/about.html" >About Google</a> </div> </div> </form> <div class="c1 c4">&copy;2008 Google <br/><img src="/m/ping" width="5" height="5" alt=" "/> </div> </div> </body> </html>

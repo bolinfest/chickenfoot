@@ -57,23 +57,23 @@ function Table() {
   function getFirstRow(table){
     var row = table.firstChild;
     do{
-      if(row.nodeType == 1 && row.tagName == "TR")
+      if(row.nodeType == 1 && upperCaseOrNull(row.tagName) == "TR")
         return row
     }while(row = row.nextSibling);
   }
   
   function getParentRow(cell){
     var parent = cell.parentNode;
-    if(parent.tagName == "TR")
+    if(upperCaseOrNull(parent.tagName) == "TR")
       return cell.parentNode
-    else if(cell.tagName == "TABLE")
+    else if(upperCaseOrNull(cell.tagName) == "TABLE")
       return null
     else
       return getParentRow(cell)
   }
   
   function getParentTable(node){
-    if(node.nodeType == 1 && node.tagName == "TABLE"){ return node }
+    if(node.nodeType == 1 && upperCaseOrNull(node.tagName) == "TABLE"){ return node }
     else{ return getParentTable(node.parentNode) }
   }
   
@@ -110,7 +110,7 @@ function Table() {
     var next = row.nextSibling;
     if(next != null){
       if(next.nodeType == 1){
-        if(next.tagName == "TR"){
+        if(upperCaseOrNull(next.tagName) == "TR"){
           return next;
         }
       }
@@ -165,7 +165,7 @@ function Table() {
     }
     var tree = document.createTreeWalker(table,NodeFilter.SHOW_ELEMENT,onlyElements,false)
     while((branch = tree.nextNode()) != null){
-      if(branch.tagName == "TABLE")
+      if(upperCaseOrNull(branch.tagName) == "TABLE")
         return false
     }
     return true
@@ -175,7 +175,7 @@ function Table() {
     var text = 0; var element = 0;
     function isTabular(n){
       if(n.nodeType == 1){
-        switch(n.tagName){
+        switch(upperCaseOrNull(n.tagName)){
           case "TBODY": return true; break;
           case "TR":return true;break;
           case "TD":return true;break;

@@ -494,8 +494,8 @@ ElementTypes.getType = function(/*Element*/ node) {
 ElementTypes.isButton = function(/*Node*/ node) {
   return instanceOf(node, Node)
     && node.nodeType == Node.ELEMENT_NODE 
-    && (node.tagName == 'BUTTON'
-        || (node.tagName == 'INPUT'
+    && (upperCaseOrNull(node.tagName) == 'BUTTON'
+        || (upperCaseOrNull(node.tagName) == 'INPUT'
             && 'type' in node
             && (node.type == 'submit'
                 || node.type == 'button'
@@ -506,7 +506,7 @@ ElementTypes.isButton = function(/*Node*/ node) {
 ElementTypes.isLink = function(/*Node*/ node) {
   return instanceOf(node, Node)
     && node.nodeType == Node.ELEMENT_NODE 
-    && node.tagName == 'A';
+    && upperCaseOrNull(node.tagName) == 'A';
 }
 
 /** @return true iff node is clickable (or at least likely to be */
@@ -515,7 +515,7 @@ ElementTypes.isClickable = function(/*Node*/ node) {
         && node.nodeType == Node.ELEMENT_NODE
         && (ElementTypes.isButton(node) 
             || ElementTypes.isLink(node)
-            || (node.tagName == 'INPUT' && node.type == 'image')
+            || (upperCaseOrNull(node.tagName) == 'INPUT' && node.type == 'image')
             || node.hasAttribute('onclick')
             || node.ownerDocument.defaultView.getComputedStyle(node, "").cursor == "pointer");
 }
@@ -523,8 +523,8 @@ ElementTypes.isClickable = function(/*Node*/ node) {
 /** @return true if the node is a text input */
 ElementTypes.isTextbox = function(/*Node*/ node) {
   if (!instanceOf(node, Node) || node.nodeType != Node.ELEMENT_NODE) return false;
-  if (node.tagName == 'TEXTAREA') return true;
-  if ('type' in node && node.tagName == 'INPUT') {
+  if (upperCaseOrNull(node.tagName) == 'TEXTAREA') return true;
+  if ('type' in node && upperCaseOrNull(node.tagName) == 'INPUT') {
     var type = node.type;
     if (type == 'text'
         || type == 'password'
@@ -538,40 +538,40 @@ ElementTypes.isTextbox = function(/*Node*/ node) {
 /** @return true if node is a password input */
 ElementTypes.isPassword = function(/*Node*/ node) {
     if (!instanceOf(node, Node) || node.nodeType != Node.ELEMENT_NODE) return false;
-    if ('type' in node && node.tagName == 'INPUT' && node.type == 'password') return true;
+    if ('type' in node && upperCaseOrNull(node.tagName) == 'INPUT' && node.type == 'password') return true;
     return false;
 }
 
 /** @return true iff the node is a listbox (select) */
 ElementTypes.isListbox = function(/*<Node>*/ node) {
   if (!instanceOf(node, Node) || node.nodeType != Node.ELEMENT_NODE) return false;
-  return (node.tagName == 'SELECT');
+  return (upperCaseOrNull(node.tagName) == 'SELECT');
 }
 
 /** @return true iff the node is a checkbox */
 ElementTypes.isCheckbox = function(node) {
   if (!instanceOf(node, Node) || node.nodeType != Node.ELEMENT_NODE) return false;
-  return node.tagName == 'INPUT' && node.type == 'checkbox';
+  return upperCaseOrNull(node.tagName) == 'INPUT' && node.type == 'checkbox';
 }
 
 /** @return true iff the node is a radio button */
 ElementTypes.isRadioButton = function(node) {
   if (!instanceOf(node, Node) || node.nodeType != Node.ELEMENT_NODE) return false;
-  return node.tagName == 'INPUT' && node.type == 'radio';
+  return upperCaseOrNull(node.tagName) == 'INPUT' && node.type == 'radio';
 }
 
 /** @return true iff the node is a listitem (option) */
 ElementTypes.isListitem = function(/*Node*/ node) {
     if (!instanceOf(node, Node) || node.nodeType != Node.ELEMENT_NODE) return false;
-    return (node.tagName == 'OPTION') || (node.tagName == 'INPUT' && node.type == 'option');
+    return (upperCaseOrNull(node.tagName) == 'OPTION') || (upperCaseOrNull(node.tagName) == 'INPUT' && node.type == 'option');
 }
 
 /** @return true iff node is an image element */
 ElementTypes.isImage = function(node) {
     return instanceOf(node, Node)
         && node.nodeType == Node.ELEMENT_NODE 
-        && (node.tagName == 'IMG'
-            || (node.tagName == 'INPUT'
+        && (upperCaseOrNull(node.tagName) == 'IMG'
+            || (upperCaseOrNull(node.tagName) == 'INPUT'
                 && 'type' in node
                 && node.type == 'image'));
 }

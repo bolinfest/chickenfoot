@@ -67,7 +67,7 @@ function /*void*/ animateTransparentRectangleOverNode(/*Node*/ node, /*function*
     // if the node is a listitem in some combo box,
     // then we usually want to highlight the combo box itself,
     // which is the parent of the listitem
-    if (node.tagName == "OPTION") {
+    if (upperCaseOrNull(node.tagName) == "OPTION") {
         node = node.parentNode
     }
     

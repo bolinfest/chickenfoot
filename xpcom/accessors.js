@@ -170,3 +170,8 @@ function /*Window*/ getAWindow() {
     return null
 }
 
+
+function /*String*/ upperCaseOrNull(/*String*/ s) {
+  if (s == null) return s;
+  else return s.toUpperCase();
+}

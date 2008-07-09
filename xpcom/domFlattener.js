@@ -40,7 +40,7 @@ function flattenDom(rootNode, uidgen, nodes) {
  */
 function flatten(n, nodeCount, nodes, buffer) {
    // TODO removing IFRAME may break some invariants, should investigate
-   if (n.nodeType == Node.ELEMENT_NODE && n.tagName == "IFRAME") return "";
+   if (n.nodeType == Node.ELEMENT_NODE && upperCaseOrNull(n.tagName) == "IFRAME") return "";
    var id = nodeCount.nextId();
    nodes[id] = n;
    n["_MozillaDocumentId"] = id; // make it possible to look up place in array in constant time
@@ -79,7 +79,7 @@ function flattenElementNode(n, nodeCount, nodes, buffer) {
         attr = nodeMap.item(i);
         if (!attr.nodeName.match(attributeNameRegexp)) continue;
         
-        if (n.tagName == 'A' && attr.nodeName == 'href') {
+        if (upperCaseOrNull(n.tagName) == 'A' && attr.nodeName == 'href') {
           value = n.toString(); // turns relative URLs into absolute ones
           n.setAttribute('href', value); // replace in DOM
         } else {
@@ -112,7 +112,7 @@ function flattenCommentNode(n, nodeCount, nodes, buffer) {
 }
 
 function flattenTextNode(n, nodeCount, nodes, buffer) {
-  var parentTag = n.parentNode.tagName;
+  var parentTag = upperCaseOrNull(n.parentNode.tagName);
   if (parentTag == 'SCRIPT' || parentTag == 'STYLE') {
     // content inside SCRIPT and STYLE tags should not be
     // matched by a TC pattern

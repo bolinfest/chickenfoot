@@ -118,7 +118,7 @@ TextBlobIterator.prototype.next = function() {
     //debug("looking at " + node);
     
     if (node.nodeType == Node.ELEMENT_NODE
-        && !TextBlob.isFlowTag[node.tagName]
+        && !TextBlob.isFlowTag[upperCaseOrNull(node.tagName)]
         && blob) {
       // we're entering a new block element, so close off the blob
       break;
@@ -147,7 +147,7 @@ TextBlobIterator.prototype.next = function() {
       iteratorDone = !iterator.parentNode();
       if (!iteratorDone) {
         node = iterator.currentNode;
-        if (blob && !TextBlob.isFlowTag[node.tagName]) {
+        if (blob && !TextBlob.isFlowTag[upperCaseOrNull(node.tagName)]) {
           // we're leaving a block element, so close off the blob
           blobDone = true;
         }
@@ -168,7 +168,7 @@ true otherwise */
 TextBlobIterator.prototype._isElementIncluded = function(/*Node*/ node) {
     var hiddenElements = { STYLE:1, SCRIPT:1, NOSCRIPT:1 };
     
-    if (hiddenElements[node.tagName]) {
+    if (node.tagName && hiddenElements[upperCaseOrNull(node.tagName)]) {
         return false;
     }
        
@@ -202,7 +202,7 @@ TextBlobIterator.prototype._getTextOfNode = function(/*Node*/ node) {
   if (node.nodeType == Node.TEXT_NODE) return node.nodeValue;
   
   if (node.nodeType == Node.ELEMENT_NODE) {      
-    if (node.tagName == 'INPUT'
+    if (upperCaseOrNull(node.tagName) == 'INPUT'
         && (node.type == 'submit'
             || node.type == 'button'
             || node.type == 'reset'

@@ -91,7 +91,7 @@ function clickImpl(/*Document*/ doc, /*string*/ pattern, /*chromeWindow*/chrome,
       if (node.click) { node.click(); }
       var allowDefaultAction = fireMouseEvent('click', node);
     
-      if (node.tagName == 'menu') { //|| (node.tagName == 'menulist')) {
+      if (node.tagName == 'menu') { //|| (node.tagName.toLowerCase() == 'menulist')) {
           menuBox = node.boxObject.QueryInterface(Components.interfaces.nsIMenuBoxObject)
           menuBox.openMenu(true);
           node.open = true
@@ -111,14 +111,14 @@ function clickImpl(/*Document*/ doc, /*string*/ pattern, /*chromeWindow*/chrome,
        }
        
        if (allowDefaultAction
-          && element.tagName == "A"
+          && upperCaseOrNull(element.tagName) == "A"
           && element.href
           && !element.target) {
         // We want to exclude anchor tags that are not links, such as:
         // <a name="section2">Section 2: Related Work</a>
         // Ideally, we would check if element is in doc.links, but that
         // may be expensive if there are a lot of links
-         goImpl(doc.defaultView, element.toString(), true);
+         doc.defaultView.location = element.toString();
        }
    }
 }

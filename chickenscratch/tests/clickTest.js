@@ -28,6 +28,14 @@ t.test("click", function() {
   click(m)
 });
 
+// regression test for javascript: URLs
+t.test("click", function() {
+  go("http://www.google.com/m/classic")
+  click("images")
+  sleep(0.1)
+  Test.assert(/images.google.com/.test(document.location));
+});
+
 t.close();
 
 
@@ -44,6 +52,7 @@ function closeTabFrom(/*String*/ url) {
   }
   //throw new Error("can't find tab from " + url + " to close")
 }
+
 
 
 

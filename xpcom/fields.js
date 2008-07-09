@@ -8,11 +8,11 @@
  */
 function extractTextFromField(/*Node*/node) {
   if (!node) return null;
-  if (node.tagName == 'BUTTON') {
+  if (upperCaseOrNull(node.tagName) == 'BUTTON') {
     return node.textContent;
   } else if (isClickable(node) && 'value' in node) {
     return node.value;
-  } else if (node.tagName == 'SELECT') {
+  } else if (upperCaseOrNull(node.tagName) == 'SELECT') {
     var sb = new StringBuffer();
     var options = node.options;
     for (var i = 0; i < options.length; ++i) {
@@ -56,7 +56,7 @@ function isVisible(/*Node*/ node) {
     else {return false;}}
 
   if (node.nodeType == Node.TEXT_NODE) node = node.parentNode; 
-  if (node.tagName in isVisible.INVISIBLE_TAGS) return false;
+  if (upperCaseOrNull(node.tagName) in isVisible.INVISIBLE_TAGS) return false;
   
   var doc = node.ownerDocument
   if (doc.wrappedJSObject) {doc = doc.wrappedJSObject;}
@@ -99,19 +99,19 @@ isVisible.INVISIBLE_TAGS = {
   HEAD : 1,
   SCRIPT : 1,
   STYLE : 1,
-  NOSCRIPT : 1
+  NOSCRIPT : 1,
 };
 
 /** @return true iff node is a clickable button */
 function isClickable(/*Node*/ node) {
   return instanceOf(node, Node)
     && node.nodeType == Node.ELEMENT_NODE 
-    && (node.tagName == 'BUTTON'
+    && (upperCaseOrNull(node.tagName) == 'BUTTON'
         || (node.tagName == 'button')
         || (node.tagName == 'toolbarbutton')
         || (node.tagName == 'xul:toolbarbutton')
         || (node.tagName == 'xul:button')
-        || (node.tagName == 'INPUT'
+        || (upperCaseOrNull(node.tagName) == 'INPUT'
             && 'type' in node
             && (node.type == 'submit'
                 || node.type == 'button'
@@ -124,7 +124,7 @@ function isClickable(/*Node*/ node) {
 function isLink(/*Node*/ node) {
   return instanceOf(node, Node)
     && node.nodeType == Node.ELEMENT_NODE 
-    && ((node.tagName == 'A'
+    && ((upperCaseOrNull(node.tagName) == 'A'
           && (node.hasAttribute('href') || node.hasAttribute('onclick')))
         || node.className == 'text-link');
 }
@@ -138,10 +138,10 @@ function isLink(/*Node*/ node) {
 function isTextbox(/*Node*/ node) {
   if (!instanceOf(node, Node)) return false;
   if (node.tagName == 'textbox') return true;
-  if (node.tagName == 'TEXTAREA') return true;
+  if (upperCaseOrNull(node.tagName) == 'TEXTAREA') return true;
   if (node.tagName == 'xul:textbox') return true;
   if (node.className == 'text-input') return true;
-  if ('type' in node && node.tagName == 'INPUT') {
+  if ('type' in node && upperCaseOrNull(node.tagName) == 'INPUT') {
     var type = node.type;
     if (type == 'text'
         || type == 'password'
@@ -161,25 +161,25 @@ function isTextbox(/*Node*/ node) {
  */
 function isListbox(/*<Node>*/ node) {
   if (!instanceOf(node, Node)) return false;
-  return ((node.tagName == 'SELECT') 
+  return ((upperCaseOrNull(node.tagName) == 'SELECT') 
          || (node.tagName == 'menulist')
          || (node.tagName == 'listbox'));
 }
 
 function isCheckbox(node) {
   if (!instanceOf(node, Node)) return false;
-  return ((node.tagName == 'INPUT' && node.type == 'checkbox') || (node.tagName == 'checkbox'));
+  return ((upperCaseOrNull(node.tagName) == 'INPUT' && node.type == 'checkbox') || (node.tagName == 'checkbox'));
 }
 
 function isRadioButton(node) {
   if (!instanceOf(node, Node)) return false;
-  return ((node.tagName == 'INPUT' && node.type == 'radio') || (node.tagName == 'radio'));
+  return ((upperCaseOrNull(node.tagName) == 'INPUT' && node.type == 'radio') || (node.tagName == 'radio'));
 }
 
 function isListitem(/*Node*/ node) {
     if (!instanceOf(node, Node)) return false;
-    return ((node.tagName == 'OPTION')
-           || (node.tagName == 'INPUT' && node.type == 'option')
+    return ((upperCaseOrNull(node.tagName) == 'OPTION')
+           || (upperCaseOrNull(node.tagName) == 'INPUT' && node.type == 'option')
            || (node.tagName == 'menuitem')
            || (node.tagName == 'listitem'));
 }
@@ -204,7 +204,7 @@ function isTab(/*Node*/ node) {
  */
 function isSignificantImage(node) {
   if (!instanceOf(node, Node)) return false;
-  return node.tagName == 'IMG'
+  return upperCaseOrNull(node.tagName) == 'IMG'
          && node.width > 1 && node.height > 1;
 }
 

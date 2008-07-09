@@ -850,7 +850,7 @@ function Pattern() {
       
     // returns <LABEL> element containing given node, or null if none
     function findLabelContaining(node) {
-      while (node != null && (node.tagName != "LABEL" || node.tagName != "label")) {
+      while (node != null && upperCaseOrNull(node.tagName) != "LABEL") {
         node = node.parentNode;
       }
       return node;
@@ -919,7 +919,7 @@ function Pattern() {
                       /*String*/ pattern,
                       /*optional Range*/ context) {
     var root = getFindRoot(doc, context);
-    if (root.tagName != 'TABLE') throw new Error("cannot look for rows if not a table");
+    if (upperCaseOrNull(root.tagName) != 'TABLE') throw new Error("cannot look for rows if not a table");
     var rows = root.rows;
     for (var i = 0; i < rows.length; ++i) {
       matches.push(new InternalMatch(rows[i], 1.0));
@@ -931,7 +931,7 @@ function Pattern() {
                     /*String*/ pattern,
                     /*optional Range*/ context) {
     var root = getFindRoot(doc, context);
-    if (root.tagName != 'TR') throw new Error("cannot look for cells if not a row");
+    if (upperCaseOrNull(root.tagName) != 'TR') throw new Error("cannot look for cells if not a row");
     var cells = root.cells;
     for (var i = 0; i < cells.length; ++i) {
       matches.push(new InternalMatch(cells[i], 1.0));
@@ -947,7 +947,7 @@ function Pattern() {
                       /*String*/ pattern,
                       /*optional Range*/ context) {
     var root = getFindRoot(doc, context);
-    if (root.tagName != 'TD') throw new Error("need a cell to get its column")
+    if (upperCaseOrNull(root.tagName) != 'TD') throw new Error("need a cell to get its column")
 
     var targetRow = Table.getParentRow(root);
     var sib = Table.getNextRow(targetRow);

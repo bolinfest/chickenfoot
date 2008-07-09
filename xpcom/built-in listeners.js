@@ -13,9 +13,9 @@ function installTriggerButtons(/*Document*/document) {
 var pred = function (node) {
   var results = [];
   for (var h=0; h<node.childNodes.length; h++) {
-    if (node.childNodes[h].tagName == "PRE") {results.push(node.childNodes[h]);}
+    if (upperCaseOrNull(node.childNodes[h].tagName) == "PRE") {results.push(node.childNodes[h]);}
   }
-  return ((node.tagName == "DIV") && (node.childNodes.length > 0) && (results.length > 0));
+  return ((upperCaseOrNull(node.tagName) == "DIV") && (node.childNodes.length > 0) && (results.length > 0));
 }
 var treewalker = Chickenfoot.createDeepTreeWalker(document.wrappedJSObject, NodeFilter.SHOW_ALL, pred);
 var current = treewalker.nextNode();
@@ -63,8 +63,9 @@ while(current) {
  */
 function filterElements(/*Array DOM elements*/elements,/*String*/tag) {
   var results = [];  var m=0;
+  tag = tag.toUpperCase();
   for (var k=0; k<elements.length; k++) {
-    if (elements[k].tagName == tag) {results[m] = elements[k]; m++;}
+    if (upperCaseOrNull(elements[k].tagName) == tag) {results[m] = elements[k]; m++;}
   }
   return results;
 }
