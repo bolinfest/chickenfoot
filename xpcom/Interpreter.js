@@ -205,6 +205,8 @@ function getEvaluationContext(/*Object*/ context,
   context.onClick = function onClick(pattern, handler) { return onClickImpl(context.document, pattern, handler); };
   context.onKeypress = function onKeypress(pattern, handler, destination) { return onKeypressImpl(context.document, pattern, handler, destination); };
   
+  context.select = function select(pattern) { return selectImpl(context.document, pattern); }
+  
   context.savePage = function savePage(saveLocationOrName) { savePageImpl(chromeWindow, context.document,  saveLocationOrName); };
   context.savePageComplete = function savePageComplete(saveLocationOrName) { savePageCompleteImpl(chromeWindow, context.document, saveLocationOrName); };
   context.printPage = function printPage(printerName) { printPageImpl(chromeWindow, printerName); };

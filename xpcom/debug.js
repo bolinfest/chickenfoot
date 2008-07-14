@@ -271,6 +271,7 @@ function addDebugOutput(/*Node*/ node, /*anything*/ obj, /*boolean*/ isHTML, /*c
     header.addEventListener("mouseup", disableEntry, false);
     if (instanceOf(obj, Match)) {
       header.addEventListener("click", highlightMatch, false);
+      highlightMatch(); // highlight all the matches now
       chromeWindow.content.wrappedJSObject.addEventListener("click", function(event) {clearAll(chromeWindow, obj);}, false);
     }
     newNode = tableNode;

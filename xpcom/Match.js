@@ -113,6 +113,10 @@ Match.prototype.uncheck = function(pattern) {
   uncheckImpl(this._document, pattern, this.range); 
 };
 
+Match.prototype.select = function(pattern) {
+  selectImpl(this._document, pattern, this.range);
+}
+
 try {
   // Iterators are only available in Firefox 2.0+.
   // If we're running in an older version of Firefox,
