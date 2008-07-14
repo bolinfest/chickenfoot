@@ -98,7 +98,8 @@ function Buffer(/*optional File*/ file,
 
 
   if (useHtmlEditor) {
-    editor.contentWindow.addEventListener("load", function() { thisBuffer.startEditing(); }, false);
+    var edWin = editor.contentWindow;
+    if (edWin) edWin.addEventListener("load", function() { thisBuffer.startEditing(); }, false);
   } 
   this.editor.addEventListener("keypress", function(event){
   		alt = (event.altKey) ? true : false;

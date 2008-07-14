@@ -75,9 +75,15 @@ function listImpl(obj, opt_regexp, opt_expandibleList) {
     buffer.push([obj, "text", obj.text]);
   }
 
-  if (opt_expandibleList && (opt_expandibleList == "expandibleList")) {return groupPropertiesAndMethods(buffer);}
+  if (opt_expandibleList && (opt_expandibleList == "expandibleList")) {
+    if (instanceOf(obj, Array)) {
+      return buffer; // don't regroup an array
+    } else {
+      return groupPropertiesAndMethods(buffer);
+    }
+  }
   else {
-  return buffer.join("");
+    return buffer.join("");
   }
 }
 

@@ -82,26 +82,34 @@ function addDebugOutput(/*Node*/ node, /*anything*/ obj, /*boolean*/ isHTML, /*c
   var doc = node.ownerDocument;
   var objToPrint = obj;
   
-  // first see if obj knows how to make itself into debug output
-  try { //catch errors if obj.toChickenfootDebugOutput does not exist
+  // First see if obj knows how to make itself into debug output. 
+  var hasChickenfootDebugOutput = false;
+  try { 
+    // Catch errors if obj.toChickenfootDebugOutput does not exist.  Some objects throw
+    // security exceptions if you even look twice at them!
+    // Don't actually call toChickenfootDebugOutput() inside this try-catch, so we can
+    // distinguish these access exceptions (which we want to mask) from exceptions thrown
+    // by toChickenfootDebugOutput() (which we DON'T want to mask, but propagate upwards so 
+    // that the author of that function can debug them).
+     
     if (obj && typeof obj == "object" && typeof obj.toChickenfootDebugOutput == "function") {
-      var result = obj.toChickenfootDebugOutput(doc, node);
-      if (result === undefined) {
-        return;
-      } else {
-        objToPrint = result;
-      }
+      hasChickenfootDebugOutput = true;
     }
-   } catch(err) {
-      // Special case for Java objects 
-      if (obj && typeof obj == "object" && hasJava && (instanceOf(obj, java.lang.Object))) {
-       objToPrint = obj;   
-      } else {
-      //used to fail silently here if match object
-      //didn't create correctly, now throws the error
-      throw new Error(err);
+  } catch (err) {
+  }
+  
+  if (hasChickenfootDebugOutput) {      
+    var result = obj.toChickenfootDebugOutput(doc, node);
+    if (result === undefined) {
       return;
-      }
+    } else {
+      objToPrint = result;
+    }
+  }
+  
+  // Special case for Java objects 
+  if (obj && typeof obj == "object" && hasJava && (instanceOf(obj, java.lang.Object))) {
+     objToPrint = obj;   
   }
   
   if (isHTML) {
@@ -137,8 +145,7 @@ function addDebugOutput(/*Node*/ node, /*anything*/ obj, /*boolean*/ isHTML, /*c
     makeElement(doc, "div", {}, [
       header = makeElement(doc, "div", {"class":"collapsed", "id":"current"}, [
           doc.createTextNode(spacesString),
-          icon = makeElement(doc, "img", {"src":"chrome://chickenfoot/skin/expand.gif", "height":9, "width":9}, []),
-          makeElement(doc, "img", {"src":"chrome://chickenfoot/skin/expand.gif", "height":4, "width":4}, []),
+          icon = makeElement(doc, "img", { "class":"expandCollapseIcon", "src":"chrome://chickenfoot/skin/expand.gif", "height":9, "width":9 }, []),
           newNode,
       ]),
       bodyRow = makeElement(doc, "div", {"style":"visibility:hidden", "class":"objectProperties", "spaces":numSpaces}, [
@@ -163,8 +170,10 @@ function addDebugOutput(/*Node*/ node, /*anything*/ obj, /*boolean*/ isHTML, /*c
         }
         //otherwise list its items
         else {
-          try { var listOutput = listImpl(obj, ".*", "expandibleList"); }
-          catch (err) {var listOutput = [];}
+          var listOutput = [];
+          try { listOutput = listImpl(obj, ".*", "expandibleList"); }
+          catch (err) {}
+          
           if (instanceOf(obj, Match)) {listOutput = getMatchIteration(obj, listOutput);}
           
           var longestString = 0;
@@ -174,21 +183,17 @@ function addDebugOutput(/*Node*/ node, /*anything*/ obj, /*boolean*/ isHTML, /*c
           
           for (var i=0; i<listOutput.length; i++) {
             var current = listOutput[i];
-            var property = current[1]; var value = current[2];
-            
-            //don't include null or undefined items
-            try {value;}
-            catch (err) {continue;}
-            if (property == null || !value || value == "undefined") {continue;}
+            var property = current[1];
+            var value = current[2];
             
             //add the right number of spaces between property and value for visual columns
             var numberOfSpaces = longestString + 5 -(property.length);
             for (var k=0; k<numberOfSpaces; k++) {
               property += " ";
             }
-        
+           
             //if item is an object, recursively send it back to addDebugOutput
-            if (typeof value == "object") {
+            if (typeof value == "object" && value !== null) {
               if ((instanceOf(value, Match) && (property.toString().substring(0, 4) != "next"))
                   || instanceOf(obj, Array)) {
                 var name = property + " = " + toDebugString(value);
@@ -211,11 +216,11 @@ function addDebugOutput(/*Node*/ node, /*anything*/ obj, /*boolean*/ isHTML, /*c
               var name = property + " = " + toDebugString(value);
               bodyRow.appendChild(colorText(doc, spacesString + "  " + name + "\n", "purple"));
             }
-              //otherwise, don't expand anymore, just print the item and its value
-              else {
-                var name = property + "  " + value;
-                bodyRow.appendChild(colorText(doc, spacesString + "  " + name + "\n", "purple"));
-              }
+            //otherwise, don't expand anymore, just print the item and its value
+            else {
+              var name = property + "  " + value;
+              bodyRow.appendChild(colorText(doc, spacesString + "  " + name + "\n", "purple"));
+            }
           }
         }
         sidebarWindow.setCursor('auto');
@@ -245,7 +250,7 @@ function addDebugOutput(/*Node*/ node, /*anything*/ obj, /*boolean*/ isHTML, /*c
         clearAll(chromeWindow, obj);
         var matchToSelect = oneMatch(obj);
         selectAll(obj.document.defaultView, matchToSelect);
-        header.childNodes[3].style.color = 'red';
+        header.childNodes[2].style.color = 'red';
         header.title = 'green';
       }
     }
@@ -290,7 +295,7 @@ function clearAll(chromeWindow, obj) {
   var current = treewalker.nextNode();
   while (current) {
     if (current.title == "black") {current.style.color = "black";}
-    if (current.title == "green") {current.childNodes[3].style.color = "green";}
+    if (current.title == "green") {current.childNodes[2].style.color = "green";}
     current = treewalker.nextNode();
   }
 }
