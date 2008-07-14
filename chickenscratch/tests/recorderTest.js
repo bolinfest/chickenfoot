@@ -89,10 +89,11 @@ function testRecord(/*DOM node*/ target, /*string*/ eventType) {
         catch (e) {
             result = 0;
         }
-        output(command);
+        //output(command);
         Test.assertEquals(result, 1, testName + " - " + target.name + " returned error: " + command);
     });
 }
+
 
 
 

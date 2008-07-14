@@ -20,11 +20,7 @@ testCount(1, null, new XPath('/html'));
 testCount(1, null, new XPath('/html/body'));
 testCount(13, null, new XPath('//a'));
 testCount(3, null, new XPath('/html/body/center/form/table[2]//td'));
-testCount(34, new XPath('//*/text()'));
-
-var pg = fetch(prefix + "personalized-google.html");
-testCount(45, null, new XPath('//*/text()'), pg);
-pg.close();
+testCount(3, new XPath('//*[contains(text(),"Google")]'));
 
 // Summarize testing
 t.close();
@@ -110,6 +106,7 @@ function matchesToString(m) {
   }
   return sb.toString();
 }
+
 
 
 
