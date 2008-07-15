@@ -20,6 +20,8 @@ function loadHandler() {
   
   startRecording();
   
+  Chickenfoot.startOutputPaneAutoswitching(document);
+  
 //  setupShell();
 
   // fix tooltips for Mac

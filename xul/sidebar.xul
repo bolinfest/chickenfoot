@@ -275,11 +275,10 @@
                                  oncommand="Chickenfoot.clearDebugPane(chromeWindow);" />                
               </toolbar>
                 
-              <browser id="CF_DEBUG"
-                       type="content"
-                       src="chrome://chickenfoot/content/debugContent.html"
-                       flex="1"
-                       /> 
+              <iframe id="CF_DEBUG"
+                      src="chrome://chickenfoot/content/debugContent.html"
+                      flex="1"
+                      /> 
             </vbox>
           
           <!-- SHELL -->

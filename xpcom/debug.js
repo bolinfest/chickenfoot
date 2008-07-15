@@ -60,12 +60,8 @@ function printDebug(/*ChromeWindow*/ chromeWindow,
   if (!sidebarWindow) return;  
   var sidebar = sidebarWindow.document;
     
-  if (!dontBringToFront) {
-    // make sure Output tab is visible
-    var tab = sidebar.getElementById("CF_DEBUG_TAB");
-    var tabbox = tab.parentNode.parentNode;
-    tabbox.selectedTab = tab;
-  }
+  // make sure Output tab is visible
+  if (!dontBringToFront) autoswitchToOutputPane(sidebar)
   
   var debug = sidebar.getElementById(id);
   var node = getLatestDebugEntry(sidebar, id);  
@@ -74,6 +70,40 @@ function printDebug(/*ChromeWindow*/ chromeWindow,
   var win = debug.contentWindow;  
   win.scrollTo(node.offsetLeft, node.offsetTop + node.offsetHeight);
 }
+
+// autoswitchTimeout controls the way Chickenfoot automatically switches to
+// the Output pane when a message is printed.  When the mouse is active anywhere
+// in the tab box, autoswitching is disabled until no more such mouse events
+// have happened for the duration of this timeout.  The timeout is in milliseconds.
+const autoswitchTimeout = 5000; // milliseconds
+
+function startOutputPaneAutoswitching(/*SidebarDocument*/ sidebar) {
+  if (autoswitchTimeout) {
+    var tab = sidebar.getElementById("CF_DEBUG_TAB");
+    var tabbox = tab.parentNode.parentNode;
+    tabbox.addEventListener("mousedown", mouseActivityInTabs, true)
+    tabbox.addEventListener("mousemove", mouseActivityInTabs, true)
+  }
+
+  function mouseActivityInTabs(event) {
+    // clock time when autoswitching will resume
+    sidebar.autoswitchResume = new Date().getTime() + autoswitchTimeout
+  }
+}
+
+function autoswitchToOutputPane(/*SidebarDocument*/ sidebar) {
+  var now = new Date().getTime()
+  if (now <= sidebar.autoswitchResume) {
+    // don't autoswitch, because it's less than autoswitchTimeout msec since
+    // user touched the tabs
+    return;
+  }
+
+  var tab = sidebar.getElementById("CF_DEBUG_TAB");
+  var tabbox = tab.parentNode.parentNode;
+  tabbox.selectedTab = tab;
+}
+
 
 //takes string as optional fifth argument, specifying how obj should be printed
 // should be used only when differs from how toDebugString(obj) returns.
@@ -105,11 +135,6 @@ function addDebugOutput(/*Node*/ node, /*anything*/ obj, /*boolean*/ isHTML, /*c
     } else {
       objToPrint = result;
     }
-  }
-  
-  // Special case for Java objects 
-  if (obj && typeof obj == "object" && hasJava && (instanceOf(obj, java.lang.Object))) {
-     objToPrint = obj;   
   }
   
   if (isHTML) {
