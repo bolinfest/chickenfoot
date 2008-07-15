@@ -1,0 +1,94 @@
+@charset "utf-8";
+/*
+Blizzard Online Store
+(c) Blizzard Entertainment 2007. All rights reserved.
+*/
+
+body { font: 62.5%  Arial, Helvetica, sans-serif; background-color:#ccc; }
+button, input, optgroup, select, textarea { font-size: 1.0em }
+/**********************************/
+/* init */
+h1, h2, h3, h4, h5, h6 	{ font-weight: bold; margin: 0 0 5px; padding: 0; }
+ol, ul{ margin: 0; padding: 0; }
+li{ padding: 0 0 0 10px; margin: 0; }
+form, fieldset, legend, label, input, select, textarea, button { margin: 0; padding: 0; }
+label	{ cursor: pointer; }
+blockquote, p	{ margin: 0; padding: 0; }
+blockquote { padding-left: 16px; }
+table, tr, td	{ border-collapse: collapse; border: none; }
+.hide { width: 100em; height: 1em; overflow: hidden; position: absolute; left: -200em; }
+
+/**********************************/
+/* links */
+a { text-decoration: none; font-weight: bold; color: #006ad2; }
+a:link { background-color: transparent; color: #006ad2; }
+a:visited { background-color: transparent; color: #006ad2; }
+a:hover { color: #000; text-decoration: underline; }
+a:active, a:focus { background-color: transparent; color: #600; outline: none; }
+/**********************************/
+/* form elements */
+input, option { border: 1px solid #dadada; background: #dadada; padding: 3px; margin: 0 0 5px 0; }
+form label{ font-weight: bold; }
+input:focus, input:hover { border: 1px solid #f1f1f1;	background-color: #f1f1f1; }
+input:focus { border: 1px solid #dadada; }
+form input.error { border: 1px solid #ce4437; }
+.search select{ border: 1px solid #929292; background: #e8f0fc; float: left; font-weight: bold; }
+.search select:hover, .search input:hover	{ border: 1px solid black; }
+.search select:focus	{ background: white; border: 1px solid #b5c8e3; }
+.search option { border: 1px solid #dadada; background: #e8f0fc; padding: 0 3px; margin: 0 0 1px 0 }
+.search input	{ position: relative; border: 1px solid #929292; padding: 2px 4px; margin: 0 0 0 5px; width: 250px; float: left; }
+.search input:focus	{ background-image: none; border: 1px solid #b5c8e3; }
+/**********************************/
+/* store layout */	
+.master { font-size: 1.2em; background: white; width: 750px; margin:20px; border: 1px dotted black; padding: 20px; }
+.head { margin: 0 auto; height: 75px; position: relative; }
+.head h1 { height: 1px; width: 68px; display: block;  }
+.head a.home { position: absolute; display: block; height: 100px; width: 220px; top:0; left:0; background: url('../_images/store-print.gif') no-repeat; }
+.clearer { clear: both;	height: 1px; width: 1px; content: " "; }
+.main, .store-footer{ margin: 0 auto; }
+.footer { margin: 0 auto 30px; height: 175px; position: relative; top: -20px; }
+a.blizzard{ display: block; width: 107px; height: 60px; background: url('../_images/logo-print.gif') no-repeat; margin: 0 auto; }
+a.esrb{ display: block; width: 117px; height: 43px; background: url('../_images/esrb.gif') no-repeat; float: right; margin: 0 5px 0 0; position: relative; left: -5px; }
+a.rating{ display: block; width: 66px; height: 45px; background: url('../_images/esrb-rating.gif') no-repeat; float: right; margin: 0 8px 0 0; }
+.footer p	{ text-align: center; font-size: 0.8em; color: #9a9a9a; }
+.footer blockquote	{ display: block; width: 200px; margin: 10px auto 0; }
+.content{ height: 11px; position: relative; z-index: 12; display: table;clear: both;  }
+p.breadcrumb{ font-size: 1.0em; padding: 10px 0 10px 18px; }
+.region	{ width: 470px; height: 65px; float: right; }
+.region h2, .language i	{ font: bold 1.0em Arial, Helvetica, sans-serif; letter-spacing: -1px; margin:0 0 0 4px; }
+.region a,.region a:visited, .region a:active	{ display: block; height: 20px; padding: 5px 0 0 15px; font-size: 0.9em; border: 1px dotted grey; }
+.region a:hover	{ text-decoration: none; }
+.global	{ width: 180px; height: 55px; padding: 10px; float: left; } 
+.global a { width: 142px; }
+.language	{ width: 240px; height: 55px; padding: 10px; float: right; }
+.language p	{ width: 120px; margin:0; padding:0; float: left; height: 45px; }
+.language a	{ width: 104px; }
+.topnav { width: 677px; height: 19px; padding: 10px 0 0 0; float: right; }
+.topnav a, .topnav em	{ float: right; white-space: nowrap; }
+.topnav em	{ display: block; width: 15px; text-align: center; color: #52c1ed; }
+.main-block	{ float: left; width: 740px; margin: 0 0 0 10px; }
+.right-block	{ display: none; }
+/**********************************/
+/* tabs */
+.tabs	{ width: 700px; height: 44px; float: right; position: relative; padding: 0 13px 0 0; }
+.tabs ul { list-style: none; }
+.tabs li{ float: right; height: 44px; display: block;margin: 0 -7px 0 0; position: relative; }
+.tabs li.abs-left, .tabs li.abs-right { width: 3px; }
+.tabs li.abs-left { left: 3px; }
+.tabs li.abs-right{ left: 3px; }
+.tabs li.sep{ width: 1px; left: 3px; background: grey; padding:0; margin:0; }
+.tabs a.maintab, .tabs a.selected{ position: relative; cursor: pointer; min-width: 6px; float: left; }
+.tabs a.maintab span, .tabs a.selected span{ position: relative; left: 6px; float: left; padding: 18px 28px 0 20px; height: 28px; }
+.tabs a.maintab	{ height: 44px; color: #535353; }
+.tabs a.maintab:hover	{ background-position: 0 -44px; text-decoration: none; }
+.tabs a.maintab:hover span{ background-position: 100% -44px; color: black; }
+.tabs a.selected{ height: 47px; color: #535353; top: -2px; color: black; z-index: 10; }
+.tabs a.selected span	{ border-bottom: 1px solid white; }
+.tabs a.selected:hover { text-decoration: none; color: black; }
+/**********************************/
+/* quick search */
+.search	{ display: none; }
+.search h1{ float: left; font: 1.7em Arial, Helvetica, sans-serif; }
+.search h1 span	{ display: block; }
+.search a	{ display: block; height: 25px; width: 29px; float: left; position: relative; top: -2px; margin: 0 0 0 5px; }
+.search a:hover { background-position: 0 -25px; }

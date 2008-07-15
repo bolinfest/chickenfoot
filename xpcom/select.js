@@ -41,7 +41,8 @@ function selectAll(/*HtmlWindow*/ win, /*Match*/ match) {
       var e = m.element;
       var box = Chickenfoot.Box.forNode(e);
       var doc = e.ownerDocument;
-      var div = makeTranslucentRectangle(doc.body, box.x, box.y, box.w, box.h, "#f00", 0.4)
+      var body = doc.getElementsByTagName("body")[0];
+      var div = makeTranslucentRectangle(body, box.x, box.y, box.w, box.h, "#f00", 0.4)
       div.setAttribute("class", "_chickenfootSelection");
       highlights.push(div)
     }
@@ -51,10 +52,12 @@ function selectAll(/*HtmlWindow*/ win, /*Match*/ match) {
     // make a clear DIV over the entire window -- partly to capture the click event to clear the selection,
     // and partly to remember all the highlight divs that were created.
     // Add this div last, so that it lies on top of the selection highlight divs and captures the click event.
-    var w = Math.max(win.document.width, win.innerWidth)
-    var h = Math.max(win.document.height, win.innerHeight)
-    var holder = makeTranslucentRectangle(win.document.body, 0, 0, w, h, "#ffffff", 0)
-    holder.id = "_chickenfootSelectionHolder"
+    var body = win.document.getElementsByTagName("body")[0]
+    var box = Box.forNode(body)
+    var w = Math.max(box.width, win.innerWidth)
+    var h = Math.max(box.height, win.innerHeight)
+    var holder = makeTranslucentRectangle(body, 0, 0, w, h, "#ffffff", 0)
+    holder.setAttribute("id", "_chickenfootSelectionHolder")
     holder.highlights = highlights
     holder.addEventListener("click", function () {
       clearSelection(win);
@@ -65,13 +68,14 @@ function selectAll(/*HtmlWindow*/ win, /*Match*/ match) {
   function makeTranslucentRectangle(/*Node*/ parent, /*int*/ left, top, width, height, /*String*/ color, /*float*/ opacity) {
     var doc = parent.ownerDocument
     var div = doc.createElement("div");
-    div.style.position="absolute";
-    div.style.width = width + "px";
-    div.style.height = height + "px";
-    div.style.left = left + "px";
-    div.style.top = top + "px";
-    div.style.backgroundColor = color;
-    div.style.opacity = opacity;
+    div.setAttribute("style",
+      "position: absolute; "
+     +"width: " + width + "px; "     
+     +"height: " + height + "px; "
+     +"left: " + left + "px; "
+     +"top: " + top + "px; "
+     +"background-color: " + color + "; "
+     +"opacity: " + opacity);
     parent.appendChild(div)
     return div
   }

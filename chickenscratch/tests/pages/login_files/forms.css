@@ -1,0 +1,141 @@
+@charset "utf-8";
+
+input	{ border: 1px solid #888787; background: #fff url('../_images/input.gif') repeat-x 0 0; padding: 3px; margin: 0 0 5px 0; width:220px }
+form label, #privacyEU label { font-weight: bold !important;}
+.displayForm	{ z-index:20005; position:absolute; top:0; left:0; width:100%; height:100%; }
+.displaySubForm	{ z-index:20006;position:absolute;display:block;top:0; left:0; padding:0;width:100%; height:100%;background: url('../_images/shadow.png'); }
+.formContainer { padding: 0; }
+.input-area	{ padding:0; margin:0 auto; }
+.xwidth { width:100% }
+.input-area q.bump { position:absolute;top:100%;left:0;width:100%;background-position: 50% 1px }
+.input-area q.bumptop { position:absolute;top:-21px;left:0;width:100%;background-position: 50% 0; background-image:url('../_images/hhr2.png'); }
+.inner-container { width:740px; margin:0 auto;padding:0 17px;background: url('../_images/popup-tile.png') repeat-y 0 0 }
+.pop-top,.pop-bot { width:774px; margin: 0 auto;}
+.pop-top { background:url('../_images/popup-top.png') no-repeat 0 0; height: 39px;}
+.pop-bot { background:url('../_images/popup-bot.png') no-repeat 0 0; height: 17px;}
+
+.inner-container2 { width:518px; margin:0 auto;padding:0 17px;background: url('../_images/popup-tile2.png') repeat-y 0 0 }
+.pop-top2,.pop-bot2 { width:552px;height:17px; margin:0 auto; }
+.pop-top2 { background:url('../_images/popup-top2.png') no-repeat 0 0 }
+.pop-bot2 { background:url('../_images/popup-bot2.png') no-repeat 0 0 }
+
+a.pop-close,a.pop-close:active,a.pop-close:visited { position:relative; display:block; height:39px; width:45px; left: 100%; margin-left: -45px; }
+a.pop-close:hover { background:url('../_images/close-over.gif') no-repeat -1px 11px }
+.popup-layout { background:url('../_images/item-info-tile.gif') repeat-x 0 0;padding:20px }
+.popup-layout2 { background:url('../_images/item-info-tile.gif') repeat-x 0 0;padding:20px 20px 10px 20px }
+.forms { padding: 20px 10px; margin: 20px; border: 1px solid #d7d9db; background: white url('../_images/item-info-tile.gif') repeat-x 0 0; clear: both; }
+.forms span { padding: 4px 5px 0 10px }
+.forms select { max-width: 225px;margin: 0 0 5px 0; }
+.forms .success {text-align:center; margin-bottom:20px}
+.forms .success h1 {font:bold 24px/75px arial;}
+.forms .success em{font-style:normal; font:normal 12px arial}
+.forms p { line-height:16px; }
+.slist { padding:0 !important;border:none;color:white; }
+.slist p { color:#6bbdff }
+.slist h4 { font-size: 14px;margin:0;padding:0 0 5px 180px;letter-spacing:-1px}
+input:focus, input:hover { border: 1px solid #3081d1; background-color: #f1f1f1 !important; }
+input:focus { border: 1px solid #3081d1; background: white; }
+.address-fields {clear:both }
+.popup-layout .first-last{ position:relative;padding:0 0 0 60px; margin-bottom: 5px;}
+.popup-layout .first-last label {text-align:left;display:block;width:48%;padding:0;}
+.popup-layout .first-last div { clear:left }
+.popup-layout .first-last .secondCol { padding-left: 30px; width: 45%; }
+.popup-layout .first-last .secondCol label {text-align:left !important;}
+.popup-layout .click {margin-left:220px !important;}
+.popup-layout #question1 {	width: 300px; top: 0; }
+.first-last .secondCol label { width: 145px !important }
+.user-input-message { font-size:11px;padding-left:245px;position:relative;top:-3px;}
+.add-create .user-input-message {padding-left:310px;}
+option, optgroup	{ background: #e8f0fc }
+form input.error	{ border: 1px solid #ce4437; }
+.forms h3,.login-area h3 { margin: 0; padding:0 10px 0 0; font: bold 1em Arial, Helvetica, sans-serif; color: #6d6d6d }
+.secondCol { position: absolute; top: 0; right: 0; text-align: left; width: 50%;}
+.secondCol label { width: 165px !important; text-align: right !important; float: left; padding: 0 15px 0 0;}
+.forms h3,.forms input	{ float:left }
+.forms em,.input-area span.req em, .misc-info em,span.req em,span.reqLine { font: 20px/16px Georgia, "Times New Roman", Times, serif; color: #ae4c4c; }
+.forms label, #privacyEU label { display: block; width: 18%; text-align: right; float: left; line-height: 2em; padding-right: 10px; font-weight: bold !important;  }
+label.date { width:50px !important;display:inline;float:none;padding:0 4px 0 0;position:relative;top:-5px }
+.simplifiedForm .misc-info em { font-size: 1.1em; font-weight: bold;}
+.simplifiedForm blockquote { margin:5px 0 0 0 }
+.input-area h3 em, .input-area label em	{ position: relative; top: 2px; margin: 0 0 0 3px }
+.input-area span em	{ position: relative; left: -4px; top: 2px }
+.input-area2 { position:relative;z-index:20 }
+.input-area2 h1.true, .input-area2 h1.false { position: static; float: left; }
+.input-area2 h1.true { color:#619200; }
+.input-area2 h1.false { color:#bb4c4a; }
+q.true, q.false { display:block;width:33px;height:33px;float: left; margin: -4px 0 0 8px;}
+q.true { background:url('../_images/arrow-done.png') no-repeat top left; }
+q.false { background:url('../_images/x-error.png') no-repeat top left; }
+input.zip	{ width: 75px !important }
+input.date { width: 100px !important }
+span.reqLine { display:inline;float:none;padding:0 5px;line-height:12px; }
+h2 b { color:#b3b3b3 }
+span.req	{ float:right; padding:0 10px 15px 20px; font-size: 11px; color:#464646 }
+input.address1,input.address2,input.cardno,input.cardname	{ width:250px !important }
+.rel, .first-last { position:relative }
+.input-area2 .forms { font-weight:bold;margin:0 0 15px 0; text-align:center }
+.input-area2 h1 { float:left;position:relative;letter-spacing:-2px;font-size:24px;text-align:center;left:40%; }
+.input-area blockquote h3 { width: 15%; padding: 0 15px 0 10px; line-height: 22px; text-align: right; }
+.contact-sheet .input-area blockquote h3	{ width:15%; }
+blockquote label { line-height:22px;float:left; width: 15%; text-align: right; padding: 0 15px 0 10px; font-size: 12px !important; }
+blockquote label.loose { width: auto !important; font-weight: normal !important; line-height: 1.1; padding-left: 5px;}
+.address-form .input-area blockquote input,.small-form .input-area blockquote input,.creation-form .input-area blockquote input	{ width: 175px }
+#sh h2 { display:none }
+#sq blockquote label, .sq blockquote label { width:35%; } /*there are multiple #sq in the generated sourcecode which is invalid; applied to other elements as well; needs cleanup!*/
+#agreement blockquote h3 { width:50%; text-align:right}
+#agreement blockquote {margin-top:5px}
+#Agree-14up #agreement {text-align:left; font-weight:bold; line-height:20px}
+/* TODO broken image background:url(../_images/alert-info2.gif) no-repeat; */
+#noneAgree-14 #agreement blockquote.alert {font-weight:bold; text-align:left; margin:10px 0 0 10px; height:20px; padding-left:17px; line-height:16px; color:#ff4343;}
+#noneAgree-14 #agreement blockquote {text-align:left;margin:10px 0 0 10px;}
+#de { clear:both }
+#de blockquote label { width:15% }
+blockquote.ph { width:100%;float:left; margin: 0 7px 0 0;}
+input.cvc	{ width: 35px !important}
+.add-create { margin-bottom: 10px }
+.terms blockquote { padding: 10px; margin: 4px 0 0 0;text-align: center;background: url('../_images/item-info-tile.gif') repeat-x 0 0 }
+.terms blockquote:hover { color: black }
+.terms blockquote input, #privacyEU input { display:inline; width:auto; margin: 0 5px 0 0; float:none !important; }
+input.radio	{ float:none !important; width: auto !important; margin: 0 4px 0 0 !important; background: none !important; border: none !important; }
+.simplifiedForm .radio { width: 10em; margin: 0 auto; }
+.simplifiedForm .radio:after, .forms blockquote:after { content: " "; display: block; height: 0; clear: both; } /*clears floats after blockquotes which contain floating elems*/
+.simplifiedForm .forms { margin-top: 0; }
+.simplifiedForm .misc-info { font-weight: bold; color: #474747; width: auto; margin: 20px 20px 0 20px; padding: 3px; background: url(../_images/item-info-header.gif) repeat-x 0 0; border: 1px solid #d7d9db; border-bottom: 0 none; text-align: left; }
+.simplifiedForm { text-align: center;  }
+blockquote.birthdaySelect select { margin-bottom: 5px; }
+.smode h3 { width:20% !important; }
+.use-contact { background:#ffffd8;border:1px solid #cacaca;padding:7px; }
+select.game-key,input.game-key{ width:250px }
+.forms #question1 { position: relative; top: 1px; }
+#reset-passwordForm .sq span.formInfoText { color:#4079c6; position: relative; top: 4px; padding-left: 0; }
+label.gen-state { width:65% !important; }
+.ext	{ width: 40px !important; margin: 0 0 0 5px }
+label.phoneExt {width:50px !important; }
+
+/* Error tooltips */
+.errorTooltip { background: url('../_images/errortooltip-tl.png') no-repeat 0 0; position: absolute; z-index: 20002; }
+.errorTooltip div { position: relative; background: url('../_images/errortooltip-br.png') no-repeat bottom right; left: -2px; top: 10px; display: block; width: 223px; }
+.errorTooltip p { font-size: 11px; color: #fff; font-family: Arial, Helvetica, sans-serif; padding: 1px 13px 6px 11px !important; text-transform: none; margin: 0 !important; position: relative; top: -6px; line-height: 1.1; font-weight: bold; text-align: center !important; }
+.errorTooltipArrow { float: none !important; padding: 0 !important; z-index: 20002; }
+.arrowLeft, .arrowDown, .arrowUp { display: none; }
+div.showTT .arrowLeft, blockquote.showTT .arrowLeft,
+div.showTT .arrowUp, blockquote.showTT .arrowUp,
+div.showTT .arrowDown, blockquote.showTT .arrowDown  { display: inline; }
+div.showTT input, blockquote.showTT input,
+div.showTT select, blockquote.showTT select { border: 1px solid #c8041a; border-left-width: 2px; border-right-width: 2px;  }
+.arrowLeft, .arrowLeft-passRules { margin-left: 16px; left: 100%; line-height:24px; }
+.arrowLeft .errorTooltipArrow, .arrowLeft-passRules .errorTooltipArrow { display: block; width: 21px; height: 24px; position: absolute; top: -11px; left: -7px; }
+.arrowLeft .errorTooltipArrow em, .arrowLeft-passRules .errorTooltipArrow em { display: block; width: 21px; height: 21px; background: url('../_images/errortooltip-arrowleft.png') no-repeat 0 0; }
+.position .arrowLeft-passRules { left: 600px;} 
+.arrowLeft-passRules { left: 670px;}  
+.arrowDown { position: absolute; bottom: 52px; left: 50%; margin-left: -112px; }
+.arrowDown .errorTooltipArrow { display: block; width: 32px; height: 21px; position: absolute; bottom: -8px; left: 50%; margin-left: -16px; }
+.arrowDown .errorTooltipArrow em { display: block; width: 32px; height: 24px; background: url('../_images/errortooltip-arrowdown.png') no-repeat 0 0; }
+.arrowUp { position: absolute; top: 42px; left: 50%; text-align: center; margin-left: -112px; }
+.arrowUp .errorTooltipArrow { display: block; width: 32px; height: 21px; position: absolute; top: -28px; left: 50%; margin-left: -16px; }
+.arrowUp .errorTooltipArrow em { display: block; width: 32px; height: 21px; background: url('../_images/errortooltip-arrowup.png') no-repeat 0 0; }
+#loginForm .arrowLeft .errorTooltipArrow, #reset-passwordForm .arrowLeft .errorTooltipArrow, #addGameForm .arrowLeft .errorTooltipArrow, #privacyEU .arrowLeft .errorTooltipArrow { top: -9px; left: -11px; } /* TODO needs investigating */
+
+#loginForm label { width: 180px; text-align: left; padding-left: 0; display: block;}
+#loginForm input { float: left; }
+#loginForm .misc-info { clear: left; }

@@ -21,6 +21,12 @@ load("classic.xhtml")
 testCount(12, null, "link");
 testCount(2, null, "button");
 
+load("login.xml")
+testElement("name", "accountName", Pattern.TEXTBOX, "e-mail address")
+testElement("name", "password", Pattern.TEXTBOX, "password")
+testElement("onclick", "Form.submit(this)", Pattern.LINK, "login")
+
+ 
 // iTunes page
 load("artists.html");
 testElement("name", "0.5.1.9.6.2.0", Pattern.TEXTBOX, "albums");

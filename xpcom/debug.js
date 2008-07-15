@@ -242,14 +242,14 @@ function addDebugOutput(/*Node*/ node, /*anything*/ obj, /*boolean*/ isHTML, /*c
       var win = obj.document.defaultView;
       if (!obj._toExpand) {
         clearAll(chromeWindow, obj);
-        selectAll(win, obj);
+        try {selectAll(win, obj);} catch (err) {debug(err)}
         header.style.color = 'red';
         header.title = 'black';
       }
       else {
         clearAll(chromeWindow, obj);
         var matchToSelect = oneMatch(obj);
-        selectAll(obj.document.defaultView, matchToSelect);
+        try {selectAll(obj.document.defaultView, matchToSelect);} catch (err) {debug(err)}
         header.childNodes[2].style.color = 'red';
         header.title = 'green';
       }
