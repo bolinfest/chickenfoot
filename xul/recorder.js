@@ -1,10 +1,12 @@
 const CF_ACTION_HISTORY_ID = "CF_DEBUG";
 const CF_ACTION_HISTORY_TAB = "CF_DEBUG_TAB";
 
+var isRecording = false;
+
 function startRecording() {
   // set recordingCheckbox
   var cbox = document.getElementById('recordingCheckbox');
-  cbox.checked = isRecording();
+  cbox.checked = isRecording;
 
   recordFromWindow(Chickenfoot.getTabBrowser(chromeWindow));
 }
@@ -13,20 +15,8 @@ function stopRecording() {
   stopRecordingFromWindow(Chickenfoot.getTabBrowser(chromeWindow));
 }
 
-function isRecording() {
-  var prefs = Chickenfoot.getPrefBranch();
-  try {
-    return prefs.getBoolPref("recordActions");
-  } catch (e) {
-    var defaultValue = false;
-    prefs.setBoolPref("recordActions", defaultValue);
-    return defaultValue;
-  }
-}
-
 function setRecording(/*boolean*/ on) {
-  Chickenfoot.getPrefBranch().setBoolPref("recordActions", on);
-  
+  isRecording = on;
   if (on) startRecording();
   else stopRecording();
 }
@@ -48,7 +38,7 @@ function recordAction (event) {
 }
 
 function doRecordAction(node, type) {
-    if (!isRecording()) return;
+    if (!isRecording) return;
     
     if (type == "click" && node.nodeName == "tabbrowser") return;
     
@@ -59,14 +49,8 @@ function doRecordAction(node, type) {
         recordMatch(result);
     }
     catch (e) {
-    	try {
-        	var result = Chickenfoot.generateChickenfootCommand(node, type);
-        	recordMatch(result);
-        }
-        catch (e2) {
-        	debug(e2.message);
-        	recordError(e2.message);
-        }
+        // Hide recorder exceptions from user
+        Chickenfoot.debugToErrorConsole(e);
     }
     
     return;
@@ -75,11 +59,6 @@ function doRecordAction(node, type) {
 function recordMatch(/*String*/ record) {
     if (record == "") return;
     text = "<tag class=actions><i>" + record + "</i></tag>";
-    printAction(text, true);
-}
-
-function recordError(/*String*/ error) {
-    text = "<tag class=actionError><i>" + error + "</i></tag>";
     printAction(text, true);
 }
 

@@ -19,6 +19,10 @@ function getDocumentNodeCount(/*Document*/ doc) {
 }
 
 
+/**
+ * Takes an event that occurs on an HTML node, and generates an object describing the event.
+ * Throws an exception if the event is unknown.
+ */
 function generateCommandDetails(/*Element*/ e, /*String*/ eventType) {
   var action = null;
   var label = null;
@@ -60,7 +64,9 @@ function generateCommandDetails(/*Element*/ e, /*String*/ eventType) {
 		    value = e.options[e.selectedIndex].textContent;
 		}	
   } else if (eventType == "load") {
-      var url = getVisibleHtmlWindow(e.ownerDocument.defaultView).location;
+      var doc = e.ownerDocument
+      if (!doc) throw new Error("not an HTML document load")
+      var url = getVisibleHtmlWindow(doc.defaultView).location.toString();
       action = Command.GO_COMMAND;
       value = url;
   } else if (eventType == "keypress") {
@@ -149,7 +155,7 @@ function generateChickenfootCommand(/*Element*/ e, /*String*/ eventType, /*Boole
         var label = "";
         
         if (details.label == "") {
-	        label = "new XPath(\"" + details.targetXPath + "\")";
+	        label = "new XPath(" + toQuotedJavascriptString(details.targetXPath) + ")";
     	  } else {
     	    label = details.label;
     	    
@@ -169,42 +175,38 @@ function generateChickenfootCommand(/*Element*/ e, /*String*/ eventType, /*Boole
 
 function generateChickenfootCommandFromDetails(/*CommandDetails*/ details) {
   var command = null;
-	var label = "";
-	var value = "\"" + details.value + "\"";
-	var type = "";
+	var label;
 	
 	if (details.label == "") {
-	    label = "new XPath(\"" + details.targetXPath + "\")";
+	    label = "new XPath(" + toQuotedJavascriptString(details.targetXPath) + ")";
 	}
 	else {
 	    label = details.label;
+        if (!label) label = "";
 	    if (details.ordinal) label = getOrdinalText(details.ordinal) + " " + label;
 	    if (details.action == Command.CLICK_COMMAND && details.targetType == ElementTypes.BUTTON) label += " button";
 	    if (details.action == Command.CHOOSE_COMMAND) label += " listbox";
-	    label = "\"" + label + "\"";
+	    label = toQuotedJavascriptString(label);
 	}
 	
 	if (details.action == Command.CLICK_COMMAND) {
         command = "click(" + label + ")";
     }
     else if (details.action == Command.ENTER_COMMAND) {
-        type = "textbox";
-		command = "enter(" + label + ", " + value + ")";
+		command = "enter(" + label + ", " + toQuotedJavascriptString(details.value) + ")";
     }
 	else if(details.targetType == ElementTypes.RADIO_BUTTON) {
-	    type = "radiobutton";
 	    command = "check(" + label + ")";
 	}
 	else if(details.targetType == ElementTypes.CHECK_BOX) {
-	    type = "checkbox";
         if (details.value == "true") command = "check(" + label + ")";
         else command = "uncheck(" + label + ")";
 	}
 	else if (details.action == Command.CHOOSE_COMMAND) {
-		command = "pick(" + label + ", " + value + ")";
+		command = "pick(" + label + ", " + toQuotedJavascriptString(details.value) + ")";
     }
     else if (details.action == Command.GO_COMMAND) {
-        command = "go(" + value + ")";
+        command = "go(" + toQuotedJavascriptString(details.value) + ")";
     }
     
     if (!command) throw new Error("unable to generate keyword command from details: " + details);
@@ -223,7 +225,7 @@ function generateKeywordCommandFromDetails(/*CommandDetails*/ details) {
     }
     else if (details.action == Command.ENTER_COMMAND) {
         var val = details.value;
-		command = "type \"" + val + "\" into " + label + " textbox";
+		command = "type " + toQuotedJavascriptString(val) + " into " + label + " textbox";
     }
 	else if(details.targetType == ElementTypes.RADIO_BUTTON) {
 	    command = "check " + label;
@@ -461,6 +463,15 @@ function removeExtraWhitespace(/*String*/ s) {
 
 function trim(/*String*/ s) {
 	return s.replace(/^\s+|\s+$/g,"");
+}
+
+function toQuotedJavascriptString(/*String*/ s) {
+    if (!s) return '""';
+    return '"' + s
+        .replace(/\r/g,"\\r")
+        .replace(/\n/g,"\\n")
+        .replace(/"/g,"\\\"")
+        + '"'
 }
 
 var ElementTypes = new Object();

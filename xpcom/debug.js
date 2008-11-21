@@ -25,6 +25,14 @@ function debug(/*anything*/ obj) {
   } catch (e) {
   }
   
+  debugToErrorConsole(obj)
+}
+
+/**
+ * Print object only to Javascript error console.
+ * Use for debugging messages that shouldn't be allowed to clutter the output pane.
+ */
+function debugToErrorConsole(/*anything*/ obj) {
   var consoleService = Components.classes["@mozilla.org/consoleservice;1"]
                                  .getService(Components.interfaces.nsIConsoleService);
   consoleService.logStringMessage(toDebugString(obj));  
