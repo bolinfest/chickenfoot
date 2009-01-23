@@ -237,7 +237,13 @@ function getEvaluationContext(/*Object*/ context,
   context.localUrl = function localUrl(url) { return localUrlImpl(url); };
 
   context.openTab = function openTab(url, show) { return openTabImpl(chromeWindow, url, show); };
-
+  context.withTab = function withTab(tab, func) {
+    try { 
+      var origWin = win; win = tab._window; 
+      return func.apply(null, Array.prototype.slice.call(arguments,2));
+    } finally { win = origWin }
+  }
+  
   context.Chrome = function openChrome(cwin) { return new Chrome(cwin ? cwin : chromeWindow); };
   context.chrome getter = function getChrome() { return new Chrome(chromeWindow); };
 
