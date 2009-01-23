@@ -50,6 +50,8 @@ function Buffer(/*optional File*/ file,
   this._initialCursorPosition = cursorPosition;
   this._initialText = text;
   this._makeGuess = false;
+  this._lastDirectory = Chickenfoot.gTriggerManager._getChickenfootProfileDirectory();
+  this._lastDirectory.append(" ");
   
   // create the editor widget
   var editor;
@@ -590,9 +592,15 @@ Buffer.prototype.save = function() {
  * Save this buffer to disk, prompting for a new name.
  */
 Buffer.prototype.saveAs = function() {
-  var file = chooseFile(false, this.file);
+  if (this.file != null) {
+    var file = chooseFile(false, this.file);
+  } else {
+	var file = chooseFile(false, this._lastDirectory);
+  }
   if (file == null) { return; }
   this.file = file;
+  this._lastDirectory = file.clone();
+  this._lastDirectory.leafName = "";
   this.save();
 }
 
@@ -830,7 +838,9 @@ function loadIntoBuffer(file) {
 }
 
 function openFile() {
-  var file = chooseFile(true);
+  var file = chooseFile(true, this._lastDirectory);
+  this._lastDirectory = file.clone();
+  this._lastDirectory.leafName = "";
   loadIntoBuffer(file);
 }
 
