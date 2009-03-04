@@ -466,7 +466,7 @@
                 <toolbarbutton class="disablableToolbarButton"
                                style="list-style-image: url(chrome://chickenfoot/skin/package-xpi.png)"
                                tooltiptext="Package script as a Firefox extension"
-                               oncommand="packageSelectedTriggers(document.getElementById('CF_TRIGGERS_PANE').selectedItems[0]._trigger)"
+                               oncommand="packageTrigger()"
                                observes="requiresSelectedTrigger"
                                />
                                
@@ -482,29 +482,28 @@
                 -->
               </toolbar>
 
-              <listbox id="CF_TRIGGERS_PANE"
+              <tree id="CF_TRIGGERS_PANE"
                        seltype="multiple"
                        enableColumnDrag="true"
                        flex="20"
                        onselect="document.getElementById('requiresSelectedTrigger').setAttribute('disabled', (this.selectedIndex == -1))"
                        ignoreAllTriggers="false"
+                       editable="true"
+                       onmousedown="onTriggersTreeClicked(event)"
                        >
                        
-                <listcols>
-                  <listcol id="Triggers_" /> 
+                <treecols>
+                  <treecol id="Triggers_" label="On?" type="checkbox" editable="true"/> 
                   <splitter class="tree-splitter" />
-                  <listcol id="Triggers_Name" flex="5"/>
+                  <treecol id="Triggers_Name" label="Name" flex="5" editable="false"/>
                   <splitter class="tree-splitter" />
-                  <listcol id="Triggers_Included_Pages" flex="5" />
-                </listcols>                  
+                  <treecol id="Triggers_Included_Pages" label="Triggered when" editable="false" flex="5" />
+                </treecols>
                 
-                <listhead>
-                  <listheader label="On?" />
-                  <listheader label="Name" />
-                  <listheader label="Triggered when" />
-                </listhead>
-           
-              </listbox>
+                <treechildren id="CF_TRIGGERS_PANE_CHILDREN">
+                </treechildren>                  
+                
+              </tree>
       
             </vbox>
         </tabpanels>

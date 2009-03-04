@@ -30,13 +30,13 @@ function triggerManagerChanged(event) {
 }
 
 function loadTriggers() {
-  var listbox = document.getElementById("CF_TRIGGERS_PANE");
+  var treechildren = document.getElementById("CF_TRIGGERS_PANE_CHILDREN");
   
   // clear out the previous triggers
-  while (listbox.getRowCount() > 0) {
-    listbox.removeItemAt(0)
+  while(treechildren.hasChildNodes()){
+    treechildren.removeChild(treechildren.firstChild);
   }
-
+  
   var triggers = Chickenfoot.gTriggerManager.triggers;  
   
   for (var i = 0; i < triggers.length; ++i) {
@@ -68,52 +68,85 @@ function updateIgnoreAllTriggersUI() {
   document.getElementById("CF_TRIGGERS_PANE").setAttribute("ignoreAllTriggers", checked);
 }
 
+// Hack needed to figure out which trigger is being clicked on in the triggers list
+// It can probably be eliminated once firefox fixes the resizing bug with listbox headers
+// so we can go back to using a listbox instead of a tree.
+// NOTE: this is triggered by mousedown on tree instead of click because checkboxes capture mousedown
+function onTriggersTreeClicked(event) {
+  var tree = document.getElementById("CF_TRIGGERS_PANE");
+  var tbo = tree.treeBoxObject;
+
+  // get the row, col and child element at the point
+  var row = { }, col = { }, child = { };
+  tbo.getCellAt(event.clientX, event.clientY, row, col, child);
+
+  // update row if clicked on a row
+  if (row.value > -1) {
+    var triggersList = document.getElementById("CF_TRIGGERS_PANE_CHILDREN");
+    triggersList.childNodes[row.value]._trigger.enabled = (triggersList.childNodes[row.value]._enabled.getAttribute("value") == "true");
+    saveTriggers();
+  }
+  return true;
+}
 
 function addTriggerToListbox(/*Trigger*/ trigger) {
-  var item = document.createElement("listitem");
+  var item = document.createElement("treeitem");
   item.setAttribute("allowevents", "true");
-
-  var enabled = document.createElement("checkbox");
-  enabled.setAttribute("checked", trigger.enabled);
-  enabled.setAttribute("observes", "requiresTriggersEnabled");
-  item.appendChild(enabled);
   
-  var name = document.createElement("label");
+  var row = document.createElement("treerow");
+
+  var enabled = document.createElement("treecell");
+  enabled.setAttribute("editable", true);
+  enabled.setAttribute("value", trigger.enabled);
+  enabled.setAttribute("observes", "requiresTriggersEnabled");
+  row.appendChild(enabled);
+  
+  var name = document.createElement("treecell");
+  name.setAttribute("editable", false);
+  name.setAttribute("label", trigger.name);
   name.setAttribute("value", trigger.name);
-  item.appendChild(name);
+  row.appendChild(name);
   
   // add "when to trigger" information to the list box
-  var includes = document.createElement("label");
+  var includes = document.createElement("treecell");
+  var value = "";
   if (trigger.when == 'Pages Match'){
-    includes.setAttribute("value", patternArrayToString(trigger.includes, trigger.excludes));
+    value = patternArrayToString(trigger.includes, trigger.excludes);
   }else if(trigger.when == 'Firefox Starts'){
-    includes.setAttribute("value", "Firefox starts");
+    value = "Firefox starts";
   }else if(trigger.when == 'New Window'){
-    includes.setAttribute("value", "New window opens");
+    value = "New window opens";
   }
-  item.appendChild(includes);
+  includes.setAttribute("value", value);
+  includes.setAttribute("label", value);
+  includes.setAttribute("editable", false);
+  row.appendChild(includes);
   
   item._trigger = trigger;
+  item._enabled = enabled;
 
-  var listbox = document.getElementById("CF_TRIGGERS_PANE");
+  item.appendChild(row);
+  
+  var listbox = document.getElementById("CF_TRIGGERS_PANE_CHILDREN");
   listbox.appendChild(item);
 
   // now that the new widgets are in the UI, add event listeners to them
-  enabled.addEventListener("command",
+  enabled.addEventListener("click",
     function(event) {
+    alert('command called');
       trigger.enabled = enabled.checked;
       saveTriggers();
     }, false);
 }
 
 function updateTriggerInListbox(index) {
-  var listbox = document.getElementById("CF_TRIGGERS_PANE");
+  var listbox = document.getElementById("CF_TRIGGERS_PANE_CHILDREN");
   var item = listbox.getItemAtIndex(index);
   var trigger = item._trigger;
 
-  var enabled = item.firstChild;
+  var enabled = item._enabled;
   //TODO - enabled.checked = trigger.enabled
-  enabled.setAttribute("checked", trigger.enabled);
+  enabled.setAttribute("value", trigger.enabled);
   //TODO - get rid of this saveTriggers
   Chickenfoot.gTriggerManager.saveTriggers();
 
@@ -121,13 +154,16 @@ function updateTriggerInListbox(index) {
   var includes = enabled.nextSibling;
   
   // add "when to trigger" information to the list box
+  var value = "";
   if (trigger.when == 'Pages Match'){
-    includes.setAttribute("value", patternArrayToString(trigger.includes, trigger.excludes));
+    value =  patternArrayToString(trigger.includes, trigger.excludes);
   }else if(trigger.when == 'Firefox Starts'){
-    includes.setAttribute("value", "Firefox starts");
+    value = "Firefox starts";
   }else if(trigger.when == 'New Window'){
-    includes.setAttribute("value", "New window opens");
+    value = "New window opens";
   }
+  includes.setAttribute("value", value);
+  includes.setAttribute("label", value);
 }
 
 /**
@@ -230,7 +266,7 @@ function addTrigger() {
 
 function editTriggerScript() {
   var listbox = document.getElementById("CF_TRIGGERS_PANE");
-  var itemIndex = listbox.selectedIndex;
+  var itemIndex = listbox.currentIndex;
   if (itemIndex != -1) {
 	  var triggers = Chickenfoot.gTriggerManager.triggers;
 	  var trigger = triggers[itemIndex];	  
@@ -240,11 +276,10 @@ function editTriggerScript() {
 
 function editTriggerProperties() {
   var listbox = document.getElementById("CF_TRIGGERS_PANE");
-  var itemIndex = listbox.selectedIndex;
+  var itemIndex = listbox.currentIndex;
   if (itemIndex != -1) {
 	  var triggers = Chickenfoot.gTriggerManager.triggers;
 	  var trigger = triggers[itemIndex];
-	  
 	  var dialogArguments = {};
 	  openTriggerDialog(trigger, dialogArguments);
 	  
@@ -324,12 +359,14 @@ function openTriggerDialog(trigger, dialogArguments, buffer) {
 
 function moveTrigger(/* 'down' | 'up' */ direction) {
   var listbox = document.getElementById("CF_TRIGGERS_PANE");
-  var item = listbox.selectedItem;
-  if (item == null) return;
+  var triggersList = document.getElementById("CF_TRIGGERS_PANE_CHILDREN");
+  
+  var itemIndex = listbox.currentIndex;
+  if (itemIndex < 0) return;
+  
+  var item = triggersList.childNodes[itemIndex];
 
   var triggers = Chickenfoot.gTriggerManager.triggers;  
-
-  var itemIndex = listbox.selectedIndex;
   
   if (direction == 'up') {
     var itemAboveUs = item.previousSibling;
@@ -337,8 +374,8 @@ function moveTrigger(/* 'down' | 'up' */ direction) {
     // in case there is a DOM object above us which is the header list,
     // and we don't want to move above that
     if (itemAboveUs != null && itemIndex != 0) {
-      listbox.removeChild(item);
-      listbox.insertBefore(item, itemAboveUs);
+      triggersList.removeChild(item);
+      triggersList.insertBefore(item, itemAboveUs);
            
       var t = triggers[itemIndex-1];
       triggers[itemIndex-1] = triggers[itemIndex];
@@ -347,8 +384,8 @@ function moveTrigger(/* 'down' | 'up' */ direction) {
   } else if (direction == 'down') {
     var itemBelowUs = item.nextSibling;
     if (itemBelowUs != null) {
-      listbox.removeChild(itemBelowUs);
-      listbox.insertBefore(itemBelowUs, item);
+      triggersList.removeChild(itemBelowUs);
+      triggersList.insertBefore(itemBelowUs, item);
 
       var t = triggers[itemIndex+1];
       triggers[itemIndex+1] = triggers[itemIndex];
@@ -360,7 +397,7 @@ function moveTrigger(/* 'down' | 'up' */ direction) {
 
   // whatever happens, let's reselect the item
   // just in case it got deselected in the moving process
-  listbox.selectedIndex = listbox.getIndexOfItem(item);
+  listbox.currentIndex = listbox.contentView.getIndexOfItem(item);
   saveTriggers();
   
   // dump triggers list for debugging
@@ -375,20 +412,30 @@ function moveTrigger(/* 'down' | 'up' */ direction) {
 
 function removeTriggers() {
   var listbox = document.getElementById("CF_TRIGGERS_PANE");
-  var triggers = Chickenfoot.gTriggerManager.triggers;  
+  var triggers = Chickenfoot.gTriggerManager.triggers;
+  var triggersList = document.getElementById("CF_TRIGGERS_PANE_CHILDREN");
   
-  for (var i = listbox.selectedCount - 1; i >= 0; --i) {
-    var item = listbox.getSelectedItem(i);
-    var itemIndex = listbox.getIndexOfItem(item);
-
-    var item = listbox.getItemAtIndex(itemIndex);
-    var name = item._trigger.name;
-    if (!window.confirm('Are you sure you want to delete the following trigger: ' + name)) {
-      continue;
+  var start = new Object();
+  var end = new Object();
+  var numRanges = listbox.view.selection.getRangeCount();
+  var itemsToBeRemoved = new Array();
+  for (var t=0; t<numRanges; t++){
+    listbox.view.selection.getRangeAt(t,start,end);
+    for (var v=start.value; v<=end.value; v++){
+      var item = triggersList.childNodes[v];
+      var name = item._trigger.name;
+      if (!window.confirm('Are you sure you want to delete the following trigger: ' + name)) {
+        continue;
+      }
+      
+      itemsToBeRemoved.push(v);
     }
-    
-    listbox.removeItemAt(itemIndex);
-    triggers.splice(itemIndex, 1);
+  }
+  for (var i=0; i<itemsToBeRemoved.length; i++) {
+    var v = itemsToBeRemoved[i] - i;
+    var item = triggersList.childNodes[v];
+    triggersList.removeChild(item);
+    triggers.splice(v, 1);
     saveTriggers();
   }
 }
@@ -441,6 +488,11 @@ function getFileInProfileDirectory(/*String*/ leafStr) {
   return null;
 }
 
+function packageTrigger() {
+  var triggersList = document.getElementById('CF_TRIGGERS_PANE_CHILDREN');
+  var itemIndex = document.getElementById('CF_TRIGGERS_PANE').currentIndex;
+  if (itemIndex >= 0) packageSelectedTriggers(triggersList.childNodes[itemIndex]._trigger);
+}
 
 /**
  * Take the code in the currently selected trigger and prompt the user to package it as an XPI.
