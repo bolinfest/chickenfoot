@@ -1,0 +1,5 @@
+content chickenfoot  content/
+locale  chickenfoot  en-US	locale/en-US/
+skin    chickenfoot  classic  skin/classic/
+overlay	chrome://browser/content/browser.xul	chrome://chickenfoot/content/overlay.xul
+overlay	chrome://browser/content/browser.xul	chrome://chickenfoot/content/trigger-overlay.xul

@@ -1,0 +1,178 @@
+<project name="mobile chickenfoot" default="build" basedir=".">
+
+    <property name="content.dir"    value="${basedir}/xul" />
+    <property name="components.dir" value="${basedir}/xpcom" />
+    <property name="skin.dir"       value="${basedir}/skin" />
+    <property name="locale.dir"     value="${basedir}/locale" />
+    
+    <property name="build.dir"      value="${basedir}${file.separator}build" />
+    <property name="xpi.dir"        value="${build.dir}${file.separator}xpi" />
+    <property name="export.dir"     value="${xpi.dir}/export" />
+    <property name="setup.dir"      value="${basedir}/setup" />
+
+    <property file="fennec.properties" />
+    <property name="fennec.chickenfoot.guid"     value="896b34a4-c83f-4ea7-8ef0-51ed7220ac94" />
+    <property name="fennec.extension.dir"        value="${fennec.profile.dir}/extensions/{${fennec.chickenfoot.guid}}" />
+    
+    <property name="version.value" value="1.0.5"/>
+    <property name="version.pattern" value="&lt;version/&gt;" />
+    
+    <property name="firefox_chickenfoot.components.dir"    value="${basedir}/../xpcom" />
+    <property name="firefox_chickenfoot.content.dir"    value="${basedir}/../xul" />
+    
+    <filterset id="chickenfootMacros">
+      <filter token="CHICKENFOOT_CONTRACT_ID" value="@uid.csail.mit.edu/Chickenfoot/;1" />
+      <filter token="CHICKENFOOT_GUID" value="7a2ad1d0-29a8-4e2a-97bd-ad6324c0a753" />
+      <filter token="CHICKEN_BYPASS_GUID" value="f8940eee-2e3b-4682-a5d1-71ca80aeeeee" />
+      <filter token="CHICKENFOOT_COMMAND_LINE_HANDLER_GUID" value="e2f9f917-a54e-4e9c-83c3-174fa65ecd25" />
+      <filter token="EXTENSION_NAME" value="chickenfoot" />
+      <filter token="IS_EXPORTED_XPI" value="false" />
+      <filter token="GUID" value="${fennec.chickenfoot.guid}" />
+    </filterset>
+    
+    <target name="xpi-dir"
+            depends=""
+            description="Generates the build/xpi directory.">
+        <mkdir dir="${build.dir}" />     
+        <mkdir dir="${xpi.dir}" />
+        <!-- content folder -->
+        <mkdir dir="${xpi.dir}/content" />
+        <copy todir="${export.dir}" overwrite="true">
+            <fileset dir="${components.dir}">
+                <include name="*.js" />
+                <exclude name="Trigger.js" />
+                <exclude name="Pattern.js" />
+                <exclude name="Keywords.js" />
+                <exclude name="fields.js" />
+                <exclude name="strings.js" />
+                <exclude name="Match.js" />
+            </fileset>
+            <fileset dir="${content.dir}">
+                <include name="*.js" />
+            </fileset>
+            
+            <fileset dir="${firefox_chickenfoot.components.dir}">
+                <include name="Chicken-bypass.js" />
+                <include name="Chickenfoot.js" />
+                <include name="preferences.js" />
+                <include name="SimpleIO.js" />
+                <include name="TriggerManager.js" />
+                <include name="Trigger.js" />
+                <include name="Interpreter.js" />
+                
+                <include name="Pattern.js" />
+                <include name="insert.js" />
+                <include name="controls.js" />
+                <include name="Keywords.js" />
+                <include name="fields.js" />
+                <include name="treeWalker.js" />
+                <include name="TextBlob.js" />
+                <include name="Box.js" />
+                <include name="strings.js" />
+                <include name="StringBuffer.js" />
+                <include name="Match.js" />
+                <include name="domFlattener.js" />
+                <include name="UidGen.js" />
+                <include name="ranges.js" />
+                <include name="SlickMap.js" />
+                <include name="SlickSet.js" />
+                <include name="click.js" />
+                <include name="events.js" />
+                <include name="enter.js" />
+                <include name="pick.js" />
+                <include name="whenLoaded.js" />
+                <include name="Test.js" />
+                <include name="deepTreeWalker.js" />
+                <include name="userscript.js" />
+                
+                <include name="built-in listeners.js" />
+            </fileset>
+            <filterset refid="chickenfootMacros" />
+        </copy>
+        <concat destfile="${xpi.dir}/content/overlay.js" fixlastline="yes">
+            <fileset dir="${export.dir}">
+                <include name="*.js" />
+            </fileset>
+        </concat>
+        <copy todir="${xpi.dir}/content" overwrite="true">
+            <fileset dir="${content.dir}"
+                     includes="*.xul" />
+            <fileset dir="${firefox_chickenfoot.content.dir}">
+                <include name="chickenscratch.xul"/>
+                <include name="chickenscratch.js"/>
+            </fileset>
+            <filterset refid="chickenfootMacros" />
+        </copy>
+        <!-- skin folder -->
+        <mkdir dir="${xpi.dir}/skin" />
+        <copy todir="${xpi.dir}/skin" overwrite="true">
+            <fileset dir="${skin.dir}" />
+        </copy>
+        <!-- locale folder -->
+        <mkdir dir="${xpi.dir}/locale" />
+        <copy todir="${xpi.dir}/locale" overwrite="true">
+            <fileset dir="${locale.dir}" />
+        </copy>
+        <!-- copy install.rdf file, filling in version number -->      
+        <copy file="install.template.rdf"               
+            tofile="${xpi.dir}/install.rdf"
+            overwrite="true" />
+        <replaceregexp match="${version.pattern}"
+                       flags="g"
+                       replace="${version.value}" >
+          <fileset dir="${xpi.dir}">
+              <include name="install.rdf" />
+          </fileset>
+        </replaceregexp>
+        <!-- chrome.manifest -->
+        <copy file="chrome.manifest"               
+            tofile="${xpi.dir}/chrome.manifest"
+            overwrite="true" />
+        <!-- setup folder -->
+        <mkdir dir="${xpi.dir}/setup" />
+        <copy todir="${xpi.dir}/setup" overwrite="true">
+            <fileset dir="${setup.dir}" />
+        </copy>
+    </target>
+    
+    <target name="run-fennec-no-install"
+            depends="xpi-dir,point-fennec-to-xpi-dir,run-fennec"
+            description="Runs Fennec by pointing it directly at build/xpi.">
+    </target>
+    
+    <condition property="fennec-already-points-to-xpi-dir">
+       <available file="${fennec.extension.dir}" type="file"/>
+    </condition>
+    
+    <target name="point-fennec-to-xpi-dir"
+            unless="fennec-already-points-to-xpi-dir">
+        <echo message="Deleting old Chickenfoot and redirecting it to ${xpi.dir}"/>
+        <delete dir="${fennec.extension.dir}"/>
+        <echo message="${xpi.dir}" file="${fennec.extension.dir}"/>
+    </target>
+    
+    <condition property="fennec-properties-has-profile-dir">
+        <and>
+          <available file="${basedir}/fennec.properties" />
+          <isset property="fennec.profile.dir" />
+        </and>
+    </condition>
+    
+    <target name="run-fennec">
+        <fail unless="fennec-properties-has-profile-dir">
+            .
+            The run-fennec-no-install target requies you to create 
+            fennec.properties.  Use fennec-default.properties 
+            as a template, and customize it for your Fennec installation.
+        </fail>
+      <exec executable="${fennec.dir}${fennec.executable}">
+          <arg value="-jsconsole"/>
+      </exec>
+    </target>
+
+    <target name="build"
+            depends="run-fennec-no-install"
+            description="Builds the fennec chickenfoot extension.">
+    </target>
+    
+</project>

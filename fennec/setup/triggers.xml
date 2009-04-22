@@ -1,0 +1,12 @@
+<triggers version="0.5">
+
+  <trigger name="Google Icon Search"
+           description="Adds an &quot;Icon Search&quot; button to Google Image Search"
+           path="google-icon-search.js"
+           enabled="true"
+           when="Pages Match"
+           >
+    <include urlPattern="http://images.google.com/*"/>
+  </trigger>
+  
+</triggers>

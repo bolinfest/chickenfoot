@@ -1,0 +1,61 @@
+#sample-toolbar-button
+{
+    list-style-image: url("chrome://chickenfoot/skin/beak.png");
+}
+#sample-toolbar-button:hover:active
+{
+    list-style-image: url("chrome://chickenfoot/skin/beak-down.png");
+}
+
+#triggers-control {
+    background-color: rgba(123, 125, 123, 0.9);
+    padding: 8px;
+}
+
+#triggers-control-close { 
+    -moz-appearance: none;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    list-style-image: url(chrome://browser/skin/images/close-small.png);
+}
+
+#triggers-control-items {
+    -moz-appearance: none;
+    background-color: rgba(207, 207, 207, 0.7);
+    border-width: 2px;
+    border-color: rgb(255, 255, 255);
+    border-style: solid;
+    -moz-border-radius-topleft: 10px;
+    -moz-border-radius-topright: 10px;
+    -moz-border-radius-bottomright: 10px;
+    -moz-border-radius-bottomleft: 10px;
+}
+.trigger-item {
+    margin: 8px;
+}
+.trigger-item button {
+    -moz-appearance: none;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    list-style-image: url("chrome://chickenfoot/skin/offbutton.png");
+}
+.trigger-item button[checked="true"] {
+    -moz-appearance: none;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+    list-style-image: url("chrome://chickenfoot/skin/onbutton.png");
+}
+
+.trigger-text {
+    font-size: 24px !important;
+}
+.trigger-text-second {
+    font-size: 16px !important;
+    color: rgb(48, 48, 48);
+}

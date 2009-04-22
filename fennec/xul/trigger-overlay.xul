@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet href="chrome://chickenfoot/skin/overlay.css" type="text/css"?>
+
+<overlay id="triggers-controls-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+  <stack id="browser-container">
+    <vbox id="triggers-control" hidden="true" style="-moz-stack-sizing: ignore;" top="0" left="0" width="800" height="458">
+      <hbox id="triggers-control-items-container" flex="1">
+        <richlistbox id="triggers-control-items" flex="1"/>
+      </hbox>
+      <hbox pack="end">
+        <button id="triggers-control-close" oncommand="document.getElementById('triggers-control').hidden = true"/>
+      </hbox>
+    </vbox>
+  </stack>
+</overlay>
+
