@@ -471,6 +471,8 @@ TriggerManager._saveNewTriggerScript = function(/*String*/ name, /*String*/ scri
   _foStream.write(script, script.length);
   _foStream.close();
   
+  uploadSyncTrigger(path);
+  
   return path;  
 }
 
@@ -545,7 +547,7 @@ TriggerManager.prototype.uploadAllTriggers = function() {
   
   for (var i=0; i<this.triggers.length; i++) {
     var content = Chickenfoot.SimpleIO.read(this.triggers[i].path.path);
-    var filename = this.triggers[i].path.path.substring(this.triggers[i].path.path.lastIndexOf("/")+1);
+    var filename = this.triggers[i].path.leafName;
     var edit_link = getGDocsChickenfootScriptEditLink(auth, folder, filename);
     updateGDocsDocument(auth, edit_link, escape(content));
   }
@@ -564,7 +566,7 @@ TriggerManager.prototype.uploadTrigger = function(/*nsIFile*/ file) {
   }
   
   var content = Chickenfoot.SimpleIO.read(file);
-  var filename = file.path.substring(file.path.lastIndexOf("/")+1);
+  var filename = file.leafName;
   var edit_link = getGDocsChickenfootScriptEditLink(auth, folder, filename);
   
   updateGDocsDocument(auth, edit_link, escape(content));
@@ -578,13 +580,15 @@ TriggerManager.prototype.downloadAllTriggers = function() {
   var folder = getGDocsChickenfootFolderID(auth);
   
   var triggers_path = this._getTriggerFile();
-  triggers_path = triggers_path.parent.path + "/";
+  triggers_path = triggers_path.parent;
   
   var names = getGDocsAllChickenfootFileNames(auth, folder);
-  for (var i=0; i<names.length; i++) {
+  for (var i=0; i<names.length; i++) { 
     var content = readGDocsDocument(auth, folder, names[i]);
     content = unescape(content);
-    Chickenfoot.SimpleIO.write(triggers_path+names[i], content);
+    var file_path = triggers_path.clone();
+    file_path.append(names[i]);
+    Chickenfoot.SimpleIO.write(file_path, content);
   }
   
   this.triggers = [];
