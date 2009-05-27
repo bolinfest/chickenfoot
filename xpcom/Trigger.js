@@ -28,6 +28,7 @@ Trigger.prototype.getSource = function() {
 
 Trigger.prototype.setSource = function(/* String */ source) {
 	SimpleIO.write(this.path, source);
+	uploadSyncTrigger(this.path);
 }
 
 /**

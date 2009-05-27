@@ -581,6 +581,7 @@ Buffer.prototype.setCursorPosition = function(/*int*/ cursorPosition) {
 Buffer.prototype.save = function() {
   if (this.file != null) {
     Chickenfoot.SimpleIO.write(this.file, this.text);
+    uploadSyncTrigger(this.file);
     this.dirty = false;
     delete this._lastModifiedTime;
   } else {

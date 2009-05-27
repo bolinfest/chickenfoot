@@ -112,6 +112,7 @@ TriggerManager.prototype.saveTriggers = function(/*nsIFile*/ opt_file) {
   this._prettyPrint(this.doc, "", buffer);
   var content = buffer.join("");
   SimpleIO.write(opt_file, content, false);
+  uploadSyncTrigger(opt_file);
 
   this.fireEvent({type:"saveTriggers"});
 }
@@ -531,6 +532,66 @@ TriggerManager.prototype.QueryInterface = function (iid) {
 }
 
 /**
+ * Upload all triggers to Google Docs 
+ */
+TriggerManager.prototype.uploadAllTriggers = function() {
+  var auth = getGDocsAuth("chickenfootwing@gmail.com", "chickenfoot");
+  var folder = getGDocsChickenfootFolderID(auth);
+  
+  var triggers_xml = Chickenfoot.SimpleIO.read(this._getTriggerFile());
+  
+  var triggers_xml_edit = getGDocsChickenfootScriptEditLink(auth, folder, "triggers.xml");
+  updateGDocsDocument(auth, triggers_xml_edit, escape(triggers_xml));
+  
+  for (var i=0; i<this.triggers.length; i++) {
+    var content = Chickenfoot.SimpleIO.read(this.triggers[i].path.path);
+    var filename = this.triggers[i].path.path.substring(this.triggers[i].path.path.lastIndexOf("/")+1);
+    var edit_link = getGDocsChickenfootScriptEditLink(auth, folder, filename);
+    updateGDocsDocument(auth, edit_link, escape(content));
+  }
+  
+}
+
+TriggerManager.prototype.uploadTrigger = function(/*nsIFile*/ file) {
+  var auth = getGDocsAuth("chickenfootwing@gmail.com", "chickenfoot");
+  var folder = getGDocsChickenfootFolderID(auth);
+  
+  // TODO: somewhat hacky way for initializing
+  if (!containsGDocsChickenfootScript(auth, folder, "triggers.xml")) {
+    // upload all triggers if the folder doesn't have triggers.xml -- first time syncing
+    this.uploadAllTriggers();
+    return;
+  }
+  
+  var content = Chickenfoot.SimpleIO.read(file);
+  var filename = file.path.substring(file.path.lastIndexOf("/")+1);
+  var edit_link = getGDocsChickenfootScriptEditLink(auth, folder, filename);
+  
+  updateGDocsDocument(auth, edit_link, escape(content));
+}
+
+/**
+ * Download all triggers from Google Docs 
+ */
+TriggerManager.prototype.downloadAllTriggers = function() {
+  var auth = getGDocsAuth("chickenfootwing@gmail.com", "chickenfoot");
+  var folder = getGDocsChickenfootFolderID(auth);
+  
+  var triggers_path = this._getTriggerFile();
+  triggers_path = triggers_path.parent.path + "/";
+  
+  var names = getGDocsAllChickenfootFileNames(auth, folder);
+  for (var i=0; i<names.length; i++) {
+    var content = readGDocsDocument(auth, folder, names[i]);
+    content = unescape(content);
+    Chickenfoot.SimpleIO.write(triggers_path+names[i], content);
+  }
+  
+  this.triggers = [];
+  this.loadTriggers(this._getTriggerFile());
+}
+
+/**
  * Populate a context menu that lets a user run a trigger on a page
  */
 function populateTriggerContextMenuPopup(popup) {
@@ -647,4 +708,11 @@ function addTriggerListener(/*ChromeWindow*/ chromeWindow) {
      
   }
   
+}
+
+/**
+ * Upload a file (trigger or triggers.xml) to Google Docs
+ */
+function uploadSyncTrigger(/*nsIFile*/ file) {
+  Chickenfoot.gTriggerManager.uploadTrigger(file);
 }

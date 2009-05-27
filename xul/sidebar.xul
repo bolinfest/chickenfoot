@@ -480,6 +480,13 @@
                                observes="requiresSelectedTrigger"
                                />
                 -->
+                
+                <!-- SYNC with GDocs -->
+                <toolbarbutton class=""
+                               style="list-style-image: url(chrome://chickenfoot/skin/sync.gif)"
+                               tooltiptext="Download triggers from Google Docs"
+                               oncommand="downloadSyncTriggers()"
+                               />
               </toolbar>
 
               <tree id="CF_TRIGGERS_PANE"

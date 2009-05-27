@@ -693,6 +693,7 @@ function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
 
      //update the metadata in the main trigger file
      var newTriggerCode = Chickenfoot.updateAttributes(mainTriggerCode, metadata);
+     debugToErrorConsole("updateMetadata");
      Chickenfoot.SimpleIO.write(mainTrigger.path, newTriggerCode);
      return metadata;
    } //end updateMetadata()
@@ -817,3 +818,25 @@ function publishSelectedTrigger(/*Trigger*/ trigger) {
   Chickenfoot.evaluate(chromeWindow, code, false, chromeWindow.content.wrappedJSObject);
   
 }//end publishSelectedTrigger
+
+/**
+ * Upload all triggers
+ */
+function uploadSyncTriggers() {
+  Chickenfoot.gTriggerManager.uploadAllTriggers();
+}
+
+/**
+ * Upload a file (trigger or triggers.xml) to Google Docs
+ */
+function uploadSyncTrigger(/*nsIFile*/ file) {
+  Chickenfoot.gTriggerManager.uploadTrigger(file);
+}
+
+/**
+ * Download all triggers
+ */
+function downloadSyncTriggers() {
+  Chickenfoot.gTriggerManager.downloadAllTriggers();
+  loadTriggers();
+}
