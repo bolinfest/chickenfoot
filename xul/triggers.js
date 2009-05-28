@@ -823,20 +823,69 @@ function publishSelectedTrigger(/*Trigger*/ trigger) {
  * Upload all triggers
  */
 function uploadSyncTriggers() {
-  Chickenfoot.gTriggerManager.uploadAllTriggers();
+  try {
+    Chickenfoot.gTriggerManager.uploadAllTriggers();
+  } catch(e) {
+    // if failed, stop Syncing and require user to reconfigure
+    alert(e.message);
+    Chickenfoot.gTriggerManager.setSyncEnabled(false);
+    Chickenfoot.gTriggerManager.setGoogleAuthKey("");
+  }
 }
 
 /**
  * Upload a file (trigger or triggers.xml) to Google Docs
  */
 function uploadSyncTrigger(/*nsIFile*/ file) {
-  Chickenfoot.gTriggerManager.uploadTrigger(file);
+  // only do this if TriggerManager is set to enable sync'ing
+  if (Chickenfoot.gTriggerManager.syncEnabled) { 
+    setupSync();
+    try {
+      Chickenfoot.gTriggerManager.uploadTrigger(file);
+    } catch(e) {
+      // if failed, stop Syncing and require user to reconfigure
+      alert(e.message);
+      Chickenfoot.gTriggerManager.setSyncEnabled(false);
+      Chickenfoot.gTriggerManager.setGoogleAuthKey("");
+    }
+  }
 }
 
 /**
  * Download all triggers
  */
 function downloadSyncTriggers() {
-  Chickenfoot.gTriggerManager.downloadAllTriggers();
-  loadTriggers();
+  setupSync();
+  try {
+    Chickenfoot.gTriggerManager.downloadAllTriggers();
+    loadTriggers();
+  } catch(e) {
+    alert(e.message);
+    Chickenfoot.gTriggerManager.setSyncEnabled(false);
+    Chickenfoot.gTriggerManager.setGoogleAuthKey("");
+  }
+}
+
+/**
+ * Configure sync. 
+ * Initialize TriggerManager to have sync enbaled.
+ * Make sure TriggerManager has either syncEnabled=false or has successfully logged into Google 
+ */
+function setupSync() {
+  var dialogArguments = {};
+  Chickenfoot.gTriggerManager.setSyncEnabled(true);
+  // TODO: make accessor method in TriggerManager for whether we are logged in
+  while ((Chickenfoot.gTriggerManager.googleAuthKey == "") && (Chickenfoot.gTriggerManager.syncEnabled == true)) {
+    try {
+      window.openDialog("chrome://chickenfoot/content/googleLoginDialog.xul",
+        "showmore",
+        "chrome,modal,centerscreen,dialog,resizable",
+        dialogArguments
+        );
+      Chickenfoot.gTriggerManager.setGoogleSync(!dialogArguments.disable, dialogArguments.email, dialogArguments.password);
+    } catch(e) {
+      alert(e.message);
+    } 
+  }
+  return;
 }

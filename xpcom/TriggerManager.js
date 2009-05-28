@@ -22,6 +22,20 @@ function TriggerManager() {
   this._listeners = [];
   
   this.loadTriggers(triggerFile);
+  
+  // params for syncing with GDocs
+  try {
+    this.syncEnabled = getPrefBranch().getBoolPref("syncEnabled");
+  } catch (e) {
+    this.syncEnabled = false;
+    getPrefBranch().setBoolPref("syncEnabled", this.syncEnabled);
+  }
+  try {
+    this.googleAuthKey = getPrefBranch().getCharPref("googleAuthKey");
+  } catch (e) {
+    this.googleAuthKey = "";
+    getPrefBranch().setCharPref("googleAuthKey", this.googleAuthKey);
+  }
 }
 
 TriggerManager.prototype.getTriggerFromFile = function(file) {
@@ -534,10 +548,48 @@ TriggerManager.prototype.QueryInterface = function (iid) {
 }
 
 /**
+ * Set an account that the TriggerManager will use for syncing triggers with GDocs.
+ * Note: the authentication key will be saved to Preferences
+ *
+ * @throw exception if failed to log in
+ */
+TriggerManager.prototype.setGoogleSync = function(enabled, email, password) {
+  if (!enabled) {
+    this.setSyncEnabled(false)
+  } else {
+    this.setSyncEnabled(true);
+    try {
+      this.setGoogleAuthKey(getGDocsAuth(email, password));
+    } catch(e) {
+      this.setGoogleAuthKey("");
+      throw(e);
+    }
+  }
+}
+
+/**
+ * Setter for syncEnabled
+ */
+TriggerManager.prototype.setSyncEnabled = function(enabled) {
+  this.syncEnabled = enabled;
+  getPrefBranch().setBoolPref("syncEnabled", this.syncEnabled);
+}
+
+/**
+ * Setter for googleAuthKey
+ */
+TriggerManager.prototype.setGoogleAuthKey= function(auth) {
+  this.googleAuthKey = auth;
+  getPrefBranch().setCharPref("googleAuthKey", this.googleAuthKey);
+}
+
+/**
  * Upload all triggers to Google Docs 
  */
 TriggerManager.prototype.uploadAllTriggers = function() {
-  var auth = getGDocsAuth("chickenfootwing@gmail.com", "chickenfoot");
+  if (!this.syncEnabled) return;
+  
+  var auth = this.googleAuthKey;
   var folder = getGDocsChickenfootFolderID(auth);
   
   var triggers_xml = Chickenfoot.SimpleIO.read(this._getTriggerFile());
@@ -550,12 +602,15 @@ TriggerManager.prototype.uploadAllTriggers = function() {
     var filename = this.triggers[i].path.leafName;
     var edit_link = getGDocsChickenfootScriptEditLink(auth, folder, filename);
     updateGDocsDocument(auth, edit_link, escape(content));
+    debugToErrorConsole("uploaded " + filename);
   }
   
 }
 
 TriggerManager.prototype.uploadTrigger = function(/*nsIFile*/ file) {
-  var auth = getGDocsAuth("chickenfootwing@gmail.com", "chickenfoot");
+  if (!this.syncEnabled) return;
+
+  var auth = this.googleAuthKey;
   var folder = getGDocsChickenfootFolderID(auth);
   
   // TODO: somewhat hacky way for initializing
@@ -570,13 +625,16 @@ TriggerManager.prototype.uploadTrigger = function(/*nsIFile*/ file) {
   var edit_link = getGDocsChickenfootScriptEditLink(auth, folder, filename);
   
   updateGDocsDocument(auth, edit_link, escape(content));
+  debugToErrorConsole("uploaded " + filename);
 }
 
 /**
  * Download all triggers from Google Docs 
  */
 TriggerManager.prototype.downloadAllTriggers = function() {
-  var auth = getGDocsAuth("chickenfootwing@gmail.com", "chickenfoot");
+  if (!this.syncEnabled) return;
+  
+  var auth = this.googleAuthKey;
   var folder = getGDocsChickenfootFolderID(auth);
   
   var triggers_path = this._getTriggerFile();
@@ -589,6 +647,7 @@ TriggerManager.prototype.downloadAllTriggers = function() {
     var file_path = triggers_path.clone();
     file_path.append(names[i]);
     Chickenfoot.SimpleIO.write(file_path, content);
+    debugToErrorConsole("downloaded " + names[i]);
   }
   
   this.triggers = [];
@@ -718,5 +777,13 @@ function addTriggerListener(/*ChromeWindow*/ chromeWindow) {
  * Upload a file (trigger or triggers.xml) to Google Docs
  */
 function uploadSyncTrigger(/*nsIFile*/ file) {
-  Chickenfoot.gTriggerManager.uploadTrigger(file);
+  try {
+    if (Chickenfoot.gTriggerManager.syncEnabled) { 
+      Chickenfoot.gTriggerManager.uploadTrigger(file);
+    }
+  } catch(e) {
+    getAWindow().alert(e.message);  
+    Chickenfoot.gTriggerManager.setSyncEnabled(false);
+    Chickenfoot.gTriggerManager.setGoogleAuthKey("");
+  }
 }

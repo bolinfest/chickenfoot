@@ -20,7 +20,7 @@ function getGDocsAuth(email, password)
    data = request.responseText;
    auth = data.split("\n")[2].substring(5)
   } else {
-   throw new Error('read error: ' + request.status + ' ' +
+   throw new Error('Login error: ' + request.status + ' ' +
   request.statusText);
   }
   return auth;
