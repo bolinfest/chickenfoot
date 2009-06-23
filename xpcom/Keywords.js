@@ -17,10 +17,22 @@ function splitIntoKeywords(/*String*/ pattern) {
 
   // split pattern into canonicalized tokens  
   var keywords = [];
-  var matchedTokens = pattern.match(/\w+|'[^']+'|"[^"]+"/g);
+  //var matchedTokens = pattern.match(/\w+|'[^']+'|"[^"]+"/g);
+  var matchedTokens = [];
+  var quotedTokens = pattern.match(/'[^']+'|"[^"]+"/g);
+  if(quotedTokens) {
+    matchedTokens = matchedTokens.concat(quotedTokens);
+    pattern = pattern.replace(/'[^']+'|"[^"]+"/g, "");
+  }
+  pattern = pattern.replace(/^\s+/,"").replace(/\s+$/,"");
+  if(pattern){
+    matchedTokens = matchedTokens.concat(pattern.split(/\s+/));
+  }
+
   if (matchedTokens) {
     for (var i = 0; i < matchedTokens.length; ++i) {
       keywords[i] = canonicalize(matchedTokens[i].toString());
+      //debug("keywords[" + i + "]: [" + keywords[i] + "]");
     }
   }
     
@@ -51,7 +63,10 @@ function splitIntoKeywords(/*String*/ pattern) {
        // create regexes for each token
        this._regex = [];
        for (var i = 0; i < this.length; ++i) {
-          this._regex[i] = new RegExp("\\b" + this[i] + "\\b");
+          if( this[i].match(/^\w+$/) ) // all are English chars
+             this._regex[i] = new RegExp("\\b" + this[i] + "\\b");
+          else // don't use \b as word boundaries for non-english tokens
+             this._regex[i] = new RegExp(this[i]);
        }
     }
        
@@ -78,7 +93,7 @@ function splitIntoKeywords(/*String*/ pattern) {
 }
 
 function canonicalize(/*String*/ s) {
-  return trim(s.replace(/\W+/g, " ")).toLowerCase();
+  return trim(s.replace(/[\s'"~`!@#$%^&*()-+=|\\}\]\[{:;?\/>\.,<]+/g, " ")).toLowerCase();
 }
 
 /*
