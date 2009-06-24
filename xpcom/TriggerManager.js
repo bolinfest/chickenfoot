@@ -478,13 +478,7 @@ TriggerManager._saveNewTriggerScript = function(/*String*/ name, /*String*/ scri
     ++i;
   }
 
-  var _flags = 0x02 | 0x08 | 0x20;
-  var _foStream = Components.classes["@mozilla.org/network/file-output-stream;1"].
-                             createInstance(Components.interfaces.nsIFileOutputStream);
-  _foStream.init(path, _flags, 0664, 0);
-  _foStream.write(script, script.length);
-  _foStream.close();
-  
+  Chickenfoot.SimpleIO.write(path, script)
   uploadSyncTrigger(path);
   
   return path;  
