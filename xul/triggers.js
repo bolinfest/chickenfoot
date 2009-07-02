@@ -693,7 +693,7 @@ function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
 
      //update the metadata in the main trigger file
      var newTriggerCode = Chickenfoot.updateAttributes(mainTriggerCode, metadata);
-     debugToErrorConsole("updateMetadata");
+     Chickenfoot.debugToErrorConsole("updateMetadata");
      Chickenfoot.SimpleIO.write(mainTrigger.path, newTriggerCode);
      return metadata;
    } //end updateMetadata()

@@ -2,21 +2,21 @@
 <RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#"
          xmlns:NC="http://home.netscape.com/NC-rdf#"
          xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Description RDF:about="urn:mozilla:extension:{896b34a4-c83f-4ea7-8ef0-51ed7220ac94}"
+                   em:signature="MIGTMA0GCSqGSIb3DQEBDQUAA4GBAIPPTjIFrhZhitDn4kLZe8Ngh142OjNb19tszsZqLJeORCcbs8eE5oK608zqnrTShuHKmkio6LOAv2WH9ggC5dkBHj1o2aTf9TOPyzEWYuzEdE0s5awaye5cp9hBJE7ysOCoeIk/Vtke4EDEYS3VBYS2m4GZ7XVtx2KSbNR61obY">
+    <em:updates RDF:resource="rdf:#$9lIFR2"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="rdf:#$alIFR2"
+                   em:version="1.0.5">
+    <em:targetApplication RDF:resource="rdf:#$dlIFR2"/>
+  </RDF:Description>
   <RDF:Description RDF:about="rdf:#$dlIFR2"
                    em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
                    em:minVersion="1.5"
                    em:maxVersion="3.0.*"
                    em:updateLink="http://groups.csail.mit.edu/uid/chickenfoot/chickenfoot.xpi"
-                   em:updateHash="sha256:915a379beb161af601d7abca9413406a411dccb5edb17acf39ea968df6e78a3a" />
+                   em:updateHash="sha256:3634e6dfea03ce4bc5910c440614c9e03d2ecaf3e4beda4ab8d0548114ba428c" />
   <RDF:Seq RDF:about="rdf:#$9lIFR2">
     <RDF:li RDF:resource="rdf:#$alIFR2"/>
   </RDF:Seq>
-  <RDF:Description RDF:about="urn:mozilla:extension:{896b34a4-c83f-4ea7-8ef0-51ed7220ac94}"
-                   em:signature="MIGTMA0GCSqGSIb3DQEBDQUAA4GBAB/3X9Fib/lmKHuK5l8WwIzQp1tIMsT5BnVxPFqVcPGp7CD1BnA/W9X4y+S5bCZdNqb/qRlSOECGaho+zXU3hRvEJ6cXr9gcsipYcnt01oREDqMPNsdCKGYIO8jUgZtVFKiHNVHIdZjtV9sUoZDkaOAQGBJQCktI0SwbriI0EDHu">
-    <em:updates RDF:resource="rdf:#$9lIFR2"/>
-  </RDF:Description>
-  <RDF:Description RDF:about="rdf:#$alIFR2"
-                   em:version="1.0.4">
-    <em:targetApplication RDF:resource="rdf:#$dlIFR2"/>
-  </RDF:Description>
 </RDF:RDF>

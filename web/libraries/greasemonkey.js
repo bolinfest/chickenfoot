@@ -202,6 +202,6 @@ var unsafeWindow;
     addGlobalStyle(css);
   };
   
-  unsafeWindow = window;
+  unsafeWindow = window.wrappedJSObject;
 
 })();
