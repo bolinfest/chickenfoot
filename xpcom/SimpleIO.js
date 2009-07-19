@@ -225,7 +225,7 @@ SimpleIO.downloadDir = function () {
   if(downloadPref.getIntPref('folderList') == 0) {
     return SimpleIO.desktopDir();
   } else {
-    var dir =  SimpleIO.toFile(downloadPref.getCharPref('downloadDir'));
+    var dir =  SimpleIO.toFile(downloadPref.getCharPref('dir'));
 	return dir.clone();
   }
 }
