@@ -14,7 +14,7 @@ function doIconSearch() {
 
 function doAdvancedSearch(text) {
   enter('all of the words', text)
-  pick('small')
+  pick('Icon')
   pick('GIF')
   click('search button')
 }
