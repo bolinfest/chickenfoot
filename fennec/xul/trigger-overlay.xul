@@ -3,12 +3,67 @@
 
 <overlay id="triggers-controls-overlay" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
   <stack id="browser-container">
-    <vbox id="triggers-control" hidden="true" style="-moz-stack-sizing: ignore;" top="0" left="0" width="800" height="458">
+    <vbox id="triggers-control" class="control" hidden="true" 
+          style="-moz-stack-sizing: ignore;" top="0" left="0" width="800" height="458">
       <hbox id="triggers-control-items-container" flex="1">
-        <richlistbox id="triggers-control-items" flex="1"/>
+        <richlistbox id="triggers-control-items" class="control-items" flex="1"/>
       </hbox>
-      <hbox pack="end">
-        <button id="triggers-control-close" oncommand="document.getElementById('triggers-control').hidden = true"/>
+      <hbox>
+        <button id="triggers-control-options-button" label=" Options "
+                oncommand="ChickenfootUI.triggerOptionsToggle()"/>
+        <spring flex="1"/> 
+        <button class="control-close" oncommand="document.getElementById('triggers-control').hidden = true"/>
+      </hbox>
+    </vbox>
+    <vbox id="triggers-options" class="control" hidden="true" 
+          style="-moz-stack-sizing: ignore;" top="0" left="0" width="800" height="458">
+      <hbox>
+        <label value="Sync Triggers" style="font-weight: bold; color: white"/>
+      </hbox>
+      <hbox id="triggers-options-container" flex="1">
+        <richlistbox id="triggers-options-items" class="control-items" flex="1">
+        
+            <!-- sign into google if not already signed in -->
+            <richlistitem class="control-item" id="triggers-options-signin">
+                <hbox flex="1">
+                    <vbox flex="2">
+                        <label class="control-text" flex="1" value="Sign in to Google"/>
+                        <label class="control-text-second" flex="1" value="Log into your Google Docs account in order to sync triggers"/>
+                    </vbox>
+                    <spring flex="1"/>
+                    <button autocheck="false" checked="false" class="toggle" id="triggers-options-signin-button"/>
+                </hbox>
+            </richlistitem>
+            
+            <!-- toggle auto sync -->
+            <richlistitem class="control-item" id="triggers-options-autosync">
+                <hbox flex="1">
+                    <vbox flex="2">
+                        <label class="control-text" flex="1" value="Auto sync on startup"/>
+                        <label class="control-text-second" flex="1" value="Toggle auto sync of triggers when the browser starts up"/>
+                    </vbox>
+                    <spring flex="1"/>
+                    <button autocheck="false" checked="false" class="toggle"  id="triggers-options-autosync-button"/>
+                </hbox>
+            </richlistitem>
+            
+            <!-- manually download all triggers immediately -->
+            <richlistitem class="control-item" id="triggers-options-manualsync">
+                <hbox flex="1">
+                    <vbox flex="2">
+                        <label class="control-text" flex="1" value="Manually sync now"/>
+                        <label class="control-text-second" flex="1" value="Download all triggers from Google now."/>
+                    </vbox>
+                    <spring flex="1"/>
+                    <button autocheck="false" checked="false" label="Sync..." id="triggers-options-manualsync-button"/>
+                </hbox>
+            </richlistitem>
+            
+        </richlistbox>
+      </hbox>
+      <hbox>
+        <spring flex="1"/> 
+        <button class="control-close" oncommand="document.getElementById('triggers-options').hidden = true"/>
       </hbox>
     </vbox>
   </stack>

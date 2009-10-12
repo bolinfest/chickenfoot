@@ -8,7 +8,7 @@
       label="chicken foot script"
       tooltiptext="chicken foot script"
       class="browser-control-button" 
-      oncommand="ChickenfootUI.onClick();"/>
+      oncommand="ChickenfootUI.chickenfootToggle();"/>
   </toolbar>
 </overlay>
 

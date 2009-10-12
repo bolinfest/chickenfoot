@@ -7,12 +7,12 @@
     list-style-image: url("chrome://chickenfoot/skin/beak-down.png");
 }
 
-#triggers-control {
+.control {
     background-color: rgba(123, 125, 123, 0.9);
     padding: 8px;
 }
 
-#triggers-control-close { 
+.control-close { 
     -moz-appearance: none;
     border: 0;
     margin: 0;
@@ -21,7 +21,7 @@
     list-style-image: url(chrome://browser/skin/images/close-small.png);
 }
 
-#triggers-control-items {
+.control-items {
     -moz-appearance: none;
     background-color: rgba(207, 207, 207, 0.7);
     border-width: 2px;
@@ -32,10 +32,10 @@
     -moz-border-radius-bottomright: 10px;
     -moz-border-radius-bottomleft: 10px;
 }
-.trigger-item {
+.control-item {
     margin: 8px;
 }
-.trigger-item button {
+.control-item button.toggle {
     -moz-appearance: none;
     border: 0;
     margin: 0;
@@ -43,7 +43,7 @@
     background-color: transparent;
     list-style-image: url("chrome://chickenfoot/skin/offbutton.png");
 }
-.trigger-item button[checked="true"] {
+.control-item button[checked="true"].toggle {
     -moz-appearance: none;
     border: 0;
     margin: 0;
@@ -52,10 +52,15 @@
     list-style-image: url("chrome://chickenfoot/skin/onbutton.png");
 }
 
-.trigger-text {
+.control-text {
     font-size: 24px !important;
 }
-.trigger-text-second {
+.control-text-second {
     font-size: 16px !important;
     color: rgb(48, 48, 48);
+}
+
+.control-item[disabled="true"] * {
+    background-color: lightgrey;
+    color: gray;
 }

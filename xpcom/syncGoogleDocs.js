@@ -13,6 +13,7 @@ function getGDocsAuth(email, password)
 
   var params = "accountType=GOOGLE&Email=" + email + "&Passwd=" + password + "&service=writely";
   request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  request.setRequestHeader("GData-Version", "2.0");
   request.setRequestHeader("Connection", "close");
   request.send(params);
 
@@ -34,6 +35,7 @@ function getGDocsXMLfromURL(auth, URL, protocol, thingToSend)
   request.open(protocol, URL, asynchronous);
   
   request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  request.setRequestHeader("GData-Version", "2.0");
   request.setRequestHeader("Authorization", "GoogleLogin auth=" +auth);
   request.setRequestHeader("Connection", "close");
   request.send(thingToSend);
@@ -57,9 +59,9 @@ function getGDocsXMLfromURL_sendXML(auth, URL, protocol, thingToSend)
   request.open(protocol, URL, asynchronous);
   
   request.setRequestHeader("Content-Type", "application/atom+xml");
+  request.setRequestHeader("GData-Version", "2.0");
   request.setRequestHeader("Authorization", "GoogleLogin auth=" +auth);
   request.setRequestHeader("Content-Length", thingToSend.length);
-  
   request.setRequestHeader("Connection", "close");
   request.send(thingToSend);
 
@@ -75,6 +77,24 @@ function getGDocsXMLfromURL_sendXML(auth, URL, protocol, thingToSend)
   }
 }
 
+function _constructContentBody(docTitle, docType, contentBody, contentType) {
+  var atom = ["<?xml version='1.0' encoding='UTF-8'?>",  
+              '<entry xmlns="http://www.w3.org/2005/Atom">',  
+              '<category scheme="http://schemas.google.com/g/2005#kind"',  
+              ' term="http://schemas.google.com/docs/2007#', docType, '" label="', docType, '"/>',  
+              '<title>', docTitle, '</title>',  
+              '</entry>'].join('');  
+               
+  var body = ['--END_OF_PART\r\n',  
+              'Content-Type: application/atom+xml;\r\n\r\n',  
+              atom, '\r\n',  
+              '--END_OF_PART\r\n',  
+              'Content-Type: ', contentType, '\r\n\r\n',  
+              contentBody, '\r\n',  
+              '--END_OF_PART--\r\n'].join('');  
+  return body;  
+}  
+
 // make a plain text request to GDocs
 function getGDocsXMLfromURL_sendText(auth, URL, protocol, thingToSend)
 {
@@ -82,11 +102,39 @@ function getGDocsXMLfromURL_sendText(auth, URL, protocol, thingToSend)
   var asynchronous = false;
   request.open(protocol, URL, asynchronous);
   
-  request.setRequestHeader("Content-Type", "text/plain");
+  request.setRequestHeader("GData-Version", "2.0");
   request.setRequestHeader("Authorization", "GoogleLogin auth=" +auth);
-  request.setRequestHeader("Content-Length", thingToSend.length);
-  
+  request.setRequestHeader("If-Match", "*"); 
   request.setRequestHeader("Connection", "close");
+  request.setRequestHeader("Content-Length", thingToSend.length);
+  request.setRequestHeader("Content-Type", "text/plain;");
+  request.send(thingToSend);
+
+  if (request.status == 200)
+  {
+     var data = request.responseText;
+     return data;
+  }
+  else 
+  {
+   throw new Error('ERROR: ' + request.status + ' ' +
+   request.statusText);
+  }
+} 
+
+// send multipart content
+function getGDocsXMLfromURL_sendMultipart(auth, URL, protocol, thingToSend)
+{
+  var request = new XMLHttpRequest();
+  var asynchronous = false;
+  request.open(protocol, URL, asynchronous);
+  
+  request.setRequestHeader("GData-Version", "2.0");
+  request.setRequestHeader("Authorization", "GoogleLogin auth=" +auth);
+  request.setRequestHeader("If-Match", "*"); 
+  request.setRequestHeader("Connection", "close");
+  request.setRequestHeader("Content-Length", thingToSend.length);
+  request.setRequestHeader("Content-Type", "multipart/related; boundary=END_OF_PART");
   request.send(thingToSend);
 
   if (request.status == 200)
@@ -131,7 +179,7 @@ function createGDocsEmptyFile(auth, folderid, filename) {
 
 // get chickenfoot triggers folder id
 function getGDocsChickenfootFolderID(auth) {
-  var url = "http://docs.google.com/feeds/documents/private/full/-/folder?showfolders=true";
+  var url = "http://docs.google.com/feeds/documents/private/full?showfolders=true";
   var result = getGDocsXMLfromURL(auth, url, "GET", "");
   
   var id = _findTitleInXML(result, "Chickenfoot Triggers");
@@ -194,19 +242,19 @@ function getGDocsChickenfootScriptID(auth, folderid, filename) {
 function getGDocsChickenfootScriptEditLink(auth, folderid, filename) {
   var url = "http://docs.google.com/feeds/folders/private/full/folder%3A" + folderid;
   var result = getGDocsXMLfromURL(auth, url, "GET", "");
+
   var editlink = _findEditLinkByTitleInXML(result, filename);
   // if not found, create empty file
   if (editlink == "") {
     result = createGDocsEmptyFile(auth, folderid, filename);
     editlink = _findEditLinkByTitleInXML(result, filename);
   }
-  
   return editlink;
 }
 
-function updateGDocsDocument(auth, editlink, content) {
+function updateGDocsDocument(auth, editlink, title, content) {
   var url = editlink;
-  var result = getGDocsXMLfromURL_sendText(auth, url, "PUT", content);
+  var result = getGDocsXMLfromURL_sendMultipart(auth, url, "PUT", _constructContentBody(title, 'document', content, 'text/plain'));
   return result;
 }
 
@@ -238,8 +286,9 @@ function _findEditLinkByTitleInXML(xml, title) {
       if (titles[0].textContent == title) {
         var links = entry.getElementsByTagName('link');
         for (var j=0; j<links.length; j++) {
-          if (links[j].getAttribute('rel') == 'edit-media') {
-            return links[j].getAttribute('href');
+          if (links[j].getAttribute('rel') == 'self') {
+            var href = links[j].getAttribute('href');
+            return 'http://docs.google.com/feeds/media/private/full/' + href.substring(href.indexOf('document%3A'));
           }
         }
       }
@@ -255,4 +304,13 @@ function readGDocsDocument(auth, folderid, filename) {
   var result = getGDocsXMLfromURL(auth, url, "GET", "");
   
   return result;
+}
+
+// escape from GDocs txt to normal txt (replacing double < and double > with single ones)
+function escapeGDocs(content) {
+  var ltRegExp = new RegExp(String.fromCharCode(171), "g");
+  var gtRegExp = new RegExp(String.fromCharCode(187), "g");
+  content = content.replace(ltRegExp, "<");
+  content = content.replace(gtRegExp, ">");
+  return content;
 }

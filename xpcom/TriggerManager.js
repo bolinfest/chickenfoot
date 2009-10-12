@@ -589,14 +589,13 @@ TriggerManager.prototype.uploadAllTriggers = function() {
   var triggers_xml = Chickenfoot.SimpleIO.read(this._getTriggerFile());
   
   var triggers_xml_edit = getGDocsChickenfootScriptEditLink(auth, folder, "triggers.xml");
-  updateGDocsDocument(auth, triggers_xml_edit, escape(triggers_xml));
+  updateGDocsDocument(auth, triggers_xml_edit, 'triggers.xml', triggers_xml);
   
   for (var i=0; i<this.triggers.length; i++) {
     var content = Chickenfoot.SimpleIO.read(this.triggers[i].path.path);
     var filename = this.triggers[i].path.leafName;
     var edit_link = getGDocsChickenfootScriptEditLink(auth, folder, filename);
-    updateGDocsDocument(auth, edit_link, escape(content));
-    debugToErrorConsole("uploaded " + filename);
+    updateGDocsDocument(auth, edit_link, filename, content);
   }
   
 }
@@ -618,8 +617,7 @@ TriggerManager.prototype.uploadTrigger = function(/*nsIFile*/ file) {
   var filename = file.leafName;
   var edit_link = getGDocsChickenfootScriptEditLink(auth, folder, filename);
   
-  updateGDocsDocument(auth, edit_link, escape(content));
-  debugToErrorConsole("uploaded " + filename);
+  updateGDocsDocument(auth, edit_link, filename, content);
 }
 
 /**
@@ -627,25 +625,23 @@ TriggerManager.prototype.uploadTrigger = function(/*nsIFile*/ file) {
  */
 TriggerManager.prototype.downloadAllTriggers = function() {
   if (!this.syncEnabled) return;
-  
   var auth = this.googleAuthKey;
   var folder = getGDocsChickenfootFolderID(auth);
-  
   var triggers_path = this._getTriggerFile();
   triggers_path = triggers_path.parent;
-  
   var names = getGDocsAllChickenfootFileNames(auth, folder);
-  for (var i=0; i<names.length; i++) { 
+  for (var i=0; i<names.length; i++) {
     var content = readGDocsDocument(auth, folder, names[i]);
-    content = unescape(content);
+    content = escapeGDocs(content);
     var file_path = triggers_path.clone();
     file_path.append(names[i]);
+    debugToErrorConsole('writing ' + names[i]);
     Chickenfoot.SimpleIO.write(file_path, content);
     debugToErrorConsole("downloaded " + names[i]);
   }
-  
   this.triggers = [];
   this.loadTriggers(this._getTriggerFile());
+  debugToErrorConsole('downloadAllTriggers done');
 }
 
 /**

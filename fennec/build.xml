@@ -40,52 +40,16 @@
         <copy todir="${export.dir}" overwrite="true">
             <fileset dir="${components.dir}">
                 <include name="*.js" />
-                <exclude name="Trigger.js" />
-                <exclude name="Pattern.js" />
-                <exclude name="Keywords.js" />
-                <exclude name="fields.js" />
-                <exclude name="strings.js" />
-                <exclude name="Match.js" />
+            </fileset>            
+            <fileset dir="${firefox_chickenfoot.components.dir}">
+                <exclude name="accessors.js" />
+                <exclude name="lapis.js" />
+                <exclude name="sleep.js" />
+                <exclude name="ChickenfootCommandLineHandler.js" />
+                <include name="*.js" />
             </fileset>
             <fileset dir="${content.dir}">
                 <include name="*.js" />
-            </fileset>
-            
-            <fileset dir="${firefox_chickenfoot.components.dir}">
-                <include name="Chicken-bypass.js" />
-                <include name="Chickenfoot.js" />
-                <include name="preferences.js" />
-                <include name="SimpleIO.js" />
-                <include name="TriggerManager.js" />
-                <include name="Trigger.js" />
-                <include name="Interpreter.js" />
-                
-                <include name="Pattern.js" />
-                <include name="insert.js" />
-                <include name="controls.js" />
-                <include name="Keywords.js" />
-                <include name="fields.js" />
-                <include name="treeWalker.js" />
-                <include name="TextBlob.js" />
-                <include name="Box.js" />
-                <include name="strings.js" />
-                <include name="StringBuffer.js" />
-                <include name="Match.js" />
-                <include name="domFlattener.js" />
-                <include name="UidGen.js" />
-                <include name="ranges.js" />
-                <include name="SlickMap.js" />
-                <include name="SlickSet.js" />
-                <include name="click.js" />
-                <include name="events.js" />
-                <include name="enter.js" />
-                <include name="pick.js" />
-                <include name="whenLoaded.js" />
-                <include name="Test.js" />
-                <include name="deepTreeWalker.js" />
-                <include name="userscript.js" />
-                
-                <include name="built-in listeners.js" />
             </fileset>
             <filterset refid="chickenfootMacros" />
         </copy>
@@ -173,6 +137,11 @@
     <target name="build"
             depends="run-fennec-no-install"
             description="Builds the fennec chickenfoot extension.">
+    </target>
+    
+    <target name="clean"
+            description="Removes all generated files.">
+        <delete dir="${build.dir}" />
     </target>
     
 </project>

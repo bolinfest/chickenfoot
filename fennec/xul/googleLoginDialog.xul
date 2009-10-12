@@ -1,0 +1,84 @@
+<?xml-stylesheet href="chrome://browser/skin/" type="text/css" ?>
+
+<dialog id="googleLoginDialog" title="Log in to Google for Trigger Synchronization"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        buttons="accept,cancel"
+        onload="init();"
+        ondialogaccept="return doOK();"
+        ondialogcancel="return doCancel();">
+
+<script><![CDATA[
+    
+    // obtain reference to XPCOM object
+    var Chickenfoot = Components.classes["@uid.csail.mit.edu/Chickenfoot/;1"]
+                      .getService(Components.interfaces.nsISupports)
+                      .wrappedJSObject
+
+	function init() {
+	  window.arguments[0].disable = true;
+	}
+	
+	function doOK()
+	{
+	  var email = document.getElementById("email").value;
+	  var password = document.getElementById("password").value;
+	  // var disable = document.getElementById("disable").checked;
+	  window.arguments[0].email = email;
+	  window.arguments[0].password = password;
+	  window.arguments[0].disable = false;
+	  if ((email.length == 0) || (password.length == 0)) {
+	    alert("Must specify both an email and a password, or disable synchronization."); 
+	    return false;
+	  } else {
+	    return true;
+	  }
+	}
+	
+	function doCancel()
+	{
+	  window.arguments[0].disable = true;
+	}
+	
+	/*
+	function onDisableChange()
+	{
+	  var disable = document.getElementById("disable").checked;
+	  document.getElementById("email").disabled = disable;
+	  document.getElementById("password").disabled = disable;
+	}
+	*/
+	
+]]></script>
+
+<grid flex="1">
+  <columns>
+    <column/>
+    <column flex="1"/>
+  </columns>
+
+  <rows>
+
+    <row align="center">
+      <label value="Email:"/>
+      <textbox id="email" flex="1"/>  
+    </row>
+    
+    <spacer height="10"/>
+    
+    <row align="center">
+      <label value="Password:"/>
+      <textbox type="password" id="password" flex="1"/>  
+    </row>
+    
+    <spacer height="10"/>
+    
+    <!--    
+    <row align="center">
+      <checkbox id="disable" label="Disable synchronization" flex="1" checked="false" oncommand="onDisableChange()"/>   
+    </row>
+    -->
+    
+  </rows>
+</grid>
+
+</dialog>
