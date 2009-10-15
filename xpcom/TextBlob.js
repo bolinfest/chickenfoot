@@ -1,3 +1,4 @@
+goog.require('goog.string');
 
 /**
  * A TextBlob is a sequence of text nodes that are
@@ -128,7 +129,7 @@ TextBlobIterator.prototype.next = function() {
     if (text
            // check if text is all whitespace; if it is,
            // we don't start a new blob, but we do add it to an existing blob.
-        && (blob || trim(text))) {
+        && (blob || goog.string.trim(text))) {
       if (!blob) blob = this._makeBlob();
       this._addNodeToBlob(blob, text, node);
     }

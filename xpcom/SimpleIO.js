@@ -19,7 +19,10 @@ SimpleIO.read = function(/*nsIFile or String*/ fileNameOrURL) {
        obj.toString().match(/^(https?|ftp):\/\//);
   }
   function loadRemoteURL(/*string*/ url) {
+    // TODO(mbolin): Creating the XMLHttpRequest fails for me
+    // on Mac OS 10.6.1, Firefox 3.5.3. This causes includeTest.js to fail.
     var request = new XMLHttpRequest();
+
     var asynchronous = false;
     var scriptContent = null;
     request.open("GET", url, asynchronous);

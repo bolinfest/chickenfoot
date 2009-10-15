@@ -1,3 +1,5 @@
+goog.require('goog.string');
+
 // don't attempt labelling if node count exceeds this
 const RECORDER_NODE_THRESHOLD = 2200; 
 
@@ -455,14 +457,10 @@ function getClosestLabelTo(/*Element*/ e) {
 }
 
 function removeExtraWhitespace(/*String*/ s) {
-    s = trim(s); 
+    s = goog.string.trim(s); 
     s = s.replace(/[\t\n\r ]+/g, " ");
 
     return s;
-}
-
-function trim(/*String*/ s) {
-	return s.replace(/^\s+|\s+$/g,"");
 }
 
 function toQuotedJavascriptString(/*String*/ s) {

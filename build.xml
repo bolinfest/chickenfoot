@@ -300,7 +300,22 @@
             <fileset dir="${bin.dir}" />
         </jar>        
     </target>
-    
+
+   <!-- order is significant, so a filelist is used -->
+   <filelist id="doctype"
+             dir="${components.dir}/goog"
+             files="base.js
+               array.js
+               disposable.js
+               event.js
+               string.js
+               useragent.js
+               browserevent.js
+               listener.js
+               object.js
+               simplepool.js
+               events.js" />
+
     <target name="jar"
             description="Creates a JAR of the resources for the extension.">
         <!-- setup -->
@@ -309,6 +324,7 @@
         <!-- content folder -->
         <mkdir dir="${jar.dir}/content" />   
         <concat destfile="${jar.dir}/content/sidebar.js" fixlastline="yes">
+            <filelist refid="doctype" />
             <fileset dir="${content.dir}">
                 <include name="*.js" />
                 <exclude name="chickenscratch.js" />
@@ -360,6 +376,7 @@
 
         <!-- Javascript XPCOM components -->
         <concat destfile="${export.dir}/Chickenfoot.js" fixlastline="yes">
+            <filelist refid="doctype" />
             <fileset dir="${components.dir}">
               <include name="Chickenfoot.js" />
             </fileset>   

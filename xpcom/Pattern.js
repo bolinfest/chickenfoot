@@ -1,3 +1,5 @@
+goog.require('goog.string');
+
 function Pattern() {
 
   /**
@@ -241,7 +243,7 @@ function Pattern() {
       var explicitType = pattern.match(typeSuffixRegexp);
       if (explicitType) {
         types = [explicitType[1].toLowerCase()];
-        pattern = trim(pattern.substring(0, explicitType.index));
+        pattern = goog.string.trim(pattern.substring(0, explicitType.index));
       }
       if (!types) types = ['text'];
 

@@ -1,3 +1,5 @@
+goog.require('goog.string');
+
 /**
  * Split a string into an array of tokens for keyword pattern matching.
  * @param pattern   Keyword pattern to split
@@ -93,7 +95,7 @@ function splitIntoKeywords(/*String*/ pattern) {
 }
 
 function canonicalize(/*String*/ s) {
-  return trim(s.replace(/[\s'"~`!@#$%^&*()-+=|\\}\]\[{:;?\/>\.,<]+/g, " ")).toLowerCase();
+  return goog.string.trim(s.replace(/[\s'"~`!@#$%^&*()-+=|\\}\]\[{:;?\/>\.,<]+/g, " ")).toLowerCase();
 }
 
 /*

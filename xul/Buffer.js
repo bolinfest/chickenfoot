@@ -27,6 +27,8 @@
  */
 -->
 
+goog.require('goog.string');
+
 var jsIcon = 'list-style-image: url(chrome://chickenfoot/skin/exec.png)'
 var kwIcon = 'list-style-image: url(chrome://chickenfoot/skin/exec-blue.png)'
 var useHtmlEditor = true;
@@ -805,7 +807,7 @@ function newFile(/*optional string*/ templateId) {
         scriptText = scriptText.replace(TOKEN, "");          
       }
       var buffer = getSelectedBuffer();
-      if (buffer && !Chickenfoot.trim(buffer.text)) {
+      if (buffer && !goog.string.trim(buffer.text)) {
         // the selected buffer is empty;
         // populate it instead of creating a new Buffer
         buffer.text = scriptText;
@@ -824,7 +826,7 @@ function newFile(/*optional string*/ templateId) {
 //file in that buffer, editing it inplace.
 function loadIntoBuffer(file) {
   var buffer = getSelectedBuffer();
-  if (buffer && !Chickenfoot.trim(buffer.text)) {
+  if (buffer && !goog.string.trim(buffer.text)) {
     // the selected buffer is empty;
     // populate it instead of creating a new Buffer
     buffer.file = file;    

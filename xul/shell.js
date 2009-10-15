@@ -1,3 +1,4 @@
+goog.require('goog.string');
 
 // TODO: eliminate globals
 var shellDocument;
@@ -32,7 +33,7 @@ var executedStatements = [];
 function keyPressListener(event) {
   var keyCode = event.which;
   if (keyCode == 13) { // ENTER
-    var code = Chickenfoot.trim(input.value);
+    var code = goog.string.trim(input.value);
     if (!code) return;
     showAutocomplete(false);
     var result = runScript(code);
@@ -50,7 +51,7 @@ function keyPressListener(event) {
 }
 
 function runScript(code) {
-  var withObj = Chickenfoot.trim(shellDocument.getElementById('with').value);
+  var withObj = goog.string.trim(shellDocument.getElementById('with').value);
   executedStatements.push(code);
   if (withObj) code = 'with(' + withObj + ') {' + code + '}';
   input.value = "";

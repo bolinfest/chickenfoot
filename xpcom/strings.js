@@ -79,18 +79,6 @@ DeleteMap.prototype.cookedToRaw = function(/*int*/ cooked) {
 
 
 
-/**
- * Takes a string and returns it with leading and trailing whitespace removed.
- *
- * If str is null, the empty string is returned.
- */
-function trim(/*string*/ str) {
-  if (!str) return "";
-  str = str.replace(/^\s+/, '');
-  str = str.replace(/\s+$/, '');
-  return str;
-}
-
 /** place a backslash before every " in the string */
 function backquote(/*string*/ str) {
   if (!str) return "";

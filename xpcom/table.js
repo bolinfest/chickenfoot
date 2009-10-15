@@ -1,3 +1,5 @@
+goog.require('goog.string');
+
 function Table() {
   // exports
   Table.findColumn = findColumn;
@@ -12,7 +14,8 @@ function Table() {
      *  and finds the nodes that intersect with cell.
      */
   
-    var query = new TC("cell starts with '"+trim(keywords.pattern)+"'")
+    var query = new TC("cell starts with '" +
+        goog.string.trim(keywords.pattern) + "'");
     var cell = Pattern.find(doc, query);
     cell = cell.element
   
@@ -34,7 +37,8 @@ function Table() {
      *  TODO add hook if no pattern is passed...
      */
   
-    var query = new TC("cell contains '"+trim(keywords.pattern)+"'");
+    var query = new TC("cell contains '" +
+        goog.string.trim(keywords.pattern) + "'");
     var cell = Pattern.find(doc, query);
     cell = cell.element
     //TODO error checking if match is null or has multiple results

@@ -13,31 +13,36 @@
 }
 
  
- /**
+/**
  * If syntaxColor is on and the event is not a ctrl, or ctrl+m, look at the anchor
  * and focus to see if it is a case of regular syntax coloring or just autoIndent
  * 
  *  returns void
  */
- function syntaxColorEvent(event) {
-	 if(Chickenfoot.getPrefBranch().getBoolPref("syntaxColor")){
-	 	if (event.keyCode !=16 && event.keyCode !=17 ) {//don't activate on shift, control
-	 		//debug(event.keyCode);
-	 		var sbwin = Chickenfoot.getSidebarWindow(chromeWindow);
-	    	var anchorNodeCaret = sbwin.getSelectedBuffer().api.selection.anchorNode;
-	    	var anchorOffsetCaret = sbwin.getSelectedBuffer().api.selection.anchorOffset;
-	    	var focusNodeCaret = sbwin.getSelectedBuffer().api.selection.focusNode;
-	    	var focusOffsetCaret = sbwin.getSelectedBuffer().api.selection.focusOffset;
-	    	
-	    	if(anchorNodeCaret==focusNodeCaret &&anchorOffsetCaret==focusOffsetCaret){
-	    		regularSyntaxColoringAndAutoIndent(event);
-	    	}else{
-	    		selectionAutoIndent(event);
-	    	}
-	    	
-	 	}
-	}
+function syntaxColorEvent(event) {
+  try {
+    Chickenfoot.getPrefBranch().getBoolPref("syntaxColor")
+  } catch (e) {
+    return;
+  }
+  if (Chickenfoot.getPrefBranch().getBoolPref("syntaxColor")) {
+    if (event.keyCode != 16 && event.keyCode != 17) {//don't activate on shift, control
+      //debug(event.keyCode);
+      var sbwin = Chickenfoot.getSidebarWindow(chromeWindow);
+      var anchorNodeCaret = sbwin.getSelectedBuffer().api.selection.anchorNode;
+      var anchorOffsetCaret = sbwin.getSelectedBuffer().api.selection.anchorOffset;
+      var focusNodeCaret = sbwin.getSelectedBuffer().api.selection.focusNode;
+      var focusOffsetCaret = sbwin.getSelectedBuffer().api.selection.focusOffset;  
+      if (anchorNodeCaret == focusNodeCaret &&
+          anchorOffsetCaret == focusOffsetCaret) {
+        regularSyntaxColoringAndAutoIndent(event);
+      } else {
+        selectionAutoIndent(event);
+      }
+    }
+  }
 }
+
 
 /**
  * Syntax-color text after every keystroke.  First get the cursor position,
