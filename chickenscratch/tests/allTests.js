@@ -8,7 +8,6 @@ runTest("pickTest.js");
 runTest("checkTest.js");
 runTest("xpathTest.js");
 runTest("goTest.js");
-runTest("MapTest.js");
 runTest("SetTest.js");
 runTest("namespaceTest.js");
 runTest("waitTest.js");

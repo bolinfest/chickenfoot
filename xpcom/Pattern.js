@@ -1,3 +1,4 @@
+goog.require('goog.dom');
 goog.require('goog.string');
 
 function Pattern() {
@@ -55,7 +56,6 @@ function Pattern() {
   /* Exported methods */
   Pattern.find = find;
   Pattern.getFindRoot = getFindRoot;
-  Pattern.isDescendentOf = isDescendentOf;
 
   // enable this to get debugging output
   Pattern.debugPatternMatching = false;
@@ -777,7 +777,7 @@ function Pattern() {
         var node = nodes[j];
 
         // Next, see if blob is nested inside the node itself (e.g., SELECT elements).
-        if (isDescendentOf(blob.firstNode, node)) {
+        if (goog.dom.contains(node, blob.firstNode)) {
           if (Pattern.debugPatternMatching) debug("found blob " + blob + " nested inside " + node);
           bestStrength = NESTED_FACTOR;
           bestNode = node;
@@ -860,17 +860,7 @@ function Pattern() {
     
     
   } // closing brace for findCaptionedNodes
-  
-  
-      // returns true iff node is a descendent of or equal to otherNode
-  function isDescendentOf(/*Node*/ node, /*Node*/ otherNode) {
-    while (node != null) {
-      if (node == otherNode) return true;
-      else node = node.parentNode;
-    }
-    return false;
-  }
-  
+
   // filter out nodes that are invisible or outside the context
   function makeFilter(/*Node->boolean*/ nodeTypeFilter, /*optional Range*/ context) {
     function visibleFilter(node) { 

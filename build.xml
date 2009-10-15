@@ -306,6 +306,10 @@
              dir="${components.dir}/goog"
              files="base.js
                array.js
+               tagname.js
+               coordinate.js
+               size.js
+               classes.js
                disposable.js
                event.js
                string.js
@@ -313,6 +317,11 @@
                browserevent.js
                listener.js
                object.js
+               dom.js
+               structs.js
+               iter.js
+               map.js
+               set.js
                simplepool.js
                events.js" />
 

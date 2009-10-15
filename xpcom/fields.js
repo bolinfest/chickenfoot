@@ -1,3 +1,5 @@
+goog.require('goog.dom');
+
 // Functions for fields (textboxes, buttons, checkboxes, radiobuttons, lists, etc.)
 //
 // Added conditions to extend existing fields to xul, and added menu and menuitem fields.
@@ -61,7 +63,8 @@ function isVisible(/*Node*/ node) {
   var doc = node.ownerDocument
   if (doc.wrappedJSObject) {doc = doc.wrappedJSObject;}
   if (doc.firstChild.tagName && doc.firstChild.tagName == 'prefwindow') {
-    return ((node.getAttribute("pane")) || Pattern.isDescendentOf(node, doc.firstChild.currentPane));
+    return ((node.getAttribute("pane")) ||
+        goog.dom.contains(doc.firstChild.currentPane, node));
   }
 
   // this isn't reliable -- e.g., the links to result pages (and even the Next link) on Google search

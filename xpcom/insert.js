@@ -1,3 +1,5 @@
+goog.require('goog.structs.Map');
+
 /**
  * Insert, remove, replace
  */
@@ -85,20 +87,20 @@ function insertImpl(/*HtmlDocument*/ doc, /*Pattern*/ position, /*Chunk*/ newTex
 
   if (container.nodeType == Node.TEXT_NODE) {
     // record ranges whose start offset will need to be updated
-    var range2startOffset = new SlickMap/*<Range,int>*/();
+    var range2startOffset = new goog.structs.Map/*<Range,int>*/();
     for (var i = 0; i < startRanges.length; i++) {    
       var r = startRanges[i];
       if (r.startOffset > offset) {
-        range2startOffset.put(r, r.startOffset);
+        range2startOffset.set(r, r.startOffset);
         startRanges.splice(i--, 1);
       }
     }
     // record ranges whose end offset will need to be updated    
-    var range2endOffset = new SlickMap/*<Range,int>*/();
+    var range2endOffset = new goog.structs.Map/*<Range,int>*/();
     for (var i = 0; i < endRanges.length; i++) {
       var r = endRanges[i];
       if (r.endOffset > offset) {
-        range2endOffset.put(r, r.endOffset);
+        range2endOffset.set(r, r.endOffset);
         endRanges.splice(i--, 1);
       }
     }
@@ -120,7 +122,7 @@ function insertImpl(/*HtmlDocument*/ doc, /*Pattern*/ position, /*Chunk*/ newTex
     // FIX UP RANGES
 
     // extend ends of ranges before starts 
-    var endEntries = range2endOffset.entries();
+    var endEntries = range2endOffset.getEntries();
     newTextNode.endRanges = (newTextNode.endRanges) ? newTextNode.endRanges : [];
     for (var i = 0; i < endEntries.length; i++) {
       var r = endEntries[i].key;
@@ -130,7 +132,7 @@ function insertImpl(/*HtmlDocument*/ doc, /*Pattern*/ position, /*Chunk*/ newTex
     }
     range2endOffset.clear();
 
-    var startEntries = range2startOffset.entries();
+    var startEntries = range2startOffset.getEntries();
     newTextNode.startRanges = (newTextNode.startRanges) ? newTextNode.startRanges : [];
     for (var i = 0; i < startEntries.length; i++) {
       var r = startEntries[i].key;
@@ -142,17 +144,17 @@ function insertImpl(/*HtmlDocument*/ doc, /*Pattern*/ position, /*Chunk*/ newTex
 
   } else { // presumably element node
     // record ranges whose start offset will need to be updated
-    var range2diff = new SlickMap/*<Range,int>*/();
+    var range2diff = new goog.structs.Map/*<Range,int>*/();
     for (var i = 0; i < startRanges.length; i++) {
       var r = startRanges[i];
       if (r.startOffset == range.startOffset) {
-        range2diff.put(r, r.endOffset);        
+        range2diff.set(r, r.endOffset);        
       }
     }
     // do the insertion
     range.insertNode(newNode);
     // FIX UP RANGES
-    var entries = range2diff.entries();
+    var entries = range2diff.getEntries();
     for (var i = 0; i < entries.length; i++) {
       var r = entries[i].key;
       var diff = r.endOffset - entries[i].value;
