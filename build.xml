@@ -329,8 +329,6 @@
         <copy todir="${jar.dir}/content" overwrite="true">
             <fileset dir="${firefox.ui.dir}"
                      includes="*.xul,*.html,chickenscratch.js" />
-            <fileset dir="${firefox.platform.dir}"
-                     includes="chrome.manifest" />
             <filterset refid="chickenfootMacros" />
         </copy>
       
