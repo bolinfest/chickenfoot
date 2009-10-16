@@ -3,9 +3,7 @@
  * then writes the contents of this temporary directory to an xpi file. The temporary directory is
  * a folder with a unique, auto-generated name in the same directory that the xpi file will be written to.
  * This temporary directory is deleted upon completion of the packaging. The xpi file and the
- * chickenfoot-xpi-tie.jar inside of it are zipped differently for Firefox 2 and 3. 
- *    Firefox 2: invokes the Java method 'ExportXpi.writeToZip'
- *    Firefox 3: uses the nsIZipWriter XPCOM component
+ * chickenfoot-xpi-tie.jar inside of it are then zipped using the nsIZipWriter XPCOM component.
  *
  * @param outputPath : String //full absolute path of where the xpi file will be written to
  * @param templateTags : Object //map of strings that be used to fill in template files
@@ -235,20 +233,13 @@ function fillTemplate(/*String*/ txt, /*Object*/ map) {
 
 /**
  * This method writes all the files inside the temporary directory to a new zip file located at the output
- * file path. This method behaves differently for Firefox 2 and 3.
- *    Firefox 2: calls down to a method identical to this function in java 'ExportXpi.writeToZip'
- *    Firefox 3: uses nsIZipWriter
+ * file path.
  *
  * @param chromeWindow : ChromeWindow //reference to chromeWindow of browser
  * @param tempDirPath : String //full absolute path of the temporary directory
  * @param outputPath : String //full absolute path where the zip file will be written to
  **/
 function writeToZip(/*ChromeWindow*/chromeWindow, /*String*/tempDirPath, /*String*/outputPath) {
-  //check if is Firefox 3
-  var firefox3 = (chromeWindow.navigator.userAgent.match("Firefox/3") != null);
-
-  //if FireFox 3, then use nsIZipWriter
-  if(firefox3) {
     //references to tempDir and output zip file
     var tempDir = Components.classes["@mozilla.org/file/local;1"].createInstance(Components.interfaces.nsILocalFile);
     tempDir.initWithPath(tempDirPath);
@@ -264,14 +255,6 @@ function writeToZip(/*ChromeWindow*/chromeWindow, /*String*/tempDirPath, /*Strin
     var tempDirFiles = tempDir.directoryEntries;
     while(tempDirFiles.hasMoreElements()) { writeFileToZip(tempDirFiles.getNext().QueryInterface(Components.interfaces.nsIFile), zipWriter, null); }
     zipWriter.close();
-  }
-  
-  //if not Firefox 3, then call java method 'ExportXpi.writeToZip' (identical to this function, but in java)
-  else {
-    var exportXpiClass = getJavaClass("chickenfoot.ExportXpi");
-    var writeToZipFunc = exportXpiClass.getMethod("writeToZip", [java.lang.String, java.lang.String]);
-    writeToZipFunc.invoke(null, [tempDirPath, outputPath]);
-  }
 }
 
 

@@ -19,7 +19,6 @@
 	
     <property name="locale.dir"     value="${firefox.platform.dir}/locale" />
     <property name="skin.dir"       value="${firefox.platform.dir}/skin" />
-    <property name="sleep.dir"      value="${basedir}/sleep" />
 
   
     <property name="html.dir"       value="${basedir}${file.separator}web" />      
@@ -396,16 +395,6 @@
           <filterset refid="chickenfootMacros" />
         </copy>
       
-        <!-- ChickenSleep XPCOM object -->
-        <copy todir="${xpi.dir}/components/" overwrite="true">
-          <fileset dir="${sleep.dir}/">
-            <include name="*.xpt"/>
-            <include name="*.dll"/>
-            <include name="*.so"/>
-            <include name="*.dylib"/>
-          </fileset>
-        </copy>
-        
         <!-- export folder -->
         <mkdir dir="${export.dir}" />
         <copy todir="${export.dir}" overwrite="true">
