@@ -330,7 +330,7 @@
             <fileset dir="${firefox.ui.dir}"
                      includes="*.xul,*.html,chickenscratch.js" />
             <fileset dir="${firefox.platform.dir}"
-                     includes="contents.rdf" />
+                     includes="chrome.manifest" />
             <filterset refid="chickenfootMacros" />
         </copy>
       
@@ -416,6 +416,13 @@
             <fileset dir="${setup.dir}" />
         </copy>
 
+    	<!-- chrome manifest -->
+        <copy todir="${xpi.dir}" overwrite="true">
+            <fileset dir="${firefox.platform.dir}"
+                     includes="chrome.manifest" />
+            <filterset refid="chickenfootMacros" />
+        </copy>
+    	
         <!-- copy install.rdf file, filling in version number -->      
         <copy file="${firefox.platform.dir}/install.template.rdf"               
             tofile="${xpi.dir}/install.rdf"

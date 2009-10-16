@@ -56,7 +56,7 @@ function xpiTie(/*String*/outputPath, /*Object*/templateTags, /*Array*/triggers,
     var contentDirPath = contentDir.path;
 
     //add files to content directory ------
-    var contentFiles = ["chickenscratch.xul", "chickenscratch.js", "contents.rdf", "overlay.xul"];
+    var contentFiles = ["chickenscratch.xul", "chickenscratch.js", "overlay.xul"];
     for(var i=0; i<contentFiles.length; i++) {
       //get template file to read
       var contentReadFile = extFile.clone();
@@ -163,6 +163,15 @@ function xpiTie(/*String*/outputPath, /*Object*/templateTags, /*Array*/triggers,
     cftJavaDir.append("java");
     cftJavaDir.copyTo(tempDir, "java");
 
+    //write chrome.manifest file ------
+    //get template file to read
+    var manifestReadFile = extFile.clone();
+    manifestReadFile.append("export"); manifestReadFile.append("chrome.manifest");
+    var manifestTemplateTxt = io.read(manifestReadFile);
+    var manifestWriteFile = tempDir.clone();
+    manifestWriteFile.append("chrome.manifest");
+    io.write(manifestWriteFile, fillTemplate(manifestTemplateTxt, templateTags));
+    
     //write install.rdf file ------
     //get template file to read
     var installReadFile = extFile.clone();
