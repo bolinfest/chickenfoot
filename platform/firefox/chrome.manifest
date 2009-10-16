@@ -1,7 +1,7 @@
 
-overlay	chrome://browser/content/browser.xul	chrome://chickenfoot/content/main-overlay.xul
-overlay	chrome://navigator/content/navigator.xul	chrome://chickenfoot/content/main-overlay.xul
-content	chickenfoot	jar:chrome/chickenfoot.jar!/content/
+overlay	chrome://browser/content/browser.xul        chrome://chickenfoot/content/main-overlay.xul
+overlay	chrome://navigator/content/navigator.xul    chrome://chickenfoot/content/main-overlay.xul
+content	chickenfoot                                 jar:chrome/chickenfoot.jar!/content/
 
 skin	chickenfoot	classic	jar:chrome/chickenfoot.jar!/skin/classic/
 

@@ -60,7 +60,8 @@ function xpiTie(/*String*/outputPath, /*Object*/templateTags, /*Array*/triggers,
     for(var i=0; i<contentFiles.length; i++) {
       //get template file to read
       var contentReadFile = extFile.clone();
-      contentReadFile.append("export"); contentReadFile.append(contentFiles[i]);
+      contentReadFile.append("export"); 
+      contentReadFile.append(contentFiles[i]);
       var templateTxt = io.read(contentReadFile);
       
       //write the templated text into the temp dir
@@ -84,7 +85,8 @@ function xpiTie(/*String*/outputPath, /*Object*/templateTags, /*Array*/triggers,
 
       //get a reference to the chickenfoot.jar file inside the chickenfoot extension
       var jarFile = extFile.clone();
-      jarFile.append("chrome"); jarFile.append("chickenfoot.jar");
+      jarFile.append("chrome"); 
+      jarFile.append("chickenfoot.jar");
 
       //this init call is needed in Firefox 2 and lower, but throws an exception in Firefox 3, so just catch it and continue
       try { zipReader.init(jarFile); } catch(e) { }
@@ -107,7 +109,8 @@ function xpiTie(/*String*/outputPath, /*Object*/templateTags, /*Array*/triggers,
     xpiTempDir.append("chickenfoot-xpi-tie_TEMP_DIR");
     
     var xpiTieFile = tempDir.clone();
-    xpiTieFile.append("chrome"); xpiTieFile.append("chickenfoot-xpi-tie.jar");
+    xpiTieFile.append("chrome"); 
+    xpiTieFile.append("chickenfoot-xpi-tie.jar");
     
     writeToZip(chromeWindow, xpiTempDir.path, xpiTieFile.path);
     
@@ -129,7 +132,8 @@ function xpiTie(/*String*/outputPath, /*Object*/templateTags, /*Array*/triggers,
     cftComponentsDir.copyTo(tempDir, "components");
 
     var commandLineHandlerFile = tempDir.clone()
-    commandLineHandlerFile.append("components"); commandLineHandlerFile.append("ChickenfootCommandLineHandler.js");
+    commandLineHandlerFile.append("components"); 
+    commandLineHandlerFile.append("ChickenfootCommandLineHandler.js");
     if(io.exists(commandLineHandlerFile)) { commandLineHandlerFile.remove(false); }
     
     //Chickenfoot.js and Chicken-bypass.js are templates and need to be filled in
@@ -137,24 +141,29 @@ function xpiTie(/*String*/outputPath, /*Object*/templateTags, /*Array*/triggers,
     for(var i=0; i<componentsFiles.length; i++) {
       //get template file to read
       var componentsReadFile = extFile.clone();
-      componentsReadFile.append("export"); componentsReadFile.append(componentsFiles[i]);
+      componentsReadFile.append("export"); 
+      componentsReadFile.append(componentsFiles[i]);
       var templateTxt = io.read(componentsReadFile);
       
       //write the templated text into the temp dir
       var componentsWriteFile = tempDir.clone();
-      componentsWriteFile.append("components"); componentsWriteFile.append(componentsFiles[i]);
+      componentsWriteFile.append("components"); 
+      componentsWriteFile.append(componentsFiles[i]);
       io.write(componentsWriteFile, fillTemplate(templateTxt, templateTags));
     }
 
     //create defaults directory ------
     //get template file to read
     var preferencesReadFile = extFile.clone();
-    preferencesReadFile.append("export"); preferencesReadFile.append("preferences.js");
+    preferencesReadFile.append("export"); 
+    preferencesReadFile.append("preferences.js");
     var preferencesTxt = io.read(preferencesReadFile);
 
     //add preferences.js file to defaults directory
     var preferencesWriteFile = tempDir.clone();
-    preferencesWriteFile.append("defaults"); preferencesWriteFile.append("preferences"); preferencesWriteFile.append("preferences.js");
+    preferencesWriteFile.append("defaults"); 
+    preferencesWriteFile.append("preferences"); 
+    preferencesWriteFile.append("preferences.js");
     io.write(preferencesWriteFile, fillTemplate(preferencesTxt, templateTags), false);
 
     //create java directory -------
@@ -166,7 +175,8 @@ function xpiTie(/*String*/outputPath, /*Object*/templateTags, /*Array*/triggers,
     //write chrome.manifest file ------
     //get template file to read
     var manifestReadFile = extFile.clone();
-    manifestReadFile.append("export"); manifestReadFile.append("chrome.manifest");
+    manifestReadFile.append("export"); 
+    manifestReadFile.append("chrome.manifest");
     var manifestTemplateTxt = io.read(manifestReadFile);
     var manifestWriteFile = tempDir.clone();
     manifestWriteFile.append("chrome.manifest");
@@ -175,7 +185,8 @@ function xpiTie(/*String*/outputPath, /*Object*/templateTags, /*Array*/triggers,
     //write install.rdf file ------
     //get template file to read
     var installReadFile = extFile.clone();
-    installReadFile.append("export"); installReadFile.append("install.template.rdf");
+    installReadFile.append("export"); 
+    installReadFile.append("install.template.rdf");
     var installTemplateTxt = io.read(installReadFile);
     
     //write to upper level xpi directory level
@@ -212,7 +223,8 @@ function xpiTie(/*String*/outputPath, /*Object*/templateTags, /*Array*/triggers,
     if(templateTags.EXTENSION_URL != "") {
       //get template file to read
       var updateReadFile = extFile.clone();
-      updateReadFile.append("export"); updateReadFile.append("update.template.rdf");
+      updateReadFile.append("export"); 
+      updateReadFile.append("update.template.rdf");
       var updateTemplateTxt = io.read(updateReadFile);
       
       //write to same directory as xpi file
