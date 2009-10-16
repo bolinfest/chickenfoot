@@ -1,45 +1,28 @@
 <project name="chickenfoot" default="build" basedir=".">
 
     <!-- user must define firefox.properties -->
-
-    <!-- set the classpath for the project        -->
-    <!-- this includes your generated class files -->
-    <!-- and every jar in your /jars directory     -->    
-    <path id="classpath.path">
-        <pathelement location="build/java" />
-        <fileset dir="jars">
-            <include name="*.jar" />
-        </fileset>
-        <fileset dir="jars/development-only">
-            <include name="*.jar" />
-        </fileset>
-    </path>    
-
     <property file="build.properties" />
     <property file="firefox.properties" />
     
-    <property name="src.dir"        value="${basedir}/java" />
-    <property name="bin.dir"        value="${basedir}/build/java" />
-    <property name="lib.dir"        value="${basedir}/jars" />
+	<property name="srcdir"        value="src" />
+	
+    <property name="java.src.dir"        value="${srcdir}/core/java" />
+    <property name="java.bin.dir"        value="${basedir}/build/java" />
 
-    <property name="rdf.dir"      value="${basedir}/rdf" />
+    <property name="firefox.platform.dir"      value="${basedir}/platform/firefox" />
   
-    <property name="setup.dir"      value="${basedir}/chickenscratch/setup" />
-    <property name="libraries.dir"  value="${basedir}/chickenscratch/libraries" />
-    <property name="tests.dir"      value="${basedir}${file.separator}chickenscratch${file.separator}tests" />
-    <property name="components.dir" value="${basedir}/xpcom" />
-    <property name="content.dir"    value="${basedir}/xul" />
-    <property name="locale.dir"     value="${basedir}/locale" />
-    <property name="skin.dir"       value="${basedir}/skin" />
-    <property name="sleep.dir" value="${basedir}/sleep" />
+    <property name="setup.dir"      value="${srcdir}/chickenscratch/setup" />
+    <property name="libraries.dir"  value="${srcdir}/chickenscratch/libraries" />
+    <property name="tests.dir"      value="${srcdir}${file.separator}tests" />
+    <property name="core.dir"       value="${srcdir}/core" />
+    <property name="firefox.ui.dir" value="${srcdir}/ui/firefox" />
+	
+    <property name="locale.dir"     value="${firefox.platform.dir}/locale" />
+    <property name="skin.dir"       value="${firefox.platform.dir}/skin" />
+    <property name="sleep.dir"      value="${basedir}/sleep" />
 
   
     <property name="html.dir"       value="${basedir}${file.separator}web" />      
-    <property name="api.dir"        value="${build.dir}/api" />
-    <property name="java.api"
-              value="http://java.sun.com/j2se/1.5.0/docs/api/" />
-    <property name="junit.api"
-              value="http://www.junit.org/junit/javadoc/3.8.1/" />
 
     <property name="build.dir"      value="${basedir}${file.separator}build" />
     <property name="jar.dir"        value="${build.dir}/jar" />
@@ -54,6 +37,9 @@
 
     <property name="webbuild.dir" value="${build.dir}/web" />
 
+	<property name="mccoy.dir" value="${firefox.platform.dir}/mccoy" />
+	<property name="mccoy.profile.dir" value="${firefox.platform.dir}/mccoy-profile" />
+	
     <property name="chickenfoot.guid" value="896b34a4-c83f-4ea7-8ef0-51ed7220ac94" />
     <property name="extension.dir" value="${firefox.profile.dir}/extensions/{${chickenfoot.guid}}" />
 
@@ -286,24 +272,22 @@
   
     <target name="java"
             description="Compiles the Chickenfoot Java code.">
-        <mkdir dir="${bin.dir}" />
-        <javac srcdir="${src.dir}"
-               destdir="${bin.dir}"
-               excludes="CVS"
+        <mkdir dir="${java.bin.dir}" />
+        <javac srcdir="${java.src.dir}"
+               destdir="${java.bin.dir}"
                target="1.5"
                source="1.5">
-            <classpath refid="classpath.path" />
         </javac>
         <mkdir dir="${xpi.dir}" />
         <mkdir dir="${xpi.dir}/java" />
         <jar destfile="${xpi.dir}/java/${ant.project.name}-java.jar" update="true">
-            <fileset dir="${bin.dir}" />
+            <fileset dir="${java.bin.dir}" />
         </jar>        
     </target>
 
    <!-- order is significant, so a filelist is used -->
    <filelist id="doctype"
-             dir="${components.dir}/goog"
+             dir="${srcdir}/goog"
              files="base.js
                array.js
                tagname.js
@@ -334,19 +318,19 @@
         <mkdir dir="${jar.dir}/content" />   
         <concat destfile="${jar.dir}/content/sidebar.js" fixlastline="yes">
             <filelist refid="doctype" />
-            <fileset dir="${content.dir}">
+            <fileset dir="${firefox.ui.dir}">
                 <include name="*.js" />
                 <exclude name="chickenscratch.js" />
             </fileset>
-            <fileset dir="${components.dir}">
-                <include name="instanceof.js" />
-                <include name="treeWalker.js" />
+            <fileset dir="${core.dir}">
+                <include name="util/instanceof.js" />
+                <include name="dom/treeWalker.js" />
             </fileset>
         </concat>
         <copy todir="${jar.dir}/content" overwrite="true">
-            <fileset dir="${content.dir}"
+            <fileset dir="${firefox.ui.dir}"
                      includes="*.xul,*.html,chickenscratch.js" />
-            <fileset dir="${rdf.dir}"
+            <fileset dir="${firefox.platform.dir}"
                      includes="contents.rdf" />
             <filterset refid="chickenfootMacros" />
         </copy>
@@ -386,18 +370,19 @@
         <!-- Javascript XPCOM components -->
         <concat destfile="${export.dir}/Chickenfoot.js" fixlastline="yes">
             <filelist refid="doctype" />
-            <fileset dir="${components.dir}">
-              <include name="Chickenfoot.js" />
+            <fileset dir="${core.dir}">
+              <include name="firefox/Chickenfoot.js" />
             </fileset>   
-            <fileset dir="${components.dir}">
-              <include name="*.js" />
-              <exclude name="Chickenfoot.js" />
-              <exclude name="Chicken-bypass.js" />
-              <exclude name="ChickenfootCommandLineHandler.js" />
+            <fileset dir="${core.dir}">
+              <include name="**/*.js" />
+              <exclude name="firefox/Chickenfoot.js" />
+              <exclude name="firefox/Chicken-bypass.js" />
+              <exclude name="firefox/ChickenfootCommandLineHandler.js" />
+              <exclude name="packager/xpi-tie/*.js" />
             </fileset>   
         </concat>
         <copy todir="${export.dir}" overwrite="true">
-          <fileset dir="${components.dir}/">
+          <fileset dir="${core.dir}/firefox">
             <include name="Chicken-bypass.js"/>
             <include name="ChickenfootCommandLineHandler.js"/>
           </fileset>
@@ -424,8 +409,8 @@
         <!-- export folder -->
         <mkdir dir="${export.dir}" />
         <copy todir="${export.dir}" overwrite="true">
-          <fileset dir="${basedir}/xpi-tie" />
-          <fileset dir="${content.dir}">
+          <fileset dir="${srcdir}/core/packager/xpi-tie" />
+          <fileset dir="${firefox.ui.dir}">
             <include name="chickenscratch.xul" />
             <include name="chickenscratch.js" />
           </fileset>
@@ -433,7 +418,7 @@
       
         <!-- libraries folder -->
         <copy todir="${xpi.dir}/libraries" overwrite="true">
-          <fileset dir="${basedir}/chickenscratch/libraries" />
+          <fileset dir="${libraries.dir}" />
         </copy>
 
         <!-- setup folder -->
@@ -442,15 +427,8 @@
             <fileset dir="${setup.dir}" />
         </copy>
 
-
-        <!-- copy third-party JAR files -->
-        <mkdir dir="${xpi.dir}/java" />
-        <copy todir="${xpi.dir}/java" overwrite="true">
-            <fileset dir="${lib.dir}" includes="*.jar"/>
-        </copy>
-
         <!-- copy install.rdf file, filling in version number -->      
-        <copy file="${rdf.dir}/install.template.rdf"               
+        <copy file="${firefox.platform.dir}/install.template.rdf"               
             tofile="${xpi.dir}/install.rdf"
             overwrite="true" />
         <replaceregexp match="${version.pattern}"
@@ -482,23 +460,10 @@
                 <!-- must use build literally because ${build.dir} fails for some reason -->   
                 <exclude name="build/**" />
                 <exclude name="web/**" />
-                <exclude name="mccoy/**" />
-                <exclude name="mccoy-profile/**" />
+                <exclude name="${mccoy.dir}/**" />
+                <exclude name="${mccoy.profile.dir}/**" />
             </zipfileset>   
         </zip>
-    </target>
-
-    <target name="javadoc"
-            description="Generate Javadoc for the Chickenfoot Java source code.">
-        <mkdir dir="${api.dir}" />
-        <javadoc sourcepath="${src.dir}"
-                 packagenames="${ant.project.name}.*"
-                 destdir="${api.dir}"
-                 windowtitle="Chickenfoot" >
-            <classpath refid="classpath.path" />
-            <link href="${java.api}" />
-            <link href="${junit.api}" />   
-        </javadoc>
     </target>
 
     <target name="release"
@@ -519,10 +484,10 @@
         </copy>
         <!-- create a libraries directory -->
         <copy todir="${html.dir}/libraries" overwrite="true">
-          <fileset dir="${basedir}/chickenscratch/libraries" />
+          <fileset dir="${libraries.dir}" />
         </copy>
         <!-- copy update.rdf file, filling in version number -->      
-        <copy file="${rdf.dir}/update.template.rdf"               
+        <copy file="${firefox.platform.dir}/update.template.rdf"               
             tofile="${html.dir}/update.rdf"
             overwrite="true" />
         <replaceregexp match="${version.pattern}"
@@ -535,9 +500,9 @@
         <!-- sign update.rdf file using McCoy -->      
         <copy todir="${firefox.profile.dir}${file.separator}..${file.separator}..${file.separator}..${file.separator}McCoy" 
               overwrite="true">
-            <fileset dir="${basedir}/mccoy-profile" />
+            <fileset dir="${mccoy.profile.dir}" />
         </copy>
-        <exec executable="${basedir}/mccoy/mccoy">
+        <exec executable="${mccoy.dir}/mccoy">
             <arg value="-command"/>
             <arg value="update"/>
             <arg value="-updateRDF"/>

@@ -1,0 +1,505 @@
+<?xml-stylesheet href="chrome://browser/skin/" type="text/css" ?>
+
+<dialog id="chickenfootExportDialog"
+        title="Package script as a Firefox extension"
+        xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+        buttons="accept,cancel"
+        onload="doLoad();"
+        width="200em"
+        height="200em"
+        ondialogaccept="return doOK();"
+        ondialogcancel="return doCancel();">
+
+<script type="application/x-javascript" src="chrome://chickenfoot/content/libraries/json.js"  />
+
+<script>
+<![CDATA[
+  var Chickenfoot;
+  var mainTrigger;
+  var triggersToAdd = [];
+
+  function gel(id) {
+    return document.getElementById(id);
+  }
+  
+  function isEmpty(id) {
+    var field = gel(id);
+    var value = field.value;
+    return !Chickenfoot.goog.string.trim(value).length;
+  }
+
+  var originalGuid = undefined;
+  var pregeneratedGuid = undefined;
+
+  function doLoad() {
+    // unparcel items from window.arguments
+    Chickenfoot = window.arguments[0].chickenfoot;
+    mainTrigger = window.arguments[0].mainTrigger;
+    
+    //set the main trigger field with the name of the main trigger
+    gel('mainTrigger').value = mainTrigger.name;
+    
+    //add the main trigger to the list of triggers to include in the xpi
+    triggersToAdd[triggersToAdd.length] = mainTrigger;
+
+    //add the main trigger to the listbox of files to include in this package
+    var trigItm = gel('userFiles').appendItem(mainTrigger.name, mainTrigger.path.path);
+    trigItm.setAttribute("image", "chrome://chickenfoot/skin/trigger.png");
+    trigItm.setAttribute("class", "listitem-iconic");
+
+    //add any existing information in saved packaging configurations to the dialog
+    var icon = window.arguments[0].icon;
+    if(icon) { gel('icon').value = icon; } //icon
+    
+    var name = window.arguments[0].templateTags.extensionName;
+    if(name) { gel('name').value = name; } //name
+    
+    var author = window.arguments[0].templateTags.extensionAuthor;
+    if(author) { gel('author').value = author; } //author
+    
+    var description = window.arguments[0].templateTags.extensionDescription;
+    if(description) { gel('description').value = description; } //description
+    
+    var version = window.arguments[0].templateTags.version; //version number
+    if(version) { gel('version').value = version; }
+    
+    var guid = window.arguments[0].templateTags.extensionGUID;
+    if(guid) { gel('guid').value = guid; } //guid
+    
+    var updateURL = window.arguments[0].templateTags.updateURL; //updateURL
+    if(updateURL) { gel('updateURL').value = updateURL; }
+    
+    var triggers = window.arguments[0].triggers; //triggers
+    var lstBox = gel('userFiles');
+    if(triggers) {
+      for(var k=0; k<triggers.length; k++) {
+        var itm = lstBox.appendItem(triggers[k].name, triggers[k].path.path);
+        itm.setAttribute("image", "chrome://chickenfoot/skin/trigger.png");
+        itm.setAttribute("class", "listitem-iconic");
+        triggersToAdd[triggersToAdd.length] = triggers[k];
+      }
+    }
+    
+    var userFiles = window.arguments[0].userFiles; //userFiles (not triggers)
+    if(userFiles) {
+      for(var k=0; k<userFiles.length; k++) {
+        if(!userFiles[k]) { continue; }
+        var fullPath = userFiles[k];
+        var broken = fullPath.split(/\\/);
+        var leafName = broken[broken.length - 1];
+        var itm = lstBox.appendItem(leafName, fullPath);
+        var fileInst = Components.classes["@mozilla.org/file/local;1"].
+            createInstance(Components.interfaces.nsILocalFile);
+        fileInst.initWithPath(fullPath);
+        if(fileInst.isDirectory()) { itm.setAttribute("image", "chrome://chickenfoot/skin/folder.png"); }
+        else { itm.setAttribute("image", "chrome://chickenfoot/skin/file.png"); }
+        itm.setAttribute("class", "listitem-iconic");
+      }
+    }
+  }
+
+  var attributes = [
+    'name', 'author', 'description', 'version', 'guid'
+  ];
+
+  /**
+   * @param guid {string} matching [a-f0-9-]*
+   * @return the guid with all of its bits flipped
+   */
+  function invertGuid(guid) {
+    var invertHexMap = {
+      '0' : 'f',
+      '1' : 'e',
+      '2' : 'd',
+      '3' : 'c',
+      '4' : 'b',
+      '5' : 'a',
+      '6' : '9',
+      '7' : '8',
+      '8' : '7',
+      '9' : '6',
+      'a' : '5',
+      'b' : '4',
+      'c' : '3',
+      'd' : '2',
+      'e' : '1',
+      'f' : '0'
+    };
+    return guid.replace(/[a-f0-9]/g, function(hex) {
+      return invertHexMap[hex];
+    });
+  }
+  
+  function removeGuidDashes(guid) {
+    return guid.replace(/-/g, '');
+  }
+
+  /**
+   * Examine the inputs in the dialog to test if they are valid
+   *
+   * @return {object} with properties templateTags and outputPath
+   *   if the inputs are valid
+   * @throw error message {string} if inputs are invalid
+   */
+  function validateInputs() {
+    var name;
+    if (isEmpty('name')) {
+      throw 'You must specify a name';
+    }
+    name = Chickenfoot.goog.string.trim(gel('name').value);
+    gel('name').setAttribute('value', name);
+    
+    var version;
+    if (isEmpty('version')) {
+      throw 'You must specify a version';
+    }
+    version = Chickenfoot.goog.string.trim(gel('version').value);
+    gel('version').setAttribute('value', version);
+
+    if (isEmpty('guid')) {
+      throw 'You must specify an ID';
+    }
+    var guid = gel('guid').value;
+    guid = Chickenfoot.goog.string.trim(guid).toLowerCase();
+    if (!guid.match(/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/)) {
+      throw guid + ' is not a valid ID';
+    }
+    gel('guid').setAttribute('value', guid);  // insert trimmed, lowercase version back into box
+    
+    if (!Chickenfoot.goog.string.trim(gel('outputPath').value)) {
+      throw 'You must specify a file to save the XPI as';
+    }
+
+    //concat all the user included files into a string, separating multiple files with '/n'
+    //leave out the trigger files 
+    var filesLstBx = gel('userFiles');
+    var userFiles = "";
+    for(var k=0; k<filesLstBx.getRowCount(); k++) {
+      var current = filesLstBx.getItemAtIndex(k);
+      var isTrigger = false;
+      for(var y=0; y<triggersToAdd.length; y++){
+        if(triggersToAdd[y].path.path == current.value) { isTrigger = true; break; }
+      }
+      if(!isTrigger && (current.value != undefined)) { userFiles += current.value + "\n"; }
+    }
+
+    // because we are copying the Chickenfoot and Chicken-bypass XPCOM objects,
+    // we need to give them unique GUID contract ids, as well,
+    // so we generate them from the XPI's GUID
+    var chickenfootContractId = "@uid.csail.mit.edu/Chickenfoot/" + removeGuidDashes(guid) + ";";
+    var chickenfootGuid = invertGuid(guid);
+    var chickenbypassGuid = Chickenfoot.generateRandomGuid();
+    var chickenfootCommandLineHandlerGuid = Chickenfoot.generateRandomGuid();
+    var templateTags = {
+      EXTENSION_NAME : guid,
+      EXTENSION_DISPLAY_NAME : Chickenfoot.removeXmlChars(name),
+      EXTENSION_AUTHOR : Chickenfoot.removeXmlChars(Chickenfoot.goog.string.trim(gel('author').value)),
+      GUID : guid,
+      VERSION : Chickenfoot.removeXmlChars(version),
+      DESCRIPTION : Chickenfoot.removeXmlChars(Chickenfoot.goog.string.trim(gel('description').value)),
+      CHICKENFOOT_CONTRACT_ID : chickenfootContractId,
+      CHICKENFOOT_GUID : chickenfootGuid,
+      CHICKEN_BYPASS_GUID : chickenbypassGuid,
+      CHICKENFOOT_COMMAND_LINE_HANDLER_GUID : chickenfootCommandLineHandlerGuid,
+      IS_EXPORTED_XPI : "true",
+      EXTENSION_URL : Chickenfoot.removeXmlChars(Chickenfoot.goog.string.trim(gel('updateURL').value))
+    };
+    
+    return {
+      outputPath : Chickenfoot.goog.string.trim(gel('outputPath').value),
+      templateTags : templateTags,
+      userFiles : userFiles,
+      triggers : triggersToAdd,
+      icon : Chickenfoot.goog.string.trim(gel('icon').value)
+    };
+  }
+
+    function doOK() {
+      var validatedInputs;
+      try {
+        validatedInputs = validateInputs();
+      } catch (e) {
+        alert("Error: " + e);
+        return false;
+      }
+      window.arguments[0].createXpi = true;
+      window.arguments[0].templateTags = validatedInputs.templateTags;
+      window.arguments[0].outputPath = validatedInputs.outputPath;
+      window.arguments[0].userFiles = validatedInputs.userFiles;
+      window.arguments[0].triggers = validatedInputs.triggers;
+      window.arguments[0].icon = validatedInputs.icon;
+      //window.arguments[0].mutatedAttributes = findMutatedAttributes(validatedInputs);
+      return true;
+    }
+    
+    function findMutatedAttributes(validatedInputs) {
+      var map = {};
+      for (var i = 0; i < attributes.length; ++i) {
+        var attr = attributes[i];
+        var oldValue = (attr in attributeMap) ? attributeMap[attr][0] : "";
+        var newValue = gel(attr).value;
+        if (newValue != oldValue) map[attr] = newValue;
+      }   
+      return map;
+    }
+    
+    function doCancel() {
+        return true;
+    }
+    
+    function pickOutputFile() {
+      var nsIFilePicker = Components.interfaces.nsIFilePicker;
+      var mode = nsIFilePicker.modeSave;
+      var fp = Components.classes["@mozilla.org/filepicker;1"]
+          .createInstance(nsIFilePicker);
+      fp.init(window, 'Package My Chickenfoot Script As', mode);  
+      fp.appendFilter("Firefox extensions (*.xpi)", "*.xpi");
+      fp.appendFilters(fp.filterAll);
+      fp.filterIndex = 0;
+      fp.defaultExtension = ".xpi";    
+      var res = fp.show();
+      if (res == nsIFilePicker.returnOK || res == nsIFilePicker.returnReplace) {
+        gel('outputPath').value = fp.file.path;
+      }
+    }
+    
+    function pickUserFiles(boxID) {
+      var nsIFilePicker = Components.interfaces.nsIFilePicker;
+      var mode = nsIFilePicker.modeOpen;
+      var fp = Components.classes["@mozilla.org/filepicker;1"]
+          .createInstance(nsIFilePicker);
+      fp.displayDirectory = Chickenfoot.gTriggerManager._getChickenfootProfileDirectory();
+      fp.init(window, "Include With My Chickenfoot Extension", mode);
+      fp.appendFilters(fp.filterAll);
+      fp.appendFilter("Javascript files (*.js)", "*.js");  
+      fp.appendFilter("Firefox extensions (*.xpi)", "*.xpi");
+      fp.appendFilter("XUL documents (*.xul)", "*.xul");
+      fp.appendFilter("Text files (*.txt)", "*.txt");
+      fp.filterIndex = 0; 
+      var res = fp.show();
+      if (res == nsIFilePicker.returnOK || res == nsIFilePicker.returnReplace) {
+        try { 
+          var itm = gel(boxID).appendItem(fp.file.leafName, fp.file.path);
+          itm.setAttribute("image", "chrome://chickenfoot/skin/file.png");
+          itm.setAttribute("class", "listitem-iconic");
+        }
+        catch(e) { gel(boxID).value = fp.file.path; }
+      }
+    }
+    
+    function pickUserFolders() {
+      var nsIFilePicker = Components.interfaces.nsIFilePicker;
+      var mode = nsIFilePicker.modeGetFolder;
+      var fp = Components.classes["@mozilla.org/filepicker;1"]
+          .createInstance(nsIFilePicker);
+      fp.displayDirectory = Chickenfoot.gTriggerManager._getChickenfootProfileDirectory();
+      fp.init(window, "Include Folder In Chickenfoot Extension", mode);
+      fp.filterIndex = 0;  
+      var res = fp.show();
+      if (res == nsIFilePicker.returnOK || res == nsIFilePicker.returnReplace) {
+        var itm = gel('userFiles').appendItem(fp.file.leafName, fp.file.path);
+        itm.setAttribute("image", "chrome://chickenfoot/skin/folder.png");
+        itm.setAttribute("class", "listitem-iconic");
+      }
+    }
+    
+    function openPickTrigger() {
+      //open the pick trigger dialog
+      var dialogArguments = { 
+          chickenfoot : Chickenfoot,
+          triggersChosen : undefined
+      };
+      window.openDialog("chrome://chickenfoot/content/pickTriggerDialog.xul",
+        "dlg",
+        "chrome,modal,centerscreen,resizable",
+        dialogArguments
+      );
+      
+      //add the triggers to the userFiles listbox and to the list of triggers to add to the xpi
+      var triggersChosen = dialogArguments.triggersChosen;
+      for(var k=0; k<triggersChosen.length; k++) {
+        triggersToAdd[triggersToAdd.length] = triggersChosen[k];
+        var itm = gel('userFiles').appendItem(triggersChosen[k].name, triggersChosen[k].path.path);
+        itm.setAttribute("image", "chrome://chickenfoot/skin/trigger.png");
+        itm.setAttribute("class", "listitem-iconic");
+      }
+    }
+    
+    function removeItems(itmLst) {
+      //get a reference to the userFiles listbox
+      var lstBox = gel('userFiles');
+      for(var k=0; k<itmLst.length; k++) {
+        //if item is a trigger, then remove it from the triggersToAdd list
+        //all other files are only read when the dialog is closed, so don't do anything
+        var newTriggersLst = [];
+        for(var y=0; y<triggersToAdd.length; y++){
+          if(triggersToAdd[y].path.path == itmLst[k].value) { continue; }
+          else { newTriggersLst[newTriggersLst.length] = triggersToAdd[y]; }
+        }
+        triggersToAdd = newTriggersLst;
+        
+        //remove itm from listbox
+        lstBox.removeItemAt(lstBox.getIndexOfItem(itmLst[k]));
+      }
+    }
+    
+    function pickGuid() {     
+      var guid = Chickenfoot.generateRandomGuid();
+      gel('guid').setAttribute('value', guid);
+    }
+    
+    var helpDisplayed = false;
+    
+    function toggleHelp(boxID) {
+      var help = gel(boxID);
+      help.collapsed = helpDisplayed;
+      helpDisplayed = !helpDisplayed;
+      window.sizeToContent();
+    }
+]]>
+</script>
+
+<vbox>
+
+<label value="This feature is EXPERIMENTAL -- please report bugs to chickenfoot-developers@lists.csail.mit.edu" />
+
+<grid>
+
+  <columns>
+    <column />
+    <column flex="1" />
+  </columns>
+  
+  <rows>
+
+    <!-- EMPTY ROW -->
+    <row align="center"></row>
+
+    <!-- MAIN TRIGGER -->
+    <row align="center">
+      <label value="Main Trigger:" />
+      <!-- <vbox id="triggers"> -->
+        <label value="no triggers currently exist" id="mainTrigger" flex="1" />
+      <!-- </vbox> -->
+    </row>
+
+    <!-- NAME -->
+    <row align="center">
+      <label value="Name:" control="name" accesskey="n" />
+      <textbox id="name" flex="1" accesskey="n" />
+    </row>
+    
+    <!-- AUTHOR -->
+    <row align="center">
+      <label value="Author:" control="author" accesskey="a" />
+      <textbox id="author" flex="1"/>
+    </row>
+    
+    <!-- DESCRIPTION -->
+    <row align="center">
+      <label value="Description:" control="description" accesskey="d" />
+      <textbox id="description" flex="1" />
+    </row>
+
+    <!-- VERSION -->
+    <row align="center">
+      <label value="Version:" control="version" accesskey="v" />
+      <textbox id="version" flex="1" />
+    </row>
+
+    <!-- GUID -->
+    <row align="center">
+      <hbox align="center">
+        <label value="GUID:" control="guid" accesskey="g" />
+        <label class="text-link"
+               value="What's this?"
+               onclick="toggleHelp('guid-help')" />
+      </hbox>
+      <hbox flex="1">
+        <textbox id="guid" flex="1" />
+        <button label="Generate GUID" oncommand="pickGuid()" accesskey="i" />
+      </hbox>
+    </row>
+    
+    <row collapsed="true" id="guid-help">
+      <spacer />
+      <label>
+A GUID is a Globally Unique IDentifier.
+Every Firefox extension needs a unique identifier.
+You can use the "Generate GUID" button to create a GUID for your extension.
+It is important to use the same GUID when releasing subsequent versions of
+your extension so Firefox replaces the old version with the new version.
+The GUID will be written into your script so you do not lose it.
+      </label>
+    </row>
+
+    <!-- UPDATE URL -->
+    <row align="center">
+      <hbox align="center">
+      <label value="Update URL:" control="updateURL" />
+      <label class="text-link"
+             value="What's this?"
+             onclick="toggleHelp('update-help')" />
+      </hbox>
+      <hbox flex="1">
+        <textbox id="updateURL" flex="1" />
+      </hbox>
+    </row>
+    
+    <row collapsed="true" id="update-help">
+      <spacer />
+      <label>
+OPTIONAL.  If you plan to publish your extension on the Web and want
+Firefox to automatically detect new updates, the Update URL should 
+specify the online directory where you will place your extension.
+For example, the Update URL for Chickenfoot is 
+http://uid.csail.mit.edu/chickenfoot/
+      </label>
+    </row>
+
+    <!-- ICON FILE -->
+    <row align="center">
+      <vbox>
+      <label value="Icon for Extension:" control="icon" />
+      <label value="(default is Chickenfoot beak)" />
+      </vbox>
+      <hbox flex="1">
+        <textbox id="icon" readonly="true" flex="1" />
+        <button label="Browse..." oncommand="pickUserFiles('icon')" />
+      </hbox>
+    </row>
+    
+    <!-- OTHER INCLUDED FILES -->
+    <row>
+      <vbox flex="1">
+        <label value="Other Included Files:" control="userFiles" accesskey="i" />
+      </vbox>
+      <hbox flex="1">
+        <!-- <textbox id="userFiles" multiline="true" flex="4"/> -->
+        <listbox id="userFiles" rows="3" seltype="multiple" flex="2"/>
+        <vbox flex="1">
+          <button label="Add Trigger" flex="1" oncommand="openPickTrigger()"/>
+          <button label="Add File" flex="1" oncommand="pickUserFiles('userFiles')"/>
+          <button label="Add Folder" flex="1" oncommand="pickUserFolders()"/>
+          <button label="Remove" flex="1" oncommand="removeItems(gel('userFiles').selectedItems)"/>
+        </vbox>
+        <vbox flex="5"> </vbox>
+      </hbox>
+    </row>
+
+    <!-- OUTPUT FILE -->
+    <row align="center">
+      <label value="Save File As:" control="outputPath" accesskey="s" />
+      <hbox flex="1">
+        <textbox id="outputPath" flex="1" />
+        <button label="Browse..." oncommand="pickOutputFile()" accesskey="b" />
+      </hbox>
+    </row>
+
+  </rows>
+
+</grid>
+
+</vbox>
+
+</dialog>
