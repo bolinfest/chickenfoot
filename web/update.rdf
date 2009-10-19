@@ -3,20 +3,20 @@
          xmlns:NC="http://home.netscape.com/NC-rdf#"
          xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <RDF:Description RDF:about="urn:mozilla:extension:{896b34a4-c83f-4ea7-8ef0-51ed7220ac94}"
-                   em:signature="MIGTMA0GCSqGSIb3DQEBDQUAA4GBAIPPTjIFrhZhitDn4kLZe8Ngh142OjNb19tszsZqLJeORCcbs8eE5oK608zqnrTShuHKmkio6LOAv2WH9ggC5dkBHj1o2aTf9TOPyzEWYuzEdE0s5awaye5cp9hBJE7ysOCoeIk/Vtke4EDEYS3VBYS2m4GZ7XVtx2KSbNR61obY">
+                   em:signature="MIGTMA0GCSqGSIb3DQEBDQUAA4GBAGpby78co+0duYPVV8N8KiP8DoLffMl434UM9hpEG8s/kWb/fIjKUZG1aal1zQ1B7xxvyY1CyGbgBQeIx+0JxIaq8JXiIbnfE1IcteD/Gzvdm6/xNacm6DsrFerYs9lv2M3XyuMC/X7pXzNOrTu+4SpYcu8CbrmMUm1uz5t4dNkV">
     <em:updates RDF:resource="rdf:#$9lIFR2"/>
   </RDF:Description>
   <RDF:Description RDF:about="rdf:#$alIFR2"
-                   em:version="1.0.5">
+                   em:version="1.0.6">
     <em:targetApplication RDF:resource="rdf:#$dlIFR2"/>
   </RDF:Description>
-  <RDF:Description RDF:about="rdf:#$dlIFR2"
-                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
-                   em:minVersion="1.5"
-                   em:maxVersion="3.0.*"
-                   em:updateLink="http://groups.csail.mit.edu/uid/chickenfoot/chickenfoot.xpi"
-                   em:updateHash="sha256:3634e6dfea03ce4bc5910c440614c9e03d2ecaf3e4beda4ab8d0548114ba428c" />
   <RDF:Seq RDF:about="rdf:#$9lIFR2">
     <RDF:li RDF:resource="rdf:#$alIFR2"/>
   </RDF:Seq>
+  <RDF:Description RDF:about="rdf:#$dlIFR2"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="3.0"
+                   em:maxVersion="3.6.*"
+                   em:updateLink="http://groups.csail.mit.edu/uid/chickenfoot/chickenfoot.xpi"
+                   em:updateHash="sha256:840302d714217eba3df4d1234c711e27154203e2550125110c662df66047af5a" />
 </RDF:RDF>
