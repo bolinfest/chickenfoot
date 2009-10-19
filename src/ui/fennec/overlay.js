@@ -6,9 +6,13 @@ function getDocument() {
 
 var ChickenfootTriggers = [];
 
+var Chickenfoot = Components.classes["@uid.csail.mit.edu/Chickenfoot/;1"]
+                  .getService(Components.interfaces.nsISupports)
+                  .wrappedJSObject;
+
 var ChickenfootUI = function() {
     var triggersControlWrapper = null;
-    
+                      
     function getTriggersControlWrapper(){
         if (triggersControlWrapper == null) {
             triggersControlWrapper = setupTriggersUI();
@@ -17,8 +21,9 @@ var ChickenfootUI = function() {
     }
 
     function chickenfootToggle() {
-        getTriggersControlWrapper().refreshTriggersListBox();
-        getTriggersControlWrapper().showTriggersControl();
+        var triggersControl = getTriggersControlWrapper();
+        triggersControl.refreshTriggersListBox();
+        triggersControl.showTriggersControl();
     }
     
     function triggerOptionsToggle() {
@@ -29,20 +34,13 @@ var ChickenfootUI = function() {
     function onLoad() {
         log('chickenfoot ui onLoad');
       
-        // TODO: call service using Components class getService?
-        // setupService doesn't work either, need to figure out whats wrong with Components class
-        // Chickenfoot.setupService();
-        Chickenfoot.gTriggerManager = new TriggerManager();
         Chickenfoot.chickenfootCommandLineHandler = null;
-        log("manager initialized");
-      
         Chickenfoot.setupWindow(window);
+        log("chickenfoot setupWindow done");
       
         // hack to get interpreter working
-        enableStopButton = function() {log('fake enablestop')};    
-        TC = function() {};
-        XPath = function() {};
-  
+        Chickenfoot.enableStopButton = function() {log('fake enablestop')};    
+        
         log2("chickenfoot setup done");
     }
   

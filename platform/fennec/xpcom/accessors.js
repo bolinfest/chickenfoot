@@ -51,3 +51,7 @@ function /*String*/ upperCaseOrNull(/*String*/ s) {
 function getVisibleHtmlWindow(/*ChromeWindow*/ chromeWindow) {
   return chromeWindow._content;
 }
+
+function getAWindow() {
+  return null;
+}

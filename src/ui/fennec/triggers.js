@@ -32,7 +32,7 @@ function setupTriggersUI() {
             triggersOptionsSigninButton.setAttribute("checked", Chickenfoot.gTriggerManager.syncEnabled);
             _refreshOptions(Chickenfoot.gTriggerManager.syncEnabled);
           }, true);
-          
+        
         triggersOptionsManualsyncButton.addEventListener("click", function() {
             if (Chickenfoot.gTriggerManager.syncEnabled) {
                 log('starting download...');
@@ -41,7 +41,7 @@ function setupTriggersUI() {
                 log('done downloading...');
             }
           }, true);
-          
+        
         triggersOptionsSigninButton.setAttribute("checked", Chickenfoot.gTriggerManager.syncEnabled);
         _refreshOptions(Chickenfoot.gTriggerManager.syncEnabled);
     }

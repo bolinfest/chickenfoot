@@ -1,24 +1,31 @@
-<project name="mobile chickenfoot" default="build" basedir=".">
+<project name="mobile chickenfoot" default="build" basedir="../..">
 
-    <property name="content.dir"    value="${basedir}/xul" />
-    <property name="components.dir" value="${basedir}/xpcom" />
-    <property name="skin.dir"       value="${basedir}/skin" />
-    <property name="locale.dir"     value="${basedir}/locale" />
+    <property name="srcdir"         value="${basedir}/src" />
+    <property name="platform.dir"    value="${basedir}\platform\fennec" />
     
-    <property name="build.dir"      value="${basedir}${file.separator}build" />
+    <property name="fennec.ui.dir"  value="${srcdir}/ui/fennec" />
+    
+    <property name="skin.dir"       value="${platform.dir}/skin" />
+    <property name="locale.dir"     value="${platform.dir}/locale" />
+    
+    <property name="components.dir" value="${platform.dir}/xpcom" />
+    
+    <property name="build.dir"      value="${platform.dir}${file.separator}build" />
     <property name="xpi.dir"        value="${build.dir}${file.separator}xpi" />
     <property name="export.dir"     value="${xpi.dir}/export" />
-    <property name="setup.dir"      value="${basedir}/setup" />
-
-    <property file="fennec.properties" />
+    <property name="setup.dir"      value="${srcdir}/chickenscratch/fennec/setup" />
+    
+    <property name="propertiesfile"      value="${platform.dir}${file.separator}fennec.properties" />
+    <property file="${propertiesfile}" />
+    
     <property name="fennec.chickenfoot.guid"     value="896b34a4-c83f-4ea7-8ef0-51ed7220ac94" />
     <property name="fennec.extension.dir"        value="${fennec.profile.dir}/extensions/{${fennec.chickenfoot.guid}}" />
     
     <property name="version.value" value="1.0.5"/>
     <property name="version.pattern" value="&lt;version/&gt;" />
     
-    <property name="firefox_chickenfoot.components.dir"    value="${basedir}/../xpcom" />
-    <property name="firefox_chickenfoot.content.dir"    value="${basedir}/../xul" />
+    <property name="firefox_chickenfoot.core.dir"         value="${srcdir}/core" />
+    <property name="firefox_chickenfoot.content.dir"      value="${srcdir}/ui/firefox" />
     
     <filterset id="chickenfootMacros">
       <filter token="CHICKENFOOT_CONTRACT_ID" value="@uid.csail.mit.edu/Chickenfoot/;1" />
@@ -29,6 +36,30 @@
       <filter token="IS_EXPORTED_XPI" value="false" />
       <filter token="GUID" value="${fennec.chickenfoot.guid}" />
     </filterset>
+    
+    <!-- order is significant, so a filelist is used -->
+    <filelist id="doctype"
+              dir="${srcdir}/goog"
+              files="base.js
+               array.js
+               tagname.js
+               coordinate.js
+               size.js
+               classes.js
+               disposable.js
+               event.js
+               string.js
+               useragent.js
+               browserevent.js
+               listener.js
+               object.js
+               dom.js
+               structs.js
+               iter.js
+               map.js
+               set.js
+               simplepool.js
+               events.js" />
     
     <target name="xpi-dir"
             depends=""
@@ -41,25 +72,43 @@
             <fileset dir="${components.dir}">
                 <include name="*.js" />
             </fileset>            
-            <fileset dir="${firefox_chickenfoot.components.dir}">
-                <exclude name="accessors.js" />
-                <exclude name="lapis.js" />
-                <exclude name="sleep.js" />
-                <exclude name="ChickenfootCommandLineHandler.js" />
-                <include name="*.js" />
-            </fileset>
-            <fileset dir="${content.dir}">
-                <include name="*.js" />
+            <fileset dir="${firefox_chickenfoot.core.dir}">
+                <exclude name="util/accessors.js" />
+                <exclude name="commands/lapis.js" />
+                <exclude name="util/sleep.js" />
+                <exclude name="firefox/ChickenfootCommandLineHandler.js" />
+                <!-- <exclude name="firefox/Chickenfoot.js" /> -->
+                <exclude name="firefox/Chicken-bypass.js" />
+                <exclude name="packager/xpi-tie/*.js" />
+                
+                <include name="**/*.js" />
             </fileset>
             <filterset refid="chickenfootMacros" />
         </copy>
         <concat destfile="${xpi.dir}/content/overlay.js" fixlastline="yes">
-            <fileset dir="${export.dir}">
+            <filelist refid="doctype" />
+            <fileset dir="${components.dir}">
+                <include name="log.js" />
+            </fileset>
+            <fileset dir="${fennec.ui.dir}">
                 <include name="*.js" />
             </fileset>
         </concat>
+        <concat destfile="${xpi.dir}/components/Chickenfoot.js" fixlastline="yes">
+            <filelist refid="doctype" />
+            <fileset dir="${export.dir}">
+                <include name="**/*.js" />
+            </fileset>
+        </concat>
+        <copy todir="${xpi.dir}/components" overwrite="true">
+            <fileset dir="${firefox_chickenfoot.core.dir}/firefox">
+                <include name="Chicken-bypass.js"/>
+                <include name="ChickenfootCommandLineHandler.js"/>
+            </fileset>
+            <filterset refid="chickenfootMacros" />
+        </copy>
         <copy todir="${xpi.dir}/content" overwrite="true">
-            <fileset dir="${content.dir}"
+            <fileset dir="${fennec.ui.dir}"
                      includes="*.xul" />
             <fileset dir="${firefox_chickenfoot.content.dir}">
                 <include name="chickenscratch.xul"/>
@@ -78,7 +127,7 @@
             <fileset dir="${locale.dir}" />
         </copy>
         <!-- copy install.rdf file, filling in version number -->      
-        <copy file="install.template.rdf"               
+        <copy file="${platform.dir}/install.template.rdf"               
             tofile="${xpi.dir}/install.rdf"
             overwrite="true" />
         <replaceregexp match="${version.pattern}"
@@ -89,7 +138,7 @@
           </fileset>
         </replaceregexp>
         <!-- chrome.manifest -->
-        <copy file="chrome.manifest"               
+        <copy file="${platform.dir}/chrome.manifest"               
             tofile="${xpi.dir}/chrome.manifest"
             overwrite="true" />
         <!-- setup folder -->
@@ -117,7 +166,7 @@
     
     <condition property="fennec-properties-has-profile-dir">
         <and>
-          <available file="${basedir}/fennec.properties" />
+          <available file="${propertiesfile}" />
           <isset property="fennec.profile.dir" />
         </and>
     </condition>
