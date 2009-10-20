@@ -157,6 +157,7 @@ gdata.auth.getAuthTokenPrefName_ = function(email, service) {
  * @type {Object}
  * @private
  */
+// TODO(mbolin): Copy more URLs from http://code.google.com/apis/base/faq_gdata.html#AuthScopes
 gdata.auth.urlPrefixMap_ = {
   'http://www.google.com/calendar': gdata.auth.ServiceName.CALENDAR,
   'http://docs.google.com': gdata.auth.ServiceName.DOCUMENTS_LIST,

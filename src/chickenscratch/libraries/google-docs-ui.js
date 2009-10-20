@@ -5,10 +5,13 @@
  */
 include('google-docs.js');
 
-goog.provide('gdata.docs.ui');
+goog.provide('gdata.docs.ui.DocPicker');
+goog.provide('gdata.docs.ui.DocViewer');
+goog.provide('gdata.docs.ui.DocViewer.EventType');
 
 goog.require('goog.dom');
 goog.require('goog.dom.DomHelper');
+goog.require('goog.events.Event');
 goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
@@ -17,7 +20,7 @@ goog.require('goog.string');
 
 /**
  * @param {Element} pickerEl Element into which the picker should be drawn.
- * @param {gdata.docs.ui.DocViewer=} viewer If specified, the viewer into which the document
+ * @param {gdata.docs.ui.DocViewer} viewer If specified, the viewer into which the document
  *     that is picked will be displayed. If null, picked documents will open in
  *     a new window.
  * @constructor
@@ -33,9 +36,12 @@ gdata.docs.ui.DocPicker = function(pickerEl, viewer) {
 
   var doc = goog.dom.getOwnerDocument(pickerEl);
   var win = goog.dom.getWindow(doc);
+  
+  // Installing privileged JS into the page, so wrappedJSObject must be used.
   win = win.wrappedJSObject;
   win['pickerInsertHtml'] = gdata.docs.ui.insertHtml;
   win['pickerOnFrameLoad'] = gdata.docs.ui.onFrameLoad;
+  
   var id = gdata.docs.ui.pickerCounter_++;
   gdata.docs.ui.pickerMap_[id] = this;
   pickerEl.innerHTML = '<iframe src="javascript:parent.pickerInsertHtml(' + id +
@@ -223,11 +229,22 @@ gdata.docs.ui.DocPicker.prototype.disposeInternal = function() {
 
 /**
  * @param {Element} viewerEl Element into which the viewer should be drawn.
+ * @param {Object=} options May have the following keys:
+ *     <li> {boolean} stripHeadHtml If specified, the contents of the &lt;head>
+ *         element added by Google Docs will be stripped from the HTML inserted
+ *         into the viewer.
  * @constructor
  * @extends {goog.events.EventTarget}
  */
-gdata.docs.ui.DocViewer = function(viewerEl) {
+gdata.docs.ui.DocViewer = function(viewerEl, options) {
   goog.events.EventTarget.call(this);
+  options = options || {};
+
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.stripHeadHtml_ = !!options.stripHeadHtml;
 
   /**
    * @type {Element}
@@ -254,6 +271,11 @@ gdata.docs.ui.DocViewer = function(viewerEl) {
       var doc = goog.dom.getFrameContentDocument(iframeEl);
       viewer.postLoadProcessor_(doc.wrappedJSObject);
     }
+
+    // Notify listeners that the document has been loaded.
+    var docLoadedEvent = new goog.events.Event(
+        gdata.docs.ui.DocViewer.EventType.DOCUMENT_LOADED, viewer);
+    viewer.dispatchEvent(docLoadedEvent);
   };
 };
 goog.inherits(gdata.docs.ui.DocViewer, goog.events.EventTarget);
@@ -350,8 +372,26 @@ gdata.docs.ui.DocViewer.prototype.createContentHandler_ = function(entry) {
 gdata.docs.ui.DocViewer.prototype.insertHtml_ = function(html, entry) {
   this.currentEntry_ = entry;
   var id = gdata.docs.ui.DocViewer.viewCount_++;
+
+  if (this.stripHeadHtml_) {
+    // The HTML sent down from Google Docs should be well-formed, but it
+    // contains style, script, and meta tags in the HEAD element that may be
+    // undesirable. This regex is used to get only the content within the body
+    // tag (it ignores the attributes of the body tag itself as it contains
+    // an onload handler that calls a script defined in the HEAD element).
+    //
+    // The [\s\S] trick comes from http://xregexp.com/flags/#singleline
+    // to get around the fact that the dot does not match all characters in
+    // JavaScript.
+    var re = /<body[^>]+>([\s\S]*)<\/body>/m;
+    var match = html.match(re);
+    if (match) {
+      html = '<html><body>' + match[1] + '</body></html>';
+    }
+  }
   gdata.docs.ui.DocViewer.viewMap_[id] = html;
   gdata.docs.ui.DocViewer.loadMap_[id] = this;
+
   // Note that height:100% will not have the desired effect in standards mode
   // pages but will in quirksmode pages.
   this.viewerEl_.innerHTML =
@@ -392,4 +432,12 @@ gdata.docs.ui.DocViewer.prototype.save = function(callback, errorCallback) {
     content = this.preSaveProcessor_(content, doc);
   }
   this.getEntry().update(content, callback, errorCallback);
+};
+
+
+/**
+ * @enum {string}
+ */
+gdata.docs.ui.DocViewer.EventType = {
+  DOCUMENT_LOADED: 'doc-viewer-document-loaded'
 };

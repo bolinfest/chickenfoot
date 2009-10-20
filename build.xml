@@ -290,18 +290,22 @@
              files="base.js
                array.js
                tagname.js
-               coordinate.js
                size.js
+               coordinate.js
+               box.js
+               rect.js
                classes.js
                disposable.js
                event.js
                string.js
                useragent.js
+               product.js
                selection.js
                browserevent.js
                listener.js
                object.js
                dom.js
+               style.js
                structs.js
                iter.js
                map.js
