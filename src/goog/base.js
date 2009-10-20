@@ -98,8 +98,10 @@ goog.evalWorksForGlobals_ = null;
  * also indicates that the file defines the indicated object. Calls to
  * goog.provide are resolved by the compiler if --closure_pass is set.
  * @param {string} name name of the object that this file defines.
+ * @param {Object} opt_objectToExportTo The object to add the path to; default
+ *     is |goog.global|.
  */
-goog.provide = function(name) {
+goog.provide = function(name, opt_objectToExportTo) {
   if (!COMPILED) {
     // Ensure that the same namespace isn't provided twice. This is intended
     // to teach new developers that 'goog.provide' is effectively a variable
@@ -116,7 +118,7 @@ goog.provide = function(name) {
     }
   }
 
-  goog.exportPath_(name);
+  goog.exportPath_(name, undefined /* opt_object */, opt_objectToExportTo);
 };
 
 
