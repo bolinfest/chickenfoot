@@ -297,6 +297,7 @@
                event.js
                string.js
                useragent.js
+               selection.js
                browserevent.js
                listener.js
                object.js
@@ -306,7 +307,11 @@
                map.js
                set.js
                simplepool.js
-               events.js" />
+               events.js
+               eventhandler.js
+               eventtarget.js
+               keycodes.js
+               keyhandler.js" />
 
     <target name="jar"
             description="Creates a JAR of the resources for the extension.">
@@ -331,13 +336,24 @@
                      includes="*.xul,*.html,chickenscratch.js" />
             <filterset refid="chickenfootMacros" />
         </copy>
-      
+
         <!-- libraries folder -->
         <mkdir dir="${jar.dir}/content/libraries" />
         <copy todir="${jar.dir}/content/libraries" overwrite="true">
           <fileset dir="${libraries.dir}" />
         </copy>
-      
+        <!-- TODO(mbolin): Expose Doctype code via libraries.
+        <mkdir dir="${jar.dir}/content/libraries/goog" />
+        <copy todir="${jar.dir}/content/libraries/goog" overwrite="true">
+          <fileset dir="${srcdir}/goog" />
+        </copy>
+        <replaceregexp flags="g"
+                       match="goog\.require\(['&quot;]([\w\.]+)['&quot;]\);"
+                       replace="include('\1');">
+          <fileset dir="${jar.dir}/content/libraries/goog" includes="*.js" />
+        </replaceregexp>
+        -->
+
         <!-- skin folder -->
         <mkdir dir="${jar.dir}/skin" />
         <copy todir="${jar.dir}/skin" overwrite="true">
