@@ -128,7 +128,7 @@ function Pattern() {
    *  pattern: pattern to search for, which may be:
    *
    *            a keyword pattern, represented as a string
-   *            a TC pattern, represented as a Javascript object of type TC
+   *            a regular expression, represented by a regex object
    *            an XPath pattern, represented as a Javascript object of type XPath
    *
    *          If pattern is a keyword pattern and ends with a type name (e.g. "textbox"), 
@@ -149,8 +149,8 @@ function Pattern() {
    *                  then either types is non-null or pattern ends with a type name
    *
    *  returns: Match iteration:
-   *           If pattern was a TC pattern, the Match iteration contains 
-   *           all the regions it matches.
+   *           If pattern was a regex pattern, the Match iteration contains 
+   *           all the text regions it matches.
    *
    *           If pattern was a keyword pattern, the Match iteration contains the 
    *           highest-strength match (plus any matches that are tied with it in strength)
@@ -231,11 +231,6 @@ function Pattern() {
     // TODO: handle XUL?
     if (instanceOf(pattern, RegExp)) {
       return findRegexp(doc, pattern, context);
-    }
-    
-    if (instanceOf(pattern, TC)) {
-      if (instanceOf(doc, XULDocument)) {throw new Error("XUL not supported here");}
-      else {return pattern.find(doc, context);}
     }
     
     // otherwise it's a keyword pattern

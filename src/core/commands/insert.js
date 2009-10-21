@@ -221,7 +221,7 @@ function afterImpl(/*HtmlDocument*/ doc, pattern) {
  * (1) Match
  * (2) Node
  * (3) Range
- * (4) Keyword/TC string
+ * (4) Keyword string
  * (5) Link
  * (6) Button
  *
@@ -257,7 +257,7 @@ function patternAsRange(pattern, doc) {
  * (1) Match
  * (2) Node
  * (3) Range
- * (4) Keyword/TC string
+ * (4) Keyword string
  * (5) Link
  * (6) Button
  *

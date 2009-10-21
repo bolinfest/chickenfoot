@@ -258,7 +258,6 @@ function getEvaluationContext(/*Object*/ context,
   // constructors
   context.Link = Link;
   context.Button = Button;
-  context.TC = TC;    
   context.XPath = XPath;
   
   // internal access to Chickenfoot code

@@ -7,7 +7,7 @@ t.test(function() {
   // Chickenscratch primitives
   go; fetch; openTab;
   click; enter; pick; unpick; check; uncheck;  
-  find; TC;
+  find;
   insert; remove; replace;
   before; after;
   document; window; chromeWindow;
