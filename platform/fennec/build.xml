@@ -87,9 +87,6 @@
         </copy>
         <concat destfile="${xpi.dir}/content/overlay.js" fixlastline="yes">
             <filelist refid="doctype" />
-            <fileset dir="${components.dir}">
-                <include name="log.js" />
-            </fileset>
             <fileset dir="${fennec.ui.dir}">
                 <include name="*.js" />
             </fileset>

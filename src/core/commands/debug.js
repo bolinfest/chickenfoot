@@ -435,7 +435,7 @@ function toDebugString(/*any*/ obj) {
     return 'undefined';
   }
   
-  if (instanceOf(obj, Range)) {
+  if (Range && instanceOf(obj, Range)) {
     return '[object Range]';
   } 
   

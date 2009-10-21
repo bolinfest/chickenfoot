@@ -1,5 +1,3 @@
-log('overlay loading.');
-
 function getDocument() {
     return getLoadedHtmlDocument(window, getBrowser().contentWindow);
 }
@@ -32,16 +30,16 @@ var ChickenfootUI = function() {
     }
 
     function onLoad() {
-        log('chickenfoot ui onLoad');
+        Chickenfoot.debug('chickenfoot ui onLoad');
       
         Chickenfoot.chickenfootCommandLineHandler = null;
         Chickenfoot.setupWindow(window);
-        log("chickenfoot setupWindow done");
+        Chickenfoot.debug("chickenfoot setupWindow done");
       
         // hack to get interpreter working
-        Chickenfoot.enableStopButton = function() {log('fake enablestop')};    
+        Chickenfoot.enableStopButton = function() {Chickenfoot.debug('fake enablestop')};    
         
-        log2("chickenfoot setup done");
+        Chickenfoot.debug("chickenfoot setup done");
     }
   
     function temp() {
@@ -57,4 +55,4 @@ var ChickenfootUI = function() {
 }();
 
 window.addEventListener("load", function(e) { ChickenfootUI.onLoad(e); }, false);
-log('overlay loaded.');
+Chickenfoot.debug('overlay loaded.');

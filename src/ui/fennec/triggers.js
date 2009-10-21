@@ -35,10 +35,10 @@ function setupTriggersUI() {
         
         triggersOptionsManualsyncButton.addEventListener("click", function() {
             if (Chickenfoot.gTriggerManager.syncEnabled) {
-                log('starting download...');
+                Chickenfoot.debug('starting download...');
                 Chickenfoot.gTriggerManager.downloadAllTriggers();
                 refreshTriggersListBox();
-                log('done downloading...');
+                Chickenfoot.debug('done downloading...');
             }
           }, true);
         
@@ -79,7 +79,7 @@ function setupTriggersUI() {
             triggersListBox.removeChild(triggersListBox.firstChild);
         }
         // add triggers to listbox
-        log("# triggers: " + Chickenfoot.gTriggerManager.triggers.length);
+        Chickenfoot.debug("# triggers: " + Chickenfoot.gTriggerManager.triggers.length);
         for (var i=0; i<Chickenfoot.gTriggerManager.triggers.length; i++) {
             let mytrigger = Chickenfoot.gTriggerManager.triggers[i];
             
