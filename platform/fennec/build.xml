@@ -8,8 +8,6 @@
     <property name="skin.dir"       value="${platform.dir}/skin" />
     <property name="locale.dir"     value="${platform.dir}/locale" />
     
-    <property name="components.dir" value="${platform.dir}/xpcom" />
-    
     <property name="build.dir"      value="${platform.dir}${file.separator}build" />
     <property name="xpi.dir"        value="${build.dir}${file.separator}xpi" />
     <property name="export.dir"     value="${xpi.dir}/export" />
@@ -69,11 +67,8 @@
         <!-- content folder -->
         <mkdir dir="${xpi.dir}/content" />
         <copy todir="${export.dir}" overwrite="true">
-            <fileset dir="${components.dir}">
-                <include name="*.js" />
-            </fileset>            
             <fileset dir="${firefox_chickenfoot.core.dir}">
-                <exclude name="util/accessors.js" />
+                <!-- <exclude name="util/accessors.js" /> -->
                 <exclude name="firefox/ChickenfootCommandLineHandler.js" />
                 <!-- <exclude name="firefox/Chickenfoot.js" /> -->
                 <exclude name="firefox/Chicken-bypass.js" />

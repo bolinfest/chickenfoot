@@ -122,7 +122,15 @@ function getWebProgress(/*HtmlWindow*/ htmlWindow) {
  */
 function getLoadedHtmlDocument(/*ChromeWindow*/ chromeWindow, 
                                /*HtmlWindow*/ win) {
-  var webProgress = getWebProgress(win);
+  var webProgress;
+  try {
+    webProgress = getWebProgress(win);
+  } catch (e) {
+    // TODO: getWebProgress throws an exception on Fennec.
+    // Make it work correctly; in the meantime, just find the frontmost
+    // tab's webProgress as shown here:
+    webProgress = chromeWindow.getBrowser().webProgress;
+  }
   
   // TODO: I (mbolin) believe that getWebProgress does not work when win
   // represents the contentWindow of an IFRAME
