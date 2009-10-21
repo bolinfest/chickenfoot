@@ -1,7 +1,7 @@
 <project name="mobile chickenfoot" default="build" basedir="../..">
 
     <property name="srcdir"         value="${basedir}/src" />
-    <property name="platform.dir"    value="${basedir}\platform\fennec" />
+    <property name="platform.dir"    value="${basedir}${file.separator}platform${file.separator}fennec" />
     
     <property name="fennec.ui.dir"  value="${srcdir}/ui/fennec" />
     
@@ -13,7 +13,7 @@
     <property name="build.dir"      value="${platform.dir}${file.separator}build" />
     <property name="xpi.dir"        value="${build.dir}${file.separator}xpi" />
     <property name="export.dir"     value="${xpi.dir}/export" />
-    <property name="setup.dir"      value="${srcdir}/chickenscratch/fennec/setup" />
+    <property name="setup.dir"      value="${srcdir}/chickenscratch/setup" />
     
     <property name="propertiesfile"      value="${platform.dir}${file.separator}fennec.properties" />
     <property file="${propertiesfile}" />
