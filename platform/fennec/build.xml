@@ -74,8 +74,6 @@
             </fileset>            
             <fileset dir="${firefox_chickenfoot.core.dir}">
                 <exclude name="util/accessors.js" />
-                <exclude name="commands/lapis.js" />
-                <exclude name="util/sleep.js" />
                 <exclude name="firefox/ChickenfootCommandLineHandler.js" />
                 <!-- <exclude name="firefox/Chickenfoot.js" /> -->
                 <exclude name="firefox/Chicken-bypass.js" />
