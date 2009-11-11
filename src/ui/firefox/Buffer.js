@@ -27,6 +27,9 @@
  */
 -->
 
+goog.provide('Buffer');
+
+goog.require('goog.dom');
 goog.require('goog.string');
 
 var jsIcon = 'list-style-image: url(chrome://chickenfoot/skin/exec.png)'
@@ -38,12 +41,15 @@ var causesLoad = false;
 
 /**
  * Buffer represents an open script editor.
+ * @constructor
  */
-function Buffer(/*optional File*/ file, 
-                /*optional boolean*/ dirty,
-                /*optional String*/ text,
-                /*optional int*/ cursorPosition) {
-  var thisBuffer = this;
+Buffer = function(/*optional File*/ file, 
+                  /*optional boolean*/ dirty,
+                  /*optional String*/ text,
+                  /*optional int*/ cursorPosition) {
+  var prefs = Chickenfoot.getPrefBranch();
+  var useBespin = this._useBespin = prefs.getBoolPref('use-bespin');
+
   this._file = file ? file : null;
   this._dirty = dirty;
   this._trigger = file ? Chickenfoot.gTriggerManager.getTriggerFromFile(file) : null;
@@ -54,35 +60,34 @@ function Buffer(/*optional File*/ file,
   this._makeGuess = false;
   this._lastDirectory = Chickenfoot.gTriggerManager._getChickenfootProfileDirectory();
   this._lastDirectory.append(" ");
-  
-  // create the editor widget
+
+  /** @type {Element|HTMLIFrameElement} */
   var editor;
-  
-  if (useHtmlEditor) {
+
+  // create the editor widget
+  if (useBespin) {
+    editor = sidebarDocument.createElement('iframe');
+    editor.setAttribute("src", "chrome://chickenfoot/content/bespinEditorContent.html");
+  } else if (useHtmlEditor) {
     editor = sidebarDocument.createElement('editor');
     editor.setAttribute("editortype", "html");
     editor.setAttribute("src", "chrome://chickenfoot/content/scriptEditorContent.html");
     editor.setAttribute("context", "editorContextMenu");
-    editor.setAttribute("flex", "10");
     //editor.setAttribute("type", "content-primary"); // enables editor to get focus when tab is clicked
-
   } else {
     // Plain text editor
     editor = sidebarDocument.createElement('textbox');
     editor.setAttribute("wrap", "false");
     editor.setAttribute("multiline", "true");
     editor.setAttribute("style", "font-size: 8pt; font-family: monospace;");
-    editor.setAttribute("flex", "10");
-  
-    this.startEditing = function() {};
-    this.recolor = function() {}
+
     this.text getter = function() { return this.editor.value; };
     this.text setter = function(newScript) { this.editor.value = newScript; };
-    this.setCursorPosition = function() {};
     // onkeydown="processTab(event)"
     // oninput="processEditorInputChange(event)"
   }
- 
+  editor.setAttribute("flex", "10");
+
   
   // create the tab
   var tab = sidebarDocument.createElement("tab");
@@ -92,6 +97,11 @@ function Buffer(/*optional File*/ file,
   // add the elements to the sidebar
   sidebarDocument.getElementById("editorTabs").appendChild(tab);
   sidebarDocument.getElementById("editorTabPanels").appendChild(editor);
+
+  if (useBespin) {
+    var win = goog.dom.getFrameContentWindow(editor);
+    win.addEventListener('resize', goog.bind(this.onResize, this), false);
+  }
   
   // enable toolbar buttons that require an editor
   sidebarDocument.getElementById("requiresSelectedEditor").setAttribute("disabled", false);
@@ -100,123 +110,145 @@ function Buffer(/*optional File*/ file,
   this.editor = editor;
   editor.buffer = this;
 
-
   if (useHtmlEditor) {
-    var edWin = editor.contentWindow;
-    if (edWin) edWin.addEventListener("load", function() { thisBuffer.startEditing(); }, false);
-  } 
-  this.editor.addEventListener("keypress", function(event){
-  		alt = (event.altKey) ? true : false;
- 		ctrl = (event.ctrlKey) ? true : false;
-        shift = (event.shiftKey) ? true : false;
-        meta = (event.metaKey) ? true: false;
-  		if(event.keyCode==9 && !alt && !ctrl && !shift && !meta){
- 			//debug(event);
- 			event.preventDefault();
-	 		var sbwin = Chickenfoot.getSidebarWindow(chromeWindow);
-	    	var anchorNodeCaret = sbwin.getSelectedBuffer().api.selection.anchorNode;
-	    	var anchorOffsetCaret = sbwin.getSelectedBuffer().api.selection.anchorOffset;
-	    	var focusNodeCaret = sbwin.getSelectedBuffer().api.selection.focusNode;
-	    	var focusOffsetCaret = sbwin.getSelectedBuffer().api.selection.focusOffset;
-	    	var ed = sbwin.getSelectedBuffer().editor;
-    		var doc = ed.contentDocument;
-    		var pre = doc.getElementById("pre"); 
-    		//debug(focusOffsetCaret);
-    		//debug(focusNodeCaret);
-    		
-    		
-    		//focusNodeCaret.parentNode.insertBefore(newTab, focusNodeCaret);
-    	
-	    	if(anchorNodeCaret==focusNodeCaret &&anchorOffsetCaret==focusOffsetCaret){
-	    		if(focusNodeCaret.nodeName=="#text"){
-	    			//debug("text");
-	    			var nodeText=focusNodeCaret.nodeValue;
-	    			var len = focusNodeCaret.length;
-	    			var sub1= nodeText.substring(0,focusOffsetCaret);
-	    			var sub2= nodeText.substring(focusOffsetCaret, len);
-	    			var newNode = sub1+"  "+sub2;
-	    			focusNodeCaret.nodeValue=newNode;
-	    			var newCaretOffset= sub1.length+2;
-	    			//replace the caret
-	    			var sel=sbwin.getSelectedBuffer().api.selection;
-	    			sel.collapse(focusNodeCaret,newCaretOffset);
-	    		}else if(focusNodeCaret.nodeName=="PRE"){
-	    			var newTab= doc.createTextNode("  ");
-	    			//debug(newTab);
-	    			//debug(focusNodeCaret.childNodes[focusOffsetCaret]);
-	    			focusNodeCaret.insertBefore(newTab, focusNodeCaret.childNodes[focusOffsetCaret]);
-	    			var sel=sbwin.getSelectedBuffer().api.selection;
-	    			sel.collapse(newTab,2);
-	    		}else{
-	    			debug("Tab replace error.  Report to hmslydia@mit.edu");
-	    		}
-	    	}
-	    	/*
-	    	else{
-	    		selectionAutoIndent(event);
-	    	}
-  			*/
-  		}
-  },true); 
-  this.editor.addEventListener("keyup", syntaxColorEvent, true);
-  this.editor.addEventListener("keyup", function(event) {
-      if (event.ctrlKey && (event.keyCode == 13 /* for Win/Linux*/ || event.keyCode == 77 /* for Mac OS */)) {
-          thisBuffer.runCurrentLine();
-      }
-  }, true);
+    var editorWindow = editor.contentWindow;
+    if (editorWindow) {
+      editorWindow.addEventListener("load", goog.bind(this.startEditing, this),
+          false);
+    }
+  }
 
-  // This should only happen when I release enter and control is pressed.
+  // Only add listeners for non-Bespin editors.
+  if (!useBespin) {
+    editor.addEventListener("keypress", goog.bind(this._onKeyPress, this), true); 
+    editor.addEventListener("keyup", syntaxColorEvent, true);
+  
+    var thisBuffer = this;
+    editor.addEventListener("keyup", function(event) {
+        if (event.ctrlKey && (event.keyCode == 13 /* for Win/Linux*/ || event.keyCode == 77 /* for Mac OS */)) {
+            thisBuffer.runCurrentLine();
+        }
+    }, true);
+  
+    // This should only happen when I release enter and control is pressed.
+  }
 
   this.focus();
   //this.scrub();
   this._updateDisplay();
-  
-}
+};
+
+
+/** @return {boolean} */
+Buffer.prototype.isBespinEditor = function() {
+  return this._useBespin;
+};
+
+/** @return {boolean} if HTML editor and not Bespin editor */
+Buffer.prototype.isHtmlEditor = function() {
+  return useHtmlEditor && !this.isBespinEditor();
+};
+
+/**
+ * @param {Event} event
+ * @private
+ */
+Buffer.prototype._onKeyPress = function(event) {
+  var alt = event.altKey;
+  var ctrl = event.ctrlKey;
+  var shift = event.shiftKey;
+  var meta = event.metaKey;
+  if (event.keyCode == 9 && !alt && !ctrl && !shift && !meta) {
+    event.preventDefault();
+    var sbwin = Chickenfoot.getSidebarWindow(chromeWindow);
+    var anchorNodeCaret = sbwin.getSelectedBuffer().api.selection.anchorNode;
+    var anchorOffsetCaret = sbwin.getSelectedBuffer().api.selection.anchorOffset;
+    var focusNodeCaret = sbwin.getSelectedBuffer().api.selection.focusNode;
+    var focusOffsetCaret = sbwin.getSelectedBuffer().api.selection.focusOffset;
+    var ed = sbwin.getSelectedBuffer().editor;
+    var doc = ed.contentDocument;
+    var pre = doc.getElementById("pre"); 
+    //debug(focusOffsetCaret);
+    //debug(focusNodeCaret);
+
+
+    //focusNodeCaret.parentNode.insertBefore(newTab, focusNodeCaret);
+
+    if (anchorNodeCaret == focusNodeCaret && anchorOffsetCaret == focusOffsetCaret) {
+      if (focusNodeCaret.nodeName == "#text") {
+        var nodeText = focusNodeCaret.nodeValue;
+        var len = focusNodeCaret.length;
+        var sub1 = nodeText.substring(0,focusOffsetCaret);
+        var sub2 = nodeText.substring(focusOffsetCaret, len);
+        var newNode = sub1 + "  " + sub2;
+        focusNodeCaret.nodeValue = newNode;
+        var newCaretOffset = sub1.length + 2;
+        // replace the caret
+        var sel = sbwin.getSelectedBuffer().api.selection;
+        sel.collapse(focusNodeCaret,newCaretOffset);
+      } else if (focusNodeCaret.nodeName == "PRE") {
+        var newTab = doc.createTextNode("  ");
+        //debug(newTab);
+        //debug(focusNodeCaret.childNodes[focusOffsetCaret]);
+        focusNodeCaret.insertBefore(newTab, focusNodeCaret.childNodes[focusOffsetCaret]);
+        var sel=sbwin.getSelectedBuffer().api.selection;
+        sel.collapse(newTab, 2);
+      } else {
+        debug('Tab replace error.');
+      }
+    }
+    /*
+    else{
+      selectionAutoIndent(event);
+    }
+    */
+  }
+};
 
 /**
  * @return nsIFile or null if buffer not associated with a file
  */
 Buffer.prototype.file getter = function() {
   return this._file;
-}
+};
 
 Buffer.prototype.file setter = function(/*File*/ file) {
   this._file = file;
   this._updateDisplay();
-}
+};
 
 /**
  * @return nsIEditor editing interface
  */
 Buffer.prototype.api getter = function() {
   return this.editor.getEditor(this.editor.contentWindow);
-}
+};
 
 /**
  * @return boolean (true if buffer is dirty, false if not)
  */
 Buffer.prototype.dirty getter = function() {
   return this._dirty && this._file != null;
-}
+};
 
 Buffer.prototype.dirty setter = function(/*boolean*/ dirty) {
   this._dirty = dirty;
   if (!dirty) this.api.resetModificationCount();
   this._updateDisplay();
-}
+};
 
 /**
  * @return Trigger if buffer is associated with an installed trigger, null otherwise
  */
 Buffer.prototype.trigger getter = function() {
   return this._trigger;
-}
+};
 
 Buffer.prototype.trigger setter = function(/*Trigger*/ trigger) {
   this._trigger = trigger;
   if (trigger) this.file = trigger.path;
   this._updateDisplay();
-}
+};
 
 /**
  * @return String label describing this buffer
@@ -232,22 +264,24 @@ Buffer.prototype.toString = function() {
   } else {
     return "Untitled";
   }
-}
+};
 
 /**
  * Internal method called when buffer label needs to be updated
  */
 Buffer.prototype._updateDisplay = function() {
-
   var message = "";
   message = (this.dirty ? "*" : "") + this.toString();
 
   this.tab.label = message;
   if (this.trigger) this.tab.setAttribute("image", "chrome://chickenfoot/skin/trigger-tab.png");
   else this.tab.removeAttribute("image");
-}
+};
 
 Buffer.prototype.startEditing = function() {
+  if (!this.isHtmlEditor()) {
+    return;
+  }
   var editor = this.editor;
   
   editor.contentWindow.setCursor('text');
@@ -349,7 +383,7 @@ Buffer.prototype.startEditing = function() {
   
   var thisBuffer = this;
   editor.addEventListener("focus", function() { thisBuffer.onFocus(); }, true);  
-}
+};
 
 /**
  * Base implementation of nsIDocumentStateListener in which
@@ -440,6 +474,12 @@ Buffer.prototype.updateContextMenu = function(/*XULNode*/ popup) {
  */
 Buffer.prototype.text getter = function() {
   var editor = this.editor;
+
+  if (this.isBespinEditor()) {
+    var win = goog.dom.getFrameContentWindow(editor);
+    return win._editorComponent.getContent();
+  }
+  
   var content = editor.contentDocument.getElementById('body');
   var walker = Chickenfoot.createTreeWalker
     (content,
@@ -458,15 +498,20 @@ Buffer.prototype.text getter = function() {
   
   text = Buffer.removeGarbageCharacter(text);
   return text;
-}
+};
 
 /**
  * Replaces contents of script editor with a plaintext string.
  */
 Buffer.prototype.text setter = function(/*String*/ newScript) {
   newScript = Buffer.removeGarbageCharacter(newScript);
-  
+
   var editor = this.editor;
+  if (this.isBespinEditor()) {
+    var win = goog.dom.getFrameContentWindow(editor);
+    win._editorComponent.setContent(newScript);
+  }
+
   var api = editor.getEditor(editor.contentWindow);    
   
   
@@ -505,7 +550,7 @@ Buffer.prototype.text setter = function(/*String*/ newScript) {
 
   this.dirty = false;
   //debug(Chickenfoot.domToString(doc));
-}
+};
 
 /**
  * Workaround for bug #290: script sometimes becomes corrupted with
@@ -514,23 +559,25 @@ Buffer.prototype.text setter = function(/*String*/ newScript) {
 Buffer.removeGarbageCharacter = function(/*String*/ text) {
   //debug("removing garbage from " + text);
   return text.replace(/\302\240/g, "");
-}
-  
+};
 
 /**
  * Apply syntax coloring to the editor.
  */
 Buffer.prototype.recolor = function() {
+  if (!this.isHtmlEditor()) {
+    return;
+  }
+
   var editor = this.editor;
   var doc = editor.contentDocument;
   var pre = doc.getElementById("pre");
   syntaxColor(pre, CF_JAVASCRIPT_RULES);
-}
+};
 
 /**
  * Scrub the nodes to get rid of _moz_dirty attribute
  */
- 
 Buffer.prototype.scrub = function() {
   var editor = this.editor;
   var content = editor.contentDocument.getElementById('body');
@@ -552,22 +599,29 @@ Buffer.prototype.scrub = function() {
       // debug(node.nodeValue+"marker");
     }
   }
-}
-		
+};
 
 /**
  * Set the keyboard focus to this editor.
  */
 Buffer.prototype.focus = function(/*optional int*/ cursorPosition) {
   sidebarDocument.getElementById("editorTabBox").selectedTab = this.tab;
+  if (this.isBespinEditor()) {
+    return;
+  }
   this.editor.contentDocument.defaultView.focus();
-}
+};
 
-/* Set this editor's cursor position.
+/**
+ * Set this editor's cursor position.
  * @param cursorPosition  character offset relative to editor's plain text
  * representation
  */
 Buffer.prototype.setCursorPosition = function(/*int*/ cursorPosition) {
+  if (!this.isHtmlEditor()) {
+    return;
+  }
+
   var editor = this.editor;
   var htmlEditor = editor.getHTMLEditor(editor.contentWindow);
   var i = cursorPosition;
@@ -575,7 +629,7 @@ Buffer.prototype.setCursorPosition = function(/*int*/ cursorPosition) {
     htmlEditor.selectionController.characterMove(true, false);
     --i;
   }
-}
+};
 
 /**
  * Save this buffer to disk.  Prompts user if we don't have a filename yet.
@@ -589,23 +643,24 @@ Buffer.prototype.save = function() {
   } else {
     this.saveAs();
   }
-}
+};
 
 /**
  * Save this buffer to disk, prompting for a new name.
  */
 Buffer.prototype.saveAs = function() {
+  var file;
   if (this.file != null) {
-    var file = chooseFile(false, this.file);
+    file = chooseFile(false, this.file);
   } else {
-	var file = chooseFile(false, this._lastDirectory);
+    file = chooseFile(false, this._lastDirectory);
   }
   if (file == null) { return; }
   this.file = file;
   this._lastDirectory = file.clone();
   this._lastDirectory.leafName = "";
   this.save();
-}
+};
 
 /**
  * Test whether it's OK to close this buffer.  If buffer is dirty, prompts user to save it.
@@ -613,15 +668,15 @@ Buffer.prototype.saveAs = function() {
  */
 Buffer.prototype.okToClose = function() {
   if (this.dirty) {  
-    var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"]
-      .getService(Components.interfaces.nsIPromptService);
+    var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].
+        getService(Components.interfaces.nsIPromptService);
     var answer = promptService.confirmEx(chromeWindow,
       "Save Chickenfoot Script?",
       this.toString() + " has unsaved changes.\n",
       promptService.BUTTON_TITLE_SAVE * promptService.BUTTON_POS_0 +
       promptService.BUTTON_TITLE_DONT_SAVE * promptService.BUTTON_POS_2 +
       promptService.BUTTON_TITLE_CANCEL * promptService.BUTTON_POS_1,
-      null, null, null, null, {})
+      null, null, null, null, {});
     if (answer == 0) {
       this.save();
     } else if (answer == 1) {
@@ -629,7 +684,7 @@ Buffer.prototype.okToClose = function() {
     }
   }
   return true;
-}
+};
 
 /**
  * Close this buffer.  Doesn't prompt user to save it; use
@@ -653,7 +708,7 @@ Buffer.prototype.close = function() {
   if (index == -1) {
     sidebarDocument.getElementById("requiresSelectedEditor").setAttribute("disabled", true);
   }
-}
+};
 
 Buffer.prototype.run = function() {
   var file;
@@ -661,7 +716,7 @@ Buffer.prototype.run = function() {
   else { file = this.file.parent; }
   
   Chickenfoot.evaluate(chromeWindow, this.text, true, null, {scriptDir:file});
-}
+};
 
 Buffer.prototype.runCurrentLine = function() {
     var thisBuffer = this;
@@ -727,8 +782,7 @@ Buffer.prototype.runCurrentLine = function() {
       }
       return currentLine;
     }
-}
-
+};
 
 Buffer.prototype.onFocus = function() {
   if (this._file) {
@@ -758,8 +812,16 @@ Buffer.prototype.onFocus = function() {
       this.text = Chickenfoot.SimpleIO.read(this.file);      
     }      
   }
-}
+};
 
+/** @param {Event} event */
+Buffer.prototype.onResize = function(event) {
+  var win = event.target;
+  var size = goog.dom.getViewportSize(win);
+  var editorEl = win.document.getElementById('editor');
+  // Need to subtract 5px to avoid a vertical scroll bar.
+  editorEl.style.height = (size.height - 5) + 'px';  
+};
 
 /** Map of ids for XUL template menupopups to the template data. */
 var newFileTemplates = {};
@@ -855,7 +917,7 @@ function newBufferWithFile(/*nsIFile*/ file) {
 
 function startEditingTriggerScript(/*Trigger*/ trigger) {
   loadIntoBuffer(trigger.path);
-}
+};
 
 /**
  * Opens a file chooser and returns an nsIFile (possibly null)

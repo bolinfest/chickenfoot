@@ -135,12 +135,12 @@ gdata.docs.ui.onFrameLoad = function(id, bodyEl) {
 
 /** Processes the login form associated with this picker. */
 gdata.docs.ui.DocPicker.prototype.processLogin = function() {
-  var dom = this.getPickerDom();
-  var username = dom.$('username').value;
+  var domHelper = this.getPickerDom();
+  var username = domHelper.$('username').value;
   if (username.indexOf('@') < 0) {
     username += '@gmail.com';
   }
-  var password = dom.$('password').value;
+  var password = domHelper.$('password').value;
   var user = new gdata.auth.User(username);
   if (password) {
     try {
@@ -168,12 +168,12 @@ gdata.docs.ui.DocPicker.prototype.notifyLoginFailed = function() {
  * @param {gdata.auth.User} user
  */
 gdata.docs.ui.DocPicker.prototype.displayDocumentsForUser = function(user) {
-  var dom = this.getPickerDom();
+  var domHelper = this.getPickerDom();
 
   // Hide login form.
-  dom.$('login').style.display = 'none';
+  domHelper.$('login').style.display = 'none';
 
-  var content = dom.$('content');
+  var content = domHelper.$('content');
   content.innerHTML = '<div id="status">Logged in as <b>' +
       goog.string.htmlEscape(user.getEmail()) + '</b></div>' +
       '<div id="doclist"></div>';
@@ -197,7 +197,7 @@ gdata.docs.ui.DocPicker.prototype.displayDocumentsForUser = function(user) {
       }
       self.urlToEntryMap_[url] = entry;
     }
-    var doclistEl = dom.$('doclist');
+    var doclistEl = domHelper.$('doclist');
     doclistEl.innerHTML = html.join('');
     if (self.hasViewer()) {
       self.handler_.listen(doclistEl, goog.events.EventType.CLICK, self.handleClick_);
