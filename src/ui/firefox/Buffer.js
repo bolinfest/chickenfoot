@@ -917,7 +917,7 @@ function newBufferWithFile(/*nsIFile*/ file) {
 
 function startEditingTriggerScript(/*Trigger*/ trigger) {
   loadIntoBuffer(trigger.path);
-};
+}
 
 /**
  * Opens a file chooser and returns an nsIFile (possibly null)
