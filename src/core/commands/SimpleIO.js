@@ -158,7 +158,7 @@ SimpleIO.toFile = function(/*String*/ fileName, /*optional nsIFile*/ dir) {
     // not an absolute pathname
   }
   
-  // interprete relative filenames with respect to dir 
+  // interpret relative filenames with respect to dir 
   file = (dir) ? dir.clone() : SimpleIO.downloadDir();
   
   // handle subdirectories in the relative filename
@@ -216,22 +216,39 @@ SimpleIO.checkPathValidity = function(/*String*/ fileName) {
   }
 }
 
+/**
+ * Values returned by PrefBranch.getPrefType().
+ * TODO(mbolin): Find a better place for this enum to live.
+ * @enum {number}
+ */
+SimpleIO.PrefType = {
+  INVALID: 0,  
+  STRING: 32, 
+  INT: 64,
+  BOOL: 128
+};
+
 
 /**
  * @return nsIFile representing download directory for firefox
  */
 SimpleIO.downloadDir = function () {
-  var downloadPref = Components.classes["@mozilla.org/preferences-service;1"]
-                     .getService(Components.interfaces.nsIPrefService)
-                     .getBranch('browser.download.')
-                     .QueryInterface(Components.interfaces.nsIPrefBranch2);
-  if(downloadPref.getIntPref('folderList') == 0) {
+  var downloadPref = Components.classes["@mozilla.org/preferences-service;1"].
+                         getService(Components.interfaces.nsIPrefService).
+                         getBranch('browser.download.').
+                         QueryInterface(Components.interfaces.nsIPrefBranch2);
+  if (downloadPref.getIntPref('folderList') == 0) {
     return SimpleIO.desktopDir();
-  } else {
+  } else if (downloadPref.getPrefType('dir') == SimpleIO.PrefType.STRING) {
     var dir =  SimpleIO.toFile(downloadPref.getCharPref('dir'));
-	return dir.clone();
+	  return dir.clone();
+  } else {
+    // No download dir set in about:config.
+    var downloadManager = Components.classes["@mozilla.org/download-manager;1"].
+        getService(Components.interfaces.nsIDownloadManager);
+    return downloadManager.defaultDownloadsDirectory;
   }
-}
+};
 
 
 /**
