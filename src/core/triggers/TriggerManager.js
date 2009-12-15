@@ -772,7 +772,7 @@ function uploadSyncTrigger(/*nsIFile*/ file) {
       Chickenfoot.gTriggerManager.uploadTrigger(file);
     }
   } catch(e) {
-    getAWindow().alert(e.message);  
+    getAnyChromeWindow().alert(e.message);  
     Chickenfoot.gTriggerManager.setSyncEnabled(false);
     Chickenfoot.gTriggerManager.setGoogleAuthKey("");
   }

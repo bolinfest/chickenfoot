@@ -163,19 +163,19 @@ function isWindowLoaded(/*HtmlWindow*/ win) {
 
 
 /**
-    Finds a window owned by Firefox and returns it.
+    Finds a chrome window owned by Firefox and returns it.
     Returns null if there are no such windows.
     
-    @return             Returns a window.
+    @return             Returns a chrome window.
 */
-function /*Window*/ getAWindow() {
-    var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator)
-    var e = wm.getEnumerator(null)
+function /*ChromeWindow*/ getAnyChromeWindow() {
+    var wm = Components.classes["@mozilla.org/appshell/window-mediator;1"].getService(Components.interfaces.nsIWindowMediator);
+    var e = wm.getEnumerator(null);
     while (e.hasMoreElements()) {
-        var w = e.getNext()
-        return w
+        var w = e.getNext();
+        return w;
     }
-    return null
+    return null;
 }
 
 

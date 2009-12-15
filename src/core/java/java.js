@@ -4,7 +4,7 @@
 // idea, because it forces Java to load during FF startup, a significant cost.
 // So we fetch the Packages reference lazily.
 this.Packages getter = function() {
-  var chromeWindow = getAWindow();
+  var chromeWindow = getAnyChromeWindow();
   if (!chromeWindow) throw new Error("can't find a Firefox window to get Packages from");
 
   var Packages = chromeWindow.Packages;
@@ -36,13 +36,9 @@ function hasJava() {
     var version = Packages.java.lang.System.getProperty('java.vm.version').match(/^(\d+)\.(\d+)/);
     var max = parseInt(version[1], 10);
     var min = parseInt(version[2], 10);
-    if (max > 1 || (max === 1 && min >= 5)) {
-      return true;    
-    } else {
-      return false;
-    }
+    return (max > 1 || (max === 1 && min >= 5));
   } catch (e) {
-    return false
+    return false;
   }
 }
 
