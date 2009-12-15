@@ -93,7 +93,7 @@ Academic Search Forms</h2>
 	          </tr>
 	          <tr>
 	     	       <td colspan="2">
-			         <select name="newscat" size="1" onchange="loadArrays(this.options[selectedIndex].value);assignSrcCatOptValues(document.forms[0]);assignSegmentValues(document.forms[0]);clearPubtitle(document.forms[0]);">
+			         <select id="newscat" name="newscat" size="1" onchange="loadArrays(this.options[selectedIndex].value);assignSrcCatOptValues(document.forms[0]);assignSegmentValues(document.forms[0]);clearPubtitle(document.forms[0]);">
 		                     <option value="" selected="selected">Select a News Category&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
                                      <option value="General News">General News</option>
                                      <option value="Today's News">Today's News</option>
@@ -120,7 +120,7 @@ Academic Search Forms</h2>
 	            </tr>
 	            <tr>
 		       <td colspan="2">
-		         <select name="srccat" size="1" onchange="this.options[selectedIndex].selected = true;">
+		         <select id="srccat" name="srccat" size="1" onchange="this.options[selectedIndex].selected = true;">
                              <option value="">All Available Documents&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
 <option value="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
 <option value="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
@@ -150,7 +150,7 @@ Academic Search Forms</h2>
 	            <tbody><tr>
                       <td align="left" nowrap="nowrap">&nbsp;</td>
                       <td align="left" nowrap="nowrap">
-                        <input name="T1" value="" size="15" type="text">&nbsp;in&nbsp;&nbsp;&nbsp;
+                        <input id="T1" name="T1" value="" size="15" type="text">&nbsp;in&nbsp;&nbsp;&nbsp;
                            <select name="S1">
 		              
 		              
@@ -173,8 +173,8 @@ Academic Search Forms</h2>
                             </select>&nbsp;
                        </td>
                        <td align="left" nowrap="nowrap">
-                        <input name="T2" value="" size="15" type="text">&nbsp;in&nbsp;&nbsp;&nbsp;
-                            <select name="S3">
+                        <input id="T2" name="T2" value="" size="15" type="text">&nbsp;in&nbsp;&nbsp;&nbsp;
+                            <select id="S3" name="S3">
 		              
 		              
 		              
@@ -184,7 +184,7 @@ Academic Search Forms</h2>
                        </tr>
                        <tr>
                          <td align="left">
-                            <select name="S4">
+                            <select id="S4" name="S4">
                                <option value="AND" selected="selected">and</option>
                                <option value="OR">or</option>
                                <option value="AND NOT">and not</option>
@@ -223,7 +223,7 @@ Academic Search Forms</h2>
 
 <table>
   <tbody><tr>
-    <td><input name="date" value="AFT" checked="checked" type="radio"></td>
+    <td><input id="date" name="date" value="AFT" checked="checked" type="radio"></td>
     <td colspan="2">
       <select name="after" size="1" onfocus="this.form.date[0].checked=true;">
 <option value="0:DY">Today 
@@ -242,7 +242,7 @@ Academic Search Forms</h2>
   <tr>
     <td><input name="date" value="RNG" type="radio"></td>
     <td nowrap="nowrap">
-      From: <input name="frm_rng" maxlength="30" size="8" value="" onfocus="this.form.date[1].checked=true;">
+      From: <input id="frm_rng" name="frm_rng" maxlength="30" size="8" value="" onfocus="this.form.date[1].checked=true;">
       To: <input name="to_rng" maxlength="30" size="8" value="" onfocus="this.form.date[1].checked=true;">
     </td>
   </tr>

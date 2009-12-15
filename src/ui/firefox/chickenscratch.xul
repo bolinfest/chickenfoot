@@ -55,6 +55,8 @@
   ]]></script>
   
   <script type="application/javascript;version=1.7"><![CDATA[
+    var context = {};
+    
     /**
      * chickenscratchEvaluate(context, code) 
      * @param context Object defining Chickenscratch properties and methods

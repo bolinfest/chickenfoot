@@ -54,6 +54,7 @@ function evaluate(/*ChromeWindow*/ chromeWindow,
   
   function readyToEvaluate() {
     // grab the evaluation function from the new evaluation context
+    var context = frameWin.context;
     var chickenscratchEvaluate = frameWin.chickenscratchEvaluate;
     
     // Now that we have the new Javascript execution context, destroy the frame.
@@ -67,7 +68,7 @@ function evaluate(/*ChromeWindow*/ chromeWindow,
     root.removeChild(frame);
 
     // create the Chickenfoot evaluation context
-    var context = getEvaluationContext({}, chromeWindow, win, chickenscratchEvaluate, extraContext);
+    getEvaluationContext(context, chromeWindow, win, chickenscratchEvaluate, extraContext);
     try {
       checkForStop();      
       var result = chickenscratchEvaluate(context, code);
