@@ -46,6 +46,7 @@ t.test(function() {
 t.test("Include scriptDir referenced file", function() {
   var Include4 = {};
   include('include2.js', Include4);  //as file is present in the directory of this file
+
   Test.assertEquals(5, Include4.add(2,3));
 });
 
@@ -54,12 +55,14 @@ t.test("Include Full file path", function() {
   var file = scriptDir.clone();
   file.append("include2.js");
   include('file://' + file.path, Include5);  //Constructs the full path name string
+
   Test.assertEquals(5, Include5.add(2,3));
 });
 
 t.test("Include remote URL and remote reference", function() {
   var Include6 = {};
   include("http://uid.csail.mit.edu/chickenfoot/includeTest/include.js", Include6);  //Constructs the full URL path name string
+
   Test.assertEquals(9, Include6.add_three(2,3,4));
   Test.assertEquals(92, Include6.k);
 });
@@ -78,4 +81,5 @@ t.test("Include libraries", function() {
 });
 
 t.close();
+
 
