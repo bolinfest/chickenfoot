@@ -1,3 +1,52 @@
+// Packages and java are not defined in the global namespace for XPCOM components,
+// so we need to get them from a chrome window.  But getting them from the first
+// chrome window (as setupWindow() does with other DOM classes, like Node) is a bad
+// idea, because it forces Java to load during FF startup, a significant cost.
+// So we fetch the Packages reference lazily.
+this.Packages getter = function() {
+  var chromeWindow = getAWindow();
+  if (!chromeWindow) throw new Error("can't find a Firefox window to get Packages from");
+
+  var Packages = chromeWindow.Packages;
+  
+  // replace lazy getters with direct references
+  delete this.Packages;
+  delete this.java;
+  this.Packages = Packages;
+  this.java = Packages.java;
+  
+  // return the Packages reference
+  return Packages;
+}
+
+this.java getter = function() {
+  return this.Packages.java;
+}
+
+
+/** @return true if Firefox has Java 1.5 or later installed (has the side effect of loading Java if Java is installed) */
+function hasJava() {
+  try {
+    // first we try calling a benign java function,
+    // which should throw an exception if Java is disabled or not installed
+    var a = Packages.java.lang.String.valueOf(5)
+    
+    // now that we're sure Java is available,
+    // we want to make sure it's the correct version
+    var version = Packages.java.lang.System.getProperty('java.vm.version').match(/^(\d+)\.(\d+)/);
+    var max = parseInt(version[1], 10);
+    var min = parseInt(version[2], 10);
+    if (max > 1 || (max === 1 && min >= 5)) {
+      return true;    
+    } else {
+      return false;
+    }
+  } catch (e) {
+    return false
+  }
+}
+
+
 /**
  * JavaClassLoader represents a set of JAR files containing Java code.
  * Each JAR file is named by a URL, which can be a file: or http: URL (but not chrome:, because 

@@ -81,8 +81,6 @@ var global = {}; // user's global variable space
 // to get them from the first chrome window's Javascript environment.
 // Some of these classes are used by the LAPIS-Chickenfoot bridge, so before you prune
 // this list of dead references, make sure they're not used in LAPIS-Chickenfoot either.
-var Packages;
-var java;
 var Node;
 var NodeFilter;
 var Document;
@@ -94,28 +92,6 @@ var XPathResult;
 var XMLHttpRequest;
 var XULDocument;
 var XULElement;
-
-/** @return true if Firefox has Java 1.5 or later installed (has the side effect of loading Java if Java is installed) */
-function hasJava() {
-  try {
-    // first we try calling a benign java function,
-    // which should throw an exception if Java is disabled or not installed
-    var a = Packages.java.lang.String.valueOf(5)
-    
-    // now that we're sure Java is available,
-    // we want to make sure it's the correct version
-    var version = Packages.java.lang.System.getProperty('java.vm.version').match(/^(\d+)\.(\d+)/);
-    var max = parseInt(version[1], 10);
-    var min = parseInt(version[2], 10);
-    if (max > 1 || (max === 1 && min >= 5)) {
-      return true;    
-    } else {
-      return false;
-    }
-  } catch (e) {
-    return false
-  }
-}
 
 // Initialize the Chickenfoot service.
 // This function runs when the Chickenfoot XPCOM service is first requested.
@@ -141,8 +117,6 @@ function setupService() {
  */
 function setupWindow(/*ChromeWindow*/ window) {
   if (!Document) {
-      Packages = window.Packages;
-      java = window.java;
       Node = window.Node;
       NodeFilter = window.NodeFilter;
       Document = window.Document;
