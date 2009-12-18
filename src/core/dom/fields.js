@@ -82,21 +82,28 @@ function isVisible(/*Node*/ node) {
   return node.ownerDocument.defaultView.getComputedStyle(node, '').visibility == 'visible';
 }
 
-/** @return true if the node is in a frame that is visible */
-function inVisibleFrame(/*Node|Document*/ node) {
-  var nodeFrame = (node.ownerDocument ? node.ownerDocument : node).defaultView;
 
-  nodeFrame = nodeFrame.wrappedJSObject || nodeFrame;
-  // if no frameElement, then not in an IFRAME
-  var frameElement;
-  if (!(frameElement = nodeFrame.frameElement)) return true;
-  frameElement = frameElement.wrappedJSObject || frameElement;
-  // frameElement is a FRAME or an IFRAME
-  // oftentimes, an IFRAME is enclosed by a DIV
-  // (I can't remember why -- it may have to do with how IE6 handles them)
-  // So we test that both the IFRAME and its parent have a nonzero Box
-  return Box.forNode(frameElement).width;
-}
+// DEPRECATED: on FF 3.6, inVisibleFrame() generates security exceptions for
+// frames that are from a different domain than their parent.  The errors seem
+// to be caused by moving upward, from node (in domain A) to frame to frameElement (from domain B), 
+// and then asking for the width of frameElement.  But it seems to be OK to traverse downward,
+// so instead we do the visibility check in getAllVisibleFrameDocuments(). 
+//
+// /** @return true if the node is in a frame that is visible */
+// function inVisibleFrame(/*Node|Document*/ node) {
+//  var nodeFrame = (node.ownerDocument ? node.ownerDocument : node).defaultView;
+//
+//  nodeFrame = nodeFrame.wrappedJSObject || nodeFrame;
+//  // if no frameElement, then not in an IFRAME
+//  var frameElement;
+//  if (!(frameElement = nodeFrame.frameElement)) return true;
+//  frameElement = frameElement.wrappedJSObject || frameElement;
+//  // frameElement is a FRAME or an IFRAME
+//  // oftentimes, an IFRAME is enclosed by a DIV
+//  // (I can't remember why -- it may have to do with how IE6 handles them)
+//  // So we test that both the IFRAME and its parent have a nonzero Box
+//  return Box.forNode(frameElement).width;
+//}
 
 isVisible.INVISIBLE_TAGS = {
   HEAD : 1,
@@ -250,13 +257,15 @@ function getInputName(/*Node*/ node) {
 }
 
 /**
- * Get all documents in a DOM, including its frames.
+ * Get all documents in a DOM, including its frames, 
+ * but only frames that are visible (nonzero width).
+ *
  * @param doc Document to iterate
  * @return Document[] = [doc, f1,f2,...,fn] where doc is the parameter
  *     and fi are the documents of all FRAME and IFRAME elements in doc
  *     and any other fi.
  */
-function getAllFrameDocuments(/*Document*/ doc) {
+function getAllVisibleFrameDocuments(/*Document*/ doc) {
   var docs = [];
   traverseDoc(doc);
   return docs;
@@ -269,6 +278,7 @@ function getAllFrameDocuments(/*Document*/ doc) {
   }
   function traverseFrames(/*FrameNode[]*/ frames) {
     for (var i = 0; i < frames.length; ++i) {
+      
       traverseDoc(frames[i].contentDocument);
     }
   }

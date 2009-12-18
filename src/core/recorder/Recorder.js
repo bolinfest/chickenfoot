@@ -10,7 +10,7 @@ const RECORDER_NODE_THRESHOLD = 2200;
  * @return int total number of nodes
  */
 function getDocumentNodeCount(/*Document*/ doc) {
-  var allDocuments = getAllFrameDocuments(doc);
+  var allDocuments = getAllVisibleFrameDocuments(doc);
   var nodeCount = 0;
   for (var i = 0; i < allDocuments.length; i++) {
     nodeCount += allDocuments[i].evaluate(

@@ -48,7 +48,13 @@ Buffer = function(/*optional File*/ file,
                   /*optional String*/ text,
                   /*optional int*/ cursorPosition) {
   var prefs = Chickenfoot.getPrefBranch();
-  var useBespin = this._useBespin = prefs.getBoolPref('use-bespin');
+  var useBespin;
+  try {
+    useBespin = prefs.getBoolPref('use-bespin');
+  } catch (e) {
+    useBespin = false;
+  }
+  this._useBespin = useBespin;
 
   this._file = file ? file : null;
   this._dirty = dirty;

@@ -66,8 +66,7 @@ Box.forNode = function(/*Node*/ node) {
   if (!node) return Box.ZERO;
 
   if (node.nodeType == Node.ELEMENT_NODE) {
-    var b = node.ownerDocument.getBoxObjectFor(node);
-    return new Box(b.x, b.y, b.width, b.height);
+    return Box.forElement(node);
   }
   
   if (node.nodeType == Node.TEXT_NODE) {
@@ -110,8 +109,11 @@ Box.forNode = function(/*Node*/ node) {
       } else {
         // assume node starts on same line as prev,
 	// and ends on same line as next
+        x1 = boxPrev.x2;
         y1 = boxPrev.y1;
+        x2 = boxNext.x1;
         y2 = boxNext.y2;
+        
       }
     } else if (next /* && !prev */) {
       y2 = boxNext.y2;
@@ -155,3 +157,29 @@ Box.forNode = function(/*Node*/ node) {
   // this type of node
   return Box.ZERO;
 }
+
+Box.forElement = function(/*Element*/ node) {
+    // dynamically choose the right implementation
+    // on first call
+    if (node.ownerDocument.getBoxObjectFor) {      
+      // FF 3.0-3.5
+      Box.forElement = function(/*Element*/ node) {
+        var b = node.ownerDocument.getBoxObjectFor(node);
+        return new Box(b.x, b.y, b.width, b.height);
+      }
+    } else {
+      // FF 3.6+
+      Box.forElement = function(/*Element*/ node) {
+          var b = node.getBoundingClientRect();    
+          var win = node.ownerDocument.defaultView;
+          return new Box(Math.round(b.left + win.pageXOffset),
+                         Math.round(b.top + win.pageYOffset),
+                         Math.round(b.width),
+                         Math.round(b.height));
+      }
+    }
+    
+    // call the implementation we just chose
+    return Box.forElement(node);
+}
+ 

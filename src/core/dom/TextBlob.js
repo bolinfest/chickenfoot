@@ -176,7 +176,9 @@ TextBlobIterator.prototype._isElementIncluded = function(/*Node*/ node) {
     if (node.nodeType == Node.ELEMENT_NODE) {
         var style = node.ownerDocument.defaultView.getComputedStyle(node, "");
         
-        if (style.getPropertyValue("visibility") == "hidden" || style.getPropertyValue("display") == "none") {
+        if (style &&
+              (style.getPropertyValue("visibility") == "hidden" || 
+               style.getPropertyValue("display") == "none")) {
             return false;
         }
     }

@@ -20,12 +20,7 @@
  *  returns void
  */
 function syntaxColorEvent(event) {
-  try {
-    Chickenfoot.getPrefBranch().getBoolPref("syntaxColor")
-  } catch (e) {
-    return;
-  }
-  if (Chickenfoot.getPrefBranch().getBoolPref("syntaxColor")) {
+  if (isSyntaxColoring()) {
     if (event.keyCode != 16 && event.keyCode != 17) {//don't activate on shift, control
       //debug(event.keyCode);
       var sbwin = Chickenfoot.getSidebarWindow(chromeWindow);
