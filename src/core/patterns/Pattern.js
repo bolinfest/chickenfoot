@@ -177,53 +177,53 @@ function Pattern() {
     }
 
     if (instanceOf(pattern, XPath)) {
-		var docs = getAllVisibleFrameDocuments(doc);
-		
-		var nodes = [];
+        var docs = getAllVisibleFrameDocuments(doc);
+        
+        var nodes = [];
         for (var i = 0; i < docs.length; ++i) {
-     		var frameDoc = docs[i];
-			var contextNode = context ? rangeToContainer(context) : frameDoc.documentElement;
-  			var result = frameDoc.evaluate(pattern.xpathExpression,
+            var frameDoc = docs[i];
+            var contextNode = context ? rangeToContainer(context) : frameDoc.documentElement;
+            var result = frameDoc.evaluate(pattern.xpathExpression,
                             contextNode,
                             pattern.namespaceResolver,
                             pattern.resultType,
                             null); // create new result
-			// The result cannot be XPathResult.ANY_TYPE even though that
-			// may have been passed to evaluate() -- it should be converted
-			// to whichever type the result actually is.
-	      	switch (result.resultType) {
-	        	case XPathResult.BOOLEAN_TYPE:
-	        	case XPathResult.STRING_TYPE:
-	        	case XPathResult.NUMBER_TYPE:
-	        	throw new Error("The pattern \"" + pattern.xpathExpression + "\" did not match part of the web page.");
-				break;
-	
-	        	// single node
-	        	case XPathResult.ANY_UNORDERED_NODE_TYPE:
-	        	case XPathResult.FIRST_ORDERED_NODE_TYPE:
+            // The result cannot be XPathResult.ANY_TYPE even though that
+            // may have been passed to evaluate() -- it should be converted
+            // to whichever type the result actually is.
+            switch (result.resultType) {
+                case XPathResult.BOOLEAN_TYPE:
+                case XPathResult.STRING_TYPE:
+                case XPathResult.NUMBER_TYPE:
+	                throw new Error("The pattern \"" + pattern.xpathExpression + "\" did not match part of the web page.");
+	                break;
+    
+                // single node
+                case XPathResult.ANY_UNORDERED_NODE_TYPE:
+                case XPathResult.FIRST_ORDERED_NODE_TYPE:
                             debug("single node");
-	          	var node = result.singleNodeValue;
-	          	nodes.push(nodeToMatch(node));
-				break;
-	          
-		        // iterator        
-	        	case XPathResult.UNORDERED_NODE_ITERATOR_TYPE:
-	        	case XPathResult.ORDERED_NODE_ITERATOR_TYPE:                                
-				var node;
-				while (node = result.iterateNext()) { nodes.push(node); }
-				break;
-	        
-	        	// snapshot
-	        	case XPathResult.ORDERED_NODE_SNAPSHOT_TYPE:
-	        	case XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE:
-	          	for (var i = 0; i < result.snapshotLength; ++i) { nodes.push(result.snapshotItem(i)); }
-				break;
-	        
-	        	default:
-	          	Test.fail("Unrecognized XPathResult type: " + pattern.resultType);
-	      	}
-	  	}
-		return nodesToMatches(nodes);
+	                var node = result.singleNodeValue;
+	                nodes.push(nodeToMatch(node));
+	                break;
+	              
+                // iterator        
+                case XPathResult.UNORDERED_NODE_ITERATOR_TYPE:
+                case XPathResult.ORDERED_NODE_ITERATOR_TYPE:                                
+	                var node;
+	                while (node = result.iterateNext()) { nodes.push(node); }
+	                break;
+            
+                // snapshot
+                case XPathResult.ORDERED_NODE_SNAPSHOT_TYPE:
+                case XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE:
+	                for (var i = 0; i < result.snapshotLength; ++i) { nodes.push(result.snapshotItem(i)); }
+	                break;
+            
+                default:
+	                Test.fail("Unrecognized XPathResult type: " + pattern.resultType);
+            }
+        }
+        return nodesToMatches(nodes);
     }
 
     // TODO: handle XUL?

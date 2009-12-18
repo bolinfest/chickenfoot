@@ -1,4 +1,5 @@
 goog.require('goog.string');
+goog.require('goog.style');
 
 /**
  * A TextBlob is a sequence of text nodes that are
@@ -173,14 +174,10 @@ TextBlobIterator.prototype._isElementIncluded = function(/*Node*/ node) {
         return false;
     }
        
-    if (node.nodeType == Node.ELEMENT_NODE) {
-        var style = node.ownerDocument.defaultView.getComputedStyle(node, "");
-        
-        if (style &&
-              (style.getPropertyValue("visibility") == "hidden" || 
-               style.getPropertyValue("display") == "none")) {
-            return false;
-        }
+    if (node.nodeType == Node.ELEMENT_NODE &&
+           (goog.style.getComputedStyle(node, "visibility") == "hidden"
+            || goog.style.getComputedStyle(node, "display") == "none")) {
+        return false;
     }
     
     return true;

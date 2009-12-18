@@ -1,4 +1,5 @@
 goog.require('goog.dom');
+goog.require('goog.style');
 
 // Functions for fields (textboxes, buttons, checkboxes, radiobuttons, lists, etc.)
 //
@@ -79,7 +80,7 @@ function isVisible(/*Node*/ node) {
       && node.boxObject.width == 0) {return false;}
   
   // this is unfortunately slow
-  return node.ownerDocument.defaultView.getComputedStyle(node, '').visibility == 'visible';
+  return goog.style.getComputedStyle(node, 'visibility') == 'visible';
 }
 
 

@@ -1,4 +1,5 @@
 goog.require('goog.string');
+goog.require('goog.style');
 
 // don't attempt labelling if node count exceeds this
 const RECORDER_NODE_THRESHOLD = 2200; 
@@ -526,7 +527,7 @@ ElementTypes.isClickable = function(/*Node*/ node) {
             || ElementTypes.isLink(node)
             || (upperCaseOrNull(node.tagName) == 'INPUT' && node.type == 'image')
             || node.hasAttribute('onclick')
-            || node.ownerDocument.defaultView.getComputedStyle(node, "").cursor == "pointer");
+            || goog.style.getComputedStyle(node, "cursor") == "pointer");
 }
 
 /** @return true if the node is a text input */
