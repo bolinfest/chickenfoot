@@ -295,7 +295,7 @@ gdata.docs.ui.DocViewer = function(viewerEl, options) {
     delete gdata.docs.ui.DocViewer.loadMap_[id];
     if (viewer.postLoadProcessor_) {
       var doc = goog.dom.getFrameContentDocument(iframeEl);
-      viewer.postLoadProcessor_(doc.wrappedJSObject);
+      viewer.postLoadProcessor_(doc);
     }
 
     // Notify listeners that the document has been loaded.

@@ -16,6 +16,7 @@ goog.provide('gdata.docs.DocumentListFeed');
 goog.provide('gdata.docs.DocumentType');
 goog.provide('gdata.docs.DocumentListEntry');
 
+goog.require('goog.json');
 goog.require('goog.string');
 
 
@@ -392,7 +393,9 @@ gdata.docs.DocumentListFeed.prototype.fetchDocuments = function(callback, errorC
   var user = this.user_;
   user.doGet('http://docs.google.com/feeds/default/private/full',
       function (jsonAsString) {
-        var json = JSON.parse(jsonAsString);
+        // Use goog.json.unsafeParse because the JSON can be trusted and
+        // goog.json.unsafeParse is faster.
+        var json = goog.json.unsafeParse(jsonAsString);
         var entries = json['feed']['entry'];
         var documents = [];
         for (var i = 0; i < entries.length; ++i) {
