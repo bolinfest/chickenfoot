@@ -7,6 +7,8 @@
  * </ul>
  * @see http://code.google.com/apis/gdata/javadoc/
  */
+include('closure-lite.js');
+
 goog.provide('gdata.auth');
 goog.provide('gdata.auth.ServiceName');
 goog.provide('gdata.auth.User');
