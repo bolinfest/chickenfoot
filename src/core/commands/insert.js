@@ -62,7 +62,22 @@ function insertForAnonNodes(/*document*/ doc, /*Range*/ range, /*Chunk*/ newText
   var nodeToInsert = treeWalker.currentNode; 
   while (!(nodeToInsert.nextSibling && nodeToInsert.nextSibling == nearestRealNode)) {
     nodeToInsert = treeWalker.nextNode(); }    
-  return replaceImpl(doc, range, nodeToInsert);}
+  return replaceImpl(doc, range, nodeToInsert);
+}
+
+/**
+ * @param {!goog.structs.Map} map
+ * @return {!Array.<{key,value}>}
+ */
+var getMapEntries = function(map) {
+  var keys = map.getKeys();
+  var entries = [];
+  for (var i = 0; i < keys.length; ++i) {
+    var key = keys[i];
+    entries.push({key: key, value: map.get(key)});
+  }
+  return entries;
+};
 
 /**
  * @param position a Pattern that indicates where the insertion occurs
@@ -122,7 +137,7 @@ function insertImpl(/*HtmlDocument*/ doc, /*Pattern*/ position, /*Chunk*/ newTex
     // FIX UP RANGES
 
     // extend ends of ranges before starts 
-    var endEntries = range2endOffset.getEntries();
+    var endEntries = getMapEntries(range2endOffset);
     newTextNode.endRanges = (newTextNode.endRanges) ? newTextNode.endRanges : [];
     for (var i = 0; i < endEntries.length; i++) {
       var r = endEntries[i].key;
@@ -132,7 +147,7 @@ function insertImpl(/*HtmlDocument*/ doc, /*Pattern*/ position, /*Chunk*/ newTex
     }
     range2endOffset.clear();
 
-    var startEntries = range2startOffset.getEntries();
+    var startEntries = getMapEntries(range2startOffset);
     newTextNode.startRanges = (newTextNode.startRanges) ? newTextNode.startRanges : [];
     for (var i = 0; i < startEntries.length; i++) {
       var r = startEntries[i].key;
@@ -154,7 +169,7 @@ function insertImpl(/*HtmlDocument*/ doc, /*Pattern*/ position, /*Chunk*/ newTex
     // do the insertion
     range.insertNode(newNode);
     // FIX UP RANGES
-    var entries = range2diff.getEntries();
+    var entries = getMapEntries(range2diff);
     for (var i = 0; i < entries.length; i++) {
       var r = entries[i].key;
       var diff = r.endOffset - entries[i].value;

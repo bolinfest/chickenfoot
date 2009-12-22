@@ -19,6 +19,7 @@
     <property name="libraries.dir"  value="${srcdir}/chickenscratch/libraries" />
     <property name="tests.dir"      value="${srcdir}${file.separator}tests" />
     <property name="core.dir"       value="${srcdir}/core" />
+    <property name="closure.dir"    value="${srcdir}/closure" />
     <property name="firefox.ui.dir" value="${srcdir}/ui/firefox" />
     <property name="fennec.ui.dir"  value="${srcdir}/ui/fennec" />
 	
@@ -279,7 +280,7 @@
        </delete>
        <delete file="${build.dir}/${ant.project.name}.xpi" />
     </target>
-  
+
     <target name="java"
             description="Compiles the Chickenfoot Java code.">
         <mkdir dir="${java.bin.dir}" />
@@ -295,40 +296,21 @@
         </jar>        
     </target>
 
-   <!-- order is significant, so a filelist is used -->
-   <filelist id="doctype"
-             dir="${srcdir}/goog"
-             files="base.js
-               array.js
-               tagname.js
-               size.js
-               coordinate.js
-               box.js
-               rect.js
-               classes.js
-               disposable.js
-               event.js
-               string.js
-               useragent.js
-               product.js
-               selection.js
-               browserevent.js
-               listener.js
-               object.js
-               dom.js
-               style.js
-               structs.js
-               iter.js
-               map.js
-               set.js
-               simplepool.js
-               events.js
-               eventhandler.js
-               eventtarget.js
-               keycodes.js
-               keyhandler.js" />
+    <target name="closure">
+      <mkdir dir="${build.dir}" />
+      <exec executable="python"
+            failonerror="true">
+        <arg value="${closure.dir}/calcdeps.py" />
+        <arg line="--input=${closure.dir}/all-includes.js" />
+        <arg line="--input=${closure.dir}/closure-version.js" />
+        <arg line="--path=${closure.dir}/goog" />
+        <arg line="--output_mode=script" />
+        <arg line="--output_file=${build.dir}/closure.js" />
+      </exec>
+    </target>
 
     <target name="jar"
+            depends="closure"
             description="Creates a JAR of the resources for the extension.">
         <!-- setup -->
         <mkdir dir="${build.dir}" />
@@ -336,7 +318,7 @@
         <!-- content folder -->
         <mkdir dir="${jar.dir}/content" />   
         <concat destfile="${jar.dir}/content/sidebar.js" fixlastline="yes">
-            <filelist refid="doctype" />
+            <filelist dir="${build.dir}" files="closure.js" />
             <fileset dir="${firefox.ui.dir}">
                 <include name="*.js" />
                 <exclude name="chickenscratch.js" />
@@ -357,17 +339,9 @@
         <copy todir="${jar.dir}/content/libraries" overwrite="true">
           <fileset dir="${libraries.dir}" />
         </copy>
-        <!-- TODO(mbolin): Expose Doctype code via libraries.
-        <mkdir dir="${jar.dir}/content/libraries/goog" />
-        <copy todir="${jar.dir}/content/libraries/goog" overwrite="true">
-          <fileset dir="${srcdir}/goog" />
-        </copy>
-        <replaceregexp flags="g"
-                       match="goog\.require\(['&quot;]([\w\.]+)['&quot;]\);"
-                       replace="include('\1');">
-          <fileset dir="${jar.dir}/content/libraries/goog" includes="*.js" />
-        </replaceregexp>
-        -->
+        <copy file="${build.dir}/closure.js"
+              tofile="${jar.dir}/content/libraries/closure-lite.js"
+              overwrite="true" />
 
         <!-- skin folder -->
         <mkdir dir="${jar.dir}/skin" />
@@ -388,7 +362,7 @@
     </target>
 
     <target name="xpi-dir"
-            depends="java, jar"
+            depends="java, jar, closure"
             description="Generates the build/xpi directory.">     
 
         <!-- components folder (XPCOM) -->
@@ -397,17 +371,17 @@
 
         <!-- Javascript XPCOM components -->
         <concat destfile="${export.dir}/Chickenfoot.js" fixlastline="yes">
-            <filelist refid="doctype" />
-            <fileset dir="${core.dir}">
-              <include name="firefox/Chickenfoot.js" />
-            </fileset>   
-            <fileset dir="${core.dir}">
-              <include name="**/*.js" />
-              <exclude name="firefox/Chickenfoot.js" />
-              <exclude name="firefox/Chicken-bypass.js" />
-              <exclude name="firefox/ChickenfootCommandLineHandler.js" />
-              <exclude name="packager/xpi-tie/*.js" />
-            </fileset>   
+          <filelist dir="${build.dir}" files="closure.js" />
+          <fileset dir="${core.dir}">
+            <include name="firefox/Chickenfoot.js" />
+          </fileset>   
+          <fileset dir="${core.dir}">
+            <include name="**/*.js" />
+            <exclude name="firefox/Chickenfoot.js" />
+            <exclude name="firefox/Chicken-bypass.js" />
+            <exclude name="firefox/ChickenfootCommandLineHandler.js" />
+            <exclude name="packager/xpi-tie/*.js" />
+          </fileset>
         </concat>
         <copy todir="${export.dir}" overwrite="true">
           <fileset dir="${core.dir}/firefox">
@@ -562,7 +536,7 @@
     <!-- FENNEC BUILD RULES -->
     
     <target name="fennec-xpi-dir"
-            depends=""
+            depends="closure"
             description="Generates the Fennec build/xpi directory.">
         <mkdir dir="${fennec.build.dir}" />     
         <mkdir dir="${fennec.xpi.dir}" />
@@ -581,13 +555,13 @@
             <filterset refid="chickenfootMacros" />
         </copy>
         <concat destfile="${fennec.xpi.dir}/content/overlay.js" fixlastline="yes">
-            <filelist refid="doctype" />
+            <filelist dir="${build.dir}" files="closure.js" />
             <fileset dir="${fennec.ui.dir}">
                 <include name="*.js" />
             </fileset>
         </concat>
         <concat destfile="${fennec.xpi.dir}/components/Chickenfoot.js" fixlastline="yes">
-            <filelist refid="doctype" />
+            <filelist dir="${build.dir}" files="closure.js" />
             <fileset dir="${fennec.export.dir}">
                 <include name="**/*.js" />
             </fileset>

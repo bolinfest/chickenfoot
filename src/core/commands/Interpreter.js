@@ -266,14 +266,6 @@ function getEvaluationContext(/*Object*/ context,
   context.chickenscratchEvaluate = chickenscratchEvaluate;
   // global space for sharing data between script runs
   context.global getter = function getGlobal() { return global; };
-  context.goog getter = function() {
-    var obj = {};
-    obj.provide = function(name) {
-      Chickenfoot.goog.provide(name, context);
-    };
-    obj.__proto__ = Chickenfoot.goog;
-    return obj;
-  };
 
   // additional context
   if (extraContext) {
