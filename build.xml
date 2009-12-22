@@ -305,7 +305,7 @@
         <arg line="--input=${closure.dir}/closure-version.js" />
         <arg line="--path=${closure.dir}/goog" />
         <arg line="--output_mode=script" />
-        <arg line="--output_file=${build.dir}/closure.js" />
+        <arg line='--output_file="${build.dir}/closure.js"' />
       </exec>
     </target>
 
