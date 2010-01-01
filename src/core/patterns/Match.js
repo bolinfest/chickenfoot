@@ -1,3 +1,5 @@
+goog.require('goog.dom');
+
 /**
  * Match is an iterator that returns the matches to a pattern,
  * with accessors for obtaining the matches in various forms
@@ -35,7 +37,7 @@ function winToMatch(/*win*/win) {
 }
 
 function nodeToMatch(/*Node*/ node) {
-  return new Match((flattenDom(node))[0],
+  return new Match(goog.dom.getOuterHtml(node),
                               EMPTY_MATCH,
                               nodeToElement(node),
                               nodeToRange(node),

@@ -807,13 +807,13 @@ function Pattern() {
         strength += POSITION_FACTOR * matchFactors[relation];
         strength += DISTANCE_FACTOR * distance;
         strength += OVERLAP_FACTOR * overlap;
-        if (Pattern.debugPatternMatching) debug(relation + " distance=" + distance + " overlap=" + overlap + " strength=" + strength + " " + flattenDom(node)[0]);
+        if (Pattern.debugPatternMatching) debug(relation + " distance=" + distance + " overlap=" + overlap + " strength=" + strength + " " + goog.dom.getOuterHtml(node));
         maximizeMatch(node, strength);        
       }
   
       // take the closest node and add it as a match    
       if (bestNode != null) {
-          if (Pattern.debugPatternMatching) debug("best match is " + bestStrength + " " + flattenDom(bestNode)[0]);
+          if (Pattern.debugPatternMatching) debug("best match is " + bestStrength + " " + goog.dom.getOuterHtml(node));
           matches.push(new InternalMatch(bestNode, bestStrength));
       }
     }  
