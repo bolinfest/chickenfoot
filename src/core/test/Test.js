@@ -17,12 +17,16 @@ function Test() {
   this.tests = 0;
   this.successes = 0;
   
-  // set dom.max_script_run_time to infinity, so that Mozilla doesn't
-  // interrupt possibly-slow testing with "Do you want to abort this?"
-  var prefs = Components.classes["@mozilla.org/preferences-service;1"]
-                .getService(Components.interfaces.nsIPrefBranch);  
-  this.old_max_script_run_time = prefs.getIntPref("dom.max_script_run_time");
-  prefs.setIntPref("dom.max_script_run_time", 500000);
+  try {
+      // set dom.max_script_run_time to infinity, so that Mozilla doesn't
+      // interrupt possibly-slow testing with "Do you want to abort this?"
+      var prefs = Components.classes["@mozilla.org/preferences-service;1"]
+                    .getService(Components.interfaces.nsIPrefBranch);  
+      this.old_max_script_run_time = prefs.getIntPref("dom.max_script_run_time");
+      prefs.setIntPref("dom.max_script_run_time", 500000);
+  } catch (e) {
+      // client-side Chickenfoot will throw exceptions from this code      
+  }
 }
 
 
@@ -43,10 +47,14 @@ Test.prototype.toString = function() {
 Test.prototype.close = function() {
   debug(this);
 
-  // restore dom.max_script_run_time to previous value
-  var prefs = Components.classes["@mozilla.org/preferences-service;1"]
-                .getService(Components.interfaces.nsIPrefBranch);  
-  prefs.setIntPref("dom.max_script_run_time", this.old_max_script_run_time);
+  try {
+      // restore dom.max_script_run_time to previous value
+      var prefs = Components.classes["@mozilla.org/preferences-service;1"]
+                    .getService(Components.interfaces.nsIPrefBranch);  
+      prefs.setIntPref("dom.max_script_run_time", this.old_max_script_run_time);
+  } catch (e) {
+      // client-side Chickenfoot will throw exceptions from this code      
+  }
   
   return this;
 }

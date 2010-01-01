@@ -1,3 +1,5 @@
+goog.require("ckft.dom.Box");
+
 /**
  * Visibly highlight all matches to a pattern.  The text in each match is highlighted using
  * Firefox's built-in text highlighting (as if you had dragged the mouse over it), and the
@@ -39,7 +41,7 @@ function selectAll(/*HtmlWindow*/ win, /*Match*/ match) {
     // make sure nontext objects (e.g. buttons, images) are outlined
     if (m.element) {
       var e = m.element;
-      var box = Chickenfoot.Box.forNode(e);
+      var box = ckft.dom.Box.forNode(e);
       var doc = e.ownerDocument;
       var body = doc.getElementsByTagName("body")[0];
       var div = makeTranslucentRectangle(body, box.x, box.y, box.w, box.h, "#f00", 0.4)
@@ -53,7 +55,7 @@ function selectAll(/*HtmlWindow*/ win, /*Match*/ match) {
     // and partly to remember all the highlight divs that were created.
     // Add this div last, so that it lies on top of the selection highlight divs and captures the click event.
     var body = win.document.getElementsByTagName("body")[0]
-    var box = Box.forNode(body)
+    var box = ckft.dom.Box.forNode(body)
     var w = Math.max(box.width, win.innerWidth)
     var h = Math.max(box.height, win.innerHeight)
     var holder = makeTranslucentRectangle(body, 0, 0, w, h, "#ffffff", 0)

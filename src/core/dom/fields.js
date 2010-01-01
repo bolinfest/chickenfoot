@@ -1,5 +1,7 @@
 goog.require('goog.dom');
 goog.require('goog.style');
+goog.require('ckft.dom.Box');
+
 
 // Functions for fields (textboxes, buttons, checkboxes, radiobuttons, lists, etc.)
 //
@@ -70,7 +72,7 @@ function isVisible(/*Node*/ node) {
 
   // this isn't reliable -- e.g., the links to result pages (and even the Next link) on Google search
   // results have 0-width and 0-height box.
-  var box = Box.forNode(node);
+  var box = ckft.dom.Box.forNode(node);
   if (!box.width && !box.height && !box.x && !box.y) return false;
   
   //this is only reliable in xul, so far

@@ -1,5 +1,6 @@
 goog.require('goog.dom');
 goog.require('goog.string');
+goog.require('ckft.dom.Box');
 
 function Pattern() {
 
@@ -744,7 +745,7 @@ function Pattern() {
     
       // otherwise, use the blob's position on the page to
       // find the closest input element to it
-      var boxLabel = Box.forNode(blob.firstNode);
+      var boxLabel = ckft.dom.Box.forNode(blob.firstNode);
       if (Pattern.debugPatternMatching) debug("boxLabel=" + boxLabel);
       
       // while we're iterating through the nodes,
@@ -769,7 +770,7 @@ function Pattern() {
           break;
         }
         
-        var boxNode = Box.forNode(node);
+        var boxNode = ckft.dom.Box.forNode(node);
         if (Pattern.debugPatternMatching) debug("boxNode=" + boxNode);
 
         // search for a relationship between boxLabel and boxNode, with increasing

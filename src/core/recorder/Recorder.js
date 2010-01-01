@@ -1,5 +1,6 @@
 goog.require('goog.string');
 goog.require('goog.style');
+goog.require('ckft.dom.Box');
 
 // don't attempt labelling if node count exceeds this
 const RECORDER_NODE_THRESHOLD = 2200; 
@@ -633,7 +634,7 @@ function recorderFind(/*Document*/ doc, /*String*/ label, /*String*/ type, /*Ele
                 continue;
             }
             
-            var box = Chickenfoot.Box.forNode(n);
+            var box = ckft.dom.Box.forNode(n);
             if (box.w != 0 && box.h != 0) { 
                 var l = getLabelForElement(n);
         

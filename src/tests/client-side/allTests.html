@@ -1,0 +1,72 @@
+<html>
+
+<body>
+<pre id="debugLog">
+
+</pre>
+
+<script src="../../../build/closure.js"></script>
+<script src="../../core/test/Test.js"></script>
+
+<script>
+    /**
+     * Display output in this web page.  Replace eventually with core/util/debug.js, once
+     * it's been made to run client-side.
+     */
+	function debug(msg) {
+	  var debugLog = goog.dom.$('debugLog');
+	  debugLog.innerHTML += msg + "<br />"; 
+	}
+
+
+    /*
+     * Test harness for running multiple test cases.
+     */
+    var testsRun = [];
+    
+    function runTest(name, fn) {
+      debug(name + " ****************************** ")
+      
+      var test = fn();
+      if (test) {
+        test.name = name;
+        testsRun.push(test);
+      }
+    }
+ 
+    function summarizeTests() {   
+		debug("\n\n*********** SUMMARY *************** ")
+		for (var i = 0; i < testsRun.length; ++i) {
+		  var test = testsRun[i];
+		  debug(test.name + " " + test);
+		}
+    }
+</script>
+
+<!--- Box ------->
+<script src="../../core/dom/Box.js"></script>
+<script>
+  goog.require('ckft.dom.Box');
+  
+  runTest("ckft.dom.Box", function() {
+	  var t = new Test(); 
+	  t.test(function() {
+	      var b = new ckft.dom.Box(3, 4, 10, 20);
+	      Test.assertTrue(b.x == 3);
+	      Test.assertTrue(b.y == 4);
+	      Test.assertTrue(b.w == 10);
+	      Test.assertTrue(b.h == 20);
+	  });
+	  t.close();
+	  return t;
+    });
+</script>
+  
+  
+<!--- end of tests ------->
+<script>  
+  summarizeTests();
+</script>
+
+</body>
+</html>

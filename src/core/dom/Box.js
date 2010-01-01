@@ -1,28 +1,48 @@
+goog.provide('ckft.dom.Box');
+
 /**
  * Box is a simple class that represents a box
  * with its upper-left corner at (x,y)
  * and a width of w and a height of h.
- *
- * It also has accessors for its corners:
- *  (x1,y1) is upper-left corner
- *  (x2,y2) is lower-right corner
+ * @param {number} x
+ * @param {number} y
+ * @param {number} w
+ * @param {number} h
+ * @constructor
  */
-function Box(x, y, w, h) {
-  this.x = this.x1 = x;
-  this.y = this.y1 = y;
-  this.w = this.width = w;
-  this.h = this.height = h;  
-  this.x2 = x + w;
-  this.y2 = y + h;
+ckft.dom.Box = function(x, y, w, h) {
+    /** @type {number} */ 
+    this.x = x;
+    /** @type {number} */ 
+    this.y = y;
+    /** @type {number} */ 
+    this.w = w;
+    /** @type {number} */ 
+    this.h = h;
+    /** @type {number} */ 
+    this.width = w;
+    /** @type {number} */ 
+    this.height = h;  
+    /** @type {number} */ 
+    this.x1 = x;
+    /** @type {number} */ 
+    this.y1 = y;
+    /** @type {number} */ 
+    this.x2 = x + w;
+    /** @type {number} */ 
+    this.y2 = y + h;
 }
 
 /**
- * A dimensionless box at (0,0) 
+ * A dimensionless box at (0,0)
+ * @type {ckft.dom.Box}
  */
-Box.ZERO = new Box(0, 0, 0, 0);
+ckft.dom.Box.ZERO = new ckft.dom.Box(0, 0, 0, 0);
 
-/** toString() displays x,y,w,h data for Box */
-Box.prototype.toString = function() {
+/** 
+ * @return {string} human-readable x,y,w,h for Box.
+ */
+ckft.dom.Box.prototype.toString = function() {
   return '<box x="' + this.x + '" y="' + this.y + 
          '" w="'+ this.w + '" h="' + this.h + '" />';
 }
@@ -30,16 +50,16 @@ Box.prototype.toString = function() {
 /**
  * Determine whether this box is left, right, above, or below 
  * another box.
- * @param b other box
- * @param tolerance 
- * @returns "left" if this is left of b
+ * @param {ckft.dom.Box} b other box
+ * @param {number} tolerance 
+ * @return {string} "left" if this is left of b
  *          "right" if this is right of b
  *          "above" if this is above b
  *          "below" if this is below b
  *          "intersects" if this intersects b
  *          null if this is unrelated to b
  */
-Box.prototype.relatedTo = function(/*Box*/ b, /*int*/ tolerance) {
+ckft.dom.Box.prototype.relatedTo = function(b, tolerance) {
   if (!tolerance) tolerance = 0;
   
   var overlapsVertically = (this.y1 < b.y2+tolerance) && (b.y1 < this.y2+tolerance);
@@ -61,16 +81,18 @@ Box.prototype.relatedTo = function(/*Box*/ b, /*int*/ tolerance) {
  * Reliable results for Element nodes;
  * heuristic guess for Text nodes (since Firefox doesn't provide the bbox
  * directly);  other kinds of nodes return Box.ZERO.
+ * @param {Node} node
+ * @return {ckft.dom.Box} bounding box of node
  */ 
-Box.forNode = function(/*Node*/ node) {
-  if (!node) return Box.ZERO;
+ckft.dom.Box.forNode = function(node) {
+  if (!node) return ckft.dom.Box.ZERO;
 
   if (node.nodeType == Node.ELEMENT_NODE) {
-    return Box.forElement(node);
+    return ckft.dom.Box.forElement_(node);
   }
   
   if (node.nodeType == Node.TEXT_NODE) {
-    var boxParent = Box.forNode(node.parentNode);
+    var boxParent = ckft.dom.Box.forNode(node.parentNode);
 
     // find next and previous sibling Element
     function getSiblingElement(/*Node*/node, /*nextSibling|previousSibling*/ direction) {
@@ -82,8 +104,8 @@ Box.forNode = function(/*Node*/ node) {
     var prev = getSiblingElement(node, "previousSibling");
     var next = getSiblingElement(node, "nextSibling");
 
-    var boxPrev = prev ? Box.forNode(prev) : null;
-    var boxNext = next ? Box.forNode(next) : null;
+    var boxPrev = prev ? ckft.dom.Box.forNode(prev) : null;
+    var boxNext = next ? ckft.dom.Box.forNode(next) : null;
     //debug(boxParent + ": " + boxPrev+ "->" + boxNext);
 
     // it's more convenient to compute the
@@ -136,7 +158,7 @@ Box.forNode = function(/*Node*/ node) {
       if (boxNext.y1 <= boxParent.y1 + 5) x2 = boxNext.x1;
     }
 
-    box = new Box(x1, y1, x2-x1, y2-y1);
+    box = new ckft.dom.Box(x1, y1, x2-x1, y2-y1);
   
     // error below occurs when Text node is a direct
     // descendant of BODY, so something needs to
@@ -155,31 +177,38 @@ Box.forNode = function(/*Node*/ node) {
   
   // otherwise, we don't know how to find bbox for 
   // this type of node
-  return Box.ZERO;
+  return ckft.dom.Box.ZERO;
 }
 
-Box.forElement = function(/*Element*/ node) {
+/**
+ * Get bounding box of a DOM element.  Used internally by
+ * Box.forNode().
+ * @private
+ * @param {Element} node
+ * @return {ckft.dom.Box} bounding box of node
+ */ 
+ckft.dom.Box.forElement_ = function(elt) {
     // dynamically choose the right implementation
     // on first call
-    if (node.ownerDocument.getBoxObjectFor) {      
+    if (elt.ownerDocument.getBoxObjectFor) {      
       // FF 3.0-3.5
-      Box.forElement = function(/*Element*/ node) {
-        var b = node.ownerDocument.getBoxObjectFor(node);
-        return new Box(b.x, b.y, b.width, b.height);
+      ckft.dom.Box.forElement_ = function(/*Element*/ elt) {
+        var b = elt.ownerDocument.getBoxObjectFor(elt);
+        return new ckft.dom.Box(b.x, b.y, b.width, b.height);
       }
     } else {
       // FF 3.6+
-      Box.forElement = function(/*Element*/ node) {
-          var b = node.getBoundingClientRect();    
-          var win = node.ownerDocument.defaultView;
-          return new Box(Math.round(b.left + win.pageXOffset),
-                         Math.round(b.top + win.pageYOffset),
-                         Math.round(b.width),
-                         Math.round(b.height));
+      ckft.dom.Box.forElement_ = function(/*Element*/ elt) {
+          var b = elt.getBoundingClientRect();    
+          var win = elt.ownerDocument.defaultView;
+          return new ckft.dom.Box(Math.round(b.left + win.pageXOffset),
+			                      Math.round(b.top + win.pageYOffset),
+			                      Math.round(b.width),
+			                      Math.round(b.height));
       }
     }
     
     // call the implementation we just chose
-    return Box.forElement(node);
+    return ckft.dom.Box.forElement_(elt);
 }
  
