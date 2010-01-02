@@ -780,23 +780,23 @@ function Pattern() {
         relation = boxLabel.relatedTo(boxNode,tolerance=-5);
         if (!relation) relation = boxLabel.relatedTo(boxNode,tolerance=0);
         if (!relation) relation = boxLabel.relatedTo(boxNode,tolerance=5);        
-        if (!relation || relation == "intersects") continue;
+        if (!relation || relation == ckft.dom.Box.Relation.INTERSECTS) continue;
         
         var distance, overlap;
         switch (relation) {
-          case "left":
+          case ckft.dom.Box.Relation.LEFT:
             distance = computeDistance(boxNode.x1, boxLabel.x2);
             overlap = computeOverlap(boxNode.y1, boxNode.y2, boxLabel.y1, boxLabel.y2);
             break;
-          case "right":
+          case ckft.dom.Box.Relation.RIGHT:
             distance = computeDistance(boxLabel.x1, boxNode.x2);
             overlap = computeOverlap(boxNode.y1, boxNode.y2, boxLabel.y1, boxLabel.y2);               
             break;
-          case "above":
+          case ckft.dom.Box.Relation.ABOVE:
             distance = computeDistance(boxNode.y1, boxLabel.y2);
             overlap = computeOverlap(boxNode.x1, boxNode.x2, boxLabel.x1, boxLabel.x2);
             break;
-          case "below":
+          case ckft.dom.Box.Relation.BELOW:
             distance = computeDistance(boxNode.y1, boxLabel.y2);
             overlap = computeOverlap(boxNode.x1, boxNode.x2, boxLabel.x1, boxLabel.x2);               
             break;

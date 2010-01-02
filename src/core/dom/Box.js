@@ -52,12 +52,12 @@ ckft.dom.Box.prototype.toString = function() {
  * another box.
  * @param {ckft.dom.Box} b other box
  * @param {number} tolerance 
- * @return {string} "left" if this is left of b
- *          "right" if this is right of b
- *          "above" if this is above b
- *          "below" if this is below b
- *          "intersects" if this intersects b
- *          null if this is unrelated to b
+ * @return {ckft.dom.Box.Relation} LEFT if this is left of b
+ *          RIGHT if this is right of b
+ *          ABOVE if this is above b
+ *          BELOW if this is below b
+ *          INTERSECTS if this intersects b
+ *          NONE (== null) if this is unrelated to b
  */
 ckft.dom.Box.prototype.relatedTo = function(b, tolerance) {
   if (!tolerance) tolerance = 0;
@@ -66,15 +66,28 @@ ckft.dom.Box.prototype.relatedTo = function(b, tolerance) {
   var overlapsHorizontally = (this.x1 < b.x2+tolerance) && (b.x1 < this.x2+tolerance);
 
   if (overlapsVertically && overlapsHorizontally) {
-    return "intersects";
+    return ckft.dom.Box.Relation.INTERSECTS;
   } else if (overlapsVertically /* but not horizontally */) {
-    return (this.x1 < b.x1+tolerance) ? "left" : "right";
+    return (this.x1 < b.x1+tolerance) ? ckft.dom.Box.Relation.LEFT : ckft.dom.Box.Relation.RIGHT;
   } else if (overlapsHorizontally /* but not vertically */) {
-    return (this.y1 < b.y1+tolerance) ? "above" : "below";
+    return (this.y1 < b.y1+tolerance) ? ckft.dom.Box.Relation.ABOVE : ckft.dom.Box.Relation.BELOW;
   } else {
-    return null;
+    return ckft.dom.Box.Relation.NONE;
   }
 }
+
+/**
+ * Enumeration returned by relatedTo().
+ * @enum {string}
+ */
+ckft.dom.Box.Relation = {
+    LEFT: "left",
+    RIGHT: "right",
+    ABOVE: "above",
+    BELOW: "below",
+    INTERSECTS: "intersects",
+    NONE: null
+};
 
 /**
  * Get bounding box of a DOM node.
@@ -183,9 +196,9 @@ ckft.dom.Box.forNode = function(node) {
 /**
  * Get bounding box of a DOM element.  Used internally by
  * Box.forNode().
- * @private
  * @param {Element} node
  * @return {ckft.dom.Box} bounding box of node
+ * @private
  */ 
 ckft.dom.Box.forElement_ = function(elt) {
     // dynamically choose the right implementation
