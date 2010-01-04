@@ -5,5 +5,5 @@ function definedFunction() { return 102; }
 
 globalVariable = 56;
 
-Chickenfoot.Test.assertEquals("pages", scriptDir.leafName)
+Test.assertEquals("pages", scriptDir.leafName)
 

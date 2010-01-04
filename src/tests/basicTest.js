@@ -1,10 +1,9 @@
+include("Test.js");
+
 // This file is a model for creating new tests.
 
-// Import the Test class from Chickenfoot.
-var Test = Chickenfoot.Test;
-
 // Create a new Test object representing this test.
-var t = new Test();
+var t = new Test("basicTest");
 
 
 // Call t.test() for every test you want to run.
@@ -36,4 +35,3 @@ t.test("lower case", function() {
 
 // Finish the test by calling close().
 t.close();
-

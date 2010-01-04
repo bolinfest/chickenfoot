@@ -1,11 +1,11 @@
-// Import the Test class from Chickenfoot.
-var Test = Chickenfoot.Test;
+include("Test.js");
+
 var StringBuffer = Chickenfoot.StringBuffer;
 
 var prefix = "file://" + scriptDir.path + "/pages/";
 
 // Create a new Test object representing this test.
-var t = new Test();
+var t = new Test("withTabTest");
 
 // Test the withTab() function
 // Loads saved google.com and mit.edu sites,

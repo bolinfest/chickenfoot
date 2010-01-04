@@ -1,4 +1,4 @@
-var Test = Chickenfoot.Test;
+include("Test.js");
 
 var prefix = "file://" + scriptDir.path + "/pages/";
 
@@ -8,7 +8,7 @@ function gelid(id) {
 
 // These tests make sure pick() does the right thing.
 
-var t = new Test();
+var t = new Test("pickTest");
 
 go(prefix + "google-advanced_search.html", true);
 t.test(function() {

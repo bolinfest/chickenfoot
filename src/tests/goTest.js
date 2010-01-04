@@ -1,4 +1,4 @@
-Test = Chickenfoot.Test
+include("Test.js");
 
 // These tests make sure go() goes to the right place,
 // and document correctly waits until the page is loaded
@@ -9,7 +9,7 @@ Test = Chickenfoot.Test
 // send debugging output to the Chickenfoot output pane.
 Chickenfoot.showLoadingEvents = false;
 
-var t = new Test();
+var t = new Test("goTest");
 
 
 // test domain name

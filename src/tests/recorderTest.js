@@ -1,6 +1,7 @@
+include("Test.js");
+
 Chickenfoot.debugRecorder = false;
 
-var Test = Chickenfoot.Test;
 var Pattern = Chickenfoot.Pattern;
 var StringBuffer = Chickenfoot.StringBuffer;
 
@@ -23,7 +24,7 @@ function gelid(id) {
 
 
 
-var t = new Test();
+var t = new Test("recorderTest");
 
 var testName;  // name of current test, inferred from load() argument
 

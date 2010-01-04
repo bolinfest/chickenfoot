@@ -1,4 +1,4 @@
-var Test = Chickenfoot.Test;
+include("Test.js");
 
 var prefix = "file://" + scriptDir.path + "/pages/";
 
@@ -10,7 +10,7 @@ function gelid(id) {
 
 
 
-var t = new Test();
+var t = new Test("checkTest");
 
 go(prefix + "preferences.html", true);
 t.test(function() {

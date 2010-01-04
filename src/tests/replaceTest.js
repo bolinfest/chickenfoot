@@ -1,6 +1,6 @@
-var Test = Chickenfoot.Test;
+include("Test.js");
 
-var t = new Test();
+var t = new Test("replaceTest");
 
 t.test(function() {
   go("http://www.google.com/");

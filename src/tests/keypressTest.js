@@ -1,6 +1,6 @@
-var Test = Chickenfoot.Test;
+include("Test.js");
 
-var t = new Test();
+var t = new Test("keypressTest");
 
 t.test("keypress:", function(){
   go("file://" + scriptDir.path + "/pages/google.html");

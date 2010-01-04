@@ -1,4 +1,5 @@
-var Test = Chickenfoot.Test;
+include("Test.js");
+
 var TextBlobIterator = Chickenfoot.TextBlobIterator;
 
 var prefix = "file://" + scriptDir.path + "/pages/";
@@ -11,7 +12,7 @@ var useFetch = false;
 ///////////////////////////////////
 // tests
 
-var t = new Test();
+var t = new Test("TextBlobTest");
 
 var testName;  // name of current test, inferred from load() argument
 

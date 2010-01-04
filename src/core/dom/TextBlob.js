@@ -1,5 +1,6 @@
 goog.require('goog.string');
 goog.require('goog.style');
+goog.require('ckft.util.strings');
 
 /**
  * A TextBlob is a sequence of text nodes that are
@@ -120,7 +121,7 @@ TextBlobIterator.prototype.next = function() {
     //debug("looking at " + node);
     
     if (node.nodeType == Node.ELEMENT_NODE
-        && !TextBlob.isFlowTag[upperCaseOrNull(node.tagName)]
+        && !TextBlob.isFlowTag[ckft.util.strings.upperCaseOrNull(node.tagName)]
         && blob) {
       // we're entering a new block element, so close off the blob
       break;
@@ -149,7 +150,7 @@ TextBlobIterator.prototype.next = function() {
       iteratorDone = !iterator.parentNode();
       if (!iteratorDone) {
         node = iterator.currentNode;
-        if (blob && !TextBlob.isFlowTag[upperCaseOrNull(node.tagName)]) {
+        if (blob && !TextBlob.isFlowTag[ckft.util.strings.upperCaseOrNull(node.tagName)]) {
           // we're leaving a block element, so close off the blob
           blobDone = true;
         }
@@ -170,7 +171,7 @@ true otherwise */
 TextBlobIterator.prototype._isElementIncluded = function(/*Node*/ node) {
     var hiddenElements = { STYLE:1, SCRIPT:1, NOSCRIPT:1 };
     
-    if (node.tagName && hiddenElements[upperCaseOrNull(node.tagName)]) {
+    if (node.tagName && hiddenElements[ckft.util.strings.upperCaseOrNull(node.tagName)]) {
         return false;
     }
        
@@ -202,7 +203,7 @@ TextBlobIterator.prototype._getTextOfNode = function(/*Node*/ node) {
   if (node.nodeType == Node.TEXT_NODE) return node.nodeValue;
   
   if (node.nodeType == Node.ELEMENT_NODE) {      
-    if (upperCaseOrNull(node.tagName) == 'INPUT'
+    if (ckft.util.strings.upperCaseOrNull(node.tagName) == 'INPUT'
         && (node.type == 'submit'
             || node.type == 'button'
             || node.type == 'reset'
@@ -267,6 +268,6 @@ TextBlobIterator.prototype._addNodeToBlob = function(/*TextBlob*/blob, /*String*
  * Overridden by subclasses of TextBlobIterator.
  */
 TextBlobIterator.prototype._finishBlob = function(/*TextBlob*/blob) {
-  blob.value = condenseSpaces(blob._stringBuffer.toString());
+  blob.value = ckft.util.strings.condenseSpaces(blob._stringBuffer.toString());
   delete blob._stringBuffer; // don't need it anymore, reclaim it
 }

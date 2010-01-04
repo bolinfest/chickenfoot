@@ -1,6 +1,6 @@
-var Test = Chickenfoot.Test;
+include("Test.js");
 
-var t = new Test();
+var t = new Test("removeTest");
 
 t.test(function() {
   go("file://" + scriptDir.path + "/pages/mit-webmail.html");

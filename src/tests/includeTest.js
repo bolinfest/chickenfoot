@@ -1,6 +1,6 @@
-var Test = Chickenfoot.Test;
+include("Test.js");
 
-var t = new Test();
+var t = new Test("includeTest");
 
 t.test(function() {
   include('pages/include1.js');

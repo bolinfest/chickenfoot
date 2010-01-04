@@ -1,3 +1,4 @@
+goog.require('ckft.util.assert');
 
 /**
  * Makes a selection from a listbox, dropdown, set of radio buttons,
@@ -79,7 +80,7 @@ function doPick (/*Document*/doc,
     
     bestMatch = m2;    
   }
-  Test.assertTrue(bestMatch, "bestMatch was not assigned");
+  ckft.util.assert(bestMatch, "bestMatch was not assigned");
 
   var node = bestMatch.element;
     

@@ -1,3 +1,6 @@
+goog.require('ckft.util.strings');
+goog.require('ckft.util.strings.DeleteMap');
+
 /**
  * Regular expression pattern matching on DOM text.
  *
@@ -139,7 +142,7 @@ function makeBlobIterator(/*Document|Node*/ root) {
 
   // override iterator's template methods to record
   // extra info we need in the blob:
-  //    _map: a DeleteMap recording where spaces were removed by condenseSpaces()
+  //    _map: a ckft.util.strings.DeleteMap recording where spaces were removed by condenseSpaces()
   //    _nodes: array of all text nodes that contributed to the blob, in order
   
   var superMakeBlob = iter._makeBlob;
@@ -163,8 +166,8 @@ function makeBlobIterator(/*Document|Node*/ root) {
 
 
   iter._finishBlob = function(/*TextBlob*/blob) {
-    blob._map = new DeleteMap();
-    blob.value = condenseSpaces(blob._stringBuffer.toString(), blob._map);
+    blob._map = new ckft.util.strings.DeleteMap();
+    blob.value = ckft.util.strings.condenseSpaces(blob._stringBuffer.toString(), blob._map);
     //delete blob._stringBuffer;
   }
 

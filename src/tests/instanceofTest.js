@@ -1,8 +1,8 @@
-var Test = Chickenfoot.Test;
+include("Test.js");
 
 var instanceOf = Chickenfoot.instanceOf;
 
-var t = new Test();
+var t = new Test("instanceofTest");
 
 
 

@@ -1,6 +1,8 @@
 goog.require('goog.dom');
 goog.require('goog.string');
 goog.require('ckft.dom.Box');
+goog.require('ckft.util.strings');
+goog.require('ckft.util.assert');
 
 function Pattern() {
 
@@ -221,7 +223,7 @@ function Pattern() {
 	                break;
             
                 default:
-	                Test.fail("Unrecognized XPathResult type: " + pattern.resultType);
+	                throw new Error("Unrecognized XPathResult type: " + pattern.resultType);
             }
         }
         return nodesToMatches(nodes);
@@ -452,10 +454,10 @@ function Pattern() {
     } else if (m[1] in recognizedOrdinals) {
       n = recognizedOrdinals[m[1]];
     } else {
-      Test.fail(keywords + " matched ordinalRe but not extractOrdinalInfo()");
+      throw new Error(keywords + " matched ordinalRe but not extractOrdinalInfo()");
     }
-    Test.assert(n !== undefined, "n was not defined");    
-    Test.assert(n > 0, "ordinal must resolve to a positive number");
+    ckft.util.assert(n !== undefined, "n was not defined");    
+    ckft.util.assert(n > 0, "ordinal must resolve to a positive number");
     return {
       ordinal : n,
       keywords : keywords.derive(keywords.slice(1))
@@ -838,7 +840,7 @@ function Pattern() {
       
     // returns <LABEL> element containing given node, or null if none
     function findLabelContaining(node) {
-      while (node != null && upperCaseOrNull(node.tagName) != "LABEL") {
+      while (node != null && ckft.util.strings.upperCaseOrNull(node.tagName) != "LABEL") {
         node = node.parentNode;
       }
       return node;
@@ -897,7 +899,7 @@ function Pattern() {
                       /*String*/ pattern,
                       /*optional Range*/ context) {
     var root = getFindRoot(doc, context);
-    if (upperCaseOrNull(root.tagName) != 'TABLE') throw new Error("cannot look for rows if not a table");
+    if (ckft.util.strings.upperCaseOrNull(root.tagName) != 'TABLE') throw new Error("cannot look for rows if not a table");
     var rows = root.rows;
     for (var i = 0; i < rows.length; ++i) {
       matches.push(new InternalMatch(rows[i], 1.0));
@@ -909,7 +911,7 @@ function Pattern() {
                     /*String*/ pattern,
                     /*optional Range*/ context) {
     var root = getFindRoot(doc, context);
-    if (upperCaseOrNull(root.tagName) != 'TR') throw new Error("cannot look for cells if not a row");
+    if (ckft.util.strings.upperCaseOrNull(root.tagName) != 'TR') throw new Error("cannot look for cells if not a row");
     var cells = root.cells;
     for (var i = 0; i < cells.length; ++i) {
       matches.push(new InternalMatch(cells[i], 1.0));
@@ -925,7 +927,7 @@ function Pattern() {
                       /*String*/ pattern,
                       /*optional Range*/ context) {
     var root = getFindRoot(doc, context);
-    if (upperCaseOrNull(root.tagName) != 'TD') throw new Error("need a cell to get its column")
+    if (ckft.util.strings.upperCaseOrNull(root.tagName) != 'TD') throw new Error("need a cell to get its column")
 
     var targetRow = Table.getParentRow(root);
     var sib = Table.getNextRow(targetRow);

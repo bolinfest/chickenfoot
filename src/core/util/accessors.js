@@ -177,9 +177,3 @@ function /*ChromeWindow*/ getAnyChromeWindow() {
     }
     return null;
 }
-
-
-function /*String*/ upperCaseOrNull(/*String*/ s) {
-  if (s == null) return s;
-  else return s.toUpperCase();
-}

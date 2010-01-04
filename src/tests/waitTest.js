@@ -1,6 +1,6 @@
-Test = Chickenfoot.Test;
+include("Test.js");
 
-var t = new Test();
+var t = new Test("waitTest");
 
 
 

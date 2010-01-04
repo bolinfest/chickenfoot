@@ -1,5 +1,5 @@
-// imports
-var Test = Chickenfoot.Test
+include("Test.js");
+
 var SlickSet = Chickenfoot.SlickSet
 
 /**
@@ -25,7 +25,7 @@ function createSet() {
   return new SlickSet();
 }
 
-var t = new Test();
+var t = new Test("SetTest");
 
 
 s = createSet();

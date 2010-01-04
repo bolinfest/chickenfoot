@@ -1,4 +1,5 @@
 goog.require('goog.structs.Map');
+goog.require('ckft.util.assert');
 
 /**
  * Insert, remove, replace
@@ -15,7 +16,7 @@ function removeImpl(/*HtmlDocument*/ doc, /*Pattern*/ pattern) {
   if (!range) return null;
   var rangeContents = range.extractContents();
   range.deleteContents();
-  Test.assertTrue(range.collapsed, "range must be collapsed to be a Position")
+  ckft.util.assert(range.collapsed, "range must be collapsed to be a Position")
   return rangeContents;
 }
 
@@ -30,7 +31,7 @@ function removeImplForReplace(/*HtmlDocument*/ doc, /*Pattern*/ pattern) {
   var range = patternAsRange(pattern, doc);
   if (!range) return null;
   range.deleteContents();
-  Test.assertTrue(range.collapsed, "range must be collapsed to be a Position");
+  ckft.util.assert(range.collapsed, "range must be collapsed to be a Position");
   return range;
 }
 

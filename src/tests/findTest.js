@@ -1,4 +1,5 @@
-var Test = Chickenfoot.Test;
+include("Test.js");
+
 var Pattern = Chickenfoot.Pattern;
 var StringBuffer = Chickenfoot.StringBuffer;
 
@@ -12,7 +13,7 @@ var useFetch = false;
 ///////////////////////////////////
 // tests
 
-var t = new Test();
+var t = new Test("findTest");
 
 var testName;  // name of current test, inferred from load() argument
 
@@ -219,7 +220,7 @@ testElement("value", "xx-hacker", Pattern.LISTITEM, "Hacker")
 
 
 load("google-results.html");
-testElement("href", "file:///search?q=hello&hl=en&start=10&sa=N",
+testElement("href", "/search?q=hello&hl=en&start=10&sa=N",
             Pattern.LINK, "Next");
 
 // Summarize testing
@@ -309,5 +310,6 @@ function matchesToString(m) {
   }
   return sb.toString();
 }
+
 
 

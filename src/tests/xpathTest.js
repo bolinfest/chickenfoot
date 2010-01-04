@@ -1,4 +1,5 @@
-var Test = Chickenfoot.Test;
+include("Test.js");
+
 var Pattern = Chickenfoot.Pattern;
 var StringBuffer = Chickenfoot.StringBuffer;
 
@@ -11,7 +12,7 @@ var useFetch = false;
 
 // These tests make sure pick() does the right thing.
 
-var t = new Test();
+var t = new Test("xpathTest");
 
 var testName;  // name of current test, inferred from load() argument
 

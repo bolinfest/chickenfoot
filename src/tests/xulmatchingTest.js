@@ -1,6 +1,6 @@
-var Test = Chickenfoot.Test;
+include("Test.js");
 
-var t = new Test();
+var t = new Test("xulmatchingTest");
 
 //pattern finding for normal and anonymous nodes
 t.test("pattern finding", function() {

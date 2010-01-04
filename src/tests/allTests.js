@@ -1,7 +1,7 @@
+include("Test.js");
+Test.clearAllTests();
 
-var testsRun = [];
-debug = Chickenfoot.debug;
-
+runTest("basicTest.js");
 runTest("findTest.js");
 runTest("clickTest.js");
 runTest("pickTest.js");
@@ -17,27 +17,20 @@ runTest("TextBlobTest.js");
 runTest("MatchTest.js");
 runTest("stringsTest.js");
 runTest("includeTest.js");
-runTest("crashTest.js");
 runTest("insertTest.js");
 runTest("removeTest.js");
 runTest("replaceTest.js");
 runTest("resetTest.js");
 runTest("keypressTest.js");
 //runTest("xulmatchingTest.js"); not ready yet
+//runTest("withTabTest.js"); not ready yet
 
+output(Test.summarizeAllTests());
 
-debug("*********** SUMMARY *************** ")
-for (var i = 0; i < testsRun.length; ++i) {
-  var test = testsRun[i];
-  debug(test.name + " " + test);
+function runTest(filename) {
+  // give test a fresh namespace, but with
+  // Test class predefined in it so that
+  // its test is added to Test.allTests
+  include(filename, {Test:Test});
 }
 
-function runTest(name) {
-  debug(name + " ****************************** ")
-  
-  var test = include(name, {});
-  if (test) {
-    test.name = name;
-    testsRun.push(test);
-  }
-}

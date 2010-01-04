@@ -1,4 +1,4 @@
-var Test = Chickenfoot.Test;
+include("Test.js");
 
 var prefix = "file://" + scriptDir.path + "/pages/";
 
@@ -6,7 +6,7 @@ var prefix = "file://" + scriptDir.path + "/pages/";
 ///////////////////////////////////
 // tests
 
-var t = new Test();
+var t = new Test("MatchTest");
 
 var testName;  // name of current test, inferred from load() argument
 
@@ -15,7 +15,8 @@ t.test(testName, function() {
   var m = find("Groups link");
   Test.assertEquals(m.element, document.links[1]);
   Test.assertEquals(m.text, "Groups");
-  Test.assertEquals(m.html, '<A onclick="return qs(this);" href="http://groups-beta.google.com/grphp?hl=en&amp;tab=wg" class="q" id="2a">Groups</A>');
+  Test.assertEquals(m.html, '<a id="2a" class="q" href="http://groups-beta.google.com/grphp?hl=en&amp;tab=wg" onclick="return qs(this);">Groups</a>');
+                             
 });
 
 t.close();
@@ -32,5 +33,6 @@ function load(file) {
   // it as the test name
   testName = file.match(/^([^\.]*)(\.|$)/)[1]
 }
+
 
 

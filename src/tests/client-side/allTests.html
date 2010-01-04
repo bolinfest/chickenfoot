@@ -5,67 +5,45 @@
 
 </pre>
 
-<script src="../../../build/closure.js"></script>
-<script src="../../core/test/Test.js"></script>
-
 <script>
+    // Chickenfoot code will be loaded in the global namespace for now.
+    Chickenfoot = this;
+    
     /**
-     * Display output in this web page.  Replace eventually with core/util/debug.js, once
-     * it's been made to run client-side.
+     * Display output in this web page, followed by a newline.
+     * Replace eventually with core/util/debug.js, once it's been made to run client-side.
+     * @param {*} msg  String or object to display.
      */
-	function debug(msg) {
+	function output(msg) {
 	  var debugLog = goog.dom.$('debugLog');
 	  debugLog.innerHTML += msg + "<br />"; 
 	}
 
-
-    /*
-     * Test harness for running multiple test cases.
+    /**
+     * Include another Javascript file. No-op for now.
      */
-    var testsRun = [];
-    
-    function runTest(name, fn) {
-      debug(name + " ****************************** ")
-      
-      var test = fn();
-      if (test) {
-        test.name = name;
-        testsRun.push(test);
-      }
-    }
- 
-    function summarizeTests() {   
-		debug("\n\n*********** SUMMARY *************** ")
-		for (var i = 0; i < testsRun.length; ++i) {
-		  var test = testsRun[i];
-		  debug(test.name + " " + test);
-		}
+    function include(filename) {
     }
 </script>
+
+<!--- Closure library ------->
+<script src="../../../build/closure.js"></script>
+
+<!--- Test ------->
+<script src="../../tests/Test.js"></script>
+<script src="../../tests/basicTest.js"></script>
 
 <!--- Box ------->
 <script src="../../core/dom/Box.js"></script>
-<script>
-  goog.require('ckft.dom.Box');
-  
-  runTest("ckft.dom.Box", function() {
-	  var t = new Test(); 
-	  t.test(function() {
-	      var b = new ckft.dom.Box(3, 4, 10, 20);
-	      Test.assertTrue(b.x == 3);
-	      Test.assertTrue(b.y == 4);
-	      Test.assertTrue(b.w == 10);
-	      Test.assertTrue(b.h == 20);
-	  });
-	  t.close();
-	  return t;
-    });
-</script>
-  
+<script src="../../tests/BoxTest.js"></script>
+
+<!--- strings ------->
+<script src="../../core/util/strings.js"></script>
+<script src="../../tests/stringsTest.js"></script>
   
 <!--- end of tests ------->
 <script>  
-  summarizeTests();
+  output(Test.summarizeAllTests());
 </script>
 
 </body>

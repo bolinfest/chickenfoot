@@ -1,3 +1,5 @@
+goog.require('ckft.util.strings');
+
 /**
  * This function adds install-trigger buttons to pages on the Chickenfoot scripts wiki. The
  * buttons are added to the bottom of the divs that contain scripts. This function should only
@@ -13,9 +15,9 @@ function installTriggerButtons(/*Document*/document) {
 var pred = function (node) {
   var results = [];
   for (var h=0; h<node.childNodes.length; h++) {
-    if (upperCaseOrNull(node.childNodes[h].tagName) == "PRE") {results.push(node.childNodes[h]);}
+    if (ckft.util.strings.upperCaseOrNull(node.childNodes[h].tagName) == "PRE") {results.push(node.childNodes[h]);}
   }
-  return ((upperCaseOrNull(node.tagName) == "DIV") && (node.childNodes.length > 0) && (results.length > 0));
+  return ((ckft.util.strings.upperCaseOrNull(node.tagName) == "DIV") && (node.childNodes.length > 0) && (results.length > 0));
 }
 var treewalker = Chickenfoot.createDeepTreeWalker(document.wrappedJSObject, NodeFilter.SHOW_ALL, pred);
 var current = treewalker.nextNode();
@@ -65,7 +67,7 @@ function filterElements(/*Array DOM elements*/elements,/*String*/tag) {
   var results = [];  var m=0;
   tag = tag.toUpperCase();
   for (var k=0; k<elements.length; k++) {
-    if (upperCaseOrNull(elements[k].tagName) == tag) {results[m] = elements[k]; m++;}
+    if (ckft.util.strings.upperCaseOrNull(elements[k].tagName) == tag) {results[m] = elements[k]; m++;}
   }
   return results;
 }
