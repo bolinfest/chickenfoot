@@ -1,7 +1,7 @@
 goog.require('goog.dom');
 goog.require('goog.style');
+goog.require('ckft.dom');
 goog.require('ckft.dom.Box');
-goog.require('ckft.util.strings');
 
 
 // Functions for fields (textboxes, buttons, checkboxes, radiobuttons, lists, etc.)
@@ -14,11 +14,11 @@ goog.require('ckft.util.strings');
  */
 function extractTextFromField(/*Node*/node) {
   if (!node) return null;
-  if (ckft.util.strings.upperCaseOrNull(node.tagName) == 'BUTTON') {
+  if (ckft.dom.getTagName(node) == 'BUTTON') {
     return node.textContent;
   } else if (isClickable(node) && 'value' in node) {
     return node.value;
-  } else if (ckft.util.strings.upperCaseOrNull(node.tagName) == 'SELECT') {
+  } else if (ckft.dom.getTagName(node) == 'SELECT') {
     var sb = new StringBuffer();
     var options = node.options;
     for (var i = 0; i < options.length; ++i) {
@@ -62,7 +62,7 @@ function isVisible(/*Node*/ node) {
     else {return false;}}
 
   if (node.nodeType == Node.TEXT_NODE) node = node.parentNode; 
-  if (ckft.util.strings.upperCaseOrNull(node.tagName) in isVisible.INVISIBLE_TAGS) return false;
+  if (ckft.dom.getTagName(node) in isVisible.INVISIBLE_TAGS) return false;
   
   var doc = node.ownerDocument
   if (doc.wrappedJSObject) {doc = doc.wrappedJSObject;}
@@ -117,15 +117,15 @@ isVisible.INVISIBLE_TAGS = {
 };
 
 /** @return true iff node is a clickable button */
-function isClickable(/*Node*/ node) {
+function isButton(/*Node*/ node) {
+  var tagName = ckft.dom.getTagName(node);
   return instanceOf(node, Node)
     && node.nodeType == Node.ELEMENT_NODE 
-    && (ckft.util.strings.upperCaseOrNull(node.tagName) == 'BUTTON'
-        || (node.tagName == 'button')
-        || (node.tagName == 'toolbarbutton')
-        || (node.tagName == 'xul:toolbarbutton')
-        || (node.tagName == 'xul:button')
-        || (ckft.util.strings.upperCaseOrNull(node.tagName) == 'INPUT'
+    && (tagName == 'BUTTON' // HTML and XUL
+        || tagName == 'TOOLBARBUTTON' // XUL
+        || tagName == 'XUL:TOOLBARBUTTON' // XUL
+        || tagName == 'XUL:BUTTON' // XUL
+        || (tagName == 'INPUT' // HTML
             && 'type' in node
             && (node.type == 'submit'
                 || node.type == 'button'
@@ -138,10 +138,23 @@ function isClickable(/*Node*/ node) {
 function isLink(/*Node*/ node) {
   return instanceOf(node, Node)
     && node.nodeType == Node.ELEMENT_NODE 
-    && ((ckft.util.strings.upperCaseOrNull(node.tagName) == 'A'
+    && ((ckft.dom.getTagName(node) == 'A'
           && (node.hasAttribute('href') || node.hasAttribute('onclick')))
         || node.className == 'text-link');
 }
+
+/** @return true iff node is clickable (or at least likely to be */
+function isClickable(/*Node*/ node) {
+    return instanceOf(node, Node)
+        && node.nodeType == Node.ELEMENT_NODE
+        && (isButton(node) 
+            || isLink(node)
+            || (ckft.dom.getTagName(node) == 'INPUT' && node.type == 'image')
+            || node.hasAttribute('onclick')
+            || goog.style.getComputedStyle(node, "cursor") == "pointer");
+}
+
+
 
 /**
  * A text input is a <TEXTAREA>
@@ -149,13 +162,15 @@ function isLink(/*Node*/ node) {
  *
  * @return true if the node is a text input
  */
-function isTextbox(/*Node*/ node) {
+function isTextbox(/*Node*/ node) {  
   if (!instanceOf(node, Node)) return false;
-  if (node.tagName == 'textbox') return true;
-  if (ckft.util.strings.upperCaseOrNull(node.tagName) == 'TEXTAREA') return true;
-  if (node.tagName == 'xul:textbox') return true;
-  if (node.className == 'text-input') return true;
-  if ('type' in node && ckft.util.strings.upperCaseOrNull(node.tagName) == 'INPUT') {
+  
+  var tagName = ckft.dom.getTagName(node);
+  if (tagName == 'TEXTBOX' // XUL
+      || tagName == 'TEXTAREA' // HTML
+      || tagName == 'XUL:TEXTBOX' // XUL
+      || node.className == 'text-input') return true;
+  if (tagName == 'INPUT' && 'type' in node) { // HTML
     var type = node.type;
     if (type == 'text'
         || type == 'password'
@@ -175,51 +190,82 @@ function isTextbox(/*Node*/ node) {
  */
 function isListbox(/*<Node>*/ node) {
   if (!instanceOf(node, Node)) return false;
-  return ((ckft.util.strings.upperCaseOrNull(node.tagName) == 'SELECT') 
-         || (node.tagName == 'menulist')
-         || (node.tagName == 'listbox'));
+  var tagName = ckft.dom.getTagName(node);
+  return (tagName == 'SELECT'     // HTML
+         || tagName == 'MENULIST' // XUL
+         || tagName == 'LISTBOX'  // XUL
+         );
 }
 
 function isCheckbox(node) {
   if (!instanceOf(node, Node)) return false;
-  return ((ckft.util.strings.upperCaseOrNull(node.tagName) == 'INPUT' && node.type == 'checkbox') || (node.tagName == 'checkbox'));
+  var tagName = ckft.dom.getTagName(node);
+  return ((tagName == 'INPUT' && node.type == 'checkbox') // HTML 
+          || tagName == 'CHECKBOX' // XUL
+          );
 }
 
 function isRadioButton(node) {
   if (!instanceOf(node, Node)) return false;
-  return ((ckft.util.strings.upperCaseOrNull(node.tagName) == 'INPUT' && node.type == 'radio') || (node.tagName == 'radio'));
+  var tagName = ckft.dom.getTagName(node);  
+  return ((tagName == 'INPUT' && node.type == 'radio') // HTML
+          || tagName == 'RADIO' // XUL
+          );
 }
 
 function isListitem(/*Node*/ node) {
     if (!instanceOf(node, Node)) return false;
-    return ((ckft.util.strings.upperCaseOrNull(node.tagName) == 'OPTION')
-           || (ckft.util.strings.upperCaseOrNull(node.tagName) == 'INPUT' && node.type == 'option')
-           || (node.tagName == 'menuitem')
-           || (node.tagName == 'listitem'));
+    var tagName = ckft.dom.getTagName(node);
+    return (tagName == 'OPTION'     // HTML
+           || tagName == 'MENUITEM' // XUL
+           || tagName == 'LISTITEM' // XUL
+           );
 }
 
 function isMenu(/*Node*/ node) {
     if (!instanceOf(node, Node)) return false;
-    return (node.tagName == 'menu');
+    return (ckft.dom.getTagName(node) == 'MENU');
 }
 
 function isMenuItem(/*Node*/ node) {
     if (!instanceOf(node, Node)) return false;
-    return (node.tagName == 'menuitem')
+    return (ckft.dom.getTagName(node) == 'MENUITEM')
 }
 
 function isTab(/*Node*/ node) {
     if (!instanceOf(node, Node)) return false;
-    return (node.tagName == 'tab' || node.tagName == 'xul:tab' || node.tagName == 'panelTab');
+    var tagName = ckft.dom.getTagName(node);
+    return (tagName == 'TAB' || tagName == 'XUL:TAB' || tagName == 'PANELTAB');
+}
+
+/** @return true iff node is an image element */
+function isImage(node) {
+    return instanceOf(node, Node)
+        && node.nodeType == Node.ELEMENT_NODE 
+        && (ckft.dom.getTagName(node) == 'IMG'
+            || (ckft.dom.getTagName(node) == 'INPUT'
+                && 'type' in node
+                && node.type == 'image'));
+}
+
+/** @return true iff node is a non-whitespace text element */
+function isText(node) {
+    if (!instanceOf(node, Node)) return false;
+    return node.nodeType == Node.TEXT_NODE && node.textContent.match(/\S/);
+}
+
+/** @return true if node is a password input */
+function isPassword(/*Node*/ node) {
+    if (!instanceOf(node, Node) || node.nodeType != Node.ELEMENT_NODE) return false;
+    if ('type' in node && ckft.dom.getTagName(node) == 'INPUT' && node.type == 'password') return true;
+    return false;
 }
 
 /**
  * Returns true iff node is an image element of reasonable size.
  */
 function isSignificantImage(node) {
-  if (!instanceOf(node, Node)) return false;
-  return ckft.util.strings.upperCaseOrNull(node.tagName) == 'IMG'
-         && node.width > 1 && node.height > 1;
+  return isImage(node) && node.width > 1 && node.height > 1;
 }
 
 /**

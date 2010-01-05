@@ -1,5 +1,5 @@
 goog.require('goog.string');
-goog.require('ckft.util.strings');
+goog.require('ckft.dom');
 
 function Table() {
   // exports
@@ -62,23 +62,23 @@ function Table() {
   function getFirstRow(table){
     var row = table.firstChild;
     do{
-      if(row.nodeType == 1 && ckft.util.strings.upperCaseOrNull(row.tagName) == "TR")
+      if(row.nodeType == 1 && ckft.dom.getTagName(row) == "TR")
         return row
     }while(row = row.nextSibling);
   }
   
   function getParentRow(cell){
     var parent = cell.parentNode;
-    if(ckft.util.strings.upperCaseOrNull(parent.tagName) == "TR")
+    if(ckft.dom.getTagName(parent) == "TR")
       return cell.parentNode
-    else if(ckft.util.strings.upperCaseOrNull(cell.tagName) == "TABLE")
+    else if(ckft.dom.getTagName(cell) == "TABLE")
       return null
     else
       return getParentRow(cell)
   }
   
   function getParentTable(node){
-    if(node.nodeType == 1 && ckft.util.strings.upperCaseOrNull(node.tagName) == "TABLE"){ return node }
+    if(node.nodeType == 1 && ckft.dom.getTagName(node) == "TABLE"){ return node }
     else{ return getParentTable(node.parentNode) }
   }
   
@@ -113,9 +113,9 @@ function Table() {
      *  styling.
      */
     var next = row.nextSibling;
-    if(next != null){
-      if(next.nodeType == 1){
-        if(ckft.util.strings.upperCaseOrNull(next.tagName) == "TR"){
+    if (next != null){
+      if (next.nodeType == 1){
+        if (ckft.dom.getTagName(next) == "TR"){
           return next;
         }
       }
@@ -170,7 +170,7 @@ function Table() {
     }
     var tree = document.createTreeWalker(table,NodeFilter.SHOW_ELEMENT,onlyElements,false)
     while((branch = tree.nextNode()) != null){
-      if(ckft.util.strings.upperCaseOrNull(branch.tagName) == "TABLE")
+      if(ckft.dom.getTagName(branch) == "TABLE")
         return false
     }
     return true
@@ -180,7 +180,7 @@ function Table() {
     var text = 0; var element = 0;
     function isTabular(n){
       if(n.nodeType == 1){
-        switch(ckft.util.strings.upperCaseOrNull(n.tagName)){
+        switch(ckft.dom.getTagName(n)){
           case "TBODY": return true; break;
           case "TR":return true;break;
           case "TD":return true;break;

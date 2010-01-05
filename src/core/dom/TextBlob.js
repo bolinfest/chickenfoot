@@ -121,7 +121,7 @@ TextBlobIterator.prototype.next = function() {
     //debug("looking at " + node);
     
     if (node.nodeType == Node.ELEMENT_NODE
-        && !TextBlob.isFlowTag[ckft.util.strings.upperCaseOrNull(node.tagName)]
+        && !TextBlob.isFlowTag[ckft.dom.getTagName(node)]
         && blob) {
       // we're entering a new block element, so close off the blob
       break;
@@ -150,7 +150,7 @@ TextBlobIterator.prototype.next = function() {
       iteratorDone = !iterator.parentNode();
       if (!iteratorDone) {
         node = iterator.currentNode;
-        if (blob && !TextBlob.isFlowTag[ckft.util.strings.upperCaseOrNull(node.tagName)]) {
+        if (blob && !TextBlob.isFlowTag[ckft.dom.getTagName(node)]) {
           // we're leaving a block element, so close off the blob
           blobDone = true;
         }
@@ -171,7 +171,7 @@ true otherwise */
 TextBlobIterator.prototype._isElementIncluded = function(/*Node*/ node) {
     var hiddenElements = { STYLE:1, SCRIPT:1, NOSCRIPT:1 };
     
-    if (node.tagName && hiddenElements[ckft.util.strings.upperCaseOrNull(node.tagName)]) {
+    if (node.tagName && hiddenElements[ckft.dom.getTagName(node)]) {
         return false;
     }
        
@@ -200,57 +200,62 @@ TextBlobIterator.prototype._makeBlob = function() {
  * @return string of text or null if node type offers no visible text.
  */
 TextBlobIterator.prototype._getTextOfNode = function(/*Node*/ node) {
-  if (node.nodeType == Node.TEXT_NODE) return node.nodeValue;
+    if (node.nodeType == Node.TEXT_NODE) return node.nodeValue;
   
-  if (node.nodeType == Node.ELEMENT_NODE) {      
-    if (ckft.util.strings.upperCaseOrNull(node.tagName) == 'INPUT'
-        && (node.type == 'submit'
-            || node.type == 'button'
-            || node.type == 'reset'
-            || node.type == 'image')
-        && node.value) {
-      // labels of buttons (BUTTON elements have their labels as text nodes, so that's
-      // handled above)
-      return node.value;
-    }
+    if (node.nodeType == Node.ELEMENT_NODE) {
+        var tagName = ckft.dom.getTagName(node);      
+        if (tagName == 'INPUT'
+            && (node.type == 'submit'
+                || node.type == 'button'
+                || node.type == 'reset'
+                || node.type == 'image')
+            && node.value) {
+            // labels of buttons (BUTTON elements have their labels as text nodes, so that's
+            // handled above)
+            return surroundWithSpaces(node.value);
+        }
     
-    if (node.tagName == 'description') {
-      return node.textContent; }
-    
-    if (node.tagName == 'label') {
-      if (node.getAttribute('value')) {return node.getAttribute('value');}
-      else {return node.textContent; }
-      }
-    
-    if (node.tagName == 'textbox'
-        || node.tagName == 'xul:textbox'
-        || node.tagName == 'listbox') {
-      return node.id; }
+        if (tagName == 'TEXTBOX'
+            || tagName == 'XUL:TEXTBOX'
+            || tagName == 'LISTBOX') {
+            return surroundWithSpaces(node.id); 
+        }
       
-    if (node.tagName == 'button'
-       || node.tagName == 'toolbarbutton'
-       || node.tagName == 'checkbox'
-       || node.tagName == 'radio'
-       || node.tagName == 'menulist') {
-      return (node.id + " " + node.getAttribute('label') + " " + node.tooltiptext + " " + node.label);}
+        if (tagName == 'BUTTON'
+            || tagName == 'TOOLBARBUTTON'
+            || tagName == 'CHECKBOX'
+            || tagName == 'RADIO'
+            || tagName == 'MENULIST') {
+            return surroundWithSpaces(ckft.util.strings.join(" ", node.id, node.getAttribute('label'), node.label, node.tooltiptext));
+        }
     
-    if ((node.tagName == 'menu')
-       || (node.tagName == 'tab')
-       || (node.tagName == 'menuitem')
-       || (node.tagName == 'listitem')
-       || (node.tagName == 'xul:toolbarbutton')
-       || (node.tagName == 'caption')) {
-      return (node.getAttribute('label') + " " + node.label); }
+        if (tagName == 'MENU'
+            || tagName == 'TAB'
+            || tagName == 'MENUITEM'
+            || tagName == 'LISTITEM'
+            || tagName == 'XUL:TOOLBARBUTTON'
+            || tagName == 'CAPTION') {
+            return surroundWithSpaces(ckft.util.strings.join(" ", node.getAttribute('label'), node.label)); 
+        }
     
-    if ('alt' in node) {
-      // ALT attributes for images
-      return node.alt; }
+        if ('alt' in node) {
+            // ALT attributes for images
+            return surroundWithSpaces(node.alt); 
+        }    
     
-    
-  }
+    }
   
-  // otherwise
-  return null;
+    // otherwise
+    return null;
+    
+    /**
+     * Put spaces around s, unless s is null in which case pass it through untouched.
+     * @param {string?} s
+     * @return {string?}
+     */
+    function surroundWithSpaces(s) {
+        return s ? " " + s + " " : null;
+    }
 }
 
 /**

@@ -1,4 +1,4 @@
-goog.require('ckft.util.strings');
+goog.require('ckft.dom');
 
 /**
     Animates a growing green transparent rectangle over the given node,
@@ -68,7 +68,7 @@ function /*void*/ animateTransparentRectangleOverNode(/*Node*/ node, /*function*
     // if the node is a listitem in some combo box,
     // then we usually want to highlight the combo box itself,
     // which is the parent of the listitem
-    if (ckft.util.strings.upperCaseOrNull(node.tagName) == "OPTION") {
+    if (ckft.dom.getTagName(node) == "OPTION") {
         node = node.parentNode
     }
     

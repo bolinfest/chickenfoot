@@ -20,41 +20,43 @@
  * be obtained with Test.summarizeAllTests().
  */
 
-
-// Define Test only if it hasn't already been defined.
-// This allows include("Test.js") to be done multiple times
-// without harm.
-if (this.Test === undefined) {    
+// If Test has already been included, don't define it again, because
+// we don't want to lose the global state in Test.allTests.
+if (this.Test == undefined) {
+    include("closure-lite.js");
+    goog.provide('ckft.Test');
+    
     /**
      * Make a new test suite.
-     * @param {string=} name   optional name of test suite
+     * @param {string} name   name of test suite
      * @constructor
      */
     Test = function(name) {
-      this.name = name;
-      this.tests = 0;
-      this.successes = 0;
+        this.name = name;
+        this.tests = 0;
+        this.successes = 0;
       
-      try {
-          // set dom.max_script_run_time to infinity, so that Mozilla doesn't
-          // interrupt possibly-slow testing with "Do you want to abort this?"
-          var prefs = Components.classes["@mozilla.org/preferences-service;1"]
-                        .getService(Components.interfaces.nsIPrefBranch);  
-          this.old_max_script_run_time = prefs.getIntPref("dom.max_script_run_time");
-          prefs.setIntPref("dom.max_script_run_time", 500000);
-      } catch (e) {
-          // client-side Chickenfoot will throw exceptions from this code      
-      }
+        try {
+            // set dom.max_script_run_time to infinity, so that Mozilla doesn't
+            // interrupt possibly-slow testing with "Do you want to abort this?"
+            var prefs = Components.classes["@mozilla.org/preferences-service;1"]
+                            .getService(Components.interfaces.nsIPrefBranch);  
+            this.old_max_script_run_time = prefs.getIntPref("dom.max_script_run_time");
+            prefs.setIntPref("dom.max_script_run_time", 500000);
+        } catch (e) {
+            // client-side Chickenfoot will throw exceptions from this code      
+        }
       
-      if (name) output(name + " ****************************** "); 
+        output(name + " ****************************** "); 
         
-      Test.allTests.push(this);
+        Test.allTests.push(this);
     }
-
+    
+    
     /**
      * List of all Test objects ever created.
      * @type {Array.Test}
-     */    
+     */
     Test.allTests = [];
     
     /**
@@ -82,7 +84,7 @@ if (this.Test === undefined) {
      * "x/y tests succeeded, z FAILED"
      */
     Test.prototype.toString = function() {
-      return (this.name ? this.name + ": " : "") +
+      return this.name + ": " +
                 this.successes + "/" + this.tests + " tests succeeded" +
               (this.successes != this.tests
                       ? ", " + (this.tests - this.successes) + " FAILED"
@@ -123,7 +125,7 @@ if (this.Test === undefined) {
         try {
             testFunction();
         } catch (msg) {
-            if (instanceOf(msg, UserStopped)) throw msg;
+            if (msg instanceof Chickenfoot.UserStopped) throw msg;
             output(msg);
             return; // without incrementing successes
         }
@@ -183,5 +185,4 @@ if (this.Test === undefined) {
     Test.fail = function(message) {
         Test.assertTrue(false, message);
     }
-
 }

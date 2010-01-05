@@ -1,7 +1,7 @@
 goog.require('goog.string');
 goog.require('goog.style');
 goog.require('ckft.dom.Box');
-goog.require('ckft.util.strings');
+goog.require('ckft.dom');
 
 // don't attempt labelling if node count exceeds this
 const RECORDER_NODE_THRESHOLD = 2200; 
@@ -44,8 +44,8 @@ function generateCommandDetails(/*Element*/ e, /*String*/ eventType) {
       e = getContainedTextOrImage(e);
     }
   } else if (eventType == "change") {
-    if (!ElementTypes.isTextbox(e) && !ElementTypes.isRadioButton(e) 
-        && !ElementTypes.isCheckbox(e) && !ElementTypes.isListbox(e)) {
+    if (!isTextbox(e) && !isRadioButton(e) 
+        && !isCheckbox(e) && !isListbox(e)) {
 		  while (e.nodeName != "BODY") {
 		    var forNodeId = e.getAttribute ? e.getAttribute("for") : null;
 		    if (forNodeId) {
@@ -55,16 +55,16 @@ function generateCommandDetails(/*Element*/ e, /*String*/ eventType) {
 		      e = e.parentNode;
 		    }
 		}
-    if (ElementTypes.isTextbox(e)) {
+    if (isTextbox(e)) {
         action = Command.ENTER_COMMAND;
         value = e.value;
-		} else if (ElementTypes.isRadioButton(e)) {
+		} else if (isRadioButton(e)) {
 		    action = Command.CHECK_COMMAND;
 		    value = "true";
-		} else if (ElementTypes.isCheckbox(e)) {
+		} else if (isCheckbox(e)) {
 		    action = Command.CHECK_COMMAND;
 		    value = e.checked + "";
-		} else if (ElementTypes.isListbox(e)) {
+		} else if (isListbox(e)) {
 		    action = Command.CHOOSE_COMMAND;
 		    value = e.options[e.selectedIndex].textContent;
 		}	
@@ -257,7 +257,7 @@ function getClickableTarget(/*Element*/ e) {
     var currentNode = e;
     
     while (currentNode && currentNode.nodeName != "BODY") {
-        if (ElementTypes.isClickable(currentNode)) {
+        if (isClickable(currentNode)) {
             return currentNode;
         }
             
@@ -377,11 +377,11 @@ function getLabelForElement(/*Element*/ e) {
         var l = getClosestLabelTo(e);
         if (l != "") label = l;
     }
-    else if (ElementTypes.isClickable(e)) {
+    else if (isClickable(e)) {
         var node = getContainedTextOrImage(e);
 
         if (node) {
-            if (ElementTypes.isText(node)) {
+            if (isText(node)) {
                 if (node.textContent.match(/\S/)) label = node.textContent;
             }
             else if (node.getAttribute("alt") && node.getAttribute("alt").match(/\S/)) {
@@ -489,110 +489,21 @@ ElementTypes.TEXT = "text";
 ElementTypes.OTHER = "other";
 
 ElementTypes.getType = function(/*Element*/ node) {
-    if (ElementTypes.isPassword(node)) return ElementTypes.PASSWORD_BOX;
-	else if (ElementTypes.isTextbox(node)) return ElementTypes.TEXT_BOX;
-	else if (ElementTypes.isCheckbox(node)) return ElementTypes.CHECK_BOX;
-	else if (ElementTypes.isRadioButton(node)) return ElementTypes.RADIO_BUTTON;
-	else if (ElementTypes.isListitem(node)) return ElementTypes.LIST_ITEM;
-	else if (ElementTypes.isListbox(node)) return ElementTypes.LIST_BOX;
-	else if (ElementTypes.isButton(node)) return ElementTypes.BUTTON;
-	else if (ElementTypes.isLink(node)) return ElementTypes.LINK;
-	else if (ElementTypes.isImage(node)) return ElementTypes.IMAGE;
-	else if (ElementTypes.isText(node)) return ElementTypes.TEXT;
+    if (isPassword(node)) return ElementTypes.PASSWORD_BOX;
+	else if (isTextbox(node)) return ElementTypes.TEXT_BOX;
+	else if (isCheckbox(node)) return ElementTypes.CHECK_BOX;
+	else if (isRadioButton(node)) return ElementTypes.RADIO_BUTTON;
+	else if (isListitem(node)) return ElementTypes.LIST_ITEM;
+	else if (isListbox(node)) return ElementTypes.LIST_BOX;
+	else if (isClickable(node)) return ElementTypes.BUTTON;
+	else if (isLink(node)) return ElementTypes.LINK;
+	else if (isSignificantImage(node)) return ElementTypes.IMAGE;
+	else if (isText(node)) return ElementTypes.TEXT;
 	else return ElementTypes.OTHER;
 }
 
-/** @return true iff node is a button */
-ElementTypes.isButton = function(/*Node*/ node) {
-  return instanceOf(node, Node)
-    && node.nodeType == Node.ELEMENT_NODE 
-    && (ckft.util.strings.upperCaseOrNull(node.tagName) == 'BUTTON'
-        || (ckft.util.strings.upperCaseOrNull(node.tagName) == 'INPUT'
-            && 'type' in node
-            && (node.type == 'submit'
-                || node.type == 'button'
-                || node.type == 'reset')));
-}
 
-/** @return true iff node is a hyperlink  */
-ElementTypes.isLink = function(/*Node*/ node) {
-  return instanceOf(node, Node)
-    && node.nodeType == Node.ELEMENT_NODE 
-    && ckft.util.strings.upperCaseOrNull(node.tagName) == 'A';
-}
 
-/** @return true iff node is clickable (or at least likely to be */
-ElementTypes.isClickable = function(/*Node*/ node) {
-    return instanceOf(node, Node)
-        && node.nodeType == Node.ELEMENT_NODE
-        && (ElementTypes.isButton(node) 
-            || ElementTypes.isLink(node)
-            || (ckft.util.strings.upperCaseOrNull(node.tagName) == 'INPUT' && node.type == 'image')
-            || node.hasAttribute('onclick')
-            || goog.style.getComputedStyle(node, "cursor") == "pointer");
-}
-
-/** @return true if the node is a text input */
-ElementTypes.isTextbox = function(/*Node*/ node) {
-  if (!instanceOf(node, Node) || node.nodeType != Node.ELEMENT_NODE) return false;
-  if (ckft.util.strings.upperCaseOrNull(node.tagName) == 'TEXTAREA') return true;
-  if ('type' in node && ckft.util.strings.upperCaseOrNull(node.tagName) == 'INPUT') {
-    var type = node.type;
-    if (type == 'text'
-        || type == 'password'
-        || type == 'file') {
-      return true;
-    }
-  }
-  return false;
-}
-
-/** @return true if node is a password input */
-ElementTypes.isPassword = function(/*Node*/ node) {
-    if (!instanceOf(node, Node) || node.nodeType != Node.ELEMENT_NODE) return false;
-    if ('type' in node && ckft.util.strings.upperCaseOrNull(node.tagName) == 'INPUT' && node.type == 'password') return true;
-    return false;
-}
-
-/** @return true iff the node is a listbox (select) */
-ElementTypes.isListbox = function(/*<Node>*/ node) {
-  if (!instanceOf(node, Node) || node.nodeType != Node.ELEMENT_NODE) return false;
-  return (ckft.util.strings.upperCaseOrNull(node.tagName) == 'SELECT');
-}
-
-/** @return true iff the node is a checkbox */
-ElementTypes.isCheckbox = function(node) {
-  if (!instanceOf(node, Node) || node.nodeType != Node.ELEMENT_NODE) return false;
-  return ckft.util.strings.upperCaseOrNull(node.tagName) == 'INPUT' && node.type == 'checkbox';
-}
-
-/** @return true iff the node is a radio button */
-ElementTypes.isRadioButton = function(node) {
-  if (!instanceOf(node, Node) || node.nodeType != Node.ELEMENT_NODE) return false;
-  return ckft.util.strings.upperCaseOrNull(node.tagName) == 'INPUT' && node.type == 'radio';
-}
-
-/** @return true iff the node is a listitem (option) */
-ElementTypes.isListitem = function(/*Node*/ node) {
-    if (!instanceOf(node, Node) || node.nodeType != Node.ELEMENT_NODE) return false;
-    return (ckft.util.strings.upperCaseOrNull(node.tagName) == 'OPTION') || (ckft.util.strings.upperCaseOrNull(node.tagName) == 'INPUT' && node.type == 'option');
-}
-
-/** @return true iff node is an image element */
-ElementTypes.isImage = function(node) {
-    return instanceOf(node, Node)
-        && node.nodeType == Node.ELEMENT_NODE 
-        && (ckft.util.strings.upperCaseOrNull(node.tagName) == 'IMG'
-            || (ckft.util.strings.upperCaseOrNull(node.tagName) == 'INPUT'
-                && 'type' in node
-                && node.type == 'image'));
-}
-
-/** @return true iff node is a non-whitespace text element */
-ElementTypes.isText = function(node) {
-    if (!instanceOf(node, Node)) return false;
-    return node.nodeType == Node.TEXT_NODE && node.textContent.match(/\S/);
-}
 
 var Command = new Object();
 Command.GO_COMMAND = "go";

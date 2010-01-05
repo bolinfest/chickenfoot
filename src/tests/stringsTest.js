@@ -37,6 +37,14 @@ with (Chickenfoot) {
     Test.assertEquals(d.cookedToRaw(8), 14);
   });
 
+  t.test(function() {
+      Test.assertEquals(ckft.util.strings.join(",", "a", "b", "c"), "a,b,c");
+      Test.assertEquals(ckft.util.strings.join(","), null);
+      Test.assertEquals(ckft.util.strings.join(",", null, undefined, null), null);
+      Test.assertEquals(ckft.util.strings.join(",", "a", null, "b", undefined), "a,b");
+      Test.assertEquals(ckft.util.strings.join(",", "a", null), "a");
+  });
+  
   t.close();
     
 }

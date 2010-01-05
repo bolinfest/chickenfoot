@@ -1,4 +1,4 @@
-goog.require('ckft.util.strings');
+goog.require('ckft.dom');
 
 /**
  * Contains the code for the click() primitive
@@ -113,7 +113,7 @@ function clickImpl(/*Document*/ doc, /*string*/ pattern, /*chromeWindow*/chrome,
        }
        
        if (allowDefaultAction
-          && ckft.util.strings.upperCaseOrNull(element.tagName) == "A"
+          && ckft.dom.getTagName(element) == "A"
           && element.href
           && !element.target) {
         // We want to exclude anchor tags that are not links, such as:

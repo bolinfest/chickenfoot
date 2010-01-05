@@ -9,12 +9,32 @@ goog.provide('ckft.util.strings.DeleteMap');
 /**
  * Convert a string to upper case, passing through null unchanged.
  * Particularly useful for tagname comparisions, e.g. ckft.util.strings.upperCaseOrNull(node.tagName) == "SCRIPT".
- * @param {string} s
- * @return {string} s.toUpperCase if s is nonnull, otherwise null 
+ * @param {string?} s
+ * @return {string?} s.toUpperCase if s is nonnull, otherwise null 
  */
 ckft.util.strings.upperCaseOrNull = function(s) {
     return (s == null) ? null : s.toUpperCase();
 }
+
+/**
+ * Join a sequence of strings together separated by the given separator, omitting any that are null or undefined.
+ * If all arguments are null, simply returns null.
+ * @param {string} separator  separator to put between strings
+ * @param {...string?} var_args  strings to concatenate
+ * @return {string?} concatenation of strings
+ */
+ckft.util.strings.join =  function(separator, var_args) {
+    var result = null;
+    // skip argument[0], since it's separator  
+    for (var i = 1; i < arguments.length; ++i) {
+        var arg = arguments[i];
+        if (arg != null && arg != undefined) {
+            result = (result == null) ? arg : result + separator + arg;
+        }
+    }
+    return result;
+}
+
 
 
 /**
@@ -31,7 +51,7 @@ ckft.util.strings.upperCaseOrNull = function(s) {
  * @return {string} str with leading and trailing whitespace removed, and internal
  *                  whitespace replaced with a single space
  */
-ckft.util.strings.condenseSpaces = function(/*string*/ str, /*optional DeleteMap*/ map) {
+ckft.util.strings.condenseSpaces = function(str, map) {
     var totalDeletions = 0;
     if (str == null) return "";
     return str.replace(/\s+/gm, getReplacement);
@@ -39,7 +59,7 @@ ckft.util.strings.condenseSpaces = function(/*string*/ str, /*optional DeleteMap
   /**
    * Function to apply to each run of whitespace in the string.
    * @param {string} spacesMatched   the run of whitespace
-   * @param {int} offset  The offset where the run starts
+   * @param {number} offset  The offset where the run starts
    * @param {string} originalString  the entire string being condensed (the str parameter to condenseSpaces)
    * @return {string} string that should replace spacesMatched in originalString
    * @private
@@ -103,7 +123,7 @@ ckft.util.strings.DeleteMap = function() {
  * @param {number} cookedOffset  offset in the cooked string where the deleted substring appeared
  * @param {number} len length of deleted substring
  */
-ckft.util.strings.DeleteMap.prototype.add = function(/*int*/ cookedOffset, /*int*/ len) {
+ckft.util.strings.DeleteMap.prototype.add = function(cookedOffset, len) {
     this.map.push(cookedOffset);
     this.map.push(len);
 }
@@ -117,7 +137,7 @@ ckft.util.strings.DeleteMap.prototype.add = function(/*int*/ cookedOffset, /*int
  * @param {number} cooked   offset in cooked text, >= 0
  * @return {number} corresponding offset in raw text, >= 0
  */
-ckft.util.strings.DeleteMap.prototype.cookedToRaw = function(/*int*/ cooked) {
+ckft.util.strings.DeleteMap.prototype.cookedToRaw = function(cooked) {
     var totalDeletions = 0;
     for (var i = 0; i < this.map.length; i += 2) {
         var posI = this.map[i];
