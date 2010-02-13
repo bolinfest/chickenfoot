@@ -412,6 +412,9 @@
         <copy todir="${xpi.dir}/libraries" overwrite="true">
           <fileset dir="${libraries.dir}" />
         </copy>
+        <copy file="${build.dir}/closure.js"
+              tofile="${xpi.dir}/libraries/closure-lite.js"
+              overwrite="true" />
 
         <!-- setup folder -->
         <mkdir dir="${xpi.dir}/setup" />

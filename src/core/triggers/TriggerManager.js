@@ -193,6 +193,16 @@ TriggerManager.prototype.deleteDuplicate = function(/*string*/ name){
     return;
 }
 
+var removeXmlChars = function(str) {
+  if (!str) return "";
+  // negative lookahead, explained:
+  // http://www.amk.ca/python/howto/regex/regex.html#SECTION000540000000000000000
+  str = str.replace(/&(?!amp;$)/g, '&amp;');
+  str = str.replace(/</g, '&lt;');
+  str = str.replace(/\"/g, '&quot;');
+  return str;
+};
+
 /**
  * Pretty-prints an XML document. Apparently, Firefox's built-in
  * XML serializer does not support a pretty-print mode.
