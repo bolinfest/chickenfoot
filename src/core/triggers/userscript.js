@@ -4,6 +4,7 @@
  * Can identify the ==UserScript== tag and attributes within it
  * 
  */
+goog.require('goog.string');
 
 /**
  * Take a string of Chickenscratch and extract any information
@@ -93,7 +94,7 @@ function updateAttributes(oldCode, map) {
   }
   
   lineBuffer.push('// ==/UserScript=='); 
-  var newCode = lineBuffer.join('\n') + "\n\n" + code;
+  var newCode = lineBuffer.join('\n') + '\n' + code;
 
   return newCode;
 }
