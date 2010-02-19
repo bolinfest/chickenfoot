@@ -1,3 +1,5 @@
+goog.require('ckft.XpiTie');
+
 /**
  *  triggers.js -- (c) .........
  */
@@ -556,8 +558,17 @@ function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
 
   //call Chickenfoot.xpiTie to actually package the extension
   var xpiFile = null;
-  try { xpiFile = Chickenfoot.xpiTie(dialogArguments.outputPath, dialogArguments.templateTags, dialogArguments.triggers, userFiles, iconPath, chromeWindow); }
-  catch (e) { alert(e); return; }
+  try {
+    xpiFile = Chickenfoot.ckft.xpiTie.createXpiTie(dialogArguments.outputPath,
+                                       dialogArguments.templateTags,
+                                       dialogArguments.triggers,
+                                       userFiles,
+                                       iconPath,
+                                       chromeWindow);
+  } catch (e) {
+    alert(e);
+    return;
+  }
   
   //alert to user with location of xpi file on completion of packaging
   var message;
