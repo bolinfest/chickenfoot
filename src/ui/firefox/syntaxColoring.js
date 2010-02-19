@@ -635,6 +635,9 @@ function charCountLength(node){
  *  returns void
  */
 function syntaxColor(node, rules) {
+  if (!isSyntaxColoring()) {
+    return;
+  }
   // rip out the text from node & put it back
   
   var ranges = findPatterns(node, rules);
