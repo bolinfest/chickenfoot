@@ -63,7 +63,7 @@ section of the Scripts Wiki</a>.
 <p/>
 
 <dt><i>closure-lite.js</i> <a href="libraries/closure-lite.html">[Learn more]</a>
-                           <a href="libraries/closure-lite.js">[Source code]</a></dt>
+                           </dt>
 <dd>
 <a href="http://programmingclosure.com/closure-lite/">Closure Lite</a> is a
 single JavaScript file that contains the core APIs of the
@@ -104,16 +104,6 @@ After you register for a license key,
 you can use the Chickenfoot wrapper for the API to add search results to any web page.
 </dd>
 
-<dt><i>google-search.js</i> <a href="libraries/google-search.html">[Learn more]</a>
-                            <a href="libraries/google-search.js">[Source code]</a></dt>
-<dd>
-Google provides a <a href="http://www.google.com/apis/">Web Service</a> that lets you
-perform 1000 Google searches per day once you register for a Google license key.
-This library makes the Web Service easily accessible from Chickenfoot.
-With it, you can perform a typical Google web search, get a spelling suggestion
-(a la <span style="color:#c00">Did you mean</span>), or get a copy of a web page from Google's cache.
-</dd>
-
 <dt><i>json.js</i> <a href="libraries/json.html">[Learn more]</a>
                    <a href="libraries/json.js">[Source code]</a></dt>
 <dd>
@@ -121,6 +111,12 @@ A JavaScript serialization/deserialization library that optionally outputs to JS
 (<a href="http://www.json.org/">http://www.json.org/</a>). The library also has a non-strict
 mode that allows some additional JavaScript types to be serialized that are not permitted in JSON,
 such as Functions, RegExps, undefined, Infinity, and NaN.
+<p/>
+Another option is to include Closure Lite and then use the
+<code>goog.json.parse</code> and <code>goog.json.serialize</code> functions
+provided by that library. Newer versions of Firefox can use the built-in
+JSON object and its methods: <code>JSON.parse</code> and
+<code>JSON.stringify</code>.
 </dd>
 
 <dt><i>prototype.js</i> <a href="libraries/prototype.html">[Learn more]</a>

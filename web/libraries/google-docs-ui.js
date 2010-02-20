@@ -3,8 +3,10 @@
  * Includes a DocPicker (for selecting a document from a user's account) and a
  * DocViewer (for displaying a selected document).
  */
+include('closure-lite.js');
 include('google-docs.js');
 
+goog.provide('gdata.docs.ui');
 goog.provide('gdata.docs.ui.DocPicker');
 goog.provide('gdata.docs.ui.DocViewer');
 goog.provide('gdata.docs.ui.DocViewer.EventType');
@@ -16,6 +18,28 @@ goog.require('goog.events.EventHandler');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 goog.require('goog.string');
+
+
+/**
+ * As of Firefox 3.0.16 or so, assigning a property to window.wrappedJSObject
+ * whose value is a function results in the following Error being thrown:
+ * 
+ * TypeError: (void 0) is not a constructor
+ * 
+ * Curiously, the assignment succeeds, but the throwing of the Error halts
+ * execution. This function wraps the assignment in a try/catch block to work
+ * around this issue.
+ * @param {!Window} win
+ * @param {string} name
+ * @param {Function} trustedFunction
+ */
+gdata.docs.ui.exportFunction = function(win, name, trustedFunction) {
+  try {
+    win[name] = trustedFunction;
+  } catch (e) {
+    // OK
+  }
+};
 
 
 /**
@@ -39,8 +63,8 @@ gdata.docs.ui.DocPicker = function(pickerEl, viewer) {
   
   // Installing privileged JS into the page, so wrappedJSObject must be used.
   win = win.wrappedJSObject;
-  win['pickerInsertHtml'] = gdata.docs.ui.insertHtml;
-  win['pickerOnFrameLoad'] = gdata.docs.ui.onFrameLoad;
+  gdata.docs.ui.exportFunction(win, 'pickerInsertHtml', gdata.docs.ui.insertHtml);
+  gdata.docs.ui.exportFunction(win, 'pickerOnFrameLoad', gdata.docs.ui.onFrameLoad);
   
   var id = gdata.docs.ui.pickerCounter_++;
   gdata.docs.ui.pickerMap_[id] = this;
@@ -252,31 +276,33 @@ gdata.docs.ui.DocViewer = function(viewerEl, options) {
    */
   this.viewerEl_ = viewerEl;
 
-  var doc = viewerEl.ownerDocument || viewerEl.document;
-  var win = doc.parentWindow || doc.defaultView;
-  win = win.wrappedJSObject || win;
+  var doc = goog.dom.getOwnerDocument(viewerEl);
+  var win = goog.dom.getWindow(doc);
+  win = win.wrappedJSObject;
+
   // This function is exported so that the IFRAME created by display() can call
   // it via its src attribute.
-  win['viewerDisplayHtml'] = function(id) {
+  gdata.docs.ui.exportFunction(win, 'viewerDisplayHtml', function(id) {
     var html = gdata.docs.ui.DocViewer.viewMap_[id];
     delete gdata.docs.ui.DocViewer.viewMap_[id];
     return html;
-  };
+  });
+
   // This function is exported so that the IFRAME created by display() can call
   // it via its onload attribute.
-  win['viewerIsLoaded'] = function(id, iframeEl) {
+  gdata.docs.ui.exportFunction(win, 'viewerIsLoaded', function(id, iframeEl) {
     var viewer = gdata.docs.ui.DocViewer.loadMap_[id];
     delete gdata.docs.ui.DocViewer.loadMap_[id];
     if (viewer.postLoadProcessor_) {
       var doc = goog.dom.getFrameContentDocument(iframeEl);
-      viewer.postLoadProcessor_(doc.wrappedJSObject);
+      viewer.postLoadProcessor_(doc);
     }
 
     // Notify listeners that the document has been loaded.
     var docLoadedEvent = new goog.events.Event(
         gdata.docs.ui.DocViewer.EventType.DOCUMENT_LOADED, viewer);
     viewer.dispatchEvent(docLoadedEvent);
-  };
+  });
 };
 goog.inherits(gdata.docs.ui.DocViewer, goog.events.EventTarget);
 
