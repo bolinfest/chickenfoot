@@ -51,13 +51,13 @@ SidebarState.prototype.restore = function(/*SidebarWindow*/ sidebarWindow) {
  * Test whether this state is dirty (i.e., some part of it still needs to be 
  * saved to disk).
  */
-SidebarState.prototype.dirty getter = function() {
+SidebarState.prototype.__defineGetter__("dirty", function() {
   for (var i = 0; i < this.preservedBuffers.length; ++i) {
     var preservedBuffer = this.preservedBuffers[i];
     if (preservedBuffer.dirty) return true;
   }
   return false;
-}
+});
 
 /**
  * Override methods on the chrome window so that

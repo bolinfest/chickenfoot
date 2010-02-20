@@ -124,27 +124,27 @@ function getEvaluationContext(/*Object*/ context,
 // to make sure the user's script is evaluated in the scope of that object.
 
   // getters for important objects
-  context.window getter= function getWindow() { return win; };
-  context.document getter= function getDocument() { return getLoadedHtmlDocument(chromeWindow, win); };
-  context.chromeWindow getter= function getChromeWindow() { return chromeWindow; };
-  context.tab getter= function getTab() { return new Tab(win); };
+  context.__defineGetter__("window", function getWindow() { return win; });
+  context.__defineGetter__("document", function getDocument() { return getLoadedHtmlDocument(chromeWindow, win); });
+  context.__defineGetter__("chromeWindow", function getChromeWindow() { return chromeWindow; });
+  context.__defineGetter__("tab", function getTab() { return new Tab(win); });
   context.scriptDir = null;
   context.scriptURL = null;
   
   // delegate to properties of window
-  context.location getter= function() { return win.location; };
-  context.frames getter= function() { return win.frames; };
-  context.frameElement getter= function() { return win.frameElement; };
-  context.history getter= function() { return win.history; };
-  context.screen getter= function() { return win.screen; };
+  context.__defineGetter__("location", function() { return win.location; });
+  context.__defineGetter__("frames", function() { return win.frames; });
+  context.__defineGetter__("frameElement", function() { return win.frameElement; });
+  context.__defineGetter__("history", function() { return win.history; });
+  context.__defineGetter__("screen", function() { return win.screen; });
 
-  context.fullScreen getter= function() { return win.fullScreen; };
-  context.fullScreen setter= function(msg) { win.fullScreen = msg; };
-  context.status getter= function() { return win.status; };
-  context.status setter= function(msg) { win.status = msg; };
-  context.defaultStatus getter= function() { return win.defaultStatus; };
-  context.defaultStatus setter= function(msg) { win.defaultStatus = msg; };
-  context.navigator getter= function() { return win.navigator; };
+  context.__defineGetter__("fullScreen", function() { return win.fullScreen; });
+  context.__defineSetter__("fullScreen", function(msg) { win.fullScreen = msg; });
+  context.__defineGetter__("status", function() { return win.status; });
+  context.__defineSetter__("status", function(msg) { win.status = msg; });
+  context.__defineGetter__("defaultStatus", function() { return win.defaultStatus; });
+  context.__defineSetter__("defaultStatus", function(msg) { win.defaultStatus = msg; });
+  context.__defineGetter__("navigator", function() { return win.navigator; });
 
   // delegate to methods of window
   context.alert = function() { return win.alert.apply(win, arguments); };
@@ -171,18 +171,18 @@ function getEvaluationContext(/*Object*/ context,
   context.clearTimeout = function() { return chromeWindow.clearTimeout.apply(chromeWindow, arguments); };
 
   // core client-side Javascript classes
-  context.Packages getter= function() { return chromeWindow.Packages; };
-  context.java getter= function() { return chromeWindow.java; };
-  context.Node getter= function() { return chromeWindow.Node; };
-  context.NodeFilter getter= function() { return chromeWindow.NodeFilter; };
-  context.Document getter= function() { return chromeWindow.Document; };
-  context.DocumentFragment getter= function() { return chromeWindow.DocumentFragment; };
-  context.DOMParser getter= function() { return chromeWindow.DOMParser; };
-  context.Element getter= function() { return chromeWindow.Element; };
-  context.Range getter= function() { return chromeWindow.Range; };
-  context.XPathResult getter= function() { return chromeWindow.XPathResult; };
-  context.XMLHttpRequest getter= function() { return chromeWindow.XMLHttpRequest; };
-  context.Components getter= function() { return chromeWindow.Components; };
+  context.__defineGetter__("Packages", function() { return chromeWindow.Packages; });
+  context.__defineGetter__("java", function() { return chromeWindow.java; });
+  context.__defineGetter__("Node", function() { return chromeWindow.Node; });
+  context.__defineGetter__("NodeFilter", function() { return chromeWindow.NodeFilter; });
+  context.__defineGetter__("Document", function() { return chromeWindow.Document; });
+  context.__defineGetter__("DocumentFragment", function() { return chromeWindow.DocumentFragment; });
+  context.__defineGetter__("DOMParser", function() { return chromeWindow.DOMParser; });
+  context.__defineGetter__("Element", function() { return chromeWindow.Element; });
+  context.__defineGetter__("Range", function() { return chromeWindow.Range; });
+  context.__defineGetter__("XPathResult", function() { return chromeWindow.XPathResult; });
+  context.__defineGetter__("XMLHttpRequest", function() { return chromeWindow.XMLHttpRequest; });
+  context.__defineGetter__("Components", function() { return chromeWindow.Components; });
   
   // Chickenfoot commands
   context.go = function go(url, reload) { goImpl(win, url, reload); };
@@ -246,7 +246,7 @@ function getEvaluationContext(/*Object*/ context,
   }
   
   context.Chrome = function openChrome(cwin) { return new Chrome(cwin ? cwin : chromeWindow); };
-  context.chrome getter = function getChrome() { return new Chrome(chromeWindow); };
+  context.__defineGetter__("chrome", function getChrome() { return new Chrome(chromeWindow); });
 
   context.wait = function wait(tabs) { return waitImpl(chromeWindow, tabs, true); };
   context.ready = function ready(tabs) { return waitImpl(chromeWindow, tabs, false); };
@@ -265,7 +265,7 @@ function getEvaluationContext(/*Object*/ context,
   context.Chickenfoot = Chickenfoot;
   context.chickenscratchEvaluate = chickenscratchEvaluate;
   // global space for sharing data between script runs
-  context.global getter = function getGlobal() { return global; };
+  context.__defineGetter__("global", function getGlobal() { return global; });
 
   // additional context
   if (extraContext) {

@@ -13,10 +13,10 @@ Chrome.prototype.toString = function() {
   return "[object Chrome]"; 
 };
 
-Chrome.prototype.document getter = function() { 
-  return this._window.document; }
-  
-Chrome.prototype.window getter = function getWindow() { return this._window; }
+Chrome.prototype.__defineGetter__("document",
+    function() { return this._window.document; });
+
+Chrome.prototype.__defineGetter__("window", function getWindow() { return this._window; });
 Chrome.prototype.go = function go(url, reload) { goImpl(this._window, url, reload); }
 Chrome.prototype.reload = function reload() { this._window.location.reload(); };
 Chrome.prototype.find = function find(pattern) { return Pattern.find(this.document, pattern); }
@@ -92,39 +92,39 @@ Chrome.prototype.title = function() {return this._window.title;}
 Chrome.prototype.updateCommands = function() { return this._window.updateCommands.apply(this._window, arguments); }
 
 // properties of window
-Chrome.prototype.closed getter = function() { return this._window.closed; }
-Chrome.prototype.constructor getter = function() { return this._window.constructor; }
-Chrome.prototype.content getter = function() { return this._window.content; }
-Chrome.prototype.controllers getter = function() { return this._window.controllers; }
-Chrome.prototype.crypto getter = function() { return this._window.crypto; }
-Chrome.prototype.defaultStatus getter = function() { return this._window.defaultStatus; }
-Chrome.prototype.directories getter = function() { return this._window.directories; }
-Chrome.prototype.frameElement getter = function() { return this._window.frameElement; }
-Chrome.prototype.frames getter = function() { return this._window.frames; }
-Chrome.prototype.fullScreen getter = function() { return this._window.fullScreen; }
-Chrome.prototype.innerHeight getter = function() { return this._window.innerHeight; }
-Chrome.prototype.innerWidth getter = function() { return this._window.innerWidth; }
-Chrome.prototype.length getter = function() { return this._window.length; }
-Chrome.prototype.locationbar getter = function() { return this._window.locationbar; }
-Chrome.prototype.menubar getter = function() { return this._window.menubar; }
-Chrome.prototype.name getter = function() { return this._window.name; }
-Chrome.prototype.navigator getter = function() { return this._window.navigator; }
-Chrome.prototype.opener getter = function() { return this._window.opener; }
-Chrome.prototype.outerHeight getter = function() { return this._window.outerHeight; }
-Chrome.prototype.outerWidth getter = function() { return this._window.outerWidth; }
-Chrome.prototype.pageXOffset getter = function() { return this._window.pageXOffset; }
-Chrome.prototype.pageYOffset getter = function() { return this._window.pageYOffset; }
-Chrome.prototype.parent getter = function() { return this._window.parent; }
-Chrome.prototype.personalbar getter = function() { return this._window.personalbar; }
-Chrome.prototype.pkcs11 getter = function() { return this._window.pkcs11; }
-Chrome.prototype.screen getter = function() { return this._window.screen; }
-Chrome.prototype.screenX getter = function() { return this._window.screenX; }
-Chrome.prototype.screenY getter = function() { return this._window.screenY; }
-Chrome.prototype.scrollbars getter = function() { return this._window.scrollbars; }
-Chrome.prototype.scrollX getter = function() { return this._window.scrollX; }
-Chrome.prototype.scrollY getter = function() { return this._window.scrollY; }
-Chrome.prototype.self getter = function() { return this._window.self; }
-Chrome.prototype.status getter = function() { return this._window.status; }
-Chrome.prototype.statusbar getter = function() { return this._window.statusbar; }
-Chrome.prototype.toolbar getter = function() { return this._window.toolbar; }
-Chrome.prototype.top getter = function() { return this._window.top; }
+Chrome.prototype.__defineGetter__("closed", function() { return this._window.closed; });
+Chrome.prototype.__defineGetter__("constructor", function() { return this._window.constructor; });
+Chrome.prototype.__defineGetter__("content", function() { return this._window.content; });
+Chrome.prototype.__defineGetter__("controllers", function() { return this._window.controllers; });
+Chrome.prototype.__defineGetter__("crypto", function() { return this._window.crypto; });
+Chrome.prototype.__defineGetter__("defaultStatus", function() { return this._window.defaultStatus; });
+Chrome.prototype.__defineGetter__("directories", function() { return this._window.directories; });
+Chrome.prototype.__defineGetter__("frameElement", function() { return this._window.frameElement; });
+Chrome.prototype.__defineGetter__("frames", function() { return this._window.frames; });
+Chrome.prototype.__defineGetter__("fullScreen", function() { return this._window.fullScreen; });
+Chrome.prototype.__defineGetter__("innerHeight", function() { return this._window.innerHeight; });
+Chrome.prototype.__defineGetter__("innerWidth", function() { return this._window.innerWidth; });
+Chrome.prototype.__defineGetter__("length", function() { return this._window.length; });
+Chrome.prototype.__defineGetter__("locationbar", function() { return this._window.locationbar; });
+Chrome.prototype.__defineGetter__("menubar", function() { return this._window.menubar; });
+Chrome.prototype.__defineGetter__("name", function() { return this._window.name; });
+Chrome.prototype.__defineGetter__("navigator", function() { return this._window.navigator; });
+Chrome.prototype.__defineGetter__("opener", function() { return this._window.opener; });
+Chrome.prototype.__defineGetter__("outerHeight", function() { return this._window.outerHeight; });
+Chrome.prototype.__defineGetter__("outerWidth", function() { return this._window.outerWidth; });
+Chrome.prototype.__defineGetter__("pageXOffset", function() { return this._window.pageXOffset; });
+Chrome.prototype.__defineGetter__("pageYOffset", function() { return this._window.pageYOffset; });
+Chrome.prototype.__defineGetter__("parent", function() { return this._window.parent; });
+Chrome.prototype.__defineGetter__("personalbar", function() { return this._window.personalbar; });
+Chrome.prototype.__defineGetter__("pkcs11", function() { return this._window.pkcs11; });
+Chrome.prototype.__defineGetter__("screen", function() { return this._window.screen; });
+Chrome.prototype.__defineGetter__("screenX", function() { return this._window.screenX; });
+Chrome.prototype.__defineGetter__("screenY", function() { return this._window.screenY; });
+Chrome.prototype.__defineGetter__("scrollbars", function() { return this._window.scrollbars; });
+Chrome.prototype.__defineGetter__("scrollX", function() { return this._window.scrollX; });
+Chrome.prototype.__defineGetter__("scrollY", function() { return this._window.scrollY; });
+Chrome.prototype.__defineGetter__("self", function() { return this._window.self; });
+Chrome.prototype.__defineGetter__("status", function() { return this._window.status; });
+Chrome.prototype.__defineGetter__("statusbar", function() { return this._window.statusbar; });
+Chrome.prototype.__defineGetter__("toolbar", function() { return this._window.toolbar; });
+Chrome.prototype.__defineGetter__("top", function() { return this._window.top; });

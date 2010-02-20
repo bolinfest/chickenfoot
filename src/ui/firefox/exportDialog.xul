@@ -201,7 +201,7 @@
       CHICKENFOOT_GUID : chickenfootGuid,
       CHICKEN_BYPASS_GUID : chickenbypassGuid,
       CHICKENFOOT_COMMAND_LINE_HANDLER_GUID : chickenfootCommandLineHandlerGuid,
-      IS_EXPORTED_XPI : "true",
+      IS_EXPORTED_XPI : "yes",
       EXTENSION_URL : Chickenfoot.removeXmlChars(Chickenfoot.goog.string.trim(gel('updateURL').value))
     };
     

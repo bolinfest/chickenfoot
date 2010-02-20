@@ -87,8 +87,8 @@ Buffer = function(/*optional File*/ file,
     editor.setAttribute("multiline", "true");
     editor.setAttribute("style", "font-size: 8pt; font-family: monospace;");
 
-    this.text getter = function() { return this.editor.value; };
-    this.text setter = function(newScript) { this.editor.value = newScript; };
+    this.__defineGetter__("text", function() { return this.editor.value; });
+    this.__defineSetter__("text", function(newScript) { this.editor.value = newScript; });
     // onkeydown="processTab(event)"
     // oninput="processEditorInputChange(event)"
   }
@@ -214,47 +214,47 @@ Buffer.prototype._onKeyPress = function(event) {
 /**
  * @return nsIFile or null if buffer not associated with a file
  */
-Buffer.prototype.file getter = function() {
+Buffer.prototype.__defineGetter__("file", function() {
   return this._file;
-};
+});
 
-Buffer.prototype.file setter = function(/*File*/ file) {
+Buffer.prototype.__defineSetter__("file", function(/*File*/ file) {
   this._file = file;
   this._updateDisplay();
-};
+});
 
 /**
  * @return nsIEditor editing interface
  */
-Buffer.prototype.api getter = function() {
+Buffer.prototype.__defineGetter__("api", function() {
   return this.editor.getEditor(this.editor.contentWindow);
-};
+});
 
 /**
  * @return boolean (true if buffer is dirty, false if not)
  */
-Buffer.prototype.dirty getter = function() {
+Buffer.prototype.__defineGetter__("dirty", function() {
   return this._dirty && this._file != null;
-};
+});
 
-Buffer.prototype.dirty setter = function(/*boolean*/ dirty) {
+Buffer.prototype.__defineSetter__("dirty", function(/*boolean*/ dirty) {
   this._dirty = dirty;
   if (!dirty) this.api.resetModificationCount();
   this._updateDisplay();
-};
+});
 
 /**
  * @return Trigger if buffer is associated with an installed trigger, null otherwise
  */
-Buffer.prototype.trigger getter = function() {
+Buffer.prototype.__defineGetter__("trigger", function() {
   return this._trigger;
-};
+});
 
-Buffer.prototype.trigger setter = function(/*Trigger*/ trigger) {
+Buffer.prototype.__defineSetter__("trigger", function(/*Trigger*/ trigger) {
   this._trigger = trigger;
   if (trigger) this.file = trigger.path;
   this._updateDisplay();
-};
+});
 
 /**
  * @return String label describing this buffer
@@ -478,7 +478,7 @@ Buffer.prototype.updateContextMenu = function(/*XULNode*/ popup) {
 /**
  * Returns contents of script editor as a plaintext string.
  */
-Buffer.prototype.text getter = function() {
+Buffer.prototype.__defineGetter__("text", function() {
   var editor = this.editor;
 
   if (this.isBespinEditor()) {
@@ -504,12 +504,12 @@ Buffer.prototype.text getter = function() {
   
   text = Buffer.removeGarbageCharacter(text);
   return text;
-};
+});
 
 /**
  * Replaces contents of script editor with a plaintext string.
  */
-Buffer.prototype.text setter = function(/*String*/ newScript) {
+Buffer.prototype.__defineSetter__("text", function(/*String*/ newScript) {
   newScript = Buffer.removeGarbageCharacter(newScript);
 
   var editor = this.editor;
@@ -556,7 +556,7 @@ Buffer.prototype.text setter = function(/*String*/ newScript) {
 
   this.dirty = false;
   //debug(Chickenfoot.domToString(doc));
-};
+});
 
 /**
  * Workaround for bug #290: script sometimes becomes corrupted with

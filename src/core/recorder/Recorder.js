@@ -4,7 +4,8 @@ goog.require('ckft.dom.Box');
 goog.require('ckft.dom');
 
 // don't attempt labelling if node count exceeds this
-const RECORDER_NODE_THRESHOLD = 2200; 
+/** @const */
+var RECORDER_NODE_THRESHOLD = 2200; 
 
 /**
  * Returns the total number of nodes in the document, including nodes in other

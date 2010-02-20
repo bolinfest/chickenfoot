@@ -11,8 +11,9 @@
  * 3:  "www." if it exists, null otherewise
  * 4+: other possibly null strings -- this part of the spec may change,
  *     so do not rely on it
+ * @const
  */
-const CF_GO_REGEXP = new RegExp(
+var CF_GO_REGEXP = new RegExp(
   '^(https?|ftp|file|chrome|about|moz-icon)?(:\/\/)?(www\.)?(.*)'
 );
 

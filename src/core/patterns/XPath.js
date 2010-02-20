@@ -18,9 +18,9 @@ function XPath(/*string*/ xpathExpression,
   }
 }
 
-XPath.prototype.xpathExpression getter = function() { return this._xpathExpression; }
-XPath.prototype.namespaceResolver getter = function() { return this._namespaceResolver; }
-XPath.prototype.resultType getter = function() { return this._resultType; }
+XPath.prototype.__defineGetter__("xpathExpression", function() { return this._xpathExpression; });
+XPath.prototype.__defineGetter__("namespaceResolver", function() { return this._namespaceResolver; });
+XPath.prototype.__defineGetter__("resultType", function() { return this._resultType; });
 
 XPath.prototype.toString = function() {
   return "XPath: " + this.xpathExpression;

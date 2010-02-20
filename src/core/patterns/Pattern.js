@@ -7,9 +7,11 @@ goog.require('ckft.util.assert');
 function Pattern() {
 
   /**
-   * Minimum Keywords.match() return value to be a candidate for a keyword pattern match
+   * Minimum Keywords.match() return value to be a candidate for a keyword
+   * pattern match.
+   * @const
    */
-  const STRENGTH_THRESHOLD = 0.1;
+  var STRENGTH_THRESHOLD = 0.1;
   
   
   // Strength factors
@@ -17,43 +19,57 @@ function Pattern() {
   /* Weights for judging a captioned node match
    * These must sum to 1.
    */
-  const KEYWORD_FACTOR = 0.7;
-  const POSITION_FACTOR = 0.1;
-  const DISTANCE_FACTOR = 0.1;
-  const OVERLAP_FACTOR = 0.05;
+  /** @const */
+  var KEYWORD_FACTOR = 0.7;
+  
+  /** @const */
+  var POSITION_FACTOR = 0.1;
+  
+  /** @const */
+  var DISTANCE_FACTOR = 0.1;
+  
+  /** @const */
+  var OVERLAP_FACTOR = 0.05;
+  
   
   /**
    * Because textual matches to the right are less likely
    * than textual matches to the left for a textbox,
    * the strength of a "right" match is reduced by a
-   * constant factor
+   * constant factor.
+   * @const
    */
-  const TEXTBOX_FACTORS = {above:1, left:1, right:0.8, below:0.8};
+  var TEXTBOX_FACTORS = {above:1, left:1, right:0.8, below:0.8};
 
   /**
    * Top and left matches are less likely for checkboxes and radio buttons.
+   * @const
    */    
-  const CHECKBOX_FACTORS = {above:0.1, left:0.5, right:1, below:0.01};
+  var CHECKBOX_FACTORS = {above:0.1, left:0.5, right:1, below:0.01};
   
   /**
    * Treat listboxes like textboxes.
+   * @const
    */    
-  const LISTBOX_FACTORS = {above:1, left:1, right:0.5, below:0.5};
+  var LISTBOX_FACTORS = {above:1, left:1, right:0.5, below:0.5};
   
   /**
    * Allow all matches for images.
+   * @const
    */    
-  const IMAGE_FACTORS = {above:1, left:1, right:1, below:1};
+  var IMAGE_FACTORS = {above:1, left:1, right:1, below:1};
   
   /**
    * Explicit <LABEL> elements get extra points.
+   * @const
    */
-  const LABEL_FACTOR = 2.0;
+  var LABEL_FACTOR = 2.0;
   
   /**
    * Nested elements (e.g. text inside a SELECT) get extra points.
+   * @const
    */
-  const NESTED_FACTOR = 2.0;
+  var NESTED_FACTOR = 2.0;
   
   
   /* Exported methods */

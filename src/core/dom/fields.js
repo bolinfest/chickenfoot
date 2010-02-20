@@ -113,7 +113,7 @@ isVisible.INVISIBLE_TAGS = {
   HEAD : 1,
   SCRIPT : 1,
   STYLE : 1,
-  NOSCRIPT : 1,
+  NOSCRIPT : 1
 };
 
 /** @return true iff node is a clickable button */

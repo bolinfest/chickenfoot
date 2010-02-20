@@ -35,9 +35,9 @@ function waitImpl(/*ChromeWindow*/ chromeWindow, /*optional Tab[]*/ tabs, /*bool
 
   // scan tabs looking for one that's loaded
   var count = 0;
-  const delay = 0.100;
-  const maxDelay = 30;
-  const iterations = maxDelay/delay;
+  var delay = 0.100;
+  var maxDelay = 30;
+  var iterations = maxDelay/delay;
   for (var i = 0; i < iterations; ++i) {  
     for (var i = 0; i < tabs.length; ++i) {
       var tab = tabs[i];

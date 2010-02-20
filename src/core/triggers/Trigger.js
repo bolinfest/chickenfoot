@@ -12,9 +12,14 @@ function Trigger(name, source, description, enabled, includes, excludes, path, w
 }
 
 // TriggerPoint: values for trigger.when
-const FIREFOX_STARTS = "Firefox Starts";
-const NEW_WINDOW = "New Window";
-const PAGES_MATCH = "Pages Match";
+/** @const */
+var FIREFOX_STARTS = "Firefox Starts";
+
+/** @const */
+var NEW_WINDOW = "New Window";
+
+/** @const */
+var PAGES_MATCH = "Pages Match";
 
 
 Trigger.prototype.getSource = function() {
@@ -35,7 +40,7 @@ Trigger.prototype.setSource = function(/* String */ source) {
  * If any element of includes is not a valid trigger pattern,
  * then an exception will be thrown and includes will not be updated
  */
-Trigger.prototype.includes setter = function(/*String[]*/ includes) {
+Trigger.prototype.__defineSetter__("includes", function(/*String[]*/ includes) {
   if (!includes) throw Error("includes passed to setIncludes was null");
   var newRegExps = [];
   for (var i = 0; i < includes.length; i++) {
@@ -43,15 +48,15 @@ Trigger.prototype.includes setter = function(/*String[]*/ includes) {
   }
   this._includes = includes;
   this.includesRegExps = newRegExps;
-}
+});
 
-Trigger.prototype.includes getter = function() { return this._includes; }
+Trigger.prototype.__defineGetter__("includes", function() { return this._includes; });
 
 /**
  * If any element of excludes is not a valid trigger pattern,
  * then an exception will be thrown and excludes will not be updated
  */
-Trigger.prototype.excludes setter = function(/*String[]*/ excludes) {
+Trigger.prototype.__defineSetter__("excludes", function(/*String[]*/ excludes) {
   if (!excludes) throw Error("excludes passed to setExcludes was null");
   var newRegExps = [];
   for (var i = 0; i < excludes.length; i++) {
@@ -59,9 +64,9 @@ Trigger.prototype.excludes setter = function(/*String[]*/ excludes) {
   }
   this._excludes = excludes;
   this.excludesRegExps = newRegExps;
-}
+});
 
-Trigger.prototype.excludes getter = function() { return this._excludes; }
+Trigger.prototype.__defineGetter__("excludes", function() { return this._excludes; });
 
 Trigger.convert2RegExp = function(pattern) {
   pattern = pattern.toString(); // make sure pattern is a String

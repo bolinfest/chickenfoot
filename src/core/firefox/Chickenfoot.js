@@ -42,7 +42,9 @@
  */
 var Chickenfoot = this;
 
-var isExportedXpi = @IS_EXPORTED_XPI@;
+// The substitution pattern appears in a quoted string so that this code is
+// syntactically correct JavaScript without compilation.
+var isExportedXpi = ('yes' === '@IS_EXPORTED_XPI@');
 
 // Function.bind and Function.bindAsEventListener are added to support prototype.js
 //
@@ -152,9 +154,23 @@ function setupWindow(/*ChromeWindow*/ window) {
 
 /******************************************************************************/
 
-const CLASS_ID    = Components.ID("{@CHICKENFOOT_GUID@}");
-const CLASS_NAME  = "Chickenfoot";
-const CONTRACT_ID = "@CHICKENFOOT_CONTRACT_ID@";
+/**
+ * @type {string}
+ * @const
+ */
+var CLASS_ID    = Components.ID("{@CHICKENFOOT_GUID@}");
+
+/**
+ * @type {string}
+ * @const
+ */
+var CLASS_NAME  = "Chickenfoot";
+
+/**
+ * @type {string}
+ * @const
+ */
+var CONTRACT_ID = "@CHICKENFOOT_CONTRACT_ID@";
 
 function ChickenfootService() {
   this.wrappedJSObject = Chickenfoot;

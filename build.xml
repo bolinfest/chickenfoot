@@ -34,6 +34,7 @@
     <property name="jar.dir"        value="${build.dir}/jar" />
     <property name="xpi.dir"        value="${build.dir}${file.separator}xpi" />
     <property name="export.dir"     value="${xpi.dir}/export" />
+    <property name="uncompiled.dir" value="${build.dir}/uncompiled" />
     
     <property name="fennec.build.dir"      value="${basedir}${file.separator}platform${file.separator}fennec${file.separator}build" />
     <property name="fennec.xpi.dir"        value="${fennec.build.dir}${file.separator}xpi" />
@@ -370,7 +371,8 @@
         <mkdir dir="${xpi.dir}/components" />
 
         <!-- Javascript XPCOM components -->
-        <concat destfile="${export.dir}/Chickenfoot.js" fixlastline="yes">
+        <mkdir dir="${uncompiled.dir}" />
+        <concat destfile="${uncompiled.dir}/Chickenfoot.js" fixlastline="yes">
           <filelist dir="${build.dir}" files="closure.js" />
           <fileset dir="${core.dir}">
             <include name="firefox/Chickenfoot.js" />
@@ -383,6 +385,26 @@
             <exclude name="packager/xpi-tie/*.js" />
           </fileset>
         </concat>
+
+        <!-- Currently, SimpleIO has a bug with copying files that are too large.
+             This is an issue when copying Chickenfoot.js for an exported
+             extension. As a workaround, Chickenfoot.js is minified with the
+             Closure Compiler. Though even when the bug in SimpleIO is fixed,
+             it is still worth using the Closure Compiler because running it
+             over the code ensures that it compiles with the EcmaScript 3
+             specification, which means that the code can safely be ported to
+             other browsers.
+        -->
+        <mkdir dir="${export.dir}" />
+        <java jar="${basedir}/closure/compiler.jar"
+              fork="true"
+              output="${export.dir}/Chickenfoot.js"
+              errorproperty="/dev/null">
+          <arg value="--compilation_level=WHITESPACE_ONLY" />
+          <arg value="--warning_level=QUIET" />
+          <arg value='--js="${uncompiled.dir}/Chickenfoot.js"' />
+        </java>
+
         <copy todir="${export.dir}" overwrite="true">
           <fileset dir="${core.dir}/firefox">
             <include name="Chicken-bypass.js"/>

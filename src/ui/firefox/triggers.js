@@ -589,18 +589,18 @@ function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
    function compileDialogArguments() {
      //create Trigger objects from the triggerPaths to give to exportDialog.xul
      var triggers = [];
-     if(packagingConfig.trigger) {
-       for(var k=0; k<packagingConfig.trigger.length; k++) {
+     if (packagingConfig.trigger) {
+       for (var k = 0; k < packagingConfig.trigger.length; k++) {
          //trigger paths are relative to Chickenfoot profile directory
          var triggerFile = getFileInProfileDirectory(packagingConfig.trigger[k]);
-         if(triggerFile == null) { continue; }
+         if (triggerFile == null) { continue; }
          var currentPath = triggerFile.path;
          var triggerCode = Chickenfoot.SimpleIO.read(currentPath);
          var attMap = Chickenfoot.extractUserScriptAttributes(triggerCode);
          var tName = attMap.name; if(!tName) { tName = "unresolved"; }
          var tDescription = attMap.description; if(!tDescription) { tDescription = "unresolved"; }
-         var tIncludes = attMap.includes; if(!tIncludes) { tIncludes = []; }
-         var tExcludes = attMap.excludes; if(!tExcludes) { tExcludes = []; }
+         var tIncludes = attMap.includes; if (!tIncludes) { tIncludes = []; }
+         var tExcludes = attMap.excludes; if (!tExcludes) { tExcludes = []; }
          var tWhen = attMap.when; if(!tWhen) { tWhen = "Firefox Starts"; }
          var tPath = Chickenfoot.SimpleIO.toFile(currentPath);
          var currentTrigger = new Chickenfoot.Trigger(tName, null, tDescription, true, tIncludes, tExcludes, tPath, tWhen);
@@ -610,16 +610,16 @@ function packageSelectedTriggers(/*Trigger*/ mainTrigger) {
 
      //all of the user files should be relative to the chickenfoot profile directory
      var files = packagingConfig.file; var userFiles = [];
-     if(files) {
-       for(var i=0; i<files.length; i++) {
+     if (files) {
+       for (var i=0; i<files.length; i++) {
          var nsiFile = getFileInProfileDirectory(files[i]);
-         if(nsiFile) { userFiles[userFiles.length] = nsiFile.path; }
+         if (nsiFile) { userFiles[userFiles.length] = nsiFile.path; }
        }
      }
      var iconPath = null;
-     if(packagingConfig.extensionIcon) {
+     if (packagingConfig.extensionIcon) {
        var iconFile = getFileInProfileDirectory(packagingConfig.extensionIcon);
-       if(iconFile) { iconPath = iconFile.path; }
+       if (iconFile) { iconPath = iconFile.path; }
      }
 
      //put some of the existing information about packaging configuration into a map 'templateTags'

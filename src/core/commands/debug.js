@@ -2,10 +2,13 @@
  * Functions that print to the output pane.
  */
 
-// ID attribute of output pane XUL element.  Used by default in the
-// functions below; but additional output-like panes (like the Action history)
-// can be controlled by specifying the ID of the other pane instead.
-const CF_DEBUG_ID = 'CF_DEBUG';
+/**
+ * ID attribute of output pane XUL element.  Used by default in the
+ * functions below; but additional output-like panes (like the Action history)
+ * can be controlled by specifying the ID of the other pane instead.
+ * @const
+ */
+var CF_DEBUG_ID = 'CF_DEBUG';
 
 /**
  * Print object to output panes on all open sidebars AND to the
@@ -79,11 +82,14 @@ function printDebug(/*ChromeWindow*/ chromeWindow,
   win.scrollTo(node.offsetLeft, node.offsetTop + node.offsetHeight);
 }
 
-// autoswitchTimeout controls the way Chickenfoot automatically switches to
-// the Output pane when a message is printed.  When the mouse is active anywhere
-// in the tab box, autoswitching is disabled until no more such mouse events
-// have happened for the duration of this timeout.  The timeout is in milliseconds.
-const autoswitchTimeout = 5000; // milliseconds
+/**
+ * autoswitchTimeout controls the way Chickenfoot automatically switches to
+ * the Output pane when a message is printed.  When the mouse is active anywhere
+ * in the tab box, autoswitching is disabled until no more such mouse events
+ * have happened for the duration of this timeout.  The timeout is in milliseconds.
+ * @const
+ */
+var autoswitchTimeout = 5000; // milliseconds
 
 function startOutputPaneAutoswitching(/*SidebarDocument*/ sidebar) {
   if (autoswitchTimeout) {
@@ -171,18 +177,22 @@ function addDebugOutput(/*Node*/ node, /*anything*/ obj, /*boolean*/ isHTML, /*c
     }
     catch(err) {var numSpaces = "errSpaces";}
     var spaces = numSpaces.length; var spacesString = "";
-    for (var h=0; h<spaces; h++) {
+    for (var h = 0; h < spaces; h++) {
       spacesString += "  ";
     }
-    var tableNode = 
-    makeElement(doc, "div", {}, [
-      header = makeElement(doc, "div", {"class":"collapsed", "id":"current"}, [
-          doc.createTextNode(spacesString),
-          icon = makeElement(doc, "img", { "class":"expandCollapseIcon", "src":"chrome://chickenfoot/skin/expand.gif", "height":9, "width":9 }, []),
-          newNode,
+    var tableNode = makeElement(doc, "div", {}, [
+      header = makeElement(doc, "div", {"class":"collapsed", "id":"current"},
+      [
+        doc.createTextNode(spacesString),
+        icon = makeElement(doc, "img", { "class":"expandCollapseIcon", "src":"chrome://chickenfoot/skin/expand.gif", "height":9, "width":9 }, []),
+        newNode
       ]),
-      bodyRow = makeElement(doc, "div", {"style":"visibility:hidden", "class":"objectProperties", "spaces":numSpaces}, [
-      ]),
+      bodyRow = makeElement(doc,
+                            "div",
+                            {"style": "visibility:hidden",
+                             "class": "objectProperties",
+                             "spaces": numSpaces},
+                            [])
     ]);
     
     //event listener function to expand and collapse
@@ -197,7 +207,7 @@ function addDebugOutput(/*Node*/ node, /*anything*/ obj, /*boolean*/ isHTML, /*c
         if (obj.chickenfootFunctionToDisplay) {
           var funcNode = 
             makeElement(doc, "div", {}, [
-              colorText(doc, obj.chickenfootFunctionToDisplay, "navy"),
+              colorText(doc, obj.chickenfootFunctionToDisplay, "navy")
             ]);
           bodyRow.appendChild(funcNode);
         }
@@ -333,7 +343,15 @@ function clearAll(chromeWindow, obj) {
   }
 }
 
-function makeElement(/*Document*/ doc, /*String*/ name, /*Object*/ attrs, /*Node[]*/ children) {
+/**
+ * 
+ * @param {Document} doc
+ * @param {string} name
+ * @param {Object} attrs
+ * @param {Array.<Node>} children
+ * @return
+ */
+function makeElement(doc, name, attrs, children) {
   var node = doc.createElement(name);
   for (var attr in attrs) {
     node.setAttribute(attr, attrs[attr]);

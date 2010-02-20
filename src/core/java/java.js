@@ -3,9 +3,11 @@
 // chrome window (as setupWindow() does with other DOM classes, like Node) is a bad
 // idea, because it forces Java to load during FF startup, a significant cost.
 // So we fetch the Packages reference lazily.
-this.Packages getter = function() {
+this.__defineGetter__("Packages", function() {
   var chromeWindow = getAnyChromeWindow();
-  if (!chromeWindow) throw new Error("can't find a Firefox window to get Packages from");
+  if (!chromeWindow) {
+    throw new Error("can't find a Firefox window to get Packages from");
+  }
 
   var Packages = chromeWindow.Packages;
   
@@ -17,11 +19,11 @@ this.Packages getter = function() {
   
   // return the Packages reference
   return Packages;
-}
+});
 
-this.java getter = function() {
+this.__defineGetter__("java", function() {
   return this.Packages.java;
-}
+});
 
 
 /** @return true if Firefox has Java 1.5 or later installed (has the side effect of loading Java if Java is installed) */

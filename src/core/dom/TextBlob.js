@@ -77,7 +77,7 @@ TextBlob.isFlowTag = {
 
 // Others that I think belong
 'SPAN' : 1,
-'A' : 1,
+'A' : 1
 // 'BR : 1  // not sure about this one
 };
 

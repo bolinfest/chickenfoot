@@ -138,9 +138,9 @@ function getLoadedHtmlDocument(/*ChromeWindow*/ chromeWindow,
   // For now:
   if (!webProgress) return win.document;
   
-  const delay = 100;
-  const maxDelay = 30000;
-  const iterations = maxDelay/delay;
+  var delay = 100;
+  var maxDelay = 30000;
+  var iterations = maxDelay/delay;
   var warningInterval = 5/delay;
   for (var i = 0; i < iterations; ++i) {
     checkForStop();
