@@ -16,7 +16,7 @@ function evaluate(/*ChromeWindow*/ chromeWindow,
                   /*optional HtmlWindow*/ win,
                   /*object*/ extraContext) {
                   
-  // Get a reference to the Javascript SubScript loader, which is used by 
+  // Get a reference to the Javascript SubScript loader, which is used by
   // chickenscratchEvaluate().
   if (!Chickenfoot.jsLoader) {
     Chickenfoot.jsLoader = Components.classes["@mozilla.org/moz/jssubscript-loader;1"]

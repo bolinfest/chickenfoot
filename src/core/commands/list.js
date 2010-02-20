@@ -10,10 +10,9 @@
                      If "count", returns number of properties object has.
                      Used by addDebugOutput for expandable object browser
                      in output pane.
- * @return string containing one line for each property,
- *  roughly of the form "name = value".
- * @return (only if opt_expandibleList == true) returns a buffer containing
-                     a set of two-element arrays.
+ * @return {*} string containing one line for each property, roughly of the form
+ *     "name = value" OR (only if opt_expandibleList == true) returns a buffer
+ *     containing a set of two-element arrays.
  */
 function listImpl(obj, opt_regexp, opt_expandibleList) {
   if (!obj && ((typeof obj != 'object') || obj === null)) {
@@ -33,7 +32,6 @@ function listImpl(obj, opt_regexp, opt_expandibleList) {
          }
          if (props.length == 0) {
            if (obj.wrappedJSObject) {
-             props.length == 0;
              if (opt_expandibleList && (opt_expandibleList == "count")) {return 1;}
            }
            else {return obj.toString();}

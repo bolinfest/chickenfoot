@@ -25,19 +25,20 @@
 function instanceOf(value, type) {
 //  return value instanceof type;
 
+  var result;
   try {
     // first try built-in test -- if it succeeds, we're golden.
-    if (value instanceof type) return true;
+    result = value instanceof type;
   } catch (exception) {
     if (exception instanceof TypeError) {
       throw exception; // indicates that "type" is not a type
     }
     // Otherwise, assume the exception was caused by 
     // the Firefox 1.0.3 bug.  Work around it.
-    if (type === Object)
-      return true;
-    else
-      return false;
+    return (type === Object);
+  }
+  if (result) {
+    return true;
   }
 
   // instanceof operator returned false.

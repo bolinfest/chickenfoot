@@ -349,7 +349,7 @@ function clearAll(chromeWindow, obj) {
  * @param {string} name
  * @param {Object} attrs
  * @param {Array.<Node>} children
- * @return
+ * @return {Element}
  */
 function makeElement(doc, name, attrs, children) {
   var node = doc.createElement(name);

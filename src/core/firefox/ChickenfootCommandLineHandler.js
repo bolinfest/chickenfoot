@@ -25,9 +25,22 @@
  * Chickenfoot homepage: http://uid.csail.mit.edu/chickenfoot/
  */
 
-const CLASS_ID    = Components.ID("@CHICKENFOOT_COMMAND_LINE_HANDLER_GUID@");
-const CLASS_NAME  = "ChickenfootCommandLineHandler";
-const CONTRACT_ID = "@uid.csail.mit.edu/ChickenfootCommandLineHandler/;1";
+/**
+ * @const
+ */
+var CLASS_ID    = Components.ID("@CHICKENFOOT_COMMAND_LINE_HANDLER_GUID@");
+
+/**
+ * @type {string}
+ * @const
+ */
+var CLASS_NAME  = "ChickenfootCommandLineHandler";
+
+/**
+ * @type {string}
+ * @const
+ */
+var CONTRACT_ID = "@uid.csail.mit.edu/ChickenfootCommandLineHandler/;1";
 
 var runThese = []
 

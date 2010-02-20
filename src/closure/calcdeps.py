@@ -78,6 +78,16 @@ def ExpandDirectories(refs):
       result.append(ref)
   return result
 
+def FilterInputs(inputs, excludes):
+  """Takes a list of file paths and filters out any paths identified by
+     "excludes".
+  """
+  excludes = set(ExpandDirectories(excludes))
+  result = []
+  for input in inputs:
+    if not input in excludes:
+      result.append(input)
+  return result
 
 class DependencyInfo(object):
   """Represents a dependency that is used to build and walk a tree."""
@@ -180,7 +190,12 @@ def CalculateDependencies(paths, inputs):
     A list of all files, including inputs, that are needed to compile the given
     inputs.
   """
-  deps = BuildDependenciesFromFiles(paths)
+  
+  # Original:
+  # deps = BuildDependenciesFromFiles(paths)
+  # Mine:
+  deps = BuildDependenciesFromFiles(paths + inputs)
+  
   search_hash = BuildDependencyHashFromDependencies(deps)
   result_list = []
   seen_list = []
@@ -210,7 +225,17 @@ def CalculateDependencies(paths, inputs):
   else:
     logging.warning('Closure Library base.js not found.')
 
-  return result_list
+  # Because the call to BuildDependenciesFromFiles was changed to include paths
+  # and inputs, some files may appear twice in the list, so they must be
+  # filtered.
+  visited_results = set()
+  filtered_result_list = []
+  for result in result_list:
+    if not result in visited_results:
+      filtered_result_list.append(result)
+      visited_results.add(result)
+
+  return filtered_result_list
 
 
 def FindClosureBasePath(paths):
@@ -346,6 +371,12 @@ def main():
                     'values can be files, directories, or namespaces '
                     '(ns:goog.net.XhrLite).  Only relevant to "list" and '
                     '"script" output.')
+  parser.add_option('-e',
+                    '--exclude',
+                    dest='excludes',
+                    action='append',
+                    help='Files or directory to exclude. '
+                    'Valid values can be files or directories.')
   parser.add_option('-p',
                     '--path',
                     dest='paths',
@@ -405,6 +436,11 @@ def main():
 
   logging.info('Scanning files...')
   inputs = ExpandDirectories(inputs)
+
+  excludes = options.excludes
+
+  if excludes:
+    inputs = FilterInputs(inputs, excludes)
 
   logging.info('Finding Closure dependencies...')
   deps = CalculateDependencies(search_paths, inputs)

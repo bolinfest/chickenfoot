@@ -13,7 +13,7 @@ goog.require('goog.string');
  * @param code {string}
  * @param keyValueHandler {function}
  * @param lineBuffer {string[]} 
- * @return {attributeName->attributeValue[]} keys are attribute names and values
+ * @return {Object.<string, Array.<string>>} keys are attribute names and values
  *   are arrays of values that correspond to that attribute.
  *   Some attributes, such as @exclude, can be repeated, which is why arrays are
  *   used as values for the map.

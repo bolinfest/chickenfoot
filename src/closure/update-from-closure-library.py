@@ -102,7 +102,22 @@ for file in files_to_copy:
 
 # Set COMPILED to true in base.js or else Chickenfoot will try to load
 # dependencies via <script> tags, causing a security error.
+# Hopefully this can go away soon now that the Closure Compiler is being used as
+# part of the build process.
 for line in fileinput.input("goog/base.js", inplace=True):
     print line.replace("var COMPILED = false;", "var COMPILED = true;"),
 
-shutil.copyfile("../../../closure-library/closure/bin/calcdeps.py", "calcdeps.py")
+# Currently calcdeps.py is modified to fix the following Closure Library issues:
+#
+# Issue 96: Add support for --exclude in calcdeps.py
+# http://code.google.com/p/closure-library/issues/detail?id=96
+#
+# Issue 60: calcdeps.py doesn't handle goog.provide() statements in user-written
+# code
+# http://code.google.com/p/closure-library/issues/detail?id=60
+#
+# Until these bugs are fixed, use the version modified for Chickenfoot instead
+# of copying the latest version of calcdeps.py from the Closure Library.
+#
+# shutil.copyfile("../../../closure-library/closure/bin/calcdeps.py",
+#     "calcdeps.py")
