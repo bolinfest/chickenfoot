@@ -82,9 +82,12 @@ def FilterInputs(inputs, excludes):
   """Takes a list of file paths and filters out any paths identified by
      "excludes".
   """
-  excludes = set(ExpandDirectories(excludes))
+  # Path normalization is done to work around forward vs. backslash problems on
+  # Windows.
+  excludes = set(ExpandDirectories(map(os.path.normpath, excludes)))
   result = []
   for input in inputs:
+    input = os.path.normpath(input)
     if not input in excludes:
       result.append(input)
   return result
