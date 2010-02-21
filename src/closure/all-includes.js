@@ -37,6 +37,7 @@ goog.require('goog.structs.Map');
 goog.require('goog.structs.Set');
 goog.require('goog.style');
 goog.require('goog.Timer');
+goog.require('goog.ui.KeyboardShortcutHandler');
 goog.require('goog.userAgent');
 goog.require('goog.userAgent.product');
 goog.require('goog.window');

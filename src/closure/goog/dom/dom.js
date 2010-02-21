@@ -16,12 +16,6 @@
  * @fileoverview Utilities for manipulating the browser's Document Object Model
  * Inspiration taken *heavily* from mochikit (http://mochikit.com/).
  *
- * If you want to do extensive DOM building you can create local aliases,
- * such as:<br>
- * var $DIV = goog.bind(goog.dom.createDom, goog.dom, 'div');<br>
- * var $A = goog.bind(goog.dom.createDom, goog.dom, 'a');<br>
- * var $TABLE = goog.bind(goog.dom.createDom, goog.dom, 'table');<br>
- *
  * You can use {@link goog.dom.DomHelper} to create new dom helpers that refer
  * to a different document object.  This is useful if you are working with
  * frames or multiple windows.
@@ -181,7 +175,7 @@ goog.dom.getElementsByTagNameAndClass = function(opt_tag, opt_class, opt_el) {
 goog.dom.getElementsByTagNameAndClass_ = function(doc, opt_tag, opt_class,
                                                   opt_el) {
   var parent = opt_el || doc;
-  var tagName = (opt_tag && opt_tag != '*') ? opt_tag.toLowerCase() : '';
+  var tagName = (opt_tag && opt_tag != '*') ? opt_tag.toUpperCase() : '';
 
   // Prefer the standardized (http://www.w3.org/TR/selectors-api/), native and
   // fast W3C Selectors API. However, the version of WebKit that shipped with
@@ -207,7 +201,7 @@ goog.dom.getElementsByTagNameAndClass_ = function(doc, opt_tag, opt_class,
 
       // Filter for specific tags if requested.
       for (var i = 0, el; el = els[i]; i++) {
-        if (tagName == el.nodeName.toLowerCase()) {
+        if (tagName == el.nodeName) {
           arrayLike[len++] = el;
         }
       }
@@ -228,7 +222,7 @@ goog.dom.getElementsByTagNameAndClass_ = function(doc, opt_tag, opt_class,
       var className = el.className;
       // Check if className has a split function since SVG className does not.
       if (typeof className.split == 'function' &&
-          goog.array.contains(className.split(' '), opt_class)) {
+          goog.array.contains(className.split(/\s+/), opt_class)) {
         arrayLike[len++] = el;
       }
     }
@@ -698,6 +692,46 @@ goog.dom.createTextNode = function(content) {
 
 
 /**
+ * Create a table.
+ * @param {number} rows The number of rows in the table.  Must be >= 1.
+ * @param {number} columns The number of columns in the table.  Must be >= 1.
+ * @param {boolean=} opt_fillWithNbsp If true, fills table entries with nsbps.
+ * @return {!Element} The created table.
+ */
+goog.dom.createTable = function(rows, columns, opt_fillWithNbsp) {
+  return goog.dom.createTable_(document, rows, columns, !!opt_fillWithNbsp);
+};
+
+
+/**
+ * Create a table.
+ * @param {!Document} doc Document object to use to create the table.
+ * @param {number} rows The number of rows in the table.  Must be >= 1.
+ * @param {number} columns The number of columns in the table.  Must be >= 1.
+ * @param {boolean} fillWithNbsp If true, fills table entries with nsbps.
+ * @return {!Element} The created table.
+ * @private
+ */
+goog.dom.createTable_ = function(doc, rows, columns, fillWithNbsp) {
+  var rowHtml = ['<tr>'];
+  for (var i = 0; i < columns; i++) {
+    rowHtml.push(fillWithNbsp ? '<td>&nbsp;</td>' : '<td></td>');
+  }
+  rowHtml.push('</tr>');
+  rowHtml = rowHtml.join('');
+  var totalHtml = ['<table>'];
+  for (i = 0; i < rows; i++) {
+    totalHtml.push(rowHtml);
+  }
+  totalHtml.push('</table>');
+
+  var elem = doc.createElement(goog.dom.TagName.DIV);
+  elem.innerHTML = totalHtml.join('');
+  return /** @type {!Element} */ (elem.removeChild(elem.firstChild));
+};
+
+
+/**
  * Converts an HTML string into a document fragment.
  *
  * @param {string} htmlString The HTML string to convert.
@@ -720,7 +754,7 @@ goog.dom.htmlToDocumentFragment_ = function(doc, htmlString) {
   var tempDiv = doc.createElement('div');
   tempDiv.innerHTML = htmlString;
   if (tempDiv.childNodes.length == 1) {
-    return /** @type {!Node} */ (tempDiv.firstChild);
+    return /** @type {!Node} */ (tempDiv.removeChild(tempDiv.firstChild));
   } else {
     var fragment = doc.createDocumentFragment();
     while (tempDiv.firstChild) {
@@ -967,8 +1001,55 @@ goog.dom.getNextElementNode_ = function(node, forward) {
 
 
 /**
+ * Returns the next node in source order from the given node.
+ * @param {Node} node The node.
+ * @return {Node} The next node in the DOM tree, or null if this was the last
+ *     node.
+ */
+goog.dom.getNextNode = function(node) {
+  if (!node) {
+    return null;
+  }
+
+  if (node.firstChild) {
+    return node.firstChild;
+  }
+
+  while (node && !node.nextSibling) {
+    node = node.parentNode;
+  }
+
+  return node ? node.nextSibling : null;
+};
+
+
+/**
+ * Returns the previous node in source order from the given node.
+ * @param {Node} node The node.
+ * @return {Node} The previous node in the DOM tree, or null if this was the
+ *     first node.
+ */
+goog.dom.getPreviousNode = function(node) {
+  if (!node) {
+    return null;
+  }
+
+  if (!node.previousSibling) {
+    return node.parentNode;
+  }
+
+  node = node.previousSibling;
+  while (node && node.lastChild) {
+    node = node.lastChild;
+  }
+
+  return node;
+};
+
+
+/**
  * Whether the object looks like a DOM node.
- * @param {Object} obj The object being tested for node likeness.
+ * @param {*} obj The object being tested for node likeness.
  * @return {boolean} Whether the object looks like a DOM node.
  */
 goog.dom.isNodeLike = function(obj) {
@@ -1030,7 +1111,7 @@ goog.dom.compareNodeOrder = function(node1, node2) {
   }
 
   // Process in IE using sourceIndex - we check to see if the first node has
-  // a source index or if it's parent has one.
+  // a source index or if its parent has one.
   if ('sourceIndex' in node1 ||
       (node1.parentNode && 'sourceIndex' in node1.parentNode)) {
     var isElement1 = node1.nodeType == goog.dom.NodeType.ELEMENT;
@@ -1582,9 +1663,10 @@ goog.dom.isNodeList = function(val) {
  *     null if none match.
  */
 goog.dom.getAncestorByTagNameAndClass = function(element, opt_tag, opt_class) {
+  var tagName = opt_tag ? opt_tag.toUpperCase() : null;
   return goog.dom.getAncestor(element,
       function(node) {
-        return (!opt_tag || node.nodeName == opt_tag) &&
+        return (!tagName || node.nodeName == tagName) &&
                (!opt_class || goog.dom.classes.has(node, opt_class));
       }, true);
 };
@@ -1824,6 +1906,20 @@ goog.dom.DomHelper.prototype.createTextNode = function(content) {
 
 
 /**
+ * Create a table.
+ * @param {number} rows The number of rows in the table.  Must be >= 1.
+ * @param {number} columns The number of columns in the table.  Must be >= 1.
+ * @param {boolean=} opt_fillWithNbsp If true, fills table entries with nsbps.
+ * @return {!Element} The created table.
+ */
+goog.dom.DomHelper.prototype.createTable = function(rows, columns,
+    opt_fillWithNbsp) {
+  return goog.dom.createTable_(this.document_, rows, columns,
+      !!opt_fillWithNbsp);
+};
+
+
+/**
  * Converts an HTML string into a node or a document fragment.  A single Node
  * is used if the {@code htmlString} only generates a single node.  If the
  * {@code htmlString} generates multiple nodes then these are put inside a
@@ -1981,8 +2077,28 @@ goog.dom.DomHelper.prototype.getPreviousElementSibling =
 
 
 /**
+ * Returns the next node in source order from the given node.
+ * @param {Node} node The node.
+ * @return {Node} The next node in the DOM tree, or null if this was the last
+ *     node.
+ */
+goog.dom.DomHelper.prototype.getNextNode =
+    goog.dom.getNextNode;
+
+
+/**
+ * Returns the previous node in source order from the given node.
+ * @param {Node} node The node.
+ * @return {Node} The previous node in the DOM tree, or null if this was the
+ *     first node.
+ */
+goog.dom.DomHelper.prototype.getPreviousNode =
+    goog.dom.getPreviousNode;
+
+
+/**
  * Whether the object looks like a DOM node.
- * @param {Object} obj The object being tested for node likeness.
+ * @param {*} obj The object being tested for node likeness.
  * @return {boolean} Whether the object looks like a DOM node.
  */
 goog.dom.DomHelper.prototype.isNodeLike = goog.dom.isNodeLike;

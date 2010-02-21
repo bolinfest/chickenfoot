@@ -158,7 +158,7 @@ goog.math.Box.equals = function(a, b) {
 
 
 /**
- * Returns whether a box contains a coordinate.
+ * Returns whether a box contains a coordinate or another box.
  *
  * @param {goog.math.Box} box A Box.
  * @param {goog.math.Coordinate|goog.math.Box} other A Coordinate or a Box.
@@ -205,4 +205,17 @@ goog.math.Box.distance = function(box, coord) {
   return goog.math.Coordinate.distance(coord,
       new goog.math.Coordinate(coord.x < box.left ? box.left : box.right,
                                coord.y < box.top ? box.top : box.bottom));
+};
+
+
+/**
+ * Returns whether two boxes intersect.
+ *
+ * @param {goog.math.Box} a A Box.
+ * @param {goog.math.Box} b A second Box.
+ * @return {boolean} Whether the boxes intersect.
+ */
+goog.math.Box.intersects = function(a, b) {
+  return (a.left <= b.right && b.left <= a.right &&
+          a.top <= b.bottom && b.top <= a.bottom);
 };
