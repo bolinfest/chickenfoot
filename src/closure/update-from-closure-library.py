@@ -79,6 +79,7 @@ files_to_copy = [
   "goog/math/rect.js",
   "goog/net/errorcode.js",
   "goog/net/eventtype.js",
+  "goog/net/iframeloadmonitor.js",
   "goog/timer/timer.js",
   "goog/ui/keyboardshortcuthandler.js",
   "goog/structs/structs.js",

@@ -27,6 +27,7 @@ goog.require('goog.math.Rect');
 goog.require('goog.math.Size');
 goog.require('goog.net.ErrorCode');
 goog.require('goog.net.EventType');
+goog.require('goog.net.IframeLoadMonitor');
 goog.require('goog.net.XhrIo');
 goog.require('goog.net.xhrMonitor');
 goog.require('goog.net.XmlHttp');

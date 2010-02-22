@@ -310,26 +310,38 @@ function getInputName(/*Node*/ node) {
  * Get all documents in a DOM, including its frames, 
  * but only frames that are visible (nonzero width).
  *
- * @param doc Document to iterate
- * @return Document[] = [doc, f1,f2,...,fn] where doc is the parameter
+ * @param {Document} doc Document to iterate
+ * @return {Array.<Document>} [doc, f1,f2,...,fn] where doc is the parameter
  *     and fi are the documents of all FRAME and IFRAME elements in doc
  *     and any other fi.
  */
-function getAllVisibleFrameDocuments(/*Document*/ doc) {
-  var docs = [];
-  traverseDoc(doc);
-  return docs;
-  
-  function traverseDoc(/*Document*/ doc) {
-    if (!doc) return;
-    docs.push(doc);
-    traverseFrames(doc.getElementsByTagName("frame"));
-    traverseFrames(doc.getElementsByTagName("iframe"));
-  }
-  function traverseFrames(/*FrameNode[]*/ frames) {
-    for (var i = 0; i < frames.length; ++i) {
-      
-      traverseDoc(frames[i].contentDocument);
+function getAllVisibleFrameDocuments(doc) {
+
+  /**
+   * @param {Document} doc
+   * @param {Array.<Document>} visitedDocs
+   */
+  var traverseDoc = function(doc, visitedDocs) {
+    if (!doc) {
+      return;
     }
-  }
+    visitedDocs.push(doc);
+
+    /**
+     * @param {HTMLIFrameElement|HTMLFrameElement} frames
+     * @param {Array.<Document>} visitedDocs
+     */
+    var traverseFrames = function(frames, visitedDocs) {
+      for (var i = 0; i < frames.length; ++i) {
+        traverseDoc(goog.dom.getFrameContentDocument(frames[i]), visitedDocs);
+      }
+    };
+    
+    traverseFrames(doc.getElementsByTagName("frame"), visitedDocs);
+    traverseFrames(doc.getElementsByTagName("iframe"), visitedDocs);
+  };
+
+  var visitedDocs = [];
+  traverseDoc(doc, visitedDocs);
+  return visitedDocs;
 }
