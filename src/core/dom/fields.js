@@ -316,32 +316,26 @@ function getInputName(/*Node*/ node) {
  *     and any other fi.
  */
 function getAllVisibleFrameDocuments(doc) {
+  var docs = [];
 
-  /**
-   * @param {Document} doc
-   * @param {Array.<Document>} visitedDocs
-   */
-  var traverseDoc = function(doc, visitedDocs) {
+  /** @param {Document} doc */
+  var traverseDoc = function(doc) {
     if (!doc) {
       return;
     }
-    visitedDocs.push(doc);
+    docs.push(doc);
 
-    /**
-     * @param {HTMLIFrameElement|HTMLFrameElement} frames
-     * @param {Array.<Document>} visitedDocs
-     */
-    var traverseFrames = function(frames, visitedDocs) {
-      for (var i = 0; i < frames.length; ++i) {
-        traverseDoc(goog.dom.getFrameContentDocument(frames[i]), visitedDocs);
-      }
-    };
-    
-    traverseFrames(doc.getElementsByTagName("frame"), visitedDocs);
-    traverseFrames(doc.getElementsByTagName("iframe"), visitedDocs);
+    traverseFrames(doc.getElementsByTagName("frame"));
+    traverseFrames(doc.getElementsByTagName("iframe"));
   };
 
-  var visitedDocs = [];
-  traverseDoc(doc, visitedDocs);
-  return visitedDocs;
+  /** @param {HTMLIFrameElement|HTMLFrameElement} frames */
+  var traverseFrames = function(frames) {
+    for (var i = 0; i < frames.length; ++i) {
+      traverseDoc(goog.dom.getFrameContentDocument(frames[i]));
+    }
+  };
+
+  traverseDoc(doc);
+  return docs;
 }
