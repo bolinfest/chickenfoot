@@ -60,30 +60,27 @@ function clickedLibraryTree() {
 }
 
 function selectFromPatternPane(pattern) {
-    try {
-      var htmlWindow = Chickenfoot.getVisibleHtmlWindow(chromeWindow);
-      var doc = htmlWindow.document;
-      var matches = Chickenfoot.Pattern.find(doc, pattern);
-      var label1 = sidebarDocument.getElementById('CF_PATTERN_STATUS1');
-      label1.value = 
-        matches.count 
-        + ' match' + (matches.count == 1 ? "" : "es") 
-        + ' for '
-        + pattern;
-      var label2 = sidebarDocument.getElementById('CF_PATTERN_STATUS2');
-      label2.value = '';
+  try {
+    var htmlWindow = Chickenfoot.getVisibleHtmlWindow(chromeWindow);
+    var doc = htmlWindow.document;
+    var matches = Chickenfoot.Pattern.find(doc, pattern);
+    var label1 = sidebarDocument.getElementById('CF_PATTERN_STATUS1');
+    label1.value = 
+      matches.count 
+      + ' match' + (matches.count == 1 ? "" : "es") 
+      + ' for '
+      + pattern;
+    var label2 = sidebarDocument.getElementById('CF_PATTERN_STATUS2');
+    label2.value = '';
 
-      Chickenfoot.selectAll(htmlWindow, matches);
-
-      return;
-    } catch (e) {
-      sidebarDocument.getElementById('CF_PATTERN_STATUS1').value =
-        "";
-      sidebarDocument.getElementById('CF_PATTERN_STATUS2').value =
-        Chickenfoot.toDebugString(e);
-      throw e;
-      return;
-    }
+    Chickenfoot.selectAll(htmlWindow, matches);
+  } catch (e) {
+    sidebarDocument.getElementById('CF_PATTERN_STATUS1').value =
+      "";
+    sidebarDocument.getElementById('CF_PATTERN_STATUS2').value =
+      Chickenfoot.toDebugString(e);
+    throw e;
+  }
 }
 
 function addPatternsToContextMenu() {

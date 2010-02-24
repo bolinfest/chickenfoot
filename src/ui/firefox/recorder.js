@@ -1,5 +1,14 @@
-const CF_ACTION_HISTORY_ID = "CF_DEBUG";
-const CF_ACTION_HISTORY_TAB = "CF_DEBUG_TAB";
+/**
+ * @type {string}
+ * @const
+ */
+var CF_ACTION_HISTORY_ID = "CF_DEBUG";
+
+/**
+ * @type {string}
+ * @const
+ */
+var CF_ACTION_HISTORY_TAB = "CF_DEBUG_TAB";
 
 var isRecording = false;
 

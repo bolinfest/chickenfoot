@@ -49,11 +49,10 @@
     var chromeDocument = chromeWindow.chromeDocument;
 
     // obtain reference to XPCOM object
-    var Chickenfoot = 
-            Components.classes["@uid.csail.mit.edu/Chickenfoot/;1"]
-              .getService(Components.interfaces.nsISupports)
-              .wrappedJSObject
-    
+    var Chickenfoot = Components.classes["@uid.csail.mit.edu/Chickenfoot/;1"].
+        getService(Components.interfaces.nsISupports).
+        wrappedJSObject;
+
     // make convenient alias to debug()
     debug = Chickenfoot.debug;
     

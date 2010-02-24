@@ -1,4 +1,4 @@
-goog.require('ckft.XpiTie');
+goog.require('ckft.xpiTie');
 
 /**
  *  triggers.js -- (c) .........
@@ -171,11 +171,10 @@ function updateTriggerInListbox(index) {
 /**
  * Concatenate includes and excludes into to one string and return it back 
  *
- * @param array 1 - array of includes
- * @param array 2 - array of excludes
+ * @param {Array.<string>} array1 - array of includes
+ * @param {Array.<string>} array2 - array of excludes
  */
-
-function patternArrayToString(/*String[]*/array1, /*String[]*/array2) {
+function patternArrayToString(array1, array2) {
   var arrayString = '';
 
   // Adding Includes URLs

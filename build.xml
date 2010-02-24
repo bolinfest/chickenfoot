@@ -20,6 +20,7 @@
     <property name="tests.dir"      value="${srcdir}${file.separator}tests" />
     <property name="core.dir"       value="${srcdir}/core" />
     <property name="closure.dir"    value="${srcdir}/closure" />
+    <property name="bespin.dir"     value="${srcdir}/bespin" />
     <property name="firefox.ui.dir" value="${srcdir}/ui/firefox" />
     <property name="fennec.ui.dir"  value="${srcdir}/ui/fennec" />
 	
@@ -318,24 +319,39 @@
         <mkdir dir="${build.dir}" />
         <mkdir dir="${jar.dir}" />
         <!-- content folder -->
-        <mkdir dir="${jar.dir}/content" />   
-        <concat destfile="${jar.dir}/content/sidebar.js" fixlastline="yes">
-            <filelist dir="${build.dir}" files="closure.js" />
-            <fileset dir="${firefox.ui.dir}">
-                <include name="*.js" />
-                <exclude name="chickenscratch.js" />
-            </fileset>
-            <fileset dir="${core.dir}">
-                <include name="util/instanceof.js" />
-                <include name="dom/treeWalker.js" />
-            </fileset>
-        </concat>
+        <mkdir dir="${jar.dir}/content" />
+      
+        <closure-compile outputfile="${jar.dir}/content/sidebar.js">
+          <extrapaths>
+            <arg line='-p "${basedir}/src/closure/goog"' />
+            <arg line='-i "${firefox.ui.dir}"' />
+            <arg line='-e "${firefox.ui.dir}/chickenscratch.js"' />
+            <arg line='-i "${core.dir}/util/instanceof.js"' />
+            <arg line='-i "${core.dir}/dom/treeWalker.js"' />
+            <arg line='-i "${core.dir}/firefox/SidebarState.js"' />
+            <arg line='-i "${core.dir}/packager/xpi-tie.js"' />
+          </extrapaths>
+        </closure-compile>
+
         <copy todir="${jar.dir}/content" overwrite="true">
             <fileset dir="${firefox.ui.dir}"
                      includes="*.xul,*.html,chickenscratch.js" />
             <filterset refid="chickenfootMacros" />
         </copy>
-
+      
+        <mkdir dir="${jar.dir}/content/bespin" />
+        <copy file="${bespin.dir}/BespinEmbedded.css"
+              tofile="${jar.dir}/content/bespin/BespinEmbedded.css"
+              overwrite="true" />
+        <closure-compile
+            outputfile="${jar.dir}/content/bespin/BespinEmbedded.js">
+          <!-- Unfortunately, calcdeps.py insists on including closure/base.js -->
+          <extrapaths>
+            <arg line='-p "${closure.dir}"' />
+            <arg line='-i "${bespin.dir}/BespinEmbedded.js"' />
+          </extrapaths>
+        </closure-compile>
+      
         <!-- libraries folder -->
         <mkdir dir="${jar.dir}/content/libraries" />
         <copy todir="${jar.dir}/content/libraries" overwrite="true">
@@ -389,11 +405,23 @@
                        compilationlevel="SIMPLE_OPTIMIZATIONS"
                        outputmode="compiled">
         <extrapaths>
-          <arg line='-p "${basedir}/src/closure/goog"' /> 
-          <arg line='-i "${core.dir}"' />
+          <!-- TODO(mbolin): Remove unnecessary includes from this list. -->
+          <!-- Ideally, goog.provide and goog.require would be used      -->
+          <!-- everywhere and then calcdeps.py would do the right thing. -->
+          <arg line='-p "${basedir}/src/closure/goog"' />
+          <arg line='-i "${core.dir}/commands"' />
+          <arg line='-i "${core.dir}/dom"' />
+          <arg line='-i "${core.dir}/java"' />
+          <arg line='-i "${core.dir}/packager"' />
+          <arg line='-i "${core.dir}/patterns"' />
+          <arg line='-i "${core.dir}/recorder"' />
+          <arg line='-i "${core.dir}/triggers"' />
+          <arg line='-i "${core.dir}/util"' />
+          <arg line='-i "${core.dir}/firefox"' />
           <arg line='-e "${core.dir}/firefox/Chicken-bypass.js"' />
           <arg line='-e "${core.dir}/firefox/ChickenfootCommandLineHandler.js"'
               />
+          <arg line='-i "${firefox.ui.dir}/Buffer.js"' />
           <arg line='-e "${core.dir}/packager/xpi-tie/"' />
         </extrapaths>
 
@@ -442,7 +470,7 @@
           </fileset>
           <filterset refid="chickenfootMacros" />
         </copy>
-      
+
         <!-- export folder -->
         <mkdir dir="${export.dir}" />
         <copy todir="${export.dir}" overwrite="true">

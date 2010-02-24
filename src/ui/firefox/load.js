@@ -1,8 +1,11 @@
+goog.require('ckft.Buffer');
+goog.require('ckft.SidebarState');
+
 function loadHandler() {
-  if (!Chickenfoot.restoreSidebarState(chromeWindow, sidebarWindow)) {
-    new Buffer();
+  if (!ckft.SidebarState.restoreSidebarState(chromeWindow, sidebarWindow)) {
+    ckft.Buffer.createBuffer(goog.nullFunction);
   }
-  
+
   var firstInstall = true;
   var prefs = Chickenfoot.getPrefBranch();
   try {

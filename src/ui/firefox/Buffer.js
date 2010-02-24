@@ -27,7 +27,7 @@
  */
 -->
 
-goog.provide('Buffer');
+goog.provide('ckft.Buffer');
 
 goog.require('goog.dom');
 goog.require('goog.string');
@@ -40,13 +40,16 @@ var useHtmlEditor = true;
 var causesLoad = false;
 
 /**
- * Buffer represents an open script editor.
+ * ckft.Buffer represents an open script editor.
+ * @param {function(ckft.Buffer)} callback
+ * @param {nsIFile=} file
+ * @param {boolean=} dirty
+ * @param {string=} text
+ * @param {number=} cursorPosition
  * @constructor
+ * @private
  */
-Buffer = function(/*optional File*/ file, 
-                  /*optional boolean*/ dirty,
-                  /*optional String*/ text,
-                  /*optional int*/ cursorPosition) {
+ckft.Buffer = function(callback, file, dirty, text, cursorPosition) {
   var prefs = Chickenfoot.getPrefBranch();
   var useBespin;
   try {
@@ -59,7 +62,7 @@ Buffer = function(/*optional File*/ file,
   this._file = file ? file : null;
   this._dirty = dirty;
   this._trigger = file ? Chickenfoot.gTriggerManager.getTriggerFromFile(file) : null;
-  
+
   this._initialDirty = dirty;
   this._initialCursorPosition = cursorPosition;
   this._initialText = text;
@@ -73,7 +76,8 @@ Buffer = function(/*optional File*/ file,
   // create the editor widget
   if (useBespin) {
     editor = sidebarDocument.createElement('iframe');
-    editor.setAttribute("src", "chrome://chickenfoot/content/bespinEditorContent.html");
+    editor.setAttribute("src",
+        "chrome://chickenfoot/content/bespinEditorContent.html");
   } else if (useHtmlEditor) {
     editor = sidebarDocument.createElement('editor');
     editor.setAttribute("editortype", "html");
@@ -94,7 +98,6 @@ Buffer = function(/*optional File*/ file,
   }
   editor.setAttribute("flex", "10");
 
-  
   // create the tab
   var tab = sidebarDocument.createElement("tab");
   tab.setAttribute("flex", "1");
@@ -108,10 +111,10 @@ Buffer = function(/*optional File*/ file,
     var win = goog.dom.getFrameContentWindow(editor);
     win.addEventListener('resize', goog.bind(this.onResize, this), false);
   }
-  
+
   // enable toolbar buttons that require an editor
   sidebarDocument.getElementById("requiresSelectedEditor").setAttribute("disabled", false);
-  
+
   this.tab = tab;
   this.editor = editor;
   editor.buffer = this;
@@ -124,34 +127,67 @@ Buffer = function(/*optional File*/ file,
     }
   }
 
+  var self = this;
+
   // Only add listeners for non-Bespin editors.
   if (!useBespin) {
     editor.addEventListener("keypress", goog.bind(this._onKeyPress, this), true); 
     editor.addEventListener("keyup", syntaxColorEvent, true);
-  
-    var thisBuffer = this;
+
     editor.addEventListener("keyup", function(event) {
-        if (event.ctrlKey && (event.keyCode == 13 /* for Win/Linux*/ || event.keyCode == 77 /* for Mac OS */)) {
-            thisBuffer.runCurrentLine();
+        if (event.ctrlKey && (event.keyCode == 13 /* for Win/Linux*/ ||
+            event.keyCode == 77 /* for Mac OS */)) {
+          self.runCurrentLine();
         }
     }, true);
   
     // This should only happen when I release enter and control is pressed.
   }
 
-  this.focus();
-  //this.scrub();
-  this._updateDisplay();
+  var onEditorLoaded = function() {
+    self.focus();
+    //self.scrub();
+    self.updateTabLabel();
+    callback.call(null, self);
+  };
+
+  if (useBespin) {
+    var pollUntilLoaded = function() {
+      if (self.getBespinObject_()) {
+        self.finishStartEditing();
+        onEditorLoaded();
+      } else {
+        setTimeout(pollUntilLoaded, 100);
+      }
+    };
+    pollUntilLoaded();
+  } else {
+    onEditorLoaded();
+  }
 };
 
+/**
+ * Creates a Buffer asynchronously, passing the newly created Buffer to the
+ * callback once it is loaded.
+ * 
+ * @param {function(ckft.Buffer)} callback
+ * @param {nsIFile=} file
+ * @param {boolean=} dirty
+ * @param {string=} text
+ * @param {number=} cursorPosition
+ */
+ckft.Buffer.createBuffer = function(callback, file, dirty, text,
+    cursorPosition) {
+  new ckft.Buffer(callback, file, dirty, text, cursorPosition);
+};
 
 /** @return {boolean} */
-Buffer.prototype.isBespinEditor = function() {
+ckft.Buffer.prototype.isBespinEditor = function() {
   return this._useBespin;
 };
 
 /** @return {boolean} if HTML editor and not Bespin editor */
-Buffer.prototype.isHtmlEditor = function() {
+ckft.Buffer.prototype.isHtmlEditor = function() {
   return useHtmlEditor && !this.isBespinEditor();
 };
 
@@ -159,7 +195,7 @@ Buffer.prototype.isHtmlEditor = function() {
  * @param {Event} event
  * @private
  */
-Buffer.prototype._onKeyPress = function(event) {
+ckft.Buffer.prototype._onKeyPress = function(event) {
   var alt = event.altKey;
   var ctrl = event.ctrlKey;
   var shift = event.shiftKey;
@@ -214,52 +250,56 @@ Buffer.prototype._onKeyPress = function(event) {
 /**
  * @return nsIFile or null if buffer not associated with a file
  */
-Buffer.prototype.__defineGetter__("file", function() {
+ckft.Buffer.prototype.__defineGetter__("file", function() {
   return this._file;
 });
 
-Buffer.prototype.__defineSetter__("file", function(/*File*/ file) {
+ckft.Buffer.prototype.__defineSetter__("file", function(/*File*/ file) {
   this._file = file;
-  this._updateDisplay();
+  this.updateTabLabel();
 });
 
 /**
  * @return nsIEditor editing interface
  */
-Buffer.prototype.__defineGetter__("api", function() {
+ckft.Buffer.prototype.__defineGetter__("api", function() {
   return this.editor.getEditor(this.editor.contentWindow);
 });
 
 /**
  * @return boolean (true if buffer is dirty, false if not)
  */
-Buffer.prototype.__defineGetter__("dirty", function() {
+ckft.Buffer.prototype.__defineGetter__("dirty", function() {
   return this._dirty && this._file != null;
 });
 
-Buffer.prototype.__defineSetter__("dirty", function(/*boolean*/ dirty) {
+ckft.Buffer.prototype.__defineSetter__("dirty", function(/*boolean*/ dirty) {
   this._dirty = dirty;
-  if (!dirty) this.api.resetModificationCount();
-  this._updateDisplay();
+  if (!dirty && !this.isBespinEditor()) {
+    this.api.resetModificationCount();
+  }
+  this.updateTabLabel();
 });
 
 /**
  * @return Trigger if buffer is associated with an installed trigger, null otherwise
  */
-Buffer.prototype.__defineGetter__("trigger", function() {
+ckft.Buffer.prototype.__defineGetter__("trigger", function() {
   return this._trigger;
 });
 
-Buffer.prototype.__defineSetter__("trigger", function(/*Trigger*/ trigger) {
+ckft.Buffer.prototype.__defineSetter__("trigger", function(/*Trigger*/ trigger) {
   this._trigger = trigger;
-  if (trigger) this.file = trigger.path;
-  this._updateDisplay();
+  if (trigger) {
+    this.file = trigger.path;
+  }
+  this.updateTabLabel();
 });
 
 /**
  * @return String label describing this buffer
  */
-Buffer.prototype.toString = function() {
+ckft.Buffer.prototype.toString = function() {
   if (this.file != null) {
     var t = this.trigger;
     if (t != null) {
@@ -273,18 +313,21 @@ Buffer.prototype.toString = function() {
 };
 
 /**
- * Internal method called when buffer label needs to be updated
+ * Updates buffer label.
+ * @private
  */
-Buffer.prototype._updateDisplay = function() {
-  var message = "";
-  message = (this.dirty ? "*" : "") + this.toString();
+ckft.Buffer.prototype.updateTabLabel = function() {
+  var message = (this.dirty ? '*' : '') + this.toString();
 
   this.tab.label = message;
-  if (this.trigger) this.tab.setAttribute("image", "chrome://chickenfoot/skin/trigger-tab.png");
-  else this.tab.removeAttribute("image");
+  if (this.trigger) {
+    this.tab.setAttribute('image', 'chrome://chickenfoot/skin/trigger-tab.png');
+  } else {
+    this.tab.removeAttribute('image');
+  }
 };
 
-Buffer.prototype.startEditing = function() {
+ckft.Buffer.prototype.startEditing = function() {
   if (!this.isHtmlEditor()) {
     return;
   }
@@ -376,19 +419,32 @@ Buffer.prototype.startEditing = function() {
 			
       }
     }
-    if (nowDirty) thisBuffer.dirty = true;
+    if (nowDirty) {
+      thisBuffer.dirty = true;
+    }
   }
   api.addDocumentStateListener(documentListener);
 
+  this.finishStartEditing();
+};
+
+ckft.Buffer.prototype.finishStartEditing = function() {
   // finish initialization of the constructor parameters
-  if (this._initialText) this.text = this._initialText;
-  else if (this.file) this.text = Chickenfoot.SimpleIO.read(this.file);
-  
-  if (this._initialCursorPosition !== undefined) this.setCursorPosition(this._initialCursorPosition);
-  if (this._initialDirty) this.dirty = true;
-  
-  var thisBuffer = this;
-  editor.addEventListener("focus", function() { thisBuffer.onFocus(); }, true);  
+  if (this._initialText) {
+    this.text = this._initialText;
+  } else if (this.file) {
+    this.text = Chickenfoot.SimpleIO.read(this.file);
+  }
+
+  if (this._initialCursorPosition !== undefined) {
+    this.setCursorPosition(this._initialCursorPosition);
+  }
+  if (this._initialDirty) {
+    this.dirty = true;
+  }
+
+  var self = this;
+  this.editor.addEventListener("focus", function() { self.onFocus(); }, true);
 };
 
 /**
@@ -458,7 +514,7 @@ SelectionAdapter.prototype = {
 /**
  * Update enabled/disabled status of every item in context menu.
  */
-Buffer.prototype.updateContextMenu = function(/*XULNode*/ popup) {
+ckft.Buffer.prototype.updateContextMenu = function(/*XULNode*/ popup) {
   var editor = this.editor;
   var cmdmgr = editor.commandManager;
 
@@ -473,23 +529,33 @@ Buffer.prototype.updateContextMenu = function(/*XULNode*/ popup) {
         item.setAttribute('disabled', 'true');
     }
   }
-}
+};
+
+/**
+ * @return {Object}
+ * @private
+ */
+ckft.Buffer.prototype.getBespinObject_ = function() {
+  try {
+    return goog.dom.getFrameContentWindow(this.editor)._bespinEditorComponent;
+  } catch (e) {
+    return null;
+  }
+};
 
 /**
  * Returns contents of script editor as a plaintext string.
  */
-Buffer.prototype.__defineGetter__("text", function() {
+ckft.Buffer.prototype.__defineGetter__("text", function() {
   var editor = this.editor;
 
   if (this.isBespinEditor()) {
-    var win = goog.dom.getFrameContentWindow(editor);
-    return win._editorComponent.getContent();
+    return this.getBespinObject_().value;
   }
   
   var content = editor.contentDocument.getElementById('body');
-  var walker = Chickenfoot.createTreeWalker
-    (content,
-     NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
+  var walker = Chickenfoot.createTreeWalker(content,
+      NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
   var sb = new Chickenfoot.StringBuffer();
   while (walker.nextNode()) {
     var node = walker.currentNode;
@@ -502,20 +568,20 @@ Buffer.prototype.__defineGetter__("text", function() {
   
   var text = sb.toString();
   
-  text = Buffer.removeGarbageCharacter(text);
+  text = ckft.Buffer.removeGarbageCharacter(text);
   return text;
 });
 
 /**
  * Replaces contents of script editor with a plaintext string.
  */
-Buffer.prototype.__defineSetter__("text", function(/*String*/ newScript) {
-  newScript = Buffer.removeGarbageCharacter(newScript);
+ckft.Buffer.prototype.__defineSetter__("text", function(/*String*/ newScript) {
+  newScript = ckft.Buffer.removeGarbageCharacter(newScript);
 
   var editor = this.editor;
   if (this.isBespinEditor()) {
-    var win = goog.dom.getFrameContentWindow(editor);
-    win._editorComponent.setContent(newScript);
+    this.getBespinObject_().value = newScript;
+    return;
   }
 
   var api = editor.getEditor(editor.contentWindow);    
@@ -562,7 +628,7 @@ Buffer.prototype.__defineSetter__("text", function(/*String*/ newScript) {
  * Workaround for bug #290: script sometimes becomes corrupted with
  * garbage character.  Find the character and delete it.
  */
-Buffer.removeGarbageCharacter = function(/*String*/ text) {
+ckft.Buffer.removeGarbageCharacter = function(/*String*/ text) {
   //debug("removing garbage from " + text);
   return text.replace(/\302\240/g, "");
 };
@@ -570,7 +636,7 @@ Buffer.removeGarbageCharacter = function(/*String*/ text) {
 /**
  * Apply syntax coloring to the editor.
  */
-Buffer.prototype.recolor = function() {
+ckft.Buffer.prototype.recolor = function() {
   if (!this.isHtmlEditor()) {
     return;
   }
@@ -584,7 +650,7 @@ Buffer.prototype.recolor = function() {
 /**
  * Scrub the nodes to get rid of _moz_dirty attribute
  */
-Buffer.prototype.scrub = function() {
+ckft.Buffer.prototype.scrub = function() {
   var editor = this.editor;
   var content = editor.contentDocument.getElementById('body');
   var walker = Chickenfoot.createTreeWalker(content, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
@@ -610,7 +676,7 @@ Buffer.prototype.scrub = function() {
 /**
  * Set the keyboard focus to this editor.
  */
-Buffer.prototype.focus = function(/*optional int*/ cursorPosition) {
+ckft.Buffer.prototype.focus = function(/*optional int*/ cursorPosition) {
   sidebarDocument.getElementById("editorTabBox").selectedTab = this.tab;
   if (this.isBespinEditor()) {
     return;
@@ -623,7 +689,7 @@ Buffer.prototype.focus = function(/*optional int*/ cursorPosition) {
  * @param cursorPosition  character offset relative to editor's plain text
  * representation
  */
-Buffer.prototype.setCursorPosition = function(/*int*/ cursorPosition) {
+ckft.Buffer.prototype.setCursorPosition = function(/*int*/ cursorPosition) {
   if (!this.isHtmlEditor()) {
     return;
   }
@@ -640,7 +706,7 @@ Buffer.prototype.setCursorPosition = function(/*int*/ cursorPosition) {
 /**
  * Save this buffer to disk.  Prompts user if we don't have a filename yet.
  */
-Buffer.prototype.save = function() {
+ckft.Buffer.prototype.save = function() {
   if (this.file != null) {
     Chickenfoot.SimpleIO.write(this.file, this.text);
     uploadSyncTrigger(this.file);
@@ -654,7 +720,7 @@ Buffer.prototype.save = function() {
 /**
  * Save this buffer to disk, prompting for a new name.
  */
-Buffer.prototype.saveAs = function() {
+ckft.Buffer.prototype.saveAs = function() {
   var file;
   if (this.file != null) {
     file = chooseFile(false, this.file);
@@ -672,7 +738,7 @@ Buffer.prototype.saveAs = function() {
  * Test whether it's OK to close this buffer.  If buffer is dirty, prompts user to save it.
  * @return true if OK to close, false if user canceled.
  */
-Buffer.prototype.okToClose = function() {
+ckft.Buffer.prototype.okToClose = function() {
   if (this.dirty) {  
     var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].
         getService(Components.interfaces.nsIPromptService);
@@ -696,7 +762,7 @@ Buffer.prototype.okToClose = function() {
  * Close this buffer.  Doesn't prompt user to save it; use
  * okToClose() to do that.
  */
-Buffer.prototype.close = function() {
+ckft.Buffer.prototype.close = function() {
   var tabbox = sidebarDocument.getElementById("editorTabBox");
   var tabs = sidebarDocument.getElementById("editorTabs");
   var tabPanels = sidebarDocument.getElementById("editorTabPanels");
@@ -716,7 +782,7 @@ Buffer.prototype.close = function() {
   }
 };
 
-Buffer.prototype.run = function() {
+ckft.Buffer.prototype.run = function() {
   var file;
   if (this.file === null) { file = this.file; }
   else { file = this.file.parent; }
@@ -724,7 +790,7 @@ Buffer.prototype.run = function() {
   Chickenfoot.evaluate(chromeWindow, this.text, true, null, {scriptDir:file});
 };
 
-Buffer.prototype.runCurrentLine = function() {
+ckft.Buffer.prototype.runCurrentLine = function() {
     var thisBuffer = this;
     
     // if web page steals focus from us, grab it back (just once)
@@ -790,7 +856,7 @@ Buffer.prototype.runCurrentLine = function() {
     }
 };
 
-Buffer.prototype.onFocus = function() {
+ckft.Buffer.prototype.onFocus = function() {
   if (this._file) {
     // have to clone() this._file to force it to reload the file attributes
     var currentTime = this._file.clone().lastModifiedTime;
@@ -821,7 +887,7 @@ Buffer.prototype.onFocus = function() {
 };
 
 /** @param {Event} event */
-Buffer.prototype.onResize = function(event) {
+ckft.Buffer.prototype.onResize = function(event) {
   var win = event.target;
   var size = goog.dom.getViewportSize(win);
   var editorEl = win.document.getElementById('editor');
@@ -845,8 +911,10 @@ var defaultTemplateId;
  *
  * Either open the customization dialog, or a new buffer,
  * possibly pre-populated with content from a template.
+ * 
+ * @param {string=} templateId
  */
-function newFile(/*optional string*/ templateId) {
+function newFile(templateId) {
   if (templateId === 'customize-chickenfoot-template') {
     // user has chosen to open the template customization dialog
     var dialogArguments = {
@@ -881,18 +949,21 @@ function newFile(/*optional string*/ templateId) {
         buffer.text = scriptText;
         buffer.setCursorPosition(index);
       } else {
-        new Buffer(null, false, scriptText, index);
+        ckft.Buffer.createBuffer(goog.nullFunction, null, false, scriptText, index);
       }
     } else {
-      new Buffer();
+      ckft.Buffer.createBuffer(goog.nullFunction);
     }
   }
 }
 
-//checks whether an open buffer exists
-//if it does, and the existing buffer is empty, opens the
-//file in that buffer, editing it inplace.
-function loadIntoBuffer(file) {
+/**
+ * Checks whether an open buffer exists.
+ * If it does, and the existing buffer is empty, opens the file in that buffer,
+ * editing it in-place.
+ * @param {!nsIFile} file
+ */
+ckft.Buffer.loadIntoBuffer = function(file) {
   var buffer = getSelectedBuffer();
   if (buffer && !goog.string.trim(buffer.text)) {
     // the selected buffer is empty;
@@ -902,36 +973,37 @@ function loadIntoBuffer(file) {
     buffer.text = Chickenfoot.SimpleIO.read(file);
     buffer.dirty = false;
     buffer.focus();
+  } else {
+    // Otherwise, call the usual create new buffer procedure.
+    ckft.Buffer.newBufferWithFile(file);
   }
-  else {
-    newBufferWithFile(file);  //else call the usual create new buffer procedure
-  }
-}
+};
 
 function openFile() {
   var file = chooseFile(true, this._lastDirectory);
   this._lastDirectory = file.clone();
   this._lastDirectory.leafName = "";
-  loadIntoBuffer(file);
+  ckft.Buffer.loadIntoBuffer(file);
 }
 
-function newBufferWithFile(/*nsIFile*/ file) {
+/** @param {!nsIFile} file */
+ckft.Buffer.newBufferWithFile = function(file) {
   if (file && file.isFile()) {
-    new Buffer(file);
+    ckft.Buffer.createBuffer(goog.nullFunction, file);
   }
-}
+};
 
 function startEditingTriggerScript(/*Trigger*/ trigger) {
-  loadIntoBuffer(trigger.path);
+  ckft.Buffer.loadIntoBuffer(trigger.path);
 }
 
 /**
  * Opens a file chooser and returns an nsIFile (possibly null)
  *
- * @param openMode true if open mode, false if save mode
- * @return nsIFile
+ * @param {boolean} openMode true if open mode, false if save mode
+ * @return {?nsIFile}
  */
-function chooseFile(/*boolean*/ openMode, /*optional nsIFile*/initialFile) {
+function chooseFile(openMode, initialFile) {
   var nsIFilePicker = Components.interfaces.nsIFilePicker;
   var mode = (openMode) ? nsIFilePicker.modeOpen : nsIFilePicker.modeSave;
   var fp = Components.classes["@mozilla.org/filepicker;1"]
@@ -969,9 +1041,8 @@ function focusEditorWhenTabSelected() {
   }
 }
 
-
 /**
- * @return selected Buffer, or null if no Buffers open.
+ * @return {?ckft.Buffer} selected Buffer, or null if no Buffers open.
  */
 function getSelectedBuffer() {
   var tabbox = sidebarDocument.getElementById("editorTabBox");
@@ -982,7 +1053,7 @@ function getSelectedBuffer() {
 }
 
 /**
- * @return Buffer[] all open buffers
+ * @return {!Array.<ckft.Buffer>} all open buffers
  */
 function getAllBuffers() {
   var buffers = [];
@@ -1036,7 +1107,7 @@ function closeAllBuffersButSelected(){
     }
 }
 
-Buffer.prototype.runSelectedText = function() {
+ckft.Buffer.prototype.runSelectedText = function() {
   var editor = this.editor;
   var sb = new Chickenfoot.StringBuffer();
   var temp = this.editor.contentWindow.getSelection();

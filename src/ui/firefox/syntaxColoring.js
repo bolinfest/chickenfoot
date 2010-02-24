@@ -435,7 +435,7 @@ function charCountSpanBr(span,nodes){
 	var count=0;
 	var currNodeNum=0;
 	var len=nodes.length;
-	while(currNodeNum<len){
+	while (currNodeNum < len) {
 	/*
 		debug("while");
 		debug("currNodeNum "+currNodeNum);
@@ -446,26 +446,26 @@ function charCountSpanBr(span,nodes){
 		debug("node ");
 		debug(node);
 		*/
-		if(nodes[currNodeNum]==node){
+		if (nodes[currNodeNum] == node){
 			//debug("thiss is the node");
 			//debug("span text = "+spanText);
-			return count+spanText.length+1;
-			//break;		
-		}else{
+			return count + spanText.length + 1;
+			//break;
+		} else {
 			//debug("increment count");
 			//debug(nodes[currNodeNum].nodeName);
 			
-			if(nodes[currNodeNum].nodeName=="SPAN"){
+			if (nodes[currNodeNum].nodeName=="SPAN") {
 				//debug("span node add "+nodes[currNodeNum].firstChild.nodeValue.length);
 				count=count+nodes[currNodeNum].firstChild.nodeValue.length;
 			}
-			if(nodes[currNodeNum].nodeName=="#text"){
+			if (nodes[currNodeNum].nodeName=="#text") {
 				//debug("text node add "+nodes[currNodeNum].nodeValue.length);
 				count=count+nodes[currNodeNum].nodeValue.length;
 			}
-			if(nodes[currNodeNum].nodeName=="BR"){
+			if (nodes[currNodeNum].nodeName=="BR") {
 				//debug("br node add 1");
-				count=count+1;
+				count = count + 1;
 			}
 			currNodeNum++;
 		}
@@ -877,8 +877,10 @@ function makeRule(pattern, style) {
 
 /**
  * Rules for syntax-coloring Javascript.
+ * @type {Array.<{style:string}>}
+ * @const
  */
-const CF_JAVASCRIPT_RULES = [
+var CF_JAVASCRIPT_RULES = [
   //block comments
   makeRule(/\/\*[\s\S]*?\*\//gm,
              "color: blue"),

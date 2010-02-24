@@ -3,6 +3,10 @@
  * object so that it can be remembered on the main window while the
  * sidebar is closed.
  */
+goog.provide('ckft.SidebarState');
+goog.provide('ckft.PreservedBuffer');
+
+goog.require('ckft.Buffer');
 
 /**
  * SidebarState fields
@@ -13,45 +17,44 @@
  *     selectedPreservedBuffer: PreservedBuffer  
  *           buffer that was selected in the sidebar
  */
- 
+
 /**
  * Make an object encapsulating the current sidebar state.
+ * @param {SidebarWindow} sidebarWindow
+ * @constructor
  */
-function SidebarState(/*SidebarWindow*/ sidebarWindow) {
+ckft.SidebarState = function(sidebarWindow) {
   var buffers = sidebarWindow.getAllBuffers();
   var selectedBuffer = sidebarWindow.getSelectedBuffer();
   var preservedBuffers = [];
   for (var i = 0; i < buffers.length; ++i) {
     var buffer = buffers[i];
-    var preservedBuffer = new PreservedBuffer(buffer);
+    var preservedBuffer = new ckft.PreservedBuffer(buffer);
     preservedBuffers.push(preservedBuffer);
     if (buffer == selectedBuffer) this.selectedPreservedBuffer = preservedBuffer;
   }
   //debug("selected was " + this.selectedPreservedBuffer);
   this.preservedBuffers = preservedBuffers;
-}
+};
 
 /**
  * Restore the sidebar state into a new sidebar.
  */
-SidebarState.prototype.restore = function(/*SidebarWindow*/ sidebarWindow) {
-  var selectedBuffer = null;
+ckft.SidebarState.prototype.restore = function(/*SidebarWindow*/ sidebarWindow) {
   for (var i = 0; i < this.preservedBuffers.length; ++i) {
     var preservedBuffer = this.preservedBuffers[i];
-    var buffer = preservedBuffer.unpickle(sidebarWindow);
-    if (preservedBuffer == this.selectedPreservedBuffer) selectedBuffer = buffer;
+    var isSelectedBuffer = (preservedBuffer == this.selectedPreservedBuffer);
+    var callback = isSelectedBuffer ? function(buffer) { buffer.focus(); } :
+        goog.nullFunction;
+    preservedBuffer.unpickle(sidebarWindow, callback);
   }
-
-  if (selectedBuffer) {
-    selectedBuffer.focus();
-  }
-}
+};
 
 /**
  * Test whether this state is dirty (i.e., some part of it still needs to be 
  * saved to disk).
  */
-SidebarState.prototype.__defineGetter__("dirty", function() {
+ckft.SidebarState.prototype.__defineGetter__("dirty", function() {
   for (var i = 0; i < this.preservedBuffers.length; ++i) {
     var preservedBuffer = this.preservedBuffers[i];
     if (preservedBuffer.dirty) return true;
@@ -135,8 +138,6 @@ function saveSidebarOnClose(/*ChromeWindow*/ chromeWindow) {
     } // end of afterTimeout
     
   }; // end of WindowIsClosing
-  
-  
 }
 
 /**
@@ -144,20 +145,24 @@ function saveSidebarOnClose(/*ChromeWindow*/ chromeWindow) {
  */
 function saveSidebarState(/*ChromeWindow*/ chromeWindow,
                           /*SidebarWindow*/ sidebarWindow) {
-  chromeWindow.chickenfootSidebarState = new SidebarState(sidebarWindow);
+  chromeWindow.chickenfootSidebarState = new ckft.SidebarState(sidebarWindow);
 }
 
 /**
  * Restore sidebar from a SidebarState object stored on the
  * chrome window.
- * @requires sidebarWindow is empty (has no buffers)
- * @returns true if saved SidebarState object found on chrome window;
+ * @param {ChromeWindow} chromeWindow
+ * @param {SidebarWindow} sidebarWindow must be empty (has no buffers)
+ * @returns {boolean} true if saved SidebarState object found on chrome window;
  *          false if no sidebar state found.
  */
-function restoreSidebarState(/*ChromeWindow*/ chromeWindow,
-                             /*SidebarWindow*/ sidebarWindow) {
-  if (sidebarWindow.getAllBuffers().length > 0) throw new Error("restoring to nonempty sidebar");
-  if (!chromeWindow.chickenfootSidebarState) return false;
+ckft.SidebarState.restoreSidebarState = function(chromeWindow, sidebarWindow) {
+  if (sidebarWindow.getAllBuffers().length > 0) {
+    throw new Error("restoring to nonempty sidebar");
+  }
+  if (!chromeWindow.chickenfootSidebarState) {
+    return false;
+  }
   chromeWindow.chickenfootSidebarState.restore(sidebarWindow);
   return true;
 }
@@ -165,15 +170,19 @@ function restoreSidebarState(/*ChromeWindow*/ chromeWindow,
 
 /**
  * PreservedBuffer represents an edit buffer for a closed sidebar.
+ * @param {ckft.Buffer} buffer
+ * @constructor
  */
-function PreservedBuffer(/*Buffer*/ buffer) {
+ckft.PreservedBuffer = function(buffer) {
   this.file = buffer.file;
   this.dirty = buffer.dirty;
   this.text = buffer.text;
-}
+};
 
-PreservedBuffer.prototype.unpickle = function(/*SidebarWindow*/ sidebarWindow) {
-  return new sidebarWindow.Buffer(this.file, 
-                                  this.dirty,
-                                  this.text);
-}
+/**
+ * @param {SidebarWindow} sidebarWindow
+ * @param {function(ckft.Buffer)} callback
+ */
+ckft.PreservedBuffer.prototype.unpickle = function(sidebarWindow, callback) {
+  ckft.Buffer.createBuffer(callback, this.file, this.dirty, this.text);
+};
