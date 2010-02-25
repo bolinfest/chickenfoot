@@ -41,11 +41,17 @@ var causesLoad = false;
 
 /**
  * ckft.Buffer represents an open script editor.
- * @param {function(ckft.Buffer)} callback
- * @param {nsIFile=} file
- * @param {boolean=} dirty
- * @param {string=} text
- * @param {number=} cursorPosition
+ * @param {function(ckft.Buffer)} callback that receives the constructed Buffer
+ *     after it has been fully rendered with the content specified by the other
+ *     constructor parameters.
+ * @param {nsIFile=} file from which the content for the editor will be loaded.
+ *     This is also the file that is written to when the user hits 'Save'.
+ * @param {boolean=} dirty Whether the editor has unsaved data.
+ * @param {string=} text The content for the editor. If this is specified, then
+ *     file should be undefined. Defaults to the empty string if no file is
+ *     specified.
+ * @param {number=} cursorPosition The character offset from the start of the
+ *     buffer where the cursor should be placed. Defaults to 0.
  * @constructor
  * @private
  */

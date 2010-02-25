@@ -15,6 +15,7 @@ required for compilation.\n
 
 
 import distutils.version
+import json
 import logging
 import optparse
 import os
@@ -28,7 +29,7 @@ req_regex = re.compile('goog\.require\s*\(\s*[\'\"]([^\)]+)[\'\"]\s*\)')
 prov_regex = re.compile('goog\.provide\s*\(\s*[\'\"]([^\)]+)[\'\"]\s*\)')
 ns_regex = re.compile('^ns:((\w+\.)*(\w+))$')
 version_regex = re.compile('[\.0-9]+')
-
+json_encoder = json.JSONEncoder()
 
 def IsValidFile(ref):
   """Returns true if the provided reference is a file and exists."""
@@ -302,9 +303,10 @@ def ResolveDependencies(require, search_hash, result_list, seen_list):
 
 def GetDepsLine(dep):
   """Returns a JS string for a dependency statement in the deps.js file."""
-  return 'goog.addDependency(\'%s\', %s, %s);' % (
-      os.path.normpath(dep.filename), dep.provides, dep.requires)
-
+  return 'goog.addDependency(%s, %s, %s);' % (
+      json_encoder.encode(os.path.normpath(dep.filename)),
+      dep.provides,
+      dep.requires)
 
 def PrintLine(msg, out):
   out.write(msg)
