@@ -67,9 +67,10 @@ gdata.docs.ui.DocPicker = function(pickerEl, viewer) {
   gdata.docs.ui.exportFunction(win, 'pickerOnFrameLoad', gdata.docs.ui.onFrameLoad);
   
   var id = gdata.docs.ui.pickerCounter_++;
+  this.id_ = id;
   gdata.docs.ui.pickerMap_[id] = this;
-  pickerEl.innerHTML = '<iframe src="javascript:parent.pickerInsertHtml(' + id +
-      ')" frameborder="0" marginheight="0" marginwidth="0"></iframe>';
+  
+  this.displayLoginForm();
 };
 goog.inherits(gdata.docs.ui.DocPicker, goog.events.EventTarget);
 
@@ -90,6 +91,16 @@ gdata.docs.ui.pickerMap_ = {};
  * @type {goog.dom.DomHelper}
  */
 gdata.docs.ui.DocPicker.prototype.pickerDom_;
+
+
+/**
+ * Invoke this method to display the login form. This may have to be called
+ * again if the user's GData token expires during the session.
+ */
+gdata.docs.ui.DocPicker.prototype.displayLoginForm = function() {
+  this.pickerEl_.innerHTML = '<iframe src="javascript:parent.pickerInsertHtml(' + this.id_ +
+      ')" frameborder="0" marginheight="0" marginwidth="0"></iframe>';
+};
 
 
 /** @return {goog.dom.DomHelper} */
@@ -149,7 +160,7 @@ gdata.docs.ui.onFrameLoad = function(id, bodyEl) {
     try {
       p.processLogin();
     } catch (e) {
-      output(e);
+      alert('login failed: ' + e);
     }
     // Always return false to prevent the onsubmit from proceeding.
     return false;
@@ -166,26 +177,37 @@ gdata.docs.ui.DocPicker.prototype.processLogin = function() {
   }
   var password = domHelper.$('password').value;
   var user = new gdata.auth.User(username);
+  var services = [gdata.auth.ServiceName.DOCUMENTS_LIST,
+                  gdata.auth.ServiceName.SPREADSHEETS];
   if (password) {
     try {
-      user.login(password, [gdata.auth.ServiceName.DOCUMENTS_LIST,
-                            gdata.auth.ServiceName.SPREADSHEETS]);
+      user.login(password, services);
+      this.displayDocumentsForUser(user);
     } catch (e) {
-      // Ignore error here; user will be notified that login failed.
+      if ((e instanceof gdata.auth.LoginFailure) &&
+          (e.request.status == 401 || e.request.status == 403)) {
+        alert('It appears your username/password combination is invalid. ' +
+            'Please check your username and password and try again.');
+      } else {
+        throw e;
+      }
     }
-  }
-  if (user.isAuthenticated(gdata.auth.ServiceName.DOCUMENTS_LIST)) {
-    this.displayDocumentsForUser(user);
+  } else if (gdata.auth.lookupAuthToken(user.getEmail(),
+      gdata.auth.ServiceName.DOCUMENTS_LIST)) {
+    if (user.isAuthenticated(gdata.auth.ServiceName.DOCUMENTS_LIST)) {
+      this.displayDocumentsForUser(user);
+    } else {
+      alert('It appears your GData token expired. ' +
+          'Please enter your username and password and try again.');
+      var email = user.getEmail();
+      goog.array.forEach(services, function(service) {
+        gdata.auth.deleteAuthToken(email, service);
+      });
+    }
   } else {
-    this.notifyLoginFailed();    
+    alert('You must enter a password');
   }
 };
-
-
-gdata.docs.ui.DocPicker.prototype.notifyLoginFailed = function() {
-  // TODO(mbolin): Implement.
-};
-
 
 /**
  * Lists the word-processing documents for the specified user.
@@ -451,13 +473,17 @@ gdata.docs.ui.DocViewer.prototype.setPreSaveProcessor = function(processor) {
  * @param {function(string)} errorCallback
  */
 gdata.docs.ui.DocViewer.prototype.save = function(callback, errorCallback) {
-  var iframeEl = this.viewerEl_.firstChild;
-  var doc = goog.dom.getFrameContentDocument(iframeEl);
-  var content = doc.body.innerHTML;
-  if (this.preSaveProcessor_) {
-    content = this.preSaveProcessor_(content, doc);
+  try {
+    var iframeEl = this.viewerEl_.firstChild;
+    var doc = goog.dom.getFrameContentDocument(iframeEl);
+    var content = doc.body.innerHTML;
+    if (this.preSaveProcessor_) {
+      content = this.preSaveProcessor_(content, doc);
+    }
+    this.getEntry().update(content, callback, errorCallback);
+  } catch (e) {
+    errorCallback(e.message);
   }
-  this.getEntry().update(content, callback, errorCallback);
 };
 
 

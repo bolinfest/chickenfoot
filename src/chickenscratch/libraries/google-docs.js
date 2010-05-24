@@ -11,6 +11,7 @@ include('closure-lite.js');
 
 goog.provide('gdata.auth');
 goog.provide('gdata.auth.ServiceName');
+goog.provide('gdata.auth.LoginFailure');
 goog.provide('gdata.auth.User');
 goog.provide('gdata.docs.DocumentListFeed');
 goog.provide('gdata.docs.DocumentType');
@@ -44,6 +45,17 @@ gdata.auth.ServiceName = {
   SPREADSHEETS: 'wise',
   WEBMASTER_TOOLS: 'sitemaps',
   YOUTUBE: 'youtube'
+};
+
+
+/**
+ * @param {XMLHttpRequest} request
+ * @param {string} message
+ * @constructor
+ */
+gdata.auth.LoginFailure = function(request, message) {
+  this.request = request;
+  this.message = message;
 };
 
 
@@ -83,11 +95,11 @@ gdata.auth.authenticate = function(email, password, service) {
       }
     }
     if (!authToken) {
-      throw new Error('No "Auth=" found in response from ClientLogin.');
+      throw new gdata.auth.LoginFailure(request,
+          'No "Auth=" found in response from ClientLogin.');
     }
   } else {
-    throw new Error('Login error: ' + request.status + ' ' +
-        request.statusText);
+    throw new gdata.auth.LoginFailure(request, request.statusText);
   }
 
   gdata.auth.writeAuthToken(email, service, authToken);
@@ -202,6 +214,23 @@ gdata.auth.getAuthTokenForUrl_ = function(email, url) {
     throw new Error('No authToken for user: ' + email);
   }
   return authToken;
+};
+
+
+// TODO(mbolin): Add more entries to this map
+gdata.auth.noopUrlMap_ = {};
+gdata.auth.noopUrlMap_[gdata.auth.ServiceName.CALENDAR] =
+    'http://www.google.com/calendar/feeds/default/allcalendars/full';
+gdata.auth.noopUrlMap_[gdata.auth.ServiceName.DOCUMENTS_LIST] =
+    'http://docs.google.com/feeds/default/private/full';
+
+
+/**
+ * @param {gdata.auth.ServiceName} service
+ * @return {string} url
+ */
+gdata.auth.getNoopUrlForService = function(service) {
+  return gdata.auth.noopUrlMap_[service];
 };
 
 
@@ -324,7 +353,36 @@ gdata.auth.User.prototype.login = function(password, services) {
  * @return {boolean}
  */
 gdata.auth.User.prototype.isAuthenticated = function(service) {
-  return !!gdata.auth.lookupAuthToken(this.email_, service);
+  var authToken = gdata.auth.lookupAuthToken(this.email_, service);
+  
+  // Unfortunately, as explained on this thread:
+  //
+  // http://groups.google.com/group/google-accounts-api/browse_thread/thread/e9ae2df3ce512f37/ef8d9d927164e124
+  //
+  // The AuthSubTokenInfo method available to AuthSub tokens is not available
+  // for ClientLogin tokens. I protested this disparity, so we'll see if
+  // anything comes of it:
+  // 
+  // http://www.google.com/support/forum/p/apps-apis/thread?tid=370d4ce50feaa4da&hl=en&fid=370d4ce50feaa4da000486eb271ce339
+  // 
+  // As suggested on the Google Groups thread, the recommended way to verify a
+  // token is to use it and then see whether the server returns a
+  // '401 Token expired'. This is a pretty lame alternative because:
+  //
+  // (1) Coming up with a no-op URL to hit will vary for each service.
+  // (2) Even though it is a no-op, it may require making a GET request with a
+  //     sizable payload.
+
+  var url = gdata.auth.getNoopUrlForService(service);
+
+  var xhr = new XMLHttpRequest();
+  var asynchronous = false;
+  xhr.open('GET', url, asynchronous);
+  xhr.setRequestHeader('GData-Version', '3.0');
+  xhr.setRequestHeader('Authorization', 'GoogleLogin auth=' + authToken);
+  xhr.send(null);
+
+  return xhr.status == 200;
 };
 
 
