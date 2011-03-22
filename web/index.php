@@ -9,10 +9,14 @@ so you can write scripts to manipulate web pages and automate web browsing.
 In Chickenfoot, scripts are written in a superset of Javascript
 that includes special functions specific to web tasks.
 
-<p><a href="install.html"><img src="images/install.gif" style="border:none; vertical-align: middle">Install Chickenfoot</a></p>
+<p><a href="install.html"><img src="images/install.gif" style="border:none; vertical-align: middle">Install Chickenfoot</a> (for Firefox 3 only)</p>
+
+<div style="margin-left:40px;margin-right:40px; background-color: lightYellow; padding:10px;">
+<b>No Firefox 4 support yet:</b> the latest version of Chickenfoot on this site runs only on Firefox 3.  Chickenfoot is no longer under active development at MIT, so the <a href="developer-info.html">source code</a> will be moving to a github repository for further development, including Firefox 4 support among other goals.  If you want to help with the future development of Chickenfoot, please send mail to <a href="mailto:bolinfest@gmail.com">Michael Bolin</a>.
+</div>
 
 <p/>
-To participate in the growing Chickenfoot community, you can:
+To participate in the Chickenfoot community, you can:
 <ul>
 <li>Join the mailing lists:
 <br><br>
