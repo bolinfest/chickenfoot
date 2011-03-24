@@ -46,35 +46,6 @@ var Chickenfoot = this;
 // syntactically correct JavaScript without compilation.
 var isExportedXpi = ('yes' === '@IS_EXPORTED_XPI@');
 
-// Function.bind and Function.bindAsEventListener are added to support prototype.js
-//
-// Apparently, adding properties to Function.prototype does not add the properties
-// to functions defined in a Chickenscratch script, which is why these properties
-// are added at the XPCOM level instead.
-//
-// TODO: find a cleaner way to integrate prototype.js with Chickenfoot
-
-Function.prototype.bind = function() {
-  function $A(iterable) {
-    var results = [];
-    for (var i = 0; i < iterable.length; i++)
-      results.push(iterable[i]);
-    return results;
-  }
-  var __method = this, args = $A(arguments), object = args.shift();
-  return function() {
-    return __method.apply(object, args.concat($A(arguments)));
-  }
-}
-
-Function.prototype.bindAsEventListener = function(object) {
-  var __method = this;
-  return function(event) {
-    return __method.call(object, event || window.event);
-  }
-}
-
-
 // Global variables
 var gTriggerManager;
 var global = {}; // user's global variable space
