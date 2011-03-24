@@ -60,10 +60,17 @@
     <property name="version.pattern" value="&lt;version/&gt;" />
 
     <filterset id="chickenfootMacros">
+      <!--
+        These variables are declared verbatim in chrome.manifest.
+        The build process needs to be fixed to have a parameterized
+        chrome.template.manifest a la install.template.rdf so that
+        exporting of Chickenfoot scripts as extensions works correctly.
+      -->
       <filter token="CHICKENFOOT_CONTRACT_ID" value="@uid.csail.mit.edu/Chickenfoot/;1" />
       <filter token="CHICKENFOOT_GUID" value="7a2ad1d0-29a8-4e2a-97bd-ad6324c0a753" />
-      <filter token="CHICKEN_BYPASS_GUID" value="f8940eee-2e3b-4682-a5d1-71ca80aeeeee" />
       <filter token="CHICKENFOOT_COMMAND_LINE_HANDLER_GUID" value="e2f9f917-a54e-4e9c-83c3-174fa65ecd25" />
+
+      <filter token="CHICKEN_BYPASS_GUID" value="f8940eee-2e3b-4682-a5d1-71ca80aeeeee" />
       <filter token="EXTENSION_NAME" value="chickenfoot" />
       <filter token="IS_EXPORTED_XPI" value="false" />
       <filter token="GUID" value="${chickenfoot.guid}" />

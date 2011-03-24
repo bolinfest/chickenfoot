@@ -125,80 +125,35 @@ function setupWindow(/*ChromeWindow*/ window) {
 
 /******************************************************************************/
 
-/**
- * @type {string}
- * @const
- */
-var CLASS_ID    = Components.ID("{@CHICKENFOOT_GUID@}");
+// Cannot use Components.utils.import() as written in the sample documentation
+// because "import" is a reserved word, so it is rejected by the Closure Compiler.
+Components.utils['import']('resource://gre/modules/XPCOMUtils.jsm');
+
 
 /**
- * @type {string}
- * @const
+ * @constructor
  */
-var CLASS_NAME  = "Chickenfoot";
-
-/**
- * @type {string}
- * @const
- */
-var CONTRACT_ID = "@CHICKENFOOT_CONTRACT_ID@";
-
-function ChickenfootService() {
+var ChickenfootService = function() {
   this.wrappedJSObject = Chickenfoot;
   setupService();
-}
-
-
-// The only interface we support is nsISupports.
-// All the action happens through wrappedJSObject.
-ChickenfootService.prototype.QueryInterface = function(iid) {
-  if (!iid.equals(Components.interfaces.nsISupports))
-    throw Components.results.NS_ERROR_NO_INTERFACE;
-  return this;
-}
-
-
-/* gModule implements Components.interfaces.nsIModule */
-var gModule = {
-
-  _firstTime : true,
-
-  _factory : {
-      createInstance: function (aOuter, aIID) {
-        if (aOuter != null) throw Components.results.NS_ERROR_NO_AGGREGATION;
-        return new ChickenfootService().QueryInterface(aIID);
-      }
-  },
-
-  registerSelf: function(aCompMgr, aFileSpec, aLocation, aType) {
-    if (!this._firstTime) throw Components.results.NS_ERROR_FACTORY_REGISTER_AGAIN;
-    this._firstTime = false;
-    aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-    aCompMgr.registerFactoryLocation(CLASS_ID,
-                                     CLASS_NAME,
-                                     CONTRACT_ID,
-                                     aFileSpec,
-                                     aLocation,
-                                     aType);
-  },
-
-  unregisterSelf: function(aCompMgr, aLocation, aType) {
-    aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-    aCompMgr.unregisterFactoryLocation(CLASS_ID, aLocation);        
-  },
-  
-  getClassObject: function(aCompMgr, aCID, aIID) {
-    if (!aIID.equals(Components.interfaces.nsIFactory)) {
-      throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
-    }
-    if (aCID.equals(CLASS_ID)) {
-      return this._factory;
-    }
-    throw Components.results.NS_ERROR_NO_INTERFACE;
-  },
-
-  canUnload: function(aCompMgr) { return true; }
-  
 };
 
-function NSGetModule(aCompMgr, aFileSpec) { return gModule; }
+
+/** @type {nsJSID} */
+ChickenfootService.prototype.classID = Components.ID("{@CHICKENFOOT_GUID@}");
+
+
+/** @type {Function} */
+ChickenfootService.prototype.QueryInterface =
+    XPCOMUtils.generateQI([Components.interfaces.nsIChickenfoot]);
+
+
+// From https://developer.mozilla.org/en/XPCOM/XPCOM_changes_in_Gecko_2.0.
+var NSGetFactory, NSGetModule;
+if (XPCOMUtils.generateNSGetFactory) {
+  // Firefox 4.0 and later.
+  NSGetFactory = XPCOMUtils.generateNSGetFactory([ChickenfootService]);
+} else {
+  // Firefox 3.0-3.6.
+  NSGetModule = XPCOMUtils.generateNSGetModule([ChickenfootService]);
+}

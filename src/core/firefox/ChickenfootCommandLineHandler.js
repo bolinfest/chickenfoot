@@ -25,149 +25,109 @@
  * Chickenfoot homepage: http://uid.csail.mit.edu/chickenfoot/
  */
 
-/**
- * @const
- */
-var CLASS_ID    = Components.ID("@CHICKENFOOT_COMMAND_LINE_HANDLER_GUID@");
+
+// Cannot use Components.utils.import() as written in the sample documentation
+// because "import" is a reserved word, so it is rejected by the Closure Compiler.
+Components.utils['import']('resource://gre/modules/XPCOMUtils.jsm');
+
+
+ChickenfootCommandLineHandler = this;
+
 
 /**
- * @type {string}
- * @const
+ * @constructor
  */
-var CLASS_NAME  = "ChickenfootCommandLineHandler";
-
-/**
- * @type {string}
- * @const
- */
-var CONTRACT_ID = "@uid.csail.mit.edu/ChickenfootCommandLineHandler/;1";
-
-var runThese = []
-
-ChickenfootCommandLineHandler = this
-function ChickenfootCommandLineHandlerService() {
+var ChickenfootCommandLineHandlerService = function() {
   this.wrappedJSObject = ChickenfootCommandLineHandler;
-}
-  
+};
+
+
+/** @type {nsJSID} */
+ChickenfootCommandLineHandlerService.prototype.classID =
+    Components.ID("@CHICKENFOOT_COMMAND_LINE_HANDLER_GUID@");
+
+
+/** @type {Function} */
+ChickenfootCommandLineHandlerService.prototype.QueryInterface =
+    XPCOMUtils.generateQI([Components.interfaces.nsIChickenfootCommandLineHandler]);
+
+
+/** @type {string} */
 ChickenfootCommandLineHandlerService.prototype.helpInfo =
     "  -cf-run <filename>   Run <filename> as a Chickenfoot script.\n";
 //  "<--- white space ----->Helpful text... new-line -->\n"
 
+var runThese = []
+
+
 ChickenfootCommandLineHandlerService.prototype.handle = function(cmdLine) {
     
-    function getFile(filename) {
-        try {
-            var file = cmdLine.resolveFile(filename)
-            if (!file.exists()) {
-                file = cmdLine.resolveFile(filename + ".js")
-            }
-            if (file.exists()) {
-                return file
-            }
-        } catch (e) {
-        }
+  var getFile = function(filename) {
+    try {
+      var file = cmdLine.resolveFile(filename);
+      if (!file.exists()) {
+        file = cmdLine.resolveFile(filename + ".js");
+      }
+      if (file.exists()) {
+        return file;
+      }
+    } catch (e) {
+      // OK
+    }
+  };
+
+  while (true) {
+    var startIndex = cmdLine.findFlag("cf-run", false)
+    if (startIndex < 0) {
+      startIndex = cmdLine.findFlag("cfrun", false);
+    }
+    if (startIndex < 0) {
+      break;
     }
     
-    while (true) {
-        var startIndex = cmdLine.findFlag("cf-run", false)
-        if (startIndex < 0) {
-            startIndex = cmdLine.findFlag("cfrun", false)
-        }
-        if (startIndex < 0) {
-            break
-        }
-        
-        var curIndex = startIndex + 1
-        
-        var filename = cmdLine.getArgument(curIndex)
-        if (!filename || filename.match(/^\-/)) {
-            throw "Missing a filename after -cf-run."
-        }
-        if (filename.match(/^file:\/\//)) {
-            filename = filename.substring(6)
-        }
-        var file = getFile(filename)
-        if (!file) {
-            throw "Can't find/use the file: " + filename
-        }
-        
-        var args = []        
-        curIndex = curIndex + 1        
-        while (curIndex < cmdLine.length) {
-            var arg = cmdLine.getArgument(curIndex)
-            if (!arg || arg.match(/^\-/)) {
-                break
-            }
-            args.push(arg)
-            curIndex = curIndex + 1
-        }
-        
-        cmdLine.removeArguments(startIndex, curIndex - 1)
-        
-        runThese.push({file : file, context : {command_line_args : args, arguments : args}})
+    var curIndex = startIndex + 1;
+    
+    var filename = cmdLine.getArgument(curIndex);
+    if (!filename || filename.match(/^\-/)) {
+      throw "Missing a filename after -cf-run.";
     }
-}
-
-/******************************************************************************/
-
-ChickenfootCommandLineHandlerService.prototype.QueryInterface = function(iid)
-  {
-    if (!iid.equals(Components.interfaces.nsICommandLineHandler) &&
-        !iid.equals(Components.interfaces.nsISupports))
-      throw Components.results.NS_ERROR_NO_INTERFACE;
-    return this;
-  }
-
-/* gModule implements Components.interfaces.nsIModule */
-var gModule = {
-
-  _firstTime : true,
-
-  _factory : {
-      createInstance: function (aOuter, aIID) {
-        if (aOuter != null) throw Components.results.NS_ERROR_NO_AGGREGATION;
-        return new ChickenfootCommandLineHandlerService().QueryInterface(aIID);
+    if (filename.match(/^file:\/\//)) {
+      filename = filename.substring(6);
+    }
+    var file = getFile(filename);
+    if (!file) {
+      throw "Can't find/use the file: " + filename;
+    }
+    
+    var args = [];
+    curIndex = curIndex + 1;        
+    while (curIndex < cmdLine.length) {
+      var arg = cmdLine.getArgument(curIndex);
+      if (!arg || arg.match(/^\-/)) {
+          break;
       }
-  },
-
-  registerSelf: function(aCompMgr, aFileSpec, aLocation, aType) {
-    if (!this._firstTime) throw Components.results.NS_ERROR_FACTORY_REGISTER_AGAIN;
-    this._firstTime = false;
-    aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-    aCompMgr.registerFactoryLocation(CLASS_ID,
-                                     CLASS_NAME,
-                                     CONTRACT_ID,
-                                     aFileSpec,
-                                     aLocation,
-                                     aType);
-                                     
-    var catMan = Components.classes["@mozilla.org/categorymanager;1"].
-        getService(Components.interfaces.nsICategoryManager)
-    catMan.addCategoryEntry(
-        "command-line-handler",
-        "m-chickenfoot",
-        "@uid.csail.mit.edu/ChickenfootCommandLineHandler/;1",
-        true,
-        true);
-  },
-
-  unregisterSelf: function(aCompMgr, aLocation, aType) {
-    aCompMgr = aCompMgr.QueryInterface(Components.interfaces.nsIComponentRegistrar);
-    aCompMgr.unregisterFactoryLocation(CLASS_ID, aLocation);        
-  },
-  
-  getClassObject: function(aCompMgr, aCID, aIID) {
-    if (!aIID.equals(Components.interfaces.nsIFactory)) {
-      throw Components.results.NS_ERROR_NOT_IMPLEMENTED;
+      args.push(arg);
+      curIndex = curIndex + 1;
     }
-    if (aCID.equals(CLASS_ID)) {
-      return this._factory;
-    }
-    throw Components.results.NS_ERROR_NO_INTERFACE;
-  },
-
-  canUnload: function(aCompMgr) { return true; }
-  
+    
+    cmdLine.removeArguments(startIndex, curIndex - 1);
+    
+    runThese.push({
+        file: file,
+        context: {
+          command_line_args: args,
+          arguments: args
+        }});
+  }
 };
 
-function NSGetModule(aCompMgr, aFileSpec) { return gModule; }
+
+// From https://developer.mozilla.org/en/XPCOM/XPCOM_changes_in_Gecko_2.0.
+var NSGetFactory, NSGetModule;
+if (XPCOMUtils.generateNSGetFactory) {
+  // Firefox 4.0 and later.
+  NSGetFactory = XPCOMUtils.generateNSGetFactory([ChickenfootCommandLineHandlerService]);
+} else {
+  // Firefox 3.0-3.6.
+  NSGetModule = XPCOMUtils.generateNSGetModule([ChickenfootCommandLineHandlerService]);
+}

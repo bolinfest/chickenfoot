@@ -6,3 +6,11 @@ content	chickenfoot                                 jar:chrome/chickenfoot.jar!/
 skin	chickenfoot	classic	jar:chrome/chickenfoot.jar!/skin/classic/
 
 locale	chickenfoot	en-US	jar:chrome/chickenfoot.jar!/locale/en-US/chickenfoot/
+
+component {7a2ad1d0-29a8-4e2a-97bd-ad6324c0a753} components/Chickenfoot.js
+contract @uid.csail.mit.edu/Chickenfoot/;1 {7a2ad1d0-29a8-4e2a-97bd-ad6324c0a753}
+category profile-after-change Chickenfoot @uid.csail.mit.edu/Chickenfoot/;1
+
+component {e2f9f917-a54e-4e9c-83c3-174fa65ecd25} components/ChickenfootCommandLineHandler.js
+contract @uid.csail.mit.edu/ChickenfootCommandLineHandler/;1 {e2f9f917-a54e-4e9c-83c3-174fa65ecd25}
+category profile-after-change ChickenfootCommandLineHandler @uid.csail.mit.edu/ChickenfootCommandLineHandler/;1
