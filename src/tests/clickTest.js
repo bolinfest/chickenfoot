@@ -10,6 +10,18 @@ t.test("click", function(){
   Test.assert(/webhp/.test(document.location));
 });
 
+// Same type of test as above, except it operates on what we would expect to be
+// a less Ajaxy site (Craigslist) than Google.
+t.test("click", function() {
+  go("http://www.craigslist.org");
+  click("faq");
+  Test.assert(/about\/help\/$/.test(document.location),
+    'did not navigate to about/help/');
+  click("general information");
+  Test.assert(/about\/help\/faq$/.test(document.location),
+    'did not navigate to about/help/faq');
+});
+
 // regression test for bug #293
 t.test("click", function() {
   go("http://www.google.com", true)

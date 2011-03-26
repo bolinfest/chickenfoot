@@ -131,17 +131,35 @@ function getLoadedHtmlDocument(/*ChromeWindow*/ chromeWindow,
     // tab's webProgress as shown here:
     webProgress = chromeWindow.getBrowser().webProgress;
   }
-  
+
   // TODO: I (mbolin) believe that getWebProgress does not work when win
   // represents the contentWindow of an IFRAME
   // because getWebProgress(win) calls getBrowser(win) which returns null
   // For now:
   if (!webProgress) return win.document;
+
+
+  // As of Firefox 4, the first clickTest (that operates on google.com) started
+  // failing. Introducing this artificial delay makes the test pass. It would be
+  // more comforting if we knew why this made things work, though my best guess
+  // is that it is analogous to calling setTimeout(fn, 0) to let some pending
+  // actions complete before continuing the current flow of execution. For
+  // example, due to a bug in Internet Explorer where focus() is called before
+  // blur(), it is often necessary to use setTimeout(fn, 0) in the focus()
+  // handler so that the blur() can complete before the new focus() event is
+  // handled.
+  //
+  // An additional test was added to clickTest.js to ensure that this was not
+  // due to any sort of special "Ajaxiness" of google.com by performing an
+  // analogous test on craigslist.org. Like the google.com test, the
+  // craigslist.org test passes without an artificial delay on Firefox 3.6
+  // but requires the artificial delay on Firefox 4.
+  sleepImpl(chromeWindow, 0);
   
   var delay = 100;
   var maxDelay = 30000;
-  var iterations = maxDelay/delay;
-  var warningInterval = 5/delay;
+  var iterations = maxDelay / delay;
+  var warningInterval = 5 / delay;
   for (var i = 0; i < iterations; ++i) {
     checkForStop();
     if (!webProgress.isLoadingDocument) {
