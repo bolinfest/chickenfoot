@@ -37,6 +37,7 @@
     <property name="export.dir"     value="${xpi.dir}/export" />
 
     <property name="closure-compiler.jar" value="${basedir}/closure/compiler.jar" />
+    <property name="closure.outputmode" value="compiled" />
 
     <property name="fennec.build.dir"      value="${basedir}${file.separator}platform${file.separator}fennec${file.separator}build" />
     <property name="fennec.xpi.dir"        value="${fennec.build.dir}${file.separator}xpi" />
@@ -389,7 +390,7 @@
     <macrodef name="closure-compile">
       <attribute name="outputfile" />
       <attribute name="compilationlevel" default="SIMPLE_OPTIMIZATIONS" />
-      <attribute name="outputmode" default="compiled" />
+      <attribute name="outputmode" default="${closure.outputmode}" />
       <element name="extraflags" optional="yes" />
       <element name="extrapaths" optional="yes" />
       <element name="debuginfo" optional="yes" />
@@ -410,7 +411,7 @@
       <mkdir dir="${export.dir}" />
       <closure-compile outputfile="${export.dir}/Chickenfoot.js"
                        compilationlevel="SIMPLE_OPTIMIZATIONS"
-                       outputmode="compiled">
+                       outputmode="${closure.outputmode}">
         <extrapaths>
           <!-- TODO(mbolin): Remove unnecessary includes from this list. -->
           <!-- Ideally, goog.provide and goog.require would be used      -->
