@@ -610,6 +610,16 @@ ckft.Buffer.prototype.__defineSetter__("text", function(/*String*/ newScript) {
   api.selection.selectAllChildren(pre);
   api.deleteSelection(0);
 
+  // In FF4.01, when the pre node doesn't contain any other nodes,
+  // the deleteSelection call seems to be deleting the pre node
+  // itself.  Note that this is contrary to the documented
+  // behavior!  Then the DidDeleteNode listener dutifully creates
+  // a new pre node, but the code below still has a reference to
+  // the deleted node.  This means that the insertNode call
+  // doesn't do what we want.  To work around this, we'll update
+  // the pre reference.
+
+  pre = doc.getElementById('pre');
   // Create a single text node for the script and insert it 
   // as a child of pre.  The editor's editing rules will 
   // automatically handle splitting this monolithic node 
