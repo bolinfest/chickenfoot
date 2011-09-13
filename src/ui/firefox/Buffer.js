@@ -458,7 +458,7 @@ ckft.Buffer.prototype.finishStartEditing = function() {
  * all methods do nothing.
  */
 function DocumentStateAdapter() { }
-EditActionAdapter.prototype = {
+DocumentStateAdapter.prototype = {
   QueryInterface : function(aIID) {
     if (aIID.equals(Components.interfaces.nsIDocumentStateListener) ||            
         aIID.equals(Components.interfaces.nsISupports))
