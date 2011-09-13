@@ -109,6 +109,11 @@
             description="Runs Firefox after installing the XPI file.">
     </target>
 
+    <target name="run-debug-no-install"
+            depends="xpi-dir,unjar-chrome,point-firefox-to-xpi-dir,run-chickenfoot-profile"
+            description="Runs Firefox by pointing it directly at build/xpi.  Chrome directory is not jarred.">
+    </target>
+
     <target name="run-no-install"
             depends="xpi-dir,point-firefox-to-xpi-dir,run-chickenfoot-profile"
             description="Runs Firefox by pointing it directly at build/xpi.">
@@ -522,6 +527,14 @@
           </fileset>
         </replaceregexp>
 
+    </target>
+    
+    <target name="unjar-chrome">
+            <unzip src="${xpi.dir}/chrome/${ant.project.name}.jar" dest="${xpi.dir}/chrome/" />
+	    <replaceregexp file="${xpi.dir}/chrome.manifest"
+	                   match="jar:|chickenfoot.jar!/"
+			   replace=""
+			   flags="g" />
     </target>
     
     <target name="xpi"
