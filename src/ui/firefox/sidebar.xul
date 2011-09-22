@@ -175,8 +175,8 @@
     </tabbox>
     
     <menupopup id="editorTabMenu"
-                       XXXonpopupshowing="getSelectedBuffer().updateContextMenu(this)"
-                       >
+               XXXonpopupshowing="getSelectedBuffer().updateContextMenu(this)"
+               >
                     
                     <menuitem label="Close Other Tabs"
         	          cmdid="cmd_closeOtherTabs"
@@ -206,7 +206,7 @@
          disable the menu item appropriately. -->
          
     <menupopup id="editorContextMenu"
-           onpopupshowing="getSelectedBuffer().updateContextMenu(this)">
+               onpopupshowing="getSelectedBuffer().updateContextMenu(this)">
         <menuitem label="Undo"
         	  cmdid="cmd_undo"
                   oncommand="goDoCommand('cmd_undo')"
