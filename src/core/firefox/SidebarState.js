@@ -11,10 +11,10 @@ goog.require('ckft.Buffer');
 /**
  * SidebarState fields
  *
- *     preservedBuffers: PreservedBuffer[] 
+ *     preservedBuffers: PreservedBuffer[]
  *           contents of the sidebar's buffers
- * 
- *     selectedPreservedBuffer: PreservedBuffer  
+ *
+ *     selectedPreservedBuffer: PreservedBuffer
  *           buffer that was selected in the sidebar
  */
 
@@ -51,7 +51,7 @@ ckft.SidebarState.prototype.restore = function(/*SidebarWindow*/ sidebarWindow) 
 };
 
 /**
- * Test whether this state is dirty (i.e., some part of it still needs to be 
+ * Test whether this state is dirty (i.e., some part of it still needs to be
  * saved to disk).
  */
 ckft.SidebarState.prototype.__defineGetter__("dirty", function() {
@@ -85,14 +85,14 @@ function saveSidebarOnClose(/*ChromeWindow*/ chromeWindow) {
   chromeWindow.WindowIsClosing = function() {
     try {
       var sidebarWindow = getSidebarWindow(chromeWindow);
-    
+
       if (sidebarWindow) {
         // Chickenfoot sidebar is currently open, so just ask it to handle dirty state
         if (!sidebarWindow.windowIsClosing()) return false;
-        
-      } else if (chromeWindow.chickenfootSidebarState 
+
+      } else if (chromeWindow.chickenfootSidebarState
                  && chromeWindow.chickenfootSidebarState.dirty) {
-        // Chickenfoot sidebar is closed, but its saved state is dirty.  
+        // Chickenfoot sidebar is closed, but its saved state is dirty.
         // Need to open the Chickenfoot sidebar to deal with it.
 
         // If another sidebar is open, remember it so we can come back to
@@ -104,7 +104,7 @@ function saveSidebarOnClose(/*ChromeWindow*/ chromeWindow) {
         sidebar.addEventListener("load", sidebarLoaded, true);
 
         // show Chickenfoot sidebar, so that it can handle the dirty state.
-        chromeWindow.toggleSidebar('viewChickenfootSidebar');        
+        chromeWindow.toggleSidebar('viewChickenfootSidebar');
 
         // return failure for now (stopping the caller from closing the chrome window).
         // We'll resume closing in sidebarLoaded.
@@ -115,28 +115,28 @@ function saveSidebarOnClose(/*ChromeWindow*/ chromeWindow) {
       //return false;
     }
     return oldWindowIsClosing();
-    
+
     // once dirty Chickenfoot sidebar is loaded, resume closing
     function sidebarLoaded() {
-      sidebar.removeEventListener("load", sidebarLoaded, true);      
+      sidebar.removeEventListener("load", sidebarLoaded, true);
       // defer a bit to make sure the sidebar's own load listeners are done
       chromeWindow.setTimeout(afterTimeout, 0);
     } // end of sidebarLoaded
-  
-    // sidebar is fully loaded, tell it to close  
+
+    // sidebar is fully loaded, tell it to close
     function afterTimeout() {
       //debug("loaded sidebar");
       var sidebarWindow = sidebar.contentWindow;
       if (!sidebarWindow.windowIsClosing()) return;
-  
+
       // put back whatever sidebar was there before,
       // so Firefox remembers to bring it up the next time it loads
       chromeWindow.toggleSidebar(prevSidebarCommand);
-  
+
       // resume closing
       if (oldWindowIsClosing()) chromeWindow.close();
     } // end of afterTimeout
-    
+
   }; // end of WindowIsClosing
 }
 

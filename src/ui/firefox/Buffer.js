@@ -3,7 +3,7 @@
  * Chickenfoot end-user web automation system
  *
  * Copyright (c) 2004-2007 Massachusetts Institute of Technology
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
  * "Software"), to deal in the Software without restriction, including
@@ -11,10 +11,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -22,7 +22,7 @@
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * 
+ *
  * Chickenfoot homepage: http://uid.csail.mit.edu/chickenfoot/
  */
 -->
@@ -108,7 +108,7 @@ ckft.Buffer = function(callback, file, dirty, text, cursorPosition) {
   var tab = sidebarDocument.createElement("tab");
   tab.setAttribute("flex", "1");
   tab.setAttribute("crop", "right");
-  
+
   // add the elements to the sidebar
   sidebarDocument.getElementById("editorTabs").appendChild(tab);
   sidebarDocument.getElementById("editorTabPanels").appendChild(editor);
@@ -137,7 +137,7 @@ ckft.Buffer = function(callback, file, dirty, text, cursorPosition) {
 
   // Only add listeners for non-Bespin editors.
   if (!useBespin) {
-    editor.addEventListener("keypress", goog.bind(this._onKeyPress, this), true); 
+    editor.addEventListener("keypress", goog.bind(this._onKeyPress, this), true);
     editor.addEventListener("keyup", syntaxColorEvent, true);
 
     editor.addEventListener("keyup", function(event) {
@@ -146,7 +146,7 @@ ckft.Buffer = function(callback, file, dirty, text, cursorPosition) {
           self.runCurrentLine();
         }
     }, true);
-  
+
     // This should only happen when I release enter and control is pressed.
   }
 
@@ -175,7 +175,7 @@ ckft.Buffer = function(callback, file, dirty, text, cursorPosition) {
 /**
  * Creates a Buffer asynchronously, passing the newly created Buffer to the
  * callback once it is loaded.
- * 
+ *
  * @param {function(ckft.Buffer)} callback
  * @param {nsIFile=} file
  * @param {boolean=} dirty
@@ -215,7 +215,7 @@ ckft.Buffer.prototype._onKeyPress = function(event) {
     var focusOffsetCaret = sbwin.getSelectedBuffer().api.selection.focusOffset;
     var ed = sbwin.getSelectedBuffer().editor;
     var doc = ed.contentDocument;
-    var pre = doc.getElementById("pre"); 
+    var pre = doc.getElementById("pre");
     //debug(focusOffsetCaret);
     //debug(focusNodeCaret);
 
@@ -338,15 +338,15 @@ ckft.Buffer.prototype.startEditing = function() {
     return;
   }
   var editor = this.editor;
-  
+
   editor.contentWindow.setCursor('text');
   editor.makeEditable('html', false);
-  
+
   var api = editor.getEditor(editor.contentWindow);
 
   // All the user's text must be in a <pre> element
   // to guarantee that all whitespace will be preserved.
-  // (Adding the CSS style "whitespace:pre" to the <body> 
+  // (Adding the CSS style "whitespace:pre" to the <body>
   // *almost* did this; unfortunately, it didn't preserve
   // indentation in text copied from the editor to other
   // applications.  Only the <pre> element does this, apparently.)
@@ -354,11 +354,11 @@ ckft.Buffer.prototype.startEditing = function() {
   // The listeners below try to guarantee that the user's text
   // is always surrounded by a <pre> element, whose id is 'pre'
   // for ease of search.
-  
+
   // install an edit listener that notices when the <pre> element
   // is deleted and recreates it.
   var editListener = new EditActionAdapter();
-  editListener.DidDeleteNode = function(child, result) { 
+  editListener.DidDeleteNode = function(child, result) {
     if (child.id == 'pre') {
       // find the body
       var doc = editor.contentDocument;
@@ -371,16 +371,16 @@ ckft.Buffer.prototype.startEditing = function() {
       pre = doc.createElement('PRE');
       pre.setAttribute('id', 'pre');
       pre.appendChild(text);
-  
+
       // make the PRE element the only child of the body
-      api.insertNode(pre, body, 0);            
-      // move cursor to the start    
+      api.insertNode(pre, body, 0);
+      // move cursor to the start
       api.beginningOfDocument();
     }
   };
   api.addEditActionListener(editListener);
-  
-  // install a selection listener that adjusts selections 
+
+  // install a selection listener that adjusts selections
   // that would cover the <pre> element so that they're
   // just inside its start and end tag instead.
   var selPriv = api.selection;
@@ -422,7 +422,7 @@ ckft.Buffer.prototype.startEditing = function() {
         var noCarriage = node.nodeValue.replace(/\r/, "");
         node.nodeValue = noCarriage;
         // debug(node.nodeValue+"marker");
-			
+
       }
     }
     if (nowDirty) {
@@ -460,7 +460,7 @@ ckft.Buffer.prototype.finishStartEditing = function() {
 function DocumentStateAdapter() { }
 DocumentStateAdapter.prototype = {
   QueryInterface : function(aIID) {
-    if (aIID.equals(Components.interfaces.nsIDocumentStateListener) ||            
+    if (aIID.equals(Components.interfaces.nsIDocumentStateListener) ||
         aIID.equals(Components.interfaces.nsISupports))
       return this;
     throw Components.results.NS_NOINTERFACE;
@@ -477,7 +477,7 @@ DocumentStateAdapter.prototype = {
 function EditActionAdapter() { }
 EditActionAdapter.prototype = {
   QueryInterface : function(aIID) {
-    if (aIID.equals(Components.interfaces.nsIEditActionListener) ||            
+    if (aIID.equals(Components.interfaces.nsIEditActionListener) ||
         aIID.equals(Components.interfaces.nsISupports))
       return this;
     throw Components.results.NS_NOINTERFACE;
@@ -515,8 +515,8 @@ SelectionAdapter.prototype = {
   notifySelectionChanged : function(doc, sel, reason) { }
 };
 
-  
-  
+
+
 /**
  * Update enabled/disabled status of every item in context menu.
  */
@@ -558,7 +558,7 @@ ckft.Buffer.prototype.__defineGetter__("text", function() {
   if (this.isBespinEditor()) {
     return this.getBespinObject_().value;
   }
-  
+
   var content = editor.contentDocument.getElementById('body');
   var walker = Chickenfoot.createTreeWalker(content,
       NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
@@ -571,9 +571,9 @@ ckft.Buffer.prototype.__defineGetter__("text", function() {
       sb.append('\n');
     }
   }
-  
+
   var text = sb.toString();
-  
+
   text = ckft.Buffer.removeGarbageCharacter(text);
   return text;
 });
@@ -590,22 +590,22 @@ ckft.Buffer.prototype.__defineSetter__("text", function(/*String*/ newScript) {
     return;
   }
 
-  var api = editor.getEditor(editor.contentWindow);    
-  
-  
+  var api = editor.getEditor(editor.contentWindow);
+
+
   // add terminating newline, if not already included
   if (newScript.length == 0 || newScript.charAt(newScript.length-1) != '\n') {
     newScript += '\n';
   }
-  
+
   // open a transaction so that all of the below
   // operations are grouped into a single Undo
   api.beginTransaction();
-  
+
   // find the PRE element that contains all the script text
   var doc = editor.contentDocument;
   var pre = doc.getElementById('pre');
-  
+
   // delete all children of pre
   api.selection.selectAllChildren(pre);
   api.deleteSelection(0);
@@ -620,20 +620,20 @@ ckft.Buffer.prototype.__defineSetter__("text", function(/*String*/ newScript) {
   // the pre reference.
 
   pre = doc.getElementById('pre');
-  // Create a single text node for the script and insert it 
-  // as a child of pre.  The editor's editing rules will 
-  // automatically handle splitting this monolithic node 
+  // Create a single text node for the script and insert it
+  // as a child of pre.  The editor's editing rules will
+  // automatically handle splitting this monolithic node
   // into one text node per line, with <BR> nodes after each.
   var text = doc.createTextNode(newScript);
   api.insertNode(text, pre, 0);
   //recolor it
   this.recolor();
-  
+
   // move cursor to the start of <pre>
   var sel = api.selection;
   sel.selectAllChildren(pre);
   sel.collapseToStart();
-  
+
   api.endTransaction();
 
   this.dirty = false;
@@ -676,7 +676,7 @@ ckft.Buffer.prototype.scrub = function() {
     if (node.nodeType == Node.ELEMENT_NODE) {
       node.removeAttribute("_moz_dirty");
       node.removeAttribute("type");
-    } 
+    }
   }
   walker = Chickenfoot.createTreeWalker(content, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT);
   while (walker.nextNode()) {
@@ -755,7 +755,7 @@ ckft.Buffer.prototype.saveAs = function() {
  * @return true if OK to close, false if user canceled.
  */
 ckft.Buffer.prototype.okToClose = function() {
-  if (this.dirty) {  
+  if (this.dirty) {
     var promptService = Components.classes["@mozilla.org/embedcomp/prompt-service;1"].
         getService(Components.interfaces.nsIPromptService);
     var answer = promptService.confirmEx(chromeWindow,
@@ -786,13 +786,13 @@ ckft.Buffer.prototype.close = function() {
 
   // remove XUL elements
   tabs.removeChild(this.tab);
-  tabPanels.removeChild(this.editor);  
+  tabPanels.removeChild(this.editor);
   this.tab = null;
   this.editor = null;
 
   index = Math.min(index, tabs.childNodes.length-1);
   tabbox.selectedIndex = index;
-  
+
   if (index == -1) {
     sidebarDocument.getElementById("requiresSelectedEditor").setAttribute("disabled", true);
   }
@@ -802,28 +802,28 @@ ckft.Buffer.prototype.run = function() {
   var file;
   if (this.file === null) { file = this.file; }
   else { file = this.file.parent; }
-  
+
   Chickenfoot.evaluate(chromeWindow, this.text, true, null, {scriptDir:file});
 };
 
 ckft.Buffer.prototype.runCurrentLine = function() {
     var thisBuffer = this;
-    
+
     // if web page steals focus from us, grab it back (just once)
     var listener = function(event) {
       setTimeout(function() {thisBuffer.editor.contentWindow.focus()}, 1);
       thisBuffer.editor.removeEventListener("blur", listener, true);
     }
     thisBuffer.editor.addEventListener("blur", listener, true);
-    
+
     // get the line to run
     var line = getTextAtLine(getCursorLine());
-    
+
     // run it
-    Chickenfoot.evaluate(chromeWindow, line, true, null, 
+    Chickenfoot.evaluate(chromeWindow, line, true, null,
             { scriptDir: this.file,
-              __feedbackHandler: Chickenfoot.animateTransparentRectangleOverNode }); 
-  
+              __feedbackHandler: Chickenfoot.animateTransparentRectangleOverNode });
+
     function getTextAtLine(/* int */ line) {
       var ed = thisBuffer.editor;
       var content = ed.contentDocument.getElementById('body');
@@ -841,7 +841,7 @@ ckft.Buffer.prototype.runCurrentLine = function() {
       }
       return lineText;
     }
-    
+
     function getCursorLine() {
       var ed = thisBuffer.editor;
       var sel = ed.contentWindow.getSelection();
@@ -879,7 +879,7 @@ ckft.Buffer.prototype.onFocus = function() {
 
     var previousTime = this._lastModifiedTime;
     this._lastModifiedTime = currentTime;
-    
+
     if (previousTime && currentTime != previousTime) {
       // File changed on disk.  Reload it automatically,
       // unless it's dirty, in which case ask the user
@@ -896,9 +896,9 @@ ckft.Buffer.prototype.onFocus = function() {
           return;
         }
       }
-      
-      this.text = Chickenfoot.SimpleIO.read(this.file);      
-    }      
+
+      this.text = Chickenfoot.SimpleIO.read(this.file);
+    }
   }
 };
 
@@ -908,7 +908,7 @@ ckft.Buffer.prototype.onResize = function(event) {
   var size = goog.dom.getViewportSize(win);
   var editorEl = win.document.getElementById('editor');
   // Need to subtract 5px to avoid a vertical scroll bar.
-  editorEl.style.height = (size.height - 5) + 'px';  
+  editorEl.style.height = (size.height - 5) + 'px';
 };
 
 /** Map of ids for XUL template menupopups to the template data. */
@@ -927,7 +927,7 @@ var defaultTemplateId;
  *
  * Either open the customization dialog, or a new buffer,
  * possibly pre-populated with content from a template.
- * 
+ *
  * @param {string=} templateId
  */
 function newFile(templateId) {
@@ -956,7 +956,7 @@ function newFile(templateId) {
       var TOKEN = "__CF_CURSOR_POS__";
       if ((index = scriptText.indexOf(TOKEN)) >= 0) {
         // replaces first instance of TOKEN, as desired
-        scriptText = scriptText.replace(TOKEN, "");          
+        scriptText = scriptText.replace(TOKEN, "");
       }
       var buffer = getSelectedBuffer();
       if (buffer && !goog.string.trim(buffer.text)) {
@@ -984,7 +984,7 @@ ckft.Buffer.loadIntoBuffer = function(file) {
   if (buffer && !goog.string.trim(buffer.text)) {
     // the selected buffer is empty;
     // populate it instead of creating a new Buffer
-    buffer.file = file;    
+    buffer.file = file;
     buffer.trigger = Chickenfoot.gTriggerManager.getTriggerFromFile(file);
     buffer.text = Chickenfoot.SimpleIO.read(file);
     buffer.dirty = false;
@@ -1024,7 +1024,7 @@ function chooseFile(openMode, initialFile) {
   var mode = (openMode) ? nsIFilePicker.modeOpen : nsIFilePicker.modeSave;
   var fp = Components.classes["@mozilla.org/filepicker;1"]
       .createInstance(nsIFilePicker);
-  fp.init(sidebarWindow, openMode ? "Open Chickenfoot Script" : "Save Chickenfoot Script As", mode);  
+  fp.init(sidebarWindow, openMode ? "Open Chickenfoot Script" : "Save Chickenfoot Script As", mode);
   fp.appendFilter("Script Files (*.js)", "*.js");
   fp.appendFilters(fp.filterAll);
   fp.filterIndex = 0;
@@ -1033,7 +1033,7 @@ function chooseFile(openMode, initialFile) {
     fp.displayDirectory = initialFile.parent;
     fp.defaultString = initialFile.leafName;
   }
-  
+
   var res = fp.show();
   if (res == nsIFilePicker.returnOK || res == nsIFilePicker.returnReplace) {
     return fp.file;
@@ -1049,7 +1049,7 @@ function chooseFile(openMode, initialFile) {
 function focusEditorWhenTabSelected() {
   var tabs = sidebarDocument.getElementById("editorTabs");
   var oldSelectNewTab = tabs.selectNewTab;
-  tabs.selectNewTab = function() {    
+  tabs.selectNewTab = function() {
     var result = oldSelectNewTab.apply(this, arguments);
     var buffer = getSelectedBuffer();
     if (buffer) buffer.focus();
@@ -1114,7 +1114,7 @@ function closeAllBuffersButSelected(){
     	if ( buffers[i].okToClose() && buffers[i]!= selectedBuffer) {
     		if( i==buffers.length-1){
     		buffers[i].close();
-    		
+
     		}
     		else{
     		buffers[i].close();
@@ -1138,7 +1138,7 @@ ckft.Buffer.prototype.runSelectedText = function() {
 
 function firstChickenfootUse() {
   var tutorialUrl = "http://groups.csail.mit.edu/uid/chickenfoot/tutorial/";
-  chromeWindow._content.location = tutorialUrl;    
+  chromeWindow._content.location = tutorialUrl;
 
   var buffer = getSelectedBuffer();
   buffer.text = '\

@@ -4,22 +4,22 @@
      xmlns:em="http://www.mozilla.org/2004/em-rdf#">
 
   <Description about="urn:mozilla:install-manifest">
-  
+
     <em:id>{896b34a4-c83f-4ea7-8ef0-51ed7220ac94}</em:id>
     <em:unpack>true</em:unpack>
     <em:version><version/></em:version>
-    
+
     <em:name>Chickenfoot</em:name>
     <em:description>End-user programming tool for Firefox.</em:description>
     <em:creator>UID Group, MIT</em:creator>
     <em:homepageURL>http://groups.csail.mit.edu/uid/chickenfoot/</em:homepageURL>
     <em:updateURL>http://groups.csail.mit.edu/uid/chickenfoot/update.rdf</em:updateURL>
     <em:updateKey>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDCB5VlJYklRGMWjCkBCOGaPwGCG7MezZ4S3NRbt1JjSBxyxLRkrQFVuXb5Eak1zL87Iy6/MTLt9lWQ07M3QjL7zxzMYIVyubcLDF5rFdauonq4UDfcLuN6fdy/yIqGrZF4ZKn1b6DDs+7McDR7+qMtopr+LcUH1a5m1uuad1HQ6QIDAQAB</em:updateKey>
-    
+
     <!-- <em:optionsURL></em:optionsURL> -->
     <!-- <em:aboutURL></em:aboutURL> -->
     <em:iconURL>chrome://chickenfoot/skin/beak-32.png</em:iconURL>
-    
+
     <em:targetApplication>
       <Description>
         <em:id>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}</em:id>
@@ -27,7 +27,7 @@
         <em:maxVersion>7.0.*</em:maxVersion>
       </Description>
     </em:targetApplication>
-    
+
     <em:file>
       <Description about="urn:mozilla:extension:file:chickenfoot.jar">
         <em:package>content/</em:package>
@@ -36,7 +36,7 @@
         <em:locale>locale/en-US/chickenfoot/</em:locale>
       </Description>
     </em:file>
-    
+
   </Description>
-  
+
 </RDF>

@@ -6,7 +6,7 @@
  * Chickenfoot end-user web automation system
  *
  * Copyright (c) 2004-2007 Massachusetts Institute of Technology
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
  * "Software"), to deal in the Software without restriction, including
@@ -14,10 +14,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -25,7 +25,7 @@
  * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- * 
+ *
  * Chickenfoot homepage: http://uid.csail.mit.edu/chickenfoot/
  */
 -->
@@ -55,7 +55,7 @@
 
     // make convenient alias to debug()
     debug = Chickenfoot.debug;
-    
+
     // make sure the editor buffers are saved before chrome window closes.
     if (!chromeWindow.chickenfootSidebarHasBeenOpened) {
       chromeWindow.chickenfootSidebarHasBeenOpened = true;
@@ -76,14 +76,14 @@
 
     <!-- BEGIN EDITOR AREA -->
     <vbox flex="10">
-    
+
       <toolbar align="center">
 
       <!-- This broadcaster distributes the disabled attribute to buttons
            that require a currently selected buffer -->
-      <broadcaster id="requiresSelectedEditor" 
+      <broadcaster id="requiresSelectedEditor"
                    disabled="true" />
-                   
+
       <!-- NEW -->
       <!-- http://www.async.com.br/~kiko/pix/icons/stock_new.png -->
       <toolbarbutton class="disablableToolbarButton"
@@ -98,7 +98,7 @@
 
       <!-- OPEN -->
       <!-- http://www.missionbuilders.net/_layouts/images/open.gif -->
-      <!-- http://www.async.com.br/~kiko/pix/icons/stock_open.png --> 
+      <!-- http://www.async.com.br/~kiko/pix/icons/stock_open.png -->
       <toolbarbutton class="disablableToolbarButton"
                      id="cfOpenButton"
                      style="list-style-image: url(chrome://chickenfoot/skin/open-file.png)"
@@ -107,7 +107,7 @@
 
       <!-- SAVE -->
       <!-- http://www.missionbuilders.net/_layouts/images/save.gif -->
-      <!-- http://www.async.com.br/~kiko/pix/icons/stock_save.png -->       
+      <!-- http://www.async.com.br/~kiko/pix/icons/stock_save.png -->
       <toolbarbutton class="disablableToolbarButton"
                      id="cfSaveButton"
                      style="list-style-image: url(chrome://chickenfoot/skin/save-file.png)"
@@ -148,43 +148,43 @@
       <!-- LABEL -->
       <label id="cf_current_file" />
     </toolbar>
-  
+
 
     <tabbox id="editorTabBox"
             flex="10">
-            
+
       <hbox>
         <tabs id="editorTabs"
-              flex="1" 
+              flex="1"
               context="editorTabMenu"
               >
-                  
+
         </tabs>
-                
+
         <toolbarbutton class="tabs-closebutton close-button"
                        tooltiptext="Close tab (Ctrl-W)"
                        id="cfCloseTabButton"
                        oncommand="closeSelectedBuffer()" />
       </hbox>
       <tabpanels id="editorTabPanels"
-                 flex="50" 
+                 flex="50"
                  style="padding:0px"
-                 
+
                  >
       </tabpanels>
     </tabbox>
-    
+
     <menupopup id="editorTabMenu"
                XXXonpopupshowing="getSelectedBuffer().updateContextMenu(this)"
                >
-                    
+
                     <menuitem label="Close Other Tabs"
         	          cmdid="cmd_closeOtherTabs"
-                      oncommand="closeAllBuffersButSelected()" 
+                      oncommand="closeAllBuffersButSelected()"
                       />
-                    <menuitem label="Close All Tabs" 
+                    <menuitem label="Close All Tabs"
         	          cmdid="cmd_closeAllTabs"
-                      oncommand="closeAllBuffers()" 
+                      oncommand="closeAllBuffers()"
                       />
                     <menuseparator />
                     <menuitem label="Close Tab"
@@ -192,19 +192,19 @@
         	          oncommand="closeSelectedBuffer()"
         	          />
                   </menupopup>
-    
+
     <!-- include globalOverlay.js for goDoCommand() -->
     <script src="chrome://global/content/globalOverlay.js"/>
 
     <!-- Context menu that appears when you right-click in the
          script editor.  It's a normal editor context menu.
-         Each menuitem is labeled with the nonstandard 
+         Each menuitem is labeled with the nonstandard
          attribute "cmdid" which stores the name of the associated
          command.  This attribute is used by updateContextMenu()
          (called just before the context menu appears) to check whether
          a menu item's associated command is able to run and enable or
          disable the menu item appropriately. -->
-         
+
     <menupopup id="editorContextMenu"
                onpopupshowing="getSelectedBuffer().updateContextMenu(this)">
         <menuitem label="Undo"
@@ -216,15 +216,15 @@
         	  cmdid="cmd_cut"
                   oncommand="goDoCommand('cmd_cut')"
                   />
-        <menuitem label="Copy" 
+        <menuitem label="Copy"
         	  cmdid="cmd_copy"
                   oncommand="fixed_copy()"
                   />
-        <menuitem label="Paste" 
+        <menuitem label="Paste"
         	  cmdid="cmd_paste"
                   oncommand="goDoCommand('cmd_paste')"
                   />
-        <menuitem label="Delete" 
+        <menuitem label="Delete"
         	  cmdid="cmd_delete"
                   oncommand="goDoCommand('cmd_delete')"
                   />
@@ -241,21 +241,21 @@
 
     </vbox>
     <!-- END EDITOR AREA -->
-  
+
   <splitter/>
-  
-    
-    <vbox flex="3"> 
+
+
+    <vbox flex="3">
       <tabbox flex="1">
         <tabs flex="1">
           <tab label="Output" id="CF_DEBUG_TAB" />
 <!--          <tab label="Shell" /> -->
-          <tab label="Patterns"/>             
+          <tab label="Patterns"/>
           <tab label="Triggers" />
         </tabs>
         <tabpanels flex="50"
                    style="padding:0px">
-        
+
           <!-- DEBUG -->
             <vbox flex="1">
               <toolbar align="center">
@@ -267,19 +267,19 @@
                             oncommand="setRecording(this.checked)"
                             />
                   <spacer flex="10" />
-                  <!-- http://www.async.com.br/~kiko/pix/icons/stock_clear.png -->  
+                  <!-- http://www.async.com.br/~kiko/pix/icons/stock_clear.png -->
                   <toolbarbutton class="disablableToolbarButton"
                                  style="list-style-image: url(chrome://chickenfoot/skin/clear.png)"
                                  tooltiptext="Clear debug output"
-                                 oncommand="Chickenfoot.clearDebugPane(chromeWindow);" />                
+                                 oncommand="Chickenfoot.clearDebugPane(chromeWindow);" />
               </toolbar>
-                
+
               <iframe id="CF_DEBUG"
                       src="chrome://chickenfoot/content/debugContent.html"
                       flex="1"
-                      /> 
+                      />
             </vbox>
-          
+
           <!-- SHELL -->
           <!--
             <vbox flex="1">
@@ -291,12 +291,12 @@
                        type="content"
                        src="chrome://chickenfoot/content/shell.html"
                        flex="1"
-                       /> 
+                       />
             </vbox>
             -->
-          
+
           <!-- PATTERN PANEL -->
-          
+
               <vbox flex="1">
                   <hbox align="center">
                     <label value="Pattern:"
@@ -320,15 +320,15 @@
                            style="font-weight: bold; margin-left: 0px;"
                            />
                   </hbox>
-                  <tree id="CF_LIBRARY_TREE" 
-                        flex="10" 
+                  <tree id="CF_LIBRARY_TREE"
+                        flex="10"
                         hidecolumnpicker="true"
-                        seltype="single" 
+                        seltype="single"
                         onselect="clickedLibraryTree();">
                     <treecols>
-                      <treecol label="Pattern Names" 
-                               id="CF_PATTERN_NAME" 
-                               primary="true" 
+                      <treecol label="Pattern Names"
+                               id="CF_PATTERN_NAME"
+                               primary="true"
                                flex="1"
                                />
                     </treecols>
@@ -387,15 +387,15 @@
                         </treerow>
                       </treeitem>
                     </treechildren>
-                  </tree> 
+                  </tree>
               </vbox>
-          
+
           <!-- TRIGGERS -->
-          
+
           <vbox flex="1">
 
               <toolbar flex="1">
-              
+
                 <checkbox id="ignoreAllTriggersCheckbox"
                           label=" Ignore all triggers"
                           tooltiptext="When checked, all triggers are disabled"
@@ -404,62 +404,62 @@
 
                 <!-- This broadcaster distributes the disabled attribute to the checkboxes
                      in the triggers list -->
-                <broadcaster id="requiresTriggersEnabled" 
+                <broadcaster id="requiresTriggersEnabled"
                              disabled="false" />
-                
+
                 <spacer flex="10" />
 
                 <!-- This broadcaster distributes the disabled attribute to buttons
                      that require a selected trigger -->
-                <broadcaster id="requiresSelectedTrigger" 
-                             disabled="true" />                         
-                                
+                <broadcaster id="requiresSelectedTrigger"
+                             disabled="true" />
+
                 <toolbarbutton class="disablableToolbarButton"
                                style="list-style-image: url(chrome://chickenfoot/skin/edit-trigger-script.png)"
                                tooltiptext="Edit Trigger Script"
                                oncommand="editTriggerScript();"
-                               observes="requiresSelectedTrigger" 
-                               />                
+                               observes="requiresSelectedTrigger"
+                               />
 
                 <toolbarbutton class="disablableToolbarButton"
                                style="list-style-image: url(chrome://chickenfoot/skin/trigger-properties.png)"
                                tooltiptext="Edit Trigger Properties"
                                oncommand="editTriggerProperties();"
-                               observes="requiresSelectedTrigger" 
-                               />                
+                               observes="requiresSelectedTrigger"
+                               />
 
                 <!-- http://search.cpan.org/src/LDACHARY/Catalog-1.02/images/plus.gif -->
                 <toolbarbutton class="disablableToolbarButton"
                                style="list-style-image: url(chrome://chickenfoot/skin/new-trigger.png)"
                                tooltiptext="Add Trigger"
                                oncommand="addTrigger();"
-                               observes="requiresSelectedEditor" 
-                               />                
-                
+                               observes="requiresSelectedEditor"
+                               />
+
                 <!-- http://search.cpan.org/src/LDACHARY/Catalog-1.02/images/minus.gif -->
                 <toolbarbutton class="disablableToolbarButton"
                                style="list-style-image: url(chrome://chickenfoot/skin/remove-trigger.png)"
                                tooltiptext="Remove Trigger"
                                oncommand="removeTriggers()"
-                               observes="requiresSelectedTrigger" 
-                               />  
+                               observes="requiresSelectedTrigger"
+                               />
 
                 <!-- http://www.async.com.br/~kiko/pix/icons/stock_down_arrow.png -->
                 <toolbarbutton class="disablableToolbarButton"
                                style="list-style-image: url(chrome://chickenfoot/skin/down-arrow.png)"
                                tooltiptext="Move trigger down"
                                oncommand="moveTrigger('down');"
-                               observes="requiresSelectedTrigger" 
+                               observes="requiresSelectedTrigger"
                                />
-                
+
                 <!-- http://www.async.com.br/~kiko/pix/icons/stock_up_arrow.png -->
                 <toolbarbutton class="disablableToolbarButton"
                                style="list-style-image: url(chrome://chickenfoot/skin/up-arrow.png)"
                                tooltiptext="Move trigger up"
                                oncommand="moveTrigger('up');"
-                               observes="requiresSelectedTrigger" 
-                               />                
-                               
+                               observes="requiresSelectedTrigger"
+                               />
+
                 <!-- EXPORT -->
                 <!-- http://www.async.com.br/~kiko/pix/icons/stock_add.png -->
                 <toolbarbutton class="disablableToolbarButton"
@@ -468,7 +468,7 @@
                                oncommand="packageTrigger()"
                                observes="requiresSelectedTrigger"
                                />
-                               
+
                 <!-- EXPORT -->
                 <!-- http://www.async.com.br/~kiko/pix/icons/stock_add.png -->
                 <!--
@@ -479,7 +479,7 @@
                                observes="requiresSelectedTrigger"
                                />
                 -->
-                
+
                 <!-- SYNC with GDocs -->
                 <!--
                 <toolbarbutton class=""
@@ -499,25 +499,25 @@
                        editable="true"
                        onmousedown="onTriggersTreeClicked(event)"
                        >
-                       
+
                 <treecols>
-                  <treecol id="Triggers_" label="On?" type="checkbox" editable="true"/> 
+                  <treecol id="Triggers_" label="On?" type="checkbox" editable="true"/>
                   <splitter class="tree-splitter" />
                   <treecol id="Triggers_Name" label="Name" flex="5" editable="false"/>
                   <splitter class="tree-splitter" />
                   <treecol id="Triggers_Included_Pages" label="Triggered when" editable="false" flex="5" />
                 </treecols>
-                
+
                 <treechildren id="CF_TRIGGERS_PANE_CHILDREN">
-                </treechildren>                  
-                
+                </treechildren>
+
               </tree>
-      
+
             </vbox>
         </tabpanels>
       </tabbox>
-    </vbox>        
+    </vbox>
   </vbox>
   <!-- END OVERLAY -->
-  
+
 </page>
