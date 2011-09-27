@@ -174,9 +174,9 @@
       </tabpanels>
     </tabbox>
     
-    <popup id="editorTabMenu"
-                       XXXonpopupshowing="getSelectedBuffer().updateContextMenu(this)"
-                       >
+    <menupopup id="editorTabMenu"
+               XXXonpopupshowing="getSelectedBuffer().updateContextMenu(this)"
+               >
                     
                     <menuitem label="Close Other Tabs"
         	          cmdid="cmd_closeOtherTabs"
@@ -191,7 +191,7 @@
         	          cmdid="cmd_closeTab"
         	          oncommand="closeSelectedBuffer()"
         	          />
-                  </popup>
+                  </menupopup>
     
     <!-- include globalOverlay.js for goDoCommand() -->
     <script src="chrome://global/content/globalOverlay.js"/>
@@ -205,8 +205,8 @@
          a menu item's associated command is able to run and enable or
          disable the menu item appropriately. -->
          
-    <popup id="editorContextMenu"
-           onpopupshowing="getSelectedBuffer().updateContextMenu(this)">
+    <menupopup id="editorContextMenu"
+               onpopupshowing="getSelectedBuffer().updateContextMenu(this)">
         <menuitem label="Undo"
         	  cmdid="cmd_undo"
                   oncommand="goDoCommand('cmd_undo')"
@@ -237,7 +237,7 @@
         	  cmdid="cmd_copy"
         	      oncommand="getSelectedBuffer().runSelectedText()"
         	      />
-  </popup>
+  </menupopup>
 
     </vbox>
     <!-- END EDITOR AREA -->

@@ -37,6 +37,7 @@
     <property name="export.dir"     value="${xpi.dir}/export" />
 
     <property name="closure-compiler.jar" value="${basedir}/closure/compiler.jar" />
+    <property name="closure.outputmode"   value="compiled" />
 
     <property name="fennec.build.dir"      value="${basedir}${file.separator}platform${file.separator}fennec${file.separator}build" />
     <property name="fennec.xpi.dir"        value="${fennec.build.dir}${file.separator}xpi" />
@@ -106,6 +107,18 @@
     <target name="run"
             depends="install,run-chickenfoot-profile"
             description="Runs Firefox after installing the XPI file.">
+    </target>
+
+    <!--
+    The run-debug-no-install target is just like the
+    run-no-install target, except that it also runs unjar-chrome.  The
+    biggest issue with this is that time is wasted zipping up and then
+    unzipping the jar file, when it should ideally never be created in
+    the first place.
+    -->
+    <target name="run-debug-no-install"
+            depends="xpi-dir,unjar-chrome,point-firefox-to-xpi-dir,run-chickenfoot-profile"
+            description="Runs Firefox by pointing it directly at build/xpi.  Chrome directory is not jarred.">
     </target>
 
     <target name="run-no-install"
@@ -389,7 +402,7 @@
     <macrodef name="closure-compile">
       <attribute name="outputfile" />
       <attribute name="compilationlevel" default="SIMPLE_OPTIMIZATIONS" />
-      <attribute name="outputmode" default="compiled" />
+      <attribute name="outputmode" default="${closure.outputmode}" />
       <element name="extraflags" optional="yes" />
       <element name="extrapaths" optional="yes" />
       <element name="debuginfo" optional="yes" />
@@ -410,7 +423,7 @@
       <mkdir dir="${export.dir}" />
       <closure-compile outputfile="${export.dir}/Chickenfoot.js"
                        compilationlevel="SIMPLE_OPTIMIZATIONS"
-                       outputmode="compiled">
+                       outputmode="${closure.outputmode}">
         <extrapaths>
           <!-- TODO(mbolin): Remove unnecessary includes from this list. -->
           <!-- Ideally, goog.provide and goog.require would be used      -->
@@ -521,6 +534,21 @@
           </fileset>
         </replaceregexp>
 
+    </target>
+    <!--
+    The unjar-chrome target will unzip the previously created chickenfoot.jar
+    file, and modify the manifest file to use the expanded directories rather
+    than the jar file.  This allows us to modify the .js and .xul files and
+    see the results simply by closing and re-opening the sidebar, or at worst
+    by restarting the browser.  This is a lot better than doing a new build
+    whenever you want to try a simple change!
+    -->
+    <target name="unjar-chrome">
+            <unzip src="${xpi.dir}/chrome/${ant.project.name}.jar" dest="${xpi.dir}/chrome/" />
+	    <replaceregexp file="${xpi.dir}/chrome.manifest"
+	                   match="jar:|chickenfoot.jar!/"
+			   replace=""
+			   flags="g" />
     </target>
     
     <target name="xpi"

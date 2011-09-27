@@ -184,5 +184,5 @@ ckft.PreservedBuffer = function(buffer) {
  * @param {function(ckft.Buffer)} callback
  */
 ckft.PreservedBuffer.prototype.unpickle = function(sidebarWindow, callback) {
-  ckft.Buffer.createBuffer(callback, this.file, this.dirty, this.text);
+  sidebarWindow.ckft.Buffer.createBuffer(callback, this.file, this.dirty, this.text);
 };
