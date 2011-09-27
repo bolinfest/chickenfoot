@@ -3,11 +3,12 @@ include("Test.js");
 var t = new Test("clickTest");
 
 t.test("click", function(){
-  go("http://www.google.com");
-  click("advanced search");
-  Test.assert(/advanced_search/.test(document.location));
-  click("Advanced Search button");
-  Test.assert(/webhp/.test(document.location));
+  go("http://www.bing.com");
+  click("news");
+  Test.assert(/news/.test(document.location.toString()));
+  click("hotmail");
+  Test.assert(/login\.live\.com/.test(document.location.toString()),
+      "Location was: " + document.location.toString());
 });
 
 // Same type of test as above, except it operates on what we would expect to be
@@ -64,8 +65,3 @@ function closeTabFrom(/*String*/ url) {
   }
   //throw new Error("can't find tab from " + url + " to close")
 }
-
-
-
-
-

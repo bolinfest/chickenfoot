@@ -31,11 +31,13 @@ t.test("back & forward", function() {
   go("google.com");
   Test.assertEquals(document.title, "Google");
   go("mit.edu");
-  Test.assertEquals(document.title, "MIT");
+  Test.assertEquals(document.title,
+      "MIT - Massachusetts Institute of Technology");
   back();
   Test.assertEquals(document.title, "Google");
   forward();
-  Test.assertEquals(document.title, "MIT");
+  Test.assertEquals(document.title,
+      "MIT - Massachusetts Institute of Technology");
 });
 
 
