@@ -49,7 +49,7 @@ ChickenfootCommandLineHandlerService.prototype.classID =
 
 /** @type {Function} */
 ChickenfootCommandLineHandlerService.prototype.QueryInterface =
-    XPCOMUtils.generateQI([Components.interfaces.nsIChickenfootCommandLineHandler]);
+    XPCOMUtils.generateQI([Components.interfaces.nsICommandLineHandler]);
 
 
 /** @type {string} */
