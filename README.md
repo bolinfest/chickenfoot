@@ -1,2 +1,3 @@
 Chickenfoot is now available via Mozilla's official Add-ons site at:
-http://groups.csail.mit.edu/uid/chickenfoot/
+https://addons.mozilla.org/en-US/firefox/addon/chickenfoot-automation/
+
